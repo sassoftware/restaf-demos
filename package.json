@@ -1,0 +1,26 @@
+{
+  "name": "restaf-demos",
+  "version": "0.1.0",
+  "description": "nodejs demos for restaf",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sassoftware/restaf-demos.git"
+  },
+  "keywords": [
+    "restaf"
+  ],
+  "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/sassoftware/restaf-demos/issues"
+  },
+  "homepage": "https://github.com/sassoftware/restaf-demos#readme",
+  "dependencies": {
+    "prettyjson": "^1.2.1",
+    "restaf": "^0.2.1"
+  }
+}
