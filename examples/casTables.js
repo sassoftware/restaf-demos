@@ -36,21 +36,23 @@ async function example (store, logonPayload) {
     // get root end points of casManagement
     let root = await store.addServices('casManagement');
 
-    // get list of current servers
+    // get list of current servers and pick the first one
     let servers = await apiCall(root.links('servers'));
     let casserver = servers.itemsList(0);
 
     // get list of caslibs
     let caslibs = await apiCall(servers.itemsCmd(casserver , 'caslibs'));
 
+    // list the caslibs
     prtUtil.view(caslibs, 'caslibs');
 
+    // Loop thru each caslib and get the list of tables
     for (let i=0; i < caslibs.itemsList().size ; i++) {
         let s = caslibs.itemsList(i);
         let tables = await apiCall(caslibs.itemsCmd(s, 'tables'));
         prtUtil.view(tables, `List of tables in ${s}`);
     }
-    return true;
+    return 'Finished';
 }
 
 // Run the example

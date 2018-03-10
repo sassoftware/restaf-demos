@@ -40,7 +40,7 @@ async function casSession (store, payload, sessionName) {
     console.log('Server --------------------------------');
     console.log(`Servername: ${casserver}`);
 
-    let session = await store.apiCall(servers.itemsCmd(casserver, 'createSession'),
+    let session     = await store.apiCall(servers.itemsCmd(casserver, 'createSession'),
                                       { data: { name: sessionName } });
     let sessionList = await store.apiCall(servers.itemsCmd(casserver, 'sessions'));
 

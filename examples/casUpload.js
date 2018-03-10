@@ -32,11 +32,10 @@ let store = restaf.initStore();
 
 async function example () {
     // setup
-    //noinspection JSUnusedLocalSymbols
     let msg     = await store.logon(payload);
 
     // setup session
-    let session = await casSetup(store, payload, 'cas');
+    let session = await casSetup(store, payload, 'uploadTest');
 
     // setup header for upload and the rest of the payload
     let JSON_Parameters = {
@@ -55,19 +54,21 @@ async function example () {
         action : 'upload'
     };
 
+    // run action and print results
     let actionResult = await runAction (store, session, p);
     prtUtil.view(actionResult, 'Result of upload action');
 
     // Delete session
-    // noinspection JSUnusedLocalSymbols
     let deleteAction = await store.apiCall(session.links('delete'));
     return "All Done";
 }
 
+// Read file to be uploaded
 function readFile (filename, fileType) {
    return fs.readFileSync(`./data/${filename}.${fileType}`);
 }
 
+// run example
 example()
     .then (r => console.log(r))
     .catch(err => console.log(err));
