@@ -18,7 +18,7 @@
 
 'use strict';
 
-let restaf  = require('../lib/restaf');
+let restaf  = require('restaf');
 let payload = require ('./config')('restaf.env') ;
 
 let store = restaf.initStore();

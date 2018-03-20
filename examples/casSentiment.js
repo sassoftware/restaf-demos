@@ -21,7 +21,7 @@
  */
 'use strict';
 
-let restaf         = require('../lib/restaf');
+let restaf         = require('restaf');
 let payload     = require('./config')('restaf.env');
 let casSetup    = require('./casSetup');
 let runAction   = require('./runAction');

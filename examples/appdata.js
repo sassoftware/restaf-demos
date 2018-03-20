@@ -20,7 +20,7 @@
  * Testing Application Data Management (setAppData and getAppData)
  */
 'use strict';
-let restaf = require('../lib/restaf');
+let restaf = require('restaf');
 let prtUtil  = require('../prtUtil');
 
 let store = restaf.initStore();

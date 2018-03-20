@@ -18,7 +18,7 @@
 
 'use strict';
 
-let restaf       = require('../lib/restaf');
+let restaf       = require('restaf');
 let fs        = require('fs');
 let prtUtil   = require('../prtUtil');
 let casSetup  = require('./casSetup');
