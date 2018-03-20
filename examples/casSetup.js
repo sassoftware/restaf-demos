@@ -19,18 +19,20 @@
 'use strict';
 module.exports = async function casSetup (store, payload, sessionName) {
         // get root end points of casManagement
-        let msg = await store.logon(payload);
-        let root = await store.addServices('casManagement');
+        await store.logon(payload);
+        let {casManagement} = await store.addServices('casManagement');
 
         // get list of current servers
-        let servers = await store.apiCall(root.links('servers'));
+
+        let servers = await store.apiCall(casManagement.links('servers'));
 
         // create a session named cas on the first server(in Viya 3.3 that is your only option).
         let casserver = servers.itemsList(0);
+        //noinspection UnnecessaryLocalVariableJS
         let session = await store.apiCall(servers.itemsCmd(casserver, 'createSession'),
                                           {data: {name: sessionName}});
         return session;
-}
+};
 
 
 

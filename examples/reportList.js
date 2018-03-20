@@ -18,28 +18,27 @@
 
 'use strict';
 
-let restaf     = require ('restaf');
+let restaf     = require ('../lib/restaf');
 let payload = require ('./config')('restaf.env');
-let prtUtil = require ('../prtUtil');
 
 // Keys to the kingdom
 // Create the restaf
+
 let store = restaf.initStore();
 
 // function to loop thru the list of files and print their id
 // scrollCount limits number of 'next' calls
 
 async function example (store, logonPayload, counter) {
-    let msg  = await store.logon(logonPayload);
-    let root = await store.addServices('reports');
-
-    let reports = await store.apiCall(root.links('reports'));
-    prtUtil.view(reports, 'List of reports');
+    await store.logon(logonPayload);
+    let {reports} = await store.addServices('reports');
+    let reportsList = await store.apiCall(reports.links('reports'));
+    printList(reportsList.itemsList());
     let next;
     // do this loop while the service returns the next link or counter is 0
-    while(((next = reports.scrollCmds('next')) !== null) && --counter > 0)  {
-        reports = await store.apiCall(next);
-        prtUtil.view(reports);
+    while(((next = reportsList.scrollCmds('next')) !== null) && --counter > 0)  {
+        reportsList = await store.apiCall(next);
+        printList(reportsList.itemsList());
     }
 
     return 'All Done';
