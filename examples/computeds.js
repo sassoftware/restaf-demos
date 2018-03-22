@@ -32,7 +32,7 @@ async function example (store, logonPayload) {
     
     let msg = await store.logon(logonPayload);
 
-    // get root end points, get list of contexts and create a sessuin ysubg the first context
+    // get root end points, get list of contexts and create a session using the first context
     let {compute} = await store.addServices('compute');
     let contexts  = await apiCall(compute.links('contexts'));
 
