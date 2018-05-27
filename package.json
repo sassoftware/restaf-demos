@@ -11,7 +11,9 @@
     "url": "https://github.com/sassoftware/restaf-demos"
   },
   "keywords": [
-    "restaf"
+    "restaf",
+    "http",
+    "REST"
   ],
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",

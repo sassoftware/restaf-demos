@@ -21,36 +21,52 @@
 'use strict';
 
 let restaf      = require('restaf');
-let payload  = require('./config')('restaf.env');
-let casSetup = require('./casSetup');
-let prtUtil  = require('../prtUtil');
+let payload     = require('./config')('restaf.env');
+let casSetup    = require('./lib/casSetup');
+let runAction  = require('./lib/runAction');
+let listCaslibs = require('./lib/listCaslibs');
+let printCasTable = require('./lib/printCasTable');
+let prtUtil     = require('../prtUtil');
 
 let store = restaf.initStore();
 
-async function example1 (store, logonPayload, sessionName) {
+async function example (store, logonPayload, actionSets) {
     let {apiCall} = store;
-    let session = await casSetup(store, payload, sessionName);
-    // Now run a simple data step in that session
+
+    let {servers, session} = await casSetup(store, payload, actionSets);
     let p = {
         action: 'datastep.runCode',
         data  : { code: 'data casuser.score; x1=10;x2=20;x3=30; score1 = x1+x2+x3;run; '  }
     };
-    let actionResult = await apiCall(session.links('execute'), p);
-    let statusCode = actionResult.items('disposition', 'statusCode');
-    if (statusCode !== 0) {
-        throw actionResult.items('disposition');
-    } else {
-        prtUtil.view(actionResult, 'DataStep action');
-    }
+    await runAction(store, session, p, 'Data Step');
 
-    // delete session
-    actionResult = await apiCall(session.links('delete'));
+    p = {
+        action: 'table.tableExists',
+        data  : { caslib: 'casuser', name: `score` }
+    };
+    await runAction(store, session, p, 'exists');
+
+    p = {
+        action: 'table.fetch',
+        data  : { table: { caslib: 'casuser', name: 'score' } }
+    };
+
+    let fetchResult = await runAction(store, session, p, 'Fetch');
+    printCasTable(fetchResult, 'Fetch');
+
+    p = {
+        action: 'table.tableDetails',
+        data  : { caslib: 'casuser', name: `score` }
+    };
+    await runAction(store, session, p, 'details')
+
+   // await apiCall(session.links('delete'));
 
     return 'Success';
 }
 
 // Run the example
-example1(store, payload, 'example1')
+example(store, payload, null)
     .then  (msg => console.log(msg))
     .catch (err => prtUtil.printErr(err));
 

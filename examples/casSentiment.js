@@ -23,28 +23,41 @@
 
 let restaf         = require('restaf');
 let payload     = require('./config')('restaf.env');
-let casSetup    = require('./casSetup');
-let runAction   = require('./runAction');
+let casSetup    = require('./lib/casSetup');
+let runAction   = require('./lib/runAction');
 let prtUtil        = require('../prtUtil');
 
 let store   = restaf.initStore();
 
-async function example (store, payload, sessionName){
-
-    // Logon
-    let msg     = await store.logon(payload);
+async function example (store, payload, actionSets){
 
     //setup CAS session
-    let session = await casSetup(store, payload, sessionName);
+    let {session} = await casSetup(store, payload, actionSets);
 
+    let p = {
+        action: 'datastep.runCode',
+        data  : { code: `data casuser.text;docId='test';text='this is very good stuff';run;`  }
+    };
+    await runAction(store, session, p, 'Data Step');
     //run data step action
-    let actionPayload = {
+    actionPayload = {
         action: 'sentimentAnalysis.applySent',
-        data  : {
-            document: "This is very bad"
+        data: {
+            casout: {
+                caslib: 'casuser',
+                name  : 'sentiments'
+            },
+            table: {
+                caslib: 'casuser',
+                name  : 'text'
+            },
+            text : 'text',
+            docId: 'docId'
         }
     };
-    let actionResult = await runAction(store, session, actionPayload);
+    
+
+    actionResult = await runAction(store, session, actionPayload, 'sentiment Analysis');
     prtUtil.view(actionResult, 'Result from sentiment analysis');
 
     actionResult = await store.apiCall(session.links('delete'));
@@ -53,7 +66,7 @@ async function example (store, payload, sessionName){
     return true;
 }
 
-example(store, payload, 'cas')
+example(store, payload, [sentimentAnalysis])
     .then(r => prtUtil.print({Status: 'All Done'}))
     .catch(err => prtUtil.printErr(err));
 

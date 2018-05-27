@@ -21,25 +21,28 @@
  */
 'use strict';
 
-let restaf      = require('restaf');
+let restaf   = require('restaf');
 let payload  = require('./config')('restaf.env');
-let casSetup = require('./casSetup');
-let prtUtil     = require('../prtUtil')
+let casSetup = require('./lib/casSetup');
+let runAction = require('./lib/runAction');
+let prtUtil  = require('../prtUtil')
 
 let store = restaf.initStore();
 
-casSetup(store, payload, 'cas')
-    .then (session => {
+async function example(store, payload, actionSets) {
+       let {session} = await casSetup(store, payload, actionSets);
+        
         let p = {
             action: 'echo',
             data  : {code: 'data casuser.data1; x=1;put x= ; run; '}
         };
-        return store.apiCall(session.links('execute'), p)
-    })
-    .then (r => prtUtil.view(r, 'Echo Action'))
-    .catch (err => prtUtil.printErr(err));
+        let r =  await runAction(store, session,p, 'echo');
+        return 'done';
+    };
 
-
+example(store, payload, null) 
+ .then ( r => console.log(r))
+ .catch( err => console.log(err))
 
 
 
