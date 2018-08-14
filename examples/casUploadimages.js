@@ -26,27 +26,21 @@
 let restaf   = require('restaf');
 let fs       = require('fs');
 let path     = require('path');
-let casSetup = require('./lib/casSetup');
-
-let runAction = require('./lib/runAction');
 
 let payload = require('./config')('restaf.env');
 let datadir  = './data/images';
-let worklib  = 'casuser';
 let buftype  = 'binary';
-
 
 let store = restaf.initStore();
 
-
 //TBD: run uploads in parallel using store.submit
-async function uploadFiles( store, session, caslib, datadir ) {
+async function uploadFiles( store, payload, datadir ) {
+    await store.logon(payload);
     let {files} = await store.addServices('files');
 
     let filesList = readdir(datadir);
     let nfiles = filesList.length;
 
-    
     for ( let i = 0; i < nfiles ; i++ ) {
         let data = readFile(filesList[i], datadir, buftype);
         let headers = {
@@ -60,8 +54,7 @@ async function uploadFiles( store, session, caslib, datadir ) {
         };
 
         let r = await store.apiCall( files.links('create'), payload);
-        console.log( r.statusCode);
-        console.log( r.headers());
+        console.log( r.status);
 
     }
 
@@ -72,7 +65,7 @@ function readFile (filename, datadir, buftype) {
     let filespath =  path.join(datadir,filename);
     let data      = fs.readFileSync(filespath);
     if ( buftype === 'base64' ) {
-        return new Buffer(data).toString('base64');
+        return Buffer.from(data).toString('base64');
     } else {
         return data;
     }
@@ -85,7 +78,7 @@ function readdir( dir ) {
 }
 
 
-casSetup(store,payload, null) 
-    .then (r => uploadFiles(store, r.session, worklib, datadir))
+
+uploadFiles(store, payload, datadir)
     .then (r => console.log('All done'))
     .catch(err => console.log(err))

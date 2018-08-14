@@ -31,7 +31,10 @@ function print (msg, title){
     if (title) {
         printTitle(title);
     }
-    console.log(prettyjson.render(msg, stdColors)) ;
+
+    let m = Array.isArray(msg) ? {list: msg} : msg;
+    console.log(m);
+    console.log(prettyjson.render(m, stdColors)) ;
 }
 
 function printTitle (msg){

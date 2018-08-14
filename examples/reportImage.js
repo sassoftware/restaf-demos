@@ -26,8 +26,7 @@ let payload = require ('./config')('restaf.env');
 
 let store = restaf.initStore();
 
-// function to loop thru the list of files and print their id
-// scrollCount limits number of 'next' calls
+// Get the image of the first report as a svg
 
 async function example (store, logonPayload, counter) {
     await store.logon(logonPayload);
@@ -35,12 +34,6 @@ async function example (store, logonPayload, counter) {
 
     let reportsList = await store.apiCall(reports.links('reports'));
     printList(reportsList.itemsList());
-    let next;
-    // do this loop while the service returns the next link or counter is 0
-    while(((next = reportsList.scrollCmds('next')) !== null) && --counter > 0)  {
-        reportsList = await store.apiCall(next);
-        printList(reportsList.itemsList());
-    }
 
     let data = {
         reportUri   : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
@@ -52,13 +45,9 @@ async function example (store, logonPayload, counter) {
     console.log(data);
     let p = { data: data };
 
-
     let job = await store.apiCall(reportImages.links('createJob'), p);
     console.log(job.statusInfo);
     let status = await store.jobState(job, { qs: { wait: 1.5} } , 5, 2);
-
-
-
 
     if (status.data !== 'completed') {
         throw `Job failed ${status.data}`;

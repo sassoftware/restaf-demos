@@ -40,7 +40,7 @@ async function example (store, payload, actionSets){
     };
     await runAction(store, session, p, 'Data Step');
     //run data step action
-    actionPayload = {
+    let actionPayload = {
         action: 'sentimentAnalysis.applySent',
         data: {
             casout: {
@@ -57,7 +57,7 @@ async function example (store, payload, actionSets){
     };
     
 
-    actionResult = await runAction(store, session, actionPayload, 'sentiment Analysis');
+    let actionResult = await runAction(store, session, actionPayload, 'sentiment Analysis');
     prtUtil.view(actionResult, 'Result from sentiment analysis');
 
     actionResult = await store.apiCall(session.links('delete'));
@@ -66,7 +66,7 @@ async function example (store, payload, actionSets){
     return true;
 }
 
-example(store, payload, [sentimentAnalysis])
+example(store, payload, ['sentimentAnalysis'])
     .then(r => prtUtil.print({Status: 'All Done'}))
     .catch(err => prtUtil.printErr(err));
 

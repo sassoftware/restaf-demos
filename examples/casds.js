@@ -31,9 +31,8 @@ let prtUtil     = require('../prtUtil');
 let store = restaf.initStore();
 
 async function example (store, logonPayload, actionSets) {
-    let {apiCall} = store;
 
-    let {servers, session} = await casSetup(store, payload, actionSets);
+    let {session} = await casSetup(store, logonPayload, actionSets);
     let p = {
         action: 'datastep.runCode',
         data  : { code: 'data casuser.score; x1=10;x2=20;x3=30; score1 = x1+x2+x3;run; '  }
@@ -58,9 +57,7 @@ async function example (store, logonPayload, actionSets) {
         action: 'table.tableDetails',
         data  : { caslib: 'casuser', name: `score` }
     };
-    await runAction(store, session, p, 'details')
-
-   // await apiCall(session.links('delete'));
+    await runAction(store, session, p, 'details');
 
     return 'Success';
 }

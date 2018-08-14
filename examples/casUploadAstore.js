@@ -37,7 +37,6 @@ let store = restaf.initStore();
 //TBD: run uploads in parallel using store.submit
 async function uploadFiles( store, session, caslib, datadir ) {
     let files = readdir(datadir);
-    let executeCmd = session.links('execute');
 
     for (let i = 0 ; i < files.length ;i++) {
     
@@ -83,7 +82,7 @@ async function uploadFiles( store, session, caslib, datadir ) {
 function readFile (filename, datadir) {
     let filespath =  path.join(datadir,filename);
     let data      = fs.readFileSync(filespath);
-    return new Buffer(data).toString('base64');
+    return Buffer.from(data).toString('base64');
 }
 
 function readdir( dir ) {
@@ -93,7 +92,7 @@ function readdir( dir ) {
 }
 
 
-casSetup(store,payload, 'raf') 
+casSetup(store,payload, ['astore']) 
 .then (r => uploadFiles(store, r.session, worklib, datadir))
 .then (r => console.log('All done'))
 .catch(err => console.log(err))

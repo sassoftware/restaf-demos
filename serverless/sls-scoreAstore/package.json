@@ -1,0 +1,28 @@
+{
+  "name": "sls-scoreastore",
+  "version": "0.4.0",
+  "description": "Example for serverless function for scoring",
+  "main": "index.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sassoftware/restaf-demos"
+  },
+  "keywords": [
+    "sls",
+    "astore",
+    "scoring"
+  ],
+  "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "restaf": "latest"
+  },
+  "devDependencies": {
+    "serverless-offline": "^3.25.6",
+    "showdown": "^1.8.6"
+  }
+}

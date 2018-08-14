@@ -34,7 +34,7 @@ function onCompletion (err, status, myContext) {
     if (err) {
         prtUtil.printErr(err);
     } else {
-        prtUtil.print({onCompletion: `${myContext} ${status.data}`});
+        prtUtil.print({onCompletion: `${myContext} ${status.data}`}, 'Completion');
 
         let jobList = store.submitStatus();
         prtUtil.printObj(jobList, 'List of completed jobs');

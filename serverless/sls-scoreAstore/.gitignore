@@ -1,0 +1,5 @@
+.idea
+*.zip
+node_modules
+.serverless
+
