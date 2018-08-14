@@ -56,7 +56,7 @@ async function example (store, logonPayload, actionSets) {
         let tables = await apiCall(executeCmd, p);
         printCasTable(tables, 'FileInfo');
     }
-
+/*
     for (let i=0; i < caslibs.itemsList().size ; i++) {
         let s = caslibs.itemsList(i);
         let parms = {
@@ -69,8 +69,9 @@ async function example (store, logonPayload, actionSets) {
        console.log( JSON.stringify(tb, null, 4));
        let tables = await apiCall(tb);
        console.log(JSON.stringify(tables.itemsList(), null, 4));
-       console.lo
+    
     }
+    */
 
     return true;
 }

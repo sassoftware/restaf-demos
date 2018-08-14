@@ -1,11 +1,10 @@
 {
   "name": "sls-scoreastore",
   "version": "0.4.0",
-  "description": "Example for serverless function for scoring",
+  "description": "Example of serverless function for scoring",
   "main": "index.js",
   "scripts": {
-    "test": "node app.js",
-    "start": "node app.js"
+    "test": "node"
   },
   "repository": {
     "type": "git",

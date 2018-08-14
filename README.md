@@ -1,6 +1,6 @@
 # restaf-demos
 
-A collection of examples demonstrating then use of restaf in nodejs.
+A collection of examples demonstrating then use of restaf in nodejs and in serverless functions
 The demos cover typical SAS software usages - running datastep, running cas actions,
 accessing VA reports etc...
 
@@ -45,4 +45,56 @@ If the modified env file is at ../demos.env then to run logon.js example enter
 
 node examples/logon ../demos/env
 ```
+
+## List of examples
+
+- addServices - initialization of specific Viya Services
+
+- appdata -  adding and retrieving app specific information from restaf
+
+- casds -  executing datastep in CAS
+
+- casEcho - executing echo action
+
+- casFetch - fetching data from CAS
+
+- casSentiment - sentiment analysis in CAS
+
+- casSessions - creating CAS sessions
+
+- casTables - list fileinfo for all tables in all caslibs
+
+- casUpload - upload a csv file and operate on it
+
+- casUploadAstore - upload a astore to cas
+
+- casUploadImages - upload images to file service
+
+- codeTable - create and execute a codeTable (useful in scoring)
+
+- computeds - execute a compute service
+
+- logon  - logon to a Viay server
+
+- paginate - paginate thru the file service and list the file names
+
+- reportImage - generate an image(svg) for a report
+
+- reportList - list the names of all the reports
+
+- request - access an external url
+
+- submit - run a job in the background.
+
+
+- reportList - list all the reports
+
+## Serverless Examples
+
+The serverless subdirectory has examples of using restaf to build AWS serverless functions.
+
+- sls-scoreAstore - scoring using an astore
+
+- sls-sentiment  - get sentiment score for a given text
+
 
