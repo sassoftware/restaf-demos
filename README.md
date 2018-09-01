@@ -93,8 +93,10 @@ node examples/logon ../demos/env
 
 The serverless subdirectory has examples of using restaf to build AWS serverless functions.
 
-- sls-scoreAstore - scoring using an astore
+- sls-scoreAstore - scoring using an astore - astore must be stored on the Viya Server
 
 - sls-sentiment  - get sentiment score for a given text
+
+- sls-image - display an image for a SAS VA report
 
 
