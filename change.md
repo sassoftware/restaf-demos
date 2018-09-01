@@ -7,4 +7,6 @@ Changes
  - Added an inventory of the examples in the README.md file
 
 
- 
+ # Version 0.5.1
+
+  - Added sls-image serverless example
