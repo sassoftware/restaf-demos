@@ -13,7 +13,10 @@
   "keywords": [
     "restaf",
     "http",
-    "REST"
+    "REST",
+    "AWS",
+    "Lamda",
+    "serverless"
   ],
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
@@ -23,6 +26,7 @@
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "dependencies": {
     "prettyjson": "^1.2.1",
-    "restaf": "latest"
+    "restaf": "latest",
+    "serverless-offline": "latest"
   }
 }

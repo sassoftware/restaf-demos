@@ -31,10 +31,6 @@ module.exports = function parseEvent(event){
             body = Object.assign({}, event.body);
         }
     }
-  
-    if ( body.hasOwnProperty('reportName') === true ) {
-        reportName = body.reportName;
-    } 
-    return  reportName ;
+    return  body ;
 
 }

@@ -24,9 +24,9 @@ let parseEvent  = require('./parseEvent');
 
  module.exports = async function imageMain (store, event, context) {
 
-    let reportName = parseEvent(event);
-    console.log(reportName);
-    if ( reportName === null || reportName.length === 0 ) {
+    let body = parseEvent(event);
+    console.log(body);
+    if ( body.reportName === null || body.reportName.length === 0 ) {
         throw {Error: 'Missing reportName' }
     }
     
@@ -34,21 +34,33 @@ let parseEvent  = require('./parseEvent');
 
     let payload = {
         qs: {
-            filter: `eq(name,'${reportName}')`
+            filter: `eq(name,'${body.reportName}')`
         }
     }
     let reportsList = await store.apiCall(reports.links('reports'), payload);
-    console.log('back');
     if ( reportsList.itemsList().size === 0 ) {
         throw {Error: `${reportName} not found`}
     }
-    
-    let data = {
-        reportUri   : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
-        sectionIndex: 0,
-        layoutType  : 'entireSection',
-        size        : "400x400"
-    };
+    let data;
+    //https://developer.sas.com/apis/rest/Visualization/#get-report-images-using-request-parameters
+    if ( body.elementName.length == 0 ) {
+        data = {
+            reportUri   : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
+            sectionIndex: 0,
+            layoutType  : 'entireSection',
+            size        : "400x400"
+        };
+    } else {
+        data = {
+            reportUri         : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
+            sectionIndex      : 0,
+            layoutType        : 'normal',
+            selectionType     : 'visualElementName',
+            size              : "400x400",
+            visualELementNames: `${body.elementName}`
+        };
+
+    }
     let p = { data: data };
 
     let job = await store.apiCall(reportImages.links('createJob'), p);

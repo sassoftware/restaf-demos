@@ -73,7 +73,8 @@
                     url: host + '/image',
                     method: 'POST',
                     data: {
-                        reportName: document.getElementById('reportName').value
+                        reportName : document.getElementById('reportName').value,
+                        elementName: document.getElementById('elementName').value
                     }
                 }
                 axios(config)
@@ -104,6 +105,9 @@
                 <label for="reportName" class="elabel">Report Name: </label><input class="einput" type="text" id="reportName"
                                                                 size="80">
                 <p>&nbsp;</p>
+                <label for="elementName" class="elabel">Element Name: </label><input class="einput" type="text" id="ElementName"
+                size="80">
+<p>&nbsp;</p>
             </form>
         </div>
         <div>
