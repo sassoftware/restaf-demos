@@ -23,5 +23,6 @@ module.exports = function setError(data) {
         headers   : {"Content-Type": "text/plain"},
         body      : (typeof data === 'object' ) ? JSON.stringify(data) : data
     }
+    console.log(JSON.stringify(err, null, 4));
     return err;
   }
