@@ -53,11 +53,10 @@ let parseEvent  = require('./parseEvent');
     } else {
         data = {
             reportUri         : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
-            sectionIndex      : 0,
             layoutType        : 'normal',
             selectionType     : 'visualElementName',
             size              : "400x400",
-            visualELementNames: `${body.elementName}`
+            visualElementNames: `${body.elementName}`
         };
 
     }
