@@ -17,14 +17,31 @@
  */
 'use strict';
 
-module.exports = function setError(data) {
-    debugger;
-    console.log('in error');
-    let err = {
-        statusCode: 400,
-        headers   : {"Content-Type": "text/plain"},
-        body      : (typeof data === 'object' ) ? JSON.stringify(data) : data
+let restaf         = require('restaf');
+let payload        = require('./config')('restaf.env');
+let casSetup       = require('./lib/casSetup');
+let runAction      = require('./lib/runAction');
+
+let store = restaf.initStore();
+
+async function example (store, payload, ...actionSets) {
+
+    let { session }  = await casSetup(store, payload, actionSets);
+
+    let p = {
+        action: 'table.addCaslib',
+        data  : {
+            activeOnAdd: true,
+            dataSource : { srcType: 'path' },
+            name       : 'mycaslib',
+            path       : '/xyz',
+            subdirectories: false
+        }
     }
-    console.log(err);
-    return err;
-  }
+
+    let r = await runAction(store, session, p, 'Assign caslib')
+
+}
+example(store, payload,null)
+    .then(r => console.log(r))
+    .catch(err => console.log(err))

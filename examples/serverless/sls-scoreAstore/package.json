@@ -4,7 +4,8 @@
   "description": "Example of serverless function for scoring",
   "main": "index.js",
   "scripts": {
-    "test": "node"
+    "test": "node testsls ../../../restaf.env",
+    "debug": "node --inspect-brk testsls ../../../restaf.env"
   },
   "repository": {
     "type": "git",

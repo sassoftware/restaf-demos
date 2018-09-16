@@ -19,6 +19,7 @@
 
 module.exports = function parseEvent(event){
     
+    debugger;
     let input = null;
     let body = {};
     let rstore = {

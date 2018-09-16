@@ -93,7 +93,7 @@
 
                 let tbody = <tbody>
                     {data.map((row, index) => {
-                        let name = (index === err) ? row.Name + '*' : row.Name;
+                        let name = (index === err) ? row.label + '*' : row.label;
                         let v = (edit === true ) ? <input type="text" value={row.value} onChange={e => onCellEdit(index, e.target.value)} /> 
                                                 : <input type="text"  disabled value={row.value}/>
                         return (
@@ -171,6 +171,20 @@
             let displayColumns = {};
             let userValues = {};
             let runOnScoreb;
+            let ascoreLabels = {
+                'paysimsvdd.sasast': {
+                    _Index_        : 'Row No',
+                     type_n        : 'Type',
+                     amount        : 'Loan Amount',
+                     newbalanceDest: 'Final new Balance',
+                     newbalanceOrig: 'New original Balance',
+                     oldbalanceDest: 'Old Balance',
+                     oldbalanceOrg : 'Old Original Balance',
+                     isFraud       : 'Are you a fraud',
+                     _SVDDDISTANCE_: "Scoring Distance",
+                     _SVDDSCORE_   : "Score"
+                    }
+            }
 
             function setup() {
                 runOnScoreb = runOnScore.bind(this);
@@ -209,7 +223,9 @@
                     config.headers = { 'x-api-key': `${apiKey}`}
                 }
                 let r = await axios(config);
+                let labels = ascoreLabels[document.getElementById('astore').value];
                 displayColumns = r.data.columns.map(r => {
+                    r.label = (labels != null) ? labels[r.Name] : r.Name
                     r.value = '';
                     return r;
                 })
@@ -252,10 +268,15 @@
                 let r = await axios(config);
                 let t = [];
                 let userValuesKeys = Object.keys(userValues);
+                let labels = ascoreLabels[document.getElementById('astore').value];
                 for (let key in r.data.score) {
                     if (userValuesKeys.indexOf(key) === -1) {
-                        r1 = { Name: key, value: r.data.score[ key ] };
-                        t.push(r1);
+                        r1 = { 
+                            Name: key,
+                            value: r.data.score[ key ],
+                            label: (labels != null) ? labels[key] : key
+                        };
+                            t.push(r1);
                     }
                 }
                 return t;

@@ -27,7 +27,7 @@ let parseEvent  = require('../lib/parseEvent');
 
 
  module.exports = async function scoreMain (store, event, context) {
-
+    debugger;
     let {rstore, input} = parseEvent(event);
     if ( input === null ) {
         throw {Error: 'Missing input' }
@@ -40,7 +40,7 @@ let parseEvent  = require('../lib/parseEvent');
     // upload data as csv
     let JSON_Parameters = {
         casout: {
-            caslib: 'casuser', /* a valid caslib */
+            caslib: `${rstore.caslib}`, /* a valid caslib */
             name: 'INPUTDATA', /* name of output file on cas server */
             replace: true
         },
@@ -67,13 +67,13 @@ let parseEvent  = require('../lib/parseEvent');
            casout  = { caslib = "${rstore.caslib}"   name = "${rstore.name}" replace=TRUE};
    
         action astore.score /
-          table  = { caslib= 'casuser' name = 'INPUTDATA' } 
+          table  = { caslib= "${rstore.caslib}" name = 'INPUTDATA' } 
           rstore = { caslib= "${rstore.caslib}" name = '${rstore.name}' }
-          out    = { caslib = 'casuser' name = 'OUTPUTDATA' replace= TRUE};
+          out    = { caslib = "${rstore.caslib}" name = 'OUTPUTDATA' replace= TRUE};
 
         action table.fetch r = result/
             format = TRUE
-            table = { caslib = 'casuser' name = 'OUTPUTDATA' } ;
+            table = { caslib = "${rstore.caslib}" name = 'OUTPUTDATA' } ;
 
         send_response(result);
 
@@ -85,6 +85,7 @@ let parseEvent  = require('../lib/parseEvent');
         data  : { code: caslStatements}
     }
     result = await runAction(store, session, payload, 'score');
+    await store.apiCall(session.links('delete'));
     let score = scoreAsJson(result, 'Fetch');
     return {score: score[0]};
    

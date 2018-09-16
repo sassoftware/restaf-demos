@@ -25,7 +25,7 @@ let parseEvent  = require('./parseEvent');
  module.exports = async function imageMain (store, event, context) {
 
     let body = parseEvent(event);
-    console.log(body);
+   
     if ( body.reportName === null || body.reportName.length === 0 ) {
         throw {Error: 'Missing reportName' }
     }
@@ -41,6 +41,7 @@ let parseEvent  = require('./parseEvent');
     if ( reportsList.itemsList().size === 0 ) {
         throw {Error: `${reportName} not found`}
     }
+ 
     let data;
     //https://developer.sas.com/apis/rest/Visualization/#get-report-images-using-request-parameters
     if ( body.elementName.length == 0 ) {
@@ -54,15 +55,16 @@ let parseEvent  = require('./parseEvent');
         data = {
             reportUri         : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
             layoutType        : 'normal',
-            selectionType     : 'visualElementName',
+            selectionType     : 'visualElements',
             size              : "400x400",
             visualElementNames: `${body.elementName}`
         };
 
     }
     let p = { data: data };
-
+    
     let job = await store.apiCall(reportImages.links('createJob'), p);
+   
     let status = await store.jobState(job, { qs: { wait: 2} } , 10);
 
     if (status.data !== 'completed') {

@@ -31,18 +31,27 @@ module.exports = async function descMain(store, event, context) {
 
     let {rstore} = parseEvent(event);
 
-    let parms = {
-       rstore: { caslib: rstore.caslib, name: rstore.name}
-    };
-  
-    // get description
-    let payload = { 
-        action: 'aStore.describe', 
-        data: parms 
-        };
+    let caslStatements = `
+        loadactionset "astore";
+        action table.loadTable /
+           caslib = "${rstore.caslib}" 
+           path   = "${rstore.name}.sashdat"
+           casout  = { caslib = "${rstore.caslib}"   name = "${rstore.name}" replace=TRUE};
+   
+        action astore.describe r=finalResult/
+          rstore = { caslib= "${rstore.caslib}" name = '${rstore.name}' };
+        send_response(finalResult);
+    `;
 
     let {session} = await casSetup(store, ['sccasl']);
+    let payload = {
+        action: 'sccasl.runcasl',
+        data  : { code: caslStatements}
+    }
+
     let result    = await runAction(store, session, payload, 'describe');
+    await store.apiCall(session.links('delete'));
+
     return {columns: scoreAsJson(result, 'InputVariables')};
 }
 

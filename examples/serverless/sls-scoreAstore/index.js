@@ -15,16 +15,12 @@
  * ---------------------------------------------------------------------------------------
  *
  */
-'use strict';
+ 'use strict';
+ 
+ let root     = require('./src/root').root;
+ let score    = require('./src/score').score;
+ let describe = require('./src/describe').describe;
+ let app      = require('./src/app').app;
+ let test     = require('./src/test').test;
 
-module.exports = function setError(data) {
-    debugger;
-    console.log('in error');
-    let err = {
-        statusCode: 400,
-        headers   : {"Content-Type": "text/plain"},
-        body      : (typeof data === 'object' ) ? JSON.stringify(data) : data
-    }
-    console.log(err);
-    return err;
-  }
+ module.exports = {root, score, describe, app, test};

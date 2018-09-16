@@ -18,12 +18,12 @@
 
 'use strict';
 let casError = require('./casError');
-let setError = require('./setError');
 
-module.exports = async function runAction(store, session, payload, title) {
+module.exports = async function runAction(store, session, payload) {
     debugger;
     let actionResult = await store.apiCall(session.links('execute'), payload);
     if ( casError(actionResult) === true ) {
+        await store.apiCall(session.links('delete'));
         throw JSON.stringify(actionResult.items());
     }
     return actionResult;

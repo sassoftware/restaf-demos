@@ -4,7 +4,8 @@
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "testsls": "node testsls",
+    "debugsls": "node --inspect-brk testsls"
   },
   "repository": {
     "type": "git",

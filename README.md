@@ -78,6 +78,8 @@ node examples/logon ../demos/env
 
 - paginate - paginate thru the file service and list the file names
 
+- reportElement - prints the named elements in a VA report
+
 - reportImage - generate an image(svg) for a report
 
 - reportList - list the names of all the reports

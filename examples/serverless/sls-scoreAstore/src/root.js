@@ -17,7 +17,7 @@
  *
  */
 let setPayload = require('../lib/setPayload');
-module.exports.root = async function  (event, context) { 
+module.exports.root = async function (event, context) { 
 
       let links = [
             {

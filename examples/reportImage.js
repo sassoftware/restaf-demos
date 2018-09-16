@@ -34,7 +34,7 @@ async function example (store, logonPayload, counter) {
 
     let reportsList = await store.apiCall(reports.links('reports'));
     printList(reportsList.itemsList());
-
+    
     let data = {
         reportUri   : reportsList.itemsCmd(reportsList.itemsList(0), 'self', 'link', 'uri'),
         sectionIndex: 0,

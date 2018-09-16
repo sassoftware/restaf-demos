@@ -25,27 +25,25 @@ provider:
   runtime: nodejs8.10
   region: us-east-1
   stage: demo
-  role: yourrole
+  role: arn:aws:iam::xxxx
   vpc:
     securityGroupIds:
-      - sg1
+      - sg-xxxx
     subnetIds:
-      - subnet1
-      - subnet2
+      - subnet-xxxx
+      - subnet-xxxx
   timeout: 30
   memorySize: 1024
   # apiKeys:
-  #  - scoreastorez
+  #  - sentiment
   deploymentBucket:
-    name: yourbucket
+    name: bbbb
   environment:
-    VIYA_SERVER: http://ip-of-viya-server
-    CLIENTID: clientid
-    CLIENTSECRET: clientsecret
-    USER: user
-    PASSWORD: userpw
-    ASTORE_CASLIB: public
-    ASTORE_NAME: default-astore-name
+    VIYA_SERVER: http://xxx.xxx.xx.xx
+    CLIENTID: raf
+    CLIENTSECRET: raf
+    USER: user 
+    PASSWORD: password
    
 # you can add packaging information here
 package:

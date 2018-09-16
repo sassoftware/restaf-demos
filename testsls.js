@@ -15,16 +15,31 @@
  * ---------------------------------------------------------------------------------------
  *
  */
+
 'use strict';
 
-module.exports = function setError(data) {
-    debugger;
-    console.log('in error');
-    let err = {
-        statusCode: 400,
-        headers   : {"Content-Type": "text/plain"},
-        body      : (typeof data === 'object' ) ? JSON.stringify(data) : data
-    }
-    console.log(err);
-    return err;
-  }
+let fs = require('fs');
+
+let config  = require('./examples/config')('restaf.env');
+let sls     = require(`./examples/serverless/${process.env.SLS}`);
+let context = null;
+let event   = {};
+
+let slsPath    = process.env.SLSPATH;
+let slsPayload = process.env.SLSPAYLOAD;
+
+if ( slsPayload != null ) {
+   event = {body: fs.readFileSync(slsPayload, 'utf8') };
+}
+
+sls[slsPath](event, context)
+  .then ( r => {
+    let body = JSON.parse(r.body);
+    console.log(JSON.stringify(body, null, 4));
+  })
+  .catch( err => console.log(JSON.stringify(err, null,4)));
+
+
+
+
+

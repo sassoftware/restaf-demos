@@ -29,7 +29,7 @@ let setError = require('../lib/setError');
 // There are better ways to handle error conditions in AWS but for pass 1 this is good enough
 //
 module.exports.score = async function (event, context ) {
-    
+    debugger;
    let store   = restaf.initStore();
    let payload = getPayload();
 

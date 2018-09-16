@@ -21,12 +21,10 @@
 let fs = require('fs');
 
 module.exports = function config (defEnv) {
-
-    console.log(process.argv [ 2 ]);
     let appEnv = (process.argv[ 2 ]  == null) ? defEnv : process.argv[ 2 ];
     let data = fs.readFileSync(appEnv, 'utf8');
     let d = data.split(/\r?\n/);
-    console.log('Configuration specified via restaf.env');
+    console.log(`Configuration file: ${appEnv}`);
     d.forEach(l => {
         if (l.length > 0 && l.indexOf('#') === -1) {
             let la = l.split('=');
@@ -37,10 +35,14 @@ module.exports = function config (defEnv) {
         }
     });
     process.env.SAS_PROTOCOL = (process.env.SAS_SSL_ENABLED === 'YES') ? 'https://' : 'http://';
-
+    
+    let host = process.env.VIYA_SERVER;
+    if ( host.indexOf('http') === -1 ) {
+       host = `${process.env.SAS_PROTOCOL}${process.env.VIYA_SERVER}`;
+    }
     return {
         authType    : 'password',
-        host        : `${process.env.SAS_PROTOCOL}${process.env.VIYA_SERVER}`,
+        host        : host,
         user        : process.env['USER'],
         password    : process.env['PASSWORD'],
         clientID    : process.env['CLIENTID'],
