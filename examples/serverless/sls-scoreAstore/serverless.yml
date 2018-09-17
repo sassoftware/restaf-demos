@@ -20,7 +20,7 @@ service: scoreAstore-saskdk-v7
 plugins:
  - serverless-offline
 
-// variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
+variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
 # path to your awsenv file - use what is appropriate for you
 # If you want to use the awsenv.yml in the root of restaf-demos repo then use
 # custom: ${file(../../../awsenv.yml)}
@@ -38,7 +38,7 @@ provider:
   # apiKeys:
   #  - sentiment
   deploymentBucket:
-    name: sas-gle
+    name: ${self:custom.deploymentBucketName}
 
   environment: ${self:custom.environment}
 
