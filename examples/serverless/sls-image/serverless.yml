@@ -44,7 +44,6 @@ provider:
 # you can add packaging information here
 package:
   include:
-    - index.js
     - src/**
     - lib/**
     - public/**
@@ -53,14 +52,14 @@ package:
 functions:
   
   app: 
-    handler: index.app
+    handler: src/src.app
     events:
       - http:
           path: app
           method: get
 
   sentiment:
-    handler: index.image
+    handler: src/image.image
     events:
       - http:
           path: image
