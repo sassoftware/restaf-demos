@@ -20,36 +20,31 @@ service: scoreAstore
 plugins:
  - serverless-offline
 
-provider:
+variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
+# path to your awsenv file - use what is appropriate for you
+# If you want to use the awsenv.yml in the root of restaf-demos repo then use
+# custom: ${file(../../../awsenv.yml)}
+
+custom: ${file(../../../../awsenv.yml)}
+provider: 
   name: aws
   runtime: nodejs8.10
   region: us-east-1
   stage: demo
-  role: arn:aws:iam::7xxxxxx
-  vpc:
-    securityGroupIds:
-      - sg-71xxxx
-    subnetIds:
-      - subnet-b6xxxx
-      - subnet-ebxxxxx
+  role: ${self:custom.role}
+  vpc: ${self:custom.vpc}
   timeout: 30
   memorySize: 1024
   # apiKeys:
-  #  - scoreastore
+  #  - sentiment
   deploymentBucket:
-    name: xxxx
-  environment:
-    VIYA_SERVER: http://xx.xxx.xx.x
-    CLIENTID: raf
-    CLIENTSECRET: raf
-    USER: xxx
-    PASSWORD: xxx
-    ASTORE_CASLIB: public
-    ASTORE_NAME: paysimsvdd.sasast
+    name: ${self:custom.deploymentBucketName}
+  environment: ${self:custom.environment}
 
 # you can add packaging information here
 package:
   include:
+    - index.js
     - src/**
     - lib/**
     - public/**
@@ -58,21 +53,21 @@ exclude:
 functions:
 
   root: 
-    handler: src/root.root
+    handler: index.root
     events:
       - http:
           path: /
           method: get
 
   app: 
-    handler: src/app.app
+    handler: index.app
     events:
       - http:
           path: app
           method: get
 
   test:
-    handler: src/test.test
+    handler: index.test
     events:
       - http:
           path: test
@@ -80,7 +75,7 @@ functions:
          
 
   score:
-    handler: src/score.score
+    handler: index.score
     events:
       - http:
           path: score
@@ -88,7 +83,7 @@ functions:
   #        private: true
 
   describe:
-    handler: src/describe.describe
+    handler: index.describe
     events:
       - http:
           path: describe

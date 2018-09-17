@@ -42,7 +42,7 @@ module.exports = async function descMain(store, event, context) {
           rstore = { caslib= "${rstore.caslib}" name = '${rstore.name}' };
         send_response(finalResult);
     `;
-
+   
     let {session} = await casSetup(store, ['sccasl']);
     let payload = {
         action: 'sccasl.runcasl',

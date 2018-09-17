@@ -102,3 +102,42 @@ The serverless subdirectory has examples of using restaf to build AWS serverless
 - sls-image - display an image for a SAS VA report
 
 
+### Configuring the serverless.yml
+
+In this version the serverless.yml references the awsenv.yml file to get information that is usually common between all 
+the serverless functions ( vpc, subnets etc...). 
+
+
+## Poor Man's version of debugging of Serverless functions
+
+IDE's like VSCode have capability to debug serverless functions. But not all users use this IDE.
+So I built a very simple way to invoke the API endpoints in nodejs debugger. 
+
+### Configuration
+
+In the env file add the following three options (see reataf.env for an example)
+
+```
+
+SLS=<serverless function name in examples dir>    <-- ex: sls-scoreAstore
+SLSPATH=path    <-- the specific sls path ex: score
+SLSPAYLOAD=<payload file path> <-- a json file with the payload(if POST or PUT)ex: score.json
+
+```
+
+### Execution
+
+To run with nodejs inspect issue the following command
+
+```
+npm run debugAPI <envfile with the information discussed above>
+```
+
+Then follow standard nodejs debugging process
+
+To run without debug turned on issue the following command
+
+```
+npm run runAPI <envfile with the information discussed above>
+
+

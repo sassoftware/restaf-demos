@@ -17,7 +17,7 @@
  */
 'use strict';
  module.exports = function getPayload() {
-    return {
+    let p = {
         authType    : 'password',
         host        : `${process.env.VIYA_SERVER}`,
         user        : process.env['USER'],
@@ -25,4 +25,6 @@
         clientID    : process.env['CLIENTID'],
         clientSecret: (process.env.hasOwnProperty('CLIENTSECRET')) ? process.env[ 'CLIENTSECRET' ] : ''
         };
+        console.log(p);
+    return p;
  }

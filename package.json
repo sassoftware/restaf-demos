@@ -4,8 +4,8 @@
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
-    "testsls": "node testsls",
-    "debugsls": "node --inspect-brk testsls"
+    "runAPI": "node runAPI",
+    "debugAPI": "node --inspect-brk runAPI"
   },
   "repository": {
     "type": "git",

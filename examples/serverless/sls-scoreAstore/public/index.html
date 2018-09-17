@@ -27,8 +27,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-
+     
         <style>
             .container {
                 display: flex;
@@ -93,6 +92,7 @@
 
                 let tbody = <tbody>
                     {data.map((row, index) => {
+                        /* Nathaniel */
                         let name = (index === err) ? row.label + '*' : row.label;
                         let v = (edit === true ) ? <input type="text" value={row.value} onChange={e => onCellEdit(index, e.target.value)} /> 
                                                 : <input type="text"  disabled value={row.value}/>
@@ -171,6 +171,7 @@
             let displayColumns = {};
             let userValues = {};
             let runOnScoreb;
+            /* Nathaniel */
             let ascoreLabels = {
                 'paysimsvdd.sasast': {
                     _Index_        : 'Row No',
@@ -223,6 +224,7 @@
                     config.headers = { 'x-api-key': `${apiKey}`}
                 }
                 let r = await axios(config);
+                /* Nathaniel */
                 let labels = ascoreLabels[document.getElementById('astore').value];
                 displayColumns = r.data.columns.map(r => {
                     r.label = (labels != null) ? labels[r.Name] : r.Name
@@ -268,6 +270,7 @@
                 let r = await axios(config);
                 let t = [];
                 let userValuesKeys = Object.keys(userValues);
+                /* Nathaniel */
                 let labels = ascoreLabels[document.getElementById('astore').value];
                 for (let key in r.data.score) {
                     if (userValuesKeys.indexOf(key) === -1) {
@@ -293,7 +296,7 @@
                 <input class="einput" type="text" id="host" disabled size="50">
                 <br>
                 <label class="elabel" for="caslib">caslib </label>
-                <input class="einput" type="text" value="public" id="caslib" size="50">
+                <input class="einput" type="text" value="casuser" id="caslib" size="50">
                 <br>
                 <label class="elabel" for="astore">astore </label>
                 <input class="einput" type="text" id="astore" value="paysimsvdd.sasast" size="50">
