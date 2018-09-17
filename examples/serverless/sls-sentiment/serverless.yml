@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: sentiment
+service: sentiment-saskdk-v7
 
 plugins:
  - serverless-offline
@@ -40,7 +40,6 @@ provider:
 # you can add packaging information here
 package:
   include:
-    - index.js
     - src/**
     - lib/**
     - public/**
@@ -49,14 +48,14 @@ package:
 functions:
   
   app: 
-    handler: index.app
+    handler: src/app.app
     events:
       - http:
           path: app
           method: get
 
   sentiment:
-    handler: index.sentiment
+    handler: src/sentiment.sentiment
     events:
       - http:
           path: sentiment

@@ -29,7 +29,7 @@ let setError   = require('../lib/setError');
 // There are better ways to handle error conditions in AWS but for pass 1 this is good enough
 //
 module.exports.describe = async function (event, context) {
-     
+     console.log('in describe');
       let store   = restaf.initStore();
       let payload = getPayload();
       return store.logon(payload)

@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: scoreAstore
+service: scoreAstore-saskdk-v7
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -20,7 +20,7 @@ service: scoreAstore
 plugins:
  - serverless-offline
 
-variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
+// variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
 # path to your awsenv file - use what is appropriate for you
 # If you want to use the awsenv.yml in the root of restaf-demos repo then use
 # custom: ${file(../../../awsenv.yml)}
@@ -38,13 +38,13 @@ provider:
   # apiKeys:
   #  - sentiment
   deploymentBucket:
-    name: ${self:custom.deploymentBucketName}
+    name: sas-gle
+
   environment: ${self:custom.environment}
 
 # you can add packaging information here
 package:
   include:
-    - index.js
     - src/**
     - lib/**
     - public/**
@@ -53,21 +53,21 @@ exclude:
 functions:
 
   root: 
-    handler: index.root
+    handler: src/root.root
     events:
       - http:
           path: /
           method: get
 
   app: 
-    handler: index.app
+    handler: src/app.app
     events:
       - http:
           path: app
           method: get
 
   test:
-    handler: index.test
+    handler: src/test.test
     events:
       - http:
           path: test
@@ -75,7 +75,7 @@ functions:
          
 
   score:
-    handler: index.score
+    handler: src/score.score
     events:
       - http:
           path: score
@@ -83,7 +83,7 @@ functions:
   #        private: true
 
   describe:
-    handler: index.describe
+    handler: src/describe.describe
     events:
       - http:
           path: describe

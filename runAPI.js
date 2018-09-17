@@ -28,8 +28,8 @@
 
 let fs = require('fs');
 
-let config  = require('./examples/config')('restaf.env');
-let sls     = require(`./examples/serverless/${process.env.SLS});
+let config  = require('./examples/samples/config')('restaf.env');
+let sls     = require(`./examples/serverless/${process.env.SLS}`);
 let context = null;
 let event   = {};
 
