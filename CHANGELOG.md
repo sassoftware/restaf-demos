@@ -20,3 +20,7 @@ Changes
 - Moved all the common parts of serverless.yml into awsenv.yml in the root directory.
 - Added index.js to the root of each serverless functions to export the entries to serverless.yml. Motivation was the next item.
 - Added runAPI.js to help with debugging the serverless functions end points(see README file for more information)
+
+# Version 0.5.2
+
+- Fixed issues created by moveing the examples directory
