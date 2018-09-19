@@ -22,7 +22,7 @@
 let restaf     = require('restaf');
 let payload = require('./config')('restaf.env') ;
 let store   = restaf.initStore();
-let prtUtil = require('../prtUtil');
+let prtUtil = require('../../prtUtil');
 
  /* --------------------------------------------------------------------------------
  * Logon to the restaf server and setup file service

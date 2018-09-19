@@ -23,9 +23,9 @@
 
 let restaf         = require('restaf');
 let payload     = require('./config')('restaf.env');
-let casSetup    = require('./lib/casSetup');
-let runAction   = require('./lib/runAction');
-let prtUtil        = require('../prtUtil');
+let casSetup    = require('../lib/casSetup');
+let runAction   = require('../lib/runAction');
+let prtUtil        = require('../../prtUtil');
 
 let store   = restaf.initStore();
 

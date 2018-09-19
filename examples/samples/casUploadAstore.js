@@ -23,9 +23,9 @@
 let restaf   = require('restaf');
 let fs       = require('fs');
 let path     = require('path');
-let casSetup = require('./lib/casSetup');
+let casSetup = require('../lib/casSetup');
 
-let runAction = require('./lib/runAction');
+let runAction = require('../lib/runAction');
 
 let payload = require('./config')('restaf.env') ;
 let datadir  = './data/astore';
@@ -69,12 +69,6 @@ async function uploadFiles( store, session, caslib, datadir ) {
         };
         payload ={action: 'table.save', data: parms};
         await await runAction(store, session, payload, 'save');
-
-    
-
-       //  parms = {caslib : caslib, name   : files[i] };
-      // payload ={action: 'table.promote', data: parms};
-      // await await runAction(store, executeCmd, payload);
     }
 }
 

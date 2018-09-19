@@ -22,9 +22,9 @@
 'use strict';
 
 let restaf         = require('restaf');
-let casSetup    = require('./lib/casSetup');
-let runAction   = require('./lib/runAction');
-let prtUtil        = require('../prtUtil');
+let casSetup    = require('../lib/casSetup');
+let runAction   = require('../lib/runAction');
+let prtUtil        = require('../../prtUtil');
 
 let payload = require('./config')('restaf.env');
 let store   = restaf.initStore();

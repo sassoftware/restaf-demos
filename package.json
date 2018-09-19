@@ -27,7 +27,6 @@
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "dependencies": {
     "prettyjson": "^1.2.1",
-    "restaf": "latest",
-    "serverless-offline": "latest"
+    "restaf": "latest"
   }
 }

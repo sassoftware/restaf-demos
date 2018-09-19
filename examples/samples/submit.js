@@ -22,7 +22,7 @@
 
 let restaf    = require('restaf');
 let payload   = require('./config')('restaf.env');
-let prtUtil   = require('../prtUtil');
+let prtUtil   = require('../../prtUtil');
 
 let store = restaf.initStore();
 

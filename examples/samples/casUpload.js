@@ -20,10 +20,10 @@
 
 let restaf        = require('restaf');
 let fs            = require('fs');
-let prtUtil       = require('../prtUtil');
-let casSetup      = require('./lib/casSetup');
-let runAction     = require('./lib/runAction');
-let printCasTable = require('./lib/printCasTable');
+let prtUtil       = require('../../prtUtil');
+let casSetup      = require('../lib/casSetup');
+let runAction     = require('../lib/runAction');
+let printCasTable = require('../lib/printCasTable');
 
 let payload     = require('./config')('restaf.env');
 let filename    = 'cars';
@@ -66,62 +66,7 @@ async function example () {
         action: 'table.fetch',
         data  : { table: { caslib: 'casuser', name: filename } }
     };
-   // let result = await runAction(store, session, p, 'fetch');
-   // console.log(JSON.stringify(result.items('tables'), null, 4));
-    //printCasTable(result, 'Fetch');
-   let data = {
-        "groupByLimit": 25000,
-
-        "inputs": [
-            {
-                "name": "MPG_City"
-            }
-        ],
-
-        "orderBy": [
-            "MPG_City",
-            "Origin",
-            "Type"
-        ],
-
-        "orderByAgg": [
-            "SUM"
-        ],
-
-        "orderByDesc": [
-            "MPG_City"
-        ],
-
-        "subSet": [
-            "SUM"
-        ],
-
-        "table": {
-            "caslib"          : "casuser",
-            "computedOnDemand": "false",
-
-            "groupBy": [
-                {
-                    "format": "$.",
-                    "name"  : "Origin"
-                },
-                {
-                    "format": "$.",
-                    "name"  : "Type"
-                }
-            ],
-
-            "name": "CARS"
-        }
-    };
-    p = {
-        action: 'simple.summary',
-        data  : data
-    };
-
-    let result = await runAction(store, session, p, 'summary');
-    console.log(JSON.stringify(result.items('tables'), null, 4));
-
+  
 
     // noinspection JSUnusedLocalSymbols
     let deleteAction = await store.apiCall(session.links('delete'));

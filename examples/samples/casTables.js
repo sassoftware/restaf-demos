@@ -23,9 +23,9 @@
 
 let restaf         = require('restaf');
 let payload        = require('./config')('restaf.env');
-let prtUtil        = require('../prtUtil');
-let casSetup       = require('./lib/casSetup');
-let printCasTable  = require('./lib/printCasTable')
+let prtUtil        = require('../../prtUtil');
+let casSetup       = require('../lib/casSetup');
+let printCasTable  = require('../lib/printCasTable')
 
 let store = restaf.initStore();
 

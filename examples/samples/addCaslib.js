@@ -19,13 +19,13 @@
 
 let restaf         = require('restaf');
 let payload        = require('./config')('restaf.env');
-let casSetup       = require('./lib/casSetup');
-let runAction      = require('./lib/runAction');
+let casSetup       = require('../lib/casSetup');
+let runAction      = require('../lib/runAction');
 let path           = '/u/kumar/casdata/astore'; /* this must be accessible to CAS server */
 
 let store = restaf.initStore();
 
-async function example (store, payload, ...actionSets) {
+async function example (store, payload, actionSets) {
 
     let { session }  = await casSetup(store, payload, actionSets);
 
@@ -40,8 +40,9 @@ async function example (store, payload, ...actionSets) {
         }
     }
 
-    let r = await runAction(store, session, p, 'Assign caslib')
-    
+    let r = await runAction(store, session, p, 'Assign caslib');
+   // console.log(JSON.stringify(r.items(), null, 4));
+
 
 }
 example(store, payload,null)

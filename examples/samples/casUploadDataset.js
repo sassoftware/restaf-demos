@@ -20,20 +20,21 @@
 
 let restaf        = require('restaf');
 let fs            = require('fs');
-let prtUtil       = require('../prtUtil');
-let casSetup      = require('./lib/casSetup');
-let runAction     = require('./lib/runAction');
-let printCasTable = require('./lib/printCasTable');
+let prtUtil       = require('../../prtUtil');
+let casSetup      = require('../lib/casSetup');
+let runAction     = require('../lib/runAction');
+let printCasTable = require('../lib/printCasTable');
 
 let payload     = require('./config')('restaf.env');
-let filename    = 'hmeq_score_in';
-let fileType    = 'basesas';
+let filename    = 'Simple_CNN';
+let fileType    = 'HDAT';
 
 let store = restaf.initStore();
 
 async function example () {
 
     // setup session
+
     let {session} = await casSetup(store, payload, null);
 
     // setup header for upload and the rest of the payload
@@ -55,6 +56,18 @@ async function example () {
     };
 
     await runAction(store, session, p, 'table.upload');
+
+    let parms = {
+        caslib : 'casuser',
+        name   : filename,
+        replace: true,
+        table: {
+            caslib: 'casuser',
+            name  : filename
+        }
+    };
+    payload ={action: 'table.save', data: parms};
+    await runAction(store, session, payload, 'save');
 
     p = {
         action: 'table.tableExists',
@@ -79,7 +92,7 @@ async function example () {
 }
 
 function readFile (filename) {
-   let data = fs.readFileSync(`./data/sasdata/${filename}.sas7bdat`);
+   let data = fs.readFileSync(`./data/sasdata/${filename}.sashdat`);
     return data;
 }
 

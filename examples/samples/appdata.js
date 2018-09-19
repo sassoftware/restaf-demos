@@ -21,7 +21,7 @@
  */
 'use strict';
 let restaf = require('restaf');
-let prtUtil  = require('../prtUtil');
+let prtUtil  = require('../../prtUtil');
 
 let store = restaf.initStore();
 // Test appdata
