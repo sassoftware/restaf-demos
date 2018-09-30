@@ -23,4 +23,5 @@ Changes
 
 - Fixed issues created by moving the examples directory
 
+# Version 0.6.2
 - Added CORS support to sls-scoreAstore example
