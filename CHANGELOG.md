@@ -7,11 +7,11 @@ Changes
  - Added an inventory of the examples in the README.md file
 
 
- # Version 0.5.1
+# Version 0.5.1
 
   - Added sls-image serverless example
 
-# Version 0.6.0
+# Version 0.6.2
 
 ## Organization of repository
 - Moved all nodejs samples into the examples/samples sub-directory. Makes it easier to view the repository
@@ -21,10 +21,6 @@ Changes
 - Added index.js to the root of each serverless functions to export the entries to serverless.yml. Motivation was the next item.
 - Added runAPI.js to help with debugging the serverless functions end points(see README file for more information)
 
-# Version 0.5.2
-
-- Fixed issues created by moveing the examples directory
-
-# Version 0.5.3
+- Fixed issues created by moving the examples directory
 
 - Added CORS support to sls-scoreAstore example
