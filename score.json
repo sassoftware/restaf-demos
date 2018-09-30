@@ -1,18 +1,22 @@
 {    
     "astore": {
         "caslib": "casuser",
-        "name"  : "paysimsvdd.sasast"
+        "name"  : "GRADIENT_BOOSTING___BAD_2"
     },
 
-    "input": {
-        "type_n"       : 1,
-        "amount"        : 1000000,
-        "newbalanceDest": 10000,
-        "newbalanceOrig": 500,
-        "oldbalanceDest": 1,
-        "oldBalanceOrg" : 1,
-        "isFraud"       : 0
-
+    "input": { 
+        "JOB": "J1",
+        "CLAGE": 100 , 
+        "CLNO":20,  
+        "DEBTINC":20, 
+        "DELINQ":2, 
+        "DEROG":0,
+        "MORTDUE":4000, 
+        "NINQ":1, 
+        "YOJ":10,
+        "VALUE":10000,
+        "LOAN": 1000
+        
     }
 }
     

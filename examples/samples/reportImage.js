@@ -26,6 +26,7 @@ let payload = require ('./config')('restaf.env');
 
 let store = restaf.initStore();
 
+
 // Get the image of the first report as a svg
 
 async function example (store, logonPayload, counter) {

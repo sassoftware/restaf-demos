@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: scoreAstore-saskdk-v7
+service: scoreAstore-saskdk-cors
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -58,6 +58,8 @@ functions:
       - http:
           path: /
           method: get
+          cors: 
+            origin: '*'
 
   app: 
     handler: src/app.app
@@ -65,6 +67,8 @@ functions:
       - http:
           path: app
           method: get
+          cors: 
+            origin: '*'
 
   test:
     handler: src/test.test
@@ -72,6 +76,8 @@ functions:
       - http:
           path: test
           method: get
+          cors:
+            origin: '*'
          
 
   score:
@@ -80,6 +86,8 @@ functions:
       - http:
           path: score
           method: post
+          cors: 
+            origin: '*'
   #        private: true
 
   describe:
@@ -88,4 +96,6 @@ functions:
       - http:
           path: describe
           method: post
+          cors: 
+            origin: '*'
   #       private: true

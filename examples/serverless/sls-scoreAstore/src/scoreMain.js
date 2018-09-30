@@ -86,6 +86,7 @@ let parseEvent  = require('../lib/parseEvent');
     }
     result = await runAction(store, session, payload, 'score');
     await store.apiCall(session.links('delete'));
+    debugger;
     let score = scoreAsJson(result, 'Fetch');
     return {score: score[0]};
    

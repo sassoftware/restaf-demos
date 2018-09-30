@@ -33,8 +33,11 @@ let restaf     = require('restaf');
 
 let store = restaf.initStore();
 let payload = {
-    url   : 'https://www.sas.com',
-    method: 'GET'
+    url   : 'https://sww.sas.com',
+    method: 'GET',
+    headers: {
+        accept: 'image/png'
+    }
 }
 store.request(payload)
     .then (msg => console.log(`call complete`))

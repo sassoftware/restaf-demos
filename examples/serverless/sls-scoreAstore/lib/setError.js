@@ -20,9 +20,14 @@
 module.exports = function setError(data) {
     debugger;
     console.log('in error');
+    console.log(data);
     let err = {
         statusCode: 400,
         headers   : {"Content-Type": "text/plain"},
+        "headers": {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+          },
         body      : (typeof data === 'object' ) ? JSON.stringify(data) : data
     }
     console.log(err);

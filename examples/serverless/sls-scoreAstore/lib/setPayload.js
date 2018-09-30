@@ -19,6 +19,10 @@
 module.exports = function setPayload(body) {
     return {
         "statusCode": 200,
+        "headers": {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true
+          },
         "isBase64Encoded": false,
         "body": JSON.stringify(body)
     }

@@ -26,7 +26,7 @@ let runAction     = require('../lib/runAction');
 let printCasTable = require('../lib/printCasTable');
 
 let payload     = require('./config')('restaf.env');
-let filename    = 'Simple_CNN';
+let filename    = 'GRADIENT_BOOSTING___BAD_2';
 let fileType    = 'HDAT';
 
 let store = restaf.initStore();
