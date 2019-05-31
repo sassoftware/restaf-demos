@@ -19,9 +19,9 @@
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "serverless-offline": "^3.25.6"
+    "serverless-offline": "latest"
   },
   "dependencies": {
-    "restaf": "^0.9.0"
+    "restaf": "latest"
   }
 }

@@ -22,7 +22,7 @@
     "restaf": "latest"
   },
   "devDependencies": {
-    "serverless-offline": "^3.25.6",
+    "serverless-offline": "latest",
     "showdown": "^1.8.6"
   }
 }
