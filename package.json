@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "dependencies": {
+    "mem": "^5.1.1",
     "prettyjson": "^1.2.1",
     "restaf": "latest"
   },
