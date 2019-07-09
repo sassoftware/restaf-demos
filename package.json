@@ -30,6 +30,6 @@
     "restaf": "latest"
   },
   "devDependencies": {
-    "serverless-offline": "^4.4.2"
+    "serverless-offline": "^5.7.2"
   }
 }
