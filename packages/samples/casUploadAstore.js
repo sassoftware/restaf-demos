@@ -25,7 +25,7 @@ let fs       = require('fs');
 let path     = require('path');
 let casSetup = require('../lib/casSetup');
 
-let runAction = require('../lib/runAction');
+
 
 let payload = require('./config')('restaf.env') ;
 let datadir  = './data/astore';
@@ -41,10 +41,10 @@ async function uploadFiles( store, session, caslib, datadir ) {
     for (let i = 0 ; i < files.length ;i++) {
     
         let parms = { caslib: caslib, name: files[i],  quiet : true};
-        await runAction(store, session, {action: 'table.dropTable', data: parms}, 'Drop Tables')
+        await store.runAction(store, session, {action: 'table.dropTable', data: parms}, 'Drop Tables')
 
         parms = { caslib: caslib, source: files[i],quiet : true};
-        await runAction(store, session, {action: 'table.deleteSource', data: parms}, 'delete Sources')
+        await store.runAction(store, session, {action: 'table.deleteSource', data: parms}, 'delete Sources')
 
         parms = {
             rstore: { name: files[i], caslib: caslib, replace: true},
@@ -52,11 +52,11 @@ async function uploadFiles( store, session, caslib, datadir ) {
         };
         payload = { action: 'aStore.upload', data: parms };
         console.log( `uploading  ${files[i]}`);
-        await await runAction(store, session, payload, 'upload');
+        await await store.runAction(store, session, payload, 'upload');
         
         parms = { rstore: { name: files[i], caslib: caslib } };
         payload = { action: 'aStore.describe', data: parms };
-        await await runAction(store, session, payload, 'describe');
+        await await store.runAction(store, session, payload, 'describe');
        
         parms = {
             caslib : caslib,
@@ -68,7 +68,7 @@ async function uploadFiles( store, session, caslib, datadir ) {
             }
         };
         payload ={action: 'table.save', data: parms};
-        await await runAction(store, session, payload, 'save');
+        await await store.runAction(store, session, payload, 'save');
     }
 }
 

@@ -21,7 +21,7 @@
  */
 'use strict';
 let casSetup    = require('../lib/casSetup');
-let runAction   = require('../lib/runAction');
+
 let scoreAsJson = require('../lib/scoreAsJson');
 let parseEvent  = require('../lib/parseEvent');
 
@@ -49,7 +49,7 @@ module.exports = async function descMain(store, event, context) {
         data  : { code: caslStatements}
     }
 
-    let result    = await runAction(store, session, payload, 'describe');
+    let result    = await store.runAction(store, session, payload, 'describe');
     await store.apiCall(session.links('delete'));
 
     return {columns: scoreAsJson(result, 'InputVariables')};

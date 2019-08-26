@@ -28,7 +28,7 @@ module.exports = function config (defEnv) {
     d.forEach(l => {
         if (l.length > 0 && l.indexOf('#') === -1) {
             let la = l.split('=');
-            if (la.length > 0) {
+            if (la.length === 2 && la[1].length > 0)  {
                 process.env[la[0]] = la[1];
                 console.log(`${la[0]}=${la[1]}`)
             }

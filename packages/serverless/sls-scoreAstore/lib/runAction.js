@@ -19,7 +19,7 @@
 'use strict';
 let casError = require('./casError');
 
-module.exports = async function runAction(store, session, payload) {
+module.exports = async function store.runAction(store, session, payload) {
     debugger;
     let actionResult = await store.apiCall(session.links('execute'), payload);
     if ( casError(actionResult) === true ) {

@@ -22,7 +22,7 @@ let restaf        = require('restaf');
 let fs            = require('fs');
 let prtUtil       = require('../../prtUtil');
 let casSetup      = require('../lib/casSetup');
-let runAction     = require('../lib/runAction');
+
 let printCasTable = require('../lib/printCasTable');
 
 let payload     = require('./config')('restaf.env');
@@ -55,7 +55,7 @@ async function example () {
         action : 'table.upload'
     };
 
-    await runAction(store, session, p, 'table.upload');
+    await store.runAction(store, session, p, 'table.upload');
 
     let parms = {
         caslib : 'casuser',
@@ -67,19 +67,19 @@ async function example () {
         }
     };
     payload ={action: 'table.save', data: parms};
-    await runAction(store, session, payload, 'save');
+    await store.runAction(store, session, payload, 'save');
 
     p = {
         action: 'table.tableExists',
         data  : { caslib: 'casuser', name: filename }
     };
-    await runAction(store, session, p, 'exists');
+    await store.runAction(store, session, p, 'exists');
 
     p = {
         action: 'table.fetch',
         data  : { table: { caslib: 'casuser', name: filename } }
     };
-    let result = await runAction(store, session, p, 'table.fetch');
+    let result = await store.runAction(store, session, p, 'table.fetch');
     console.log(JSON.stringify(result.items('tables'), null, 4));
     printCasTable(result, 'Fetch');
   

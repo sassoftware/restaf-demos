@@ -17,10 +17,10 @@
  */
 
 'use strict';
-let runAction = require('./runAction');
 
-module.exports = async function casSetup (store, actionSets) {
-debugger;
+module.exports = async function casSetup (store, payload, actionSets) {
+
+await store.logon(payload);
 let { casManagement } = await store.addServices('casManagement');
 
 let servers = await store.apiCall(casManagement.links('servers'));
@@ -28,6 +28,7 @@ let p = { data: { name: 'raf' } };
 let serverName = servers.itemsList(0);
 
 let session = await store.apiCall(servers.itemsCmd(serverName, 'createSession'), p);
+let executeAction = session.links('execute');
 
 if (actionSets !== null){
         let l = actionSets.length;
@@ -36,7 +37,8 @@ if (actionSets !== null){
                 action: 'builtins.loadActionSet',
                 data: { actionSet: actionSets[i]}
         };
-        await runAction(store, session, p);
+        await store.runAction(store, session, p);
+        console.log( `${actionSets[i]} has been loaded`)
         }
 }
 return {servers: servers, session: session}

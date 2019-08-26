@@ -21,7 +21,7 @@
  */
 'use strict';
 let casSetup    = require('../lib/casSetup');
-let runAction   = require('../lib/runAction');
+
 let scoreAsJson = require('../lib/scoreAsJson');
 let parseEvent  = require('../lib/parseEvent'); 
 
@@ -55,7 +55,7 @@ let parseEvent  = require('../lib/parseEvent');
         data: csv,
         action: 'table.upload'
     };
-   let result = await runAction(store, session, payload, 'upload');
+   let result = await store.runAction(store, session, payload, 'upload');
    debugger; 
 
    let caslStatements = `
@@ -84,7 +84,7 @@ let parseEvent  = require('../lib/parseEvent');
         action: 'sccasl.runcasl',
         data  : { code: caslStatements}
     }
-    result = await runAction(store, session, payload, 'score');
+    result = await store.runAction(store, session, payload, 'score');
     await store.apiCall(session.links('delete'));
     debugger;
     let score = scoreAsJson(result, 'Fetch');

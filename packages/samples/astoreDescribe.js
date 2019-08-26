@@ -24,7 +24,7 @@ let payload = require('./config')('restaf.env') ;
 let store   = restaf.initStore();
 let prtUtil = require('../../prtUtil');
 let casSetup    = require('../lib/casSetup');
-let runAction  = require('../lib/runAction');
+
 
  /* --------------------------------------------------------------------------------
  * Logon to the restaf server and setup file service
@@ -42,7 +42,7 @@ async function setup (payload, actionSets) {
          action: 'aStore.describe', 
          data: parms 
          };
-    let actionResult = await runAction(store, session, actionPayload, 'describe');
+    let actionResult = await store.runAction(store, session, actionPayload, 'describe');
     console.log(JSON.stringify(actionResult.items(), null, 4));
     return true;
     }

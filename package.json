@@ -5,12 +5,10 @@
   "main": "index.js",
   "scripts": {
     "runAPI": "node runAPI",
-    "debugAPI": "node --inspect-brk runAPI"
+    "debugAPI": "node --inspect-brk runAPI",
+    "test": "cd ./packages/samples && node"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sassoftware/restaf-demos"
-  },
+  "repository": "https://github.com/sassoftware/restaf-demos",
   "keywords": [
     "restaf",
     "http",
@@ -25,12 +23,20 @@
     "url": "https://github.com/sassoftware/restaf-demos/issues"
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
-    "mem": "^5.1.1",
     "prettyjson": "^1.2.1",
     "restaf": "latest"
   },
   "devDependencies": {
-    "serverless-offline": "^5.7.2"
+    "serverless-offline": "latest"
+  },
+  "resolutions": {
+    "lodash": ">=4.17.15",
+    "mem": "^5.1.1"
   }
+
 }

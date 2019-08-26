@@ -15,34 +15,36 @@
  * ---------------------------------------------------------------------------------------
  *
  */
-
-/*
- * Simple echo action example
- */
 'use strict';
 
-let restaf   = require('restaf');
-let payload  = require('./config')('restaf.env');
-let casSetup = require('../lib/casSetup');
-let runAction = require('../lib/runAction');
-let prtUtil  = require('../../prtUtil')
+let restaf         = require('restaf');
+let payload        = require('./config')('restaf.env');
+let casSetup       = require('../lib/casSetup');
+
+let path           = '/u/kumar/casdata/astore'; /* this must be accessible to CAS server */
 
 let store = restaf.initStore();
 
-async function example(store, payload, actionSets) {
-       let {session} = await casSetup(store, payload, actionSets);
-        
-        let p = {
-            action: 'echo',
-            data  : {code: 'data casuser.data1; x=1;put x= ; run; '}
-        };
-        let r =  await runAction(store, session,p, 'echo');
-        return 'done';
-    };
+async function example (store, payload, actionSets) {
 
-example(store, payload, null) 
- .then ( r => console.log(r))
- .catch( err => console.log(err))
+    let { session }  = await casSetup(store, payload, actionSets);
+
+    let p = {
+        action: 'table.addCaslib',
+        data  : {
+            activeOnAdd: true,
+            dataSource : { srcType: 'path' },
+            name       : 'mycaslib',
+            path       : path,
+            subdirectories: false
+        }
+    }
+
+    let r = await store.runAction(store, session, p);
+   // console.log(JSON.stringify(r.items(), null, 4));
 
 
-
+}
+example(store, payload,null)
+    .then(r => console.log(r))
+    .catch(err => console.log(err))

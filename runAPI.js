@@ -45,7 +45,7 @@ sls[slsPath](event, context)
     let body = JSON.parse(r.body);
     console.log(JSON.stringify(body, null, 4));
   })
-  .catch( err => console.log(JSON.stringify(err, null,4)));
+.catch (err => console.log(JSON.stringify(err, null,4)));
 
 
 

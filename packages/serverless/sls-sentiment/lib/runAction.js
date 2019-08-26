@@ -17,18 +17,14 @@
  */
 
 'use strict';
-let prtUtil        = require('../../prtUtil');
-module.exports = async function runAction(store, session, payload, title) {
-    console.log( 'running action');
-    let actionResult = await store.apiCall(session.links('execute'), payload);
-    let statusCode = actionResult.items('disposition', 'statusCode');
-    console.log( `===========================${title}`);
-    console.log( JSON.stringify(actionResult.items('disposition'), null, 4));
-    console.log( JSON.stringify(actionResult.items('log'), null, 4));
+let casError = require('./casError');
+let setError = require('./setError');
 
-    console.log( JSON.stringify(actionResult.items('results'), null, 4));
-    if (statusCode !== 0) {
-        throw JSON.stringify(actionResult.items(), null, 4);
+module.exports = async function store.runAction(store, session, payload, title) {
+    debugger;
+    let actionResult = await store.apiCall(session.links('execute'), payload);
+    if ( casError(actionResult) === true ) {
+        throw JSON.stringify(actionResult.items());
     }
     return actionResult;
 }

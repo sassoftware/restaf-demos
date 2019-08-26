@@ -17,14 +17,32 @@
  */
 
 'use strict';
-let casError = require('./casError');
-let setError = require('./setError');
 
-module.exports = async function runAction(store, session, payload, title) {
-    debugger;
-    let actionResult = await store.apiCall(session.links('execute'), payload);
-    if ( casError(actionResult) === true ) {
-        throw JSON.stringify(actionResult.items());
-    }
-    return actionResult;
+
+module.exports = async function casSetup (store, actionSets) {
+debugger;
+let { casManagement } = await store.addServices('casManagement');
+
+let servers = await store.apiCall(casManagement.links('servers'));
+let p = { data: { name: 'raf' } };
+let serverName = servers.itemsList(0);
+
+let session = await store.apiCall(servers.itemsCmd(serverName, 'createSession'), p);
+// let executeAction = session.links('execute');
+
+if (actionSets !== null){
+        let l = actionSets.length;
+        for ( let i = 0; i < l ; i++){
+        let p = {
+                action: 'builtins.loadActionSet',
+                data: { actionSet: actionSets[i]}
+        };
+        await store.runAction(store, session, p);
+       // console.log( `${actionSets[i]} has been loaded`)
+        }
 }
+return {servers: servers, session: session}
+}
+
+
+

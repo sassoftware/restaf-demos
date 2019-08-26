@@ -15,49 +15,57 @@
  * ---------------------------------------------------------------------------------------
  *
  */
-
 /*
- * Run a cas data step and then retrieve the created table
+ * running a simple data step in CAS
  */
 'use strict';
 
-let restaf         = require('restaf');
+let restaf      = require('restaf');
+let payload     = require('./config')('restaf.env');
 let casSetup    = require('../lib/casSetup');
-let runAction   = require('../lib/runAction');
-let prtUtil        = require('../../prtUtil');
 
-let payload = require('./config')('restaf.env');
-let store   = restaf.initStore();
+let listCaslibs = require('../lib/listCaslibs');
+let printCasTable = require('../lib/printCasTable');
+let prtUtil     = require('../../prtUtil');
 
-async function example (store, payload, actionSets){
+let store = restaf.initStore();
 
-    let {session} = await casSetup(store, payload, actionSets);
+async function example (store, logonPayload, actionSets) {
 
-    let actionPayload = {
+    let {session} = await casSetup(store, logonPayload, actionSets);
+    let p = {
         action: 'datastep.runCode',
         data  : { code: 'data casuser.score; x1=10;x2=20;x3=30; score1 = x1+x2+x3;run; '  }
     };
-    await runAction(store, session, actionPayload, 'Data Step');
+    await store.runAction(store, session, p, 'Data Step');
 
-   // run fetch action
-    actionPayload = {
+    p = {
+        action: 'table.tableExists',
+        data  : { caslib: 'casuser', name: `score` }
+    };
+    await store.runAction(store, session, p, 'exists');
+
+    p = {
         action: 'table.fetch',
         data  : { table: { caslib: 'casuser', name: 'score' } }
     };
-    let actionResult = await runAction(store, session, actionPayload);
-    prtUtil.view(actionResult, 'Result of fetch action');
 
-    // delete session
-    await store.apiCall(session.links('delete'));
+    let fetchResult = await store.runAction(store, session, p, 'Fetch');
+    printCasTable(fetchResult, 'Fetch');
 
-    console.log(`session closed with Status Code ${actionResult.status}`);
-    return true;
+    p = {
+        action: 'table.tableDetails',
+        data  : { caslib: 'casuser', name: `score` }
+    };
+    await store.runAction(store, session, p, 'details');
+
+    return 'Success';
 }
 
+// Run the example
 example(store, payload, null)
-    .then(r => prtUtil.print({Status: 'All Done'}))
-    .catch(err => prtUtil.printErr(err));
-
+    .then  (msg => console.log(msg))
+    .catch (err => prtUtil.printErr(err));
 
 
 
