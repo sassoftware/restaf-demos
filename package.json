@@ -27,6 +27,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "nohoist": [
+    "**/serverless-*/**"
+  ],
   "dependencies": {
     "prettyjson": "^1.2.1",
     "restaf": "latest"
