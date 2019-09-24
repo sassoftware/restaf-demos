@@ -33,7 +33,7 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-east-1
-  stage: dev
+  stage: demo
   role: ${self:custom.role}
   vpc: ${self:custom.vpc}
   deploymentBucket: 

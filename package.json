@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "prettyjson": "^1.2.1",
-    "restaf": "latest"
+    "restaf": "^1.6.2"
   },
   "devDependencies": {
     "serverless-offline": "latest"

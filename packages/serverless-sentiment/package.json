@@ -20,11 +20,14 @@
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "aws-sdk": "^2.524.0",
-    "restaf": "^1.5.4"
-    
+    "prettyjson": "^1.2.1",
+    "restaf": "^1.6.2"
   },
   "devDependencies": {
-    "serverless-offline": "^5.7.2"
+    "serverless-offline": "latest"
+  },
+  "resolutions": {
+    "lodash": ">=4.17.15",
+    "mem": "^5.1.1"
   }
 }
