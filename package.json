@@ -24,10 +24,8 @@
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "nohoist": [
-    "**/serverless-*/**"
-  ]
+  "workspaces": {
+    "packages": [ "packages/*" ],
+    "nohoist": [ "**/serverless-*/**"]
+  }
 }
