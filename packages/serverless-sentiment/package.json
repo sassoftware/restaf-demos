@@ -1,6 +1,6 @@
 {
   "name": "serverless-sentiment",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "sentiment analysis as a serverless function",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.sas.com/kumar/viya-restapi-demos"
+    "url": "https://github.com/sassoftware/restaf-demos"
   },
   "keywords": [
     "serverless",
