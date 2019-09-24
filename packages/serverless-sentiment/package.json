@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.sas.com/kumar/viya-restapi-demos"
+    "url": "https://gitlab.sas.com/kumar/restaf-demos"
   },
   "keywords": [
     "serverless",
