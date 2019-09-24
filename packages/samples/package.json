@@ -1,5 +1,5 @@
 {
-  "name": "restaf-demos",
+  "name": "samples",
   "version": "0.8.0",
   "description": "nodejs demos for restaf",
   "main": "index.js",
@@ -24,10 +24,8 @@
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "nohoist": [
-    "**/serverless-*/**"
-  ]
+  "dependencies": {
+    "prettyjson": "^1.2.1",
+    "restaf": "^1.6.2"
+  }
 }
