@@ -1,6 +1,6 @@
 {
   "name": "serverless-image",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "sentiment analysis as a serverless function",
   "main": "index.js",
   "scripts": {
