@@ -16,14 +16,22 @@
  *
  */
 'use strict';
-module.exports = function setPayload(body) {
-    return {
-        "statusCode": 200,
-        "headers": {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': true
-          },
-        "isBase64Encoded": false,
-        "body": JSON.stringify(body)
-    }
-  }
+module.exports = function scoreAsJson (result, table) {
+    let data     = result.items('tables', table);
+    let itemRows = data.get('rows');
+    let columns  = [];
+    data.get('schema').map(s => {
+        columns.push(s.get('name'));
+    });
+    
+    let allResults = [];
+    itemRows.map((r)=> {
+        let row = {};
+
+        r.map((value, j) => {
+            row[columns[j]] = value;
+        });
+        allResults.push(row);
+    });
+return allResults;
+}

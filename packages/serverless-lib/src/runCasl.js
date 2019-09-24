@@ -16,42 +16,35 @@
  *
  */
 
-/*
- * Simple echo action example
- */
 'use strict';
-let casSetup    = require('../lib/casSetup');
+let casSetup    = require('./casSetup');
+let jsonToDict = require('./jsonToDict');
+let getProgram = require('./getProgram');
 
-let scoreAsJson = require('../lib/scoreAsJson');
-let parseEvent  = require('../lib/parseEvent');
+ module.exports = async function runCasl (store, path, casl, inParms) {
 
+    let {session} = await casSetup(store, [ 'sccasl' ]);
+    //
+    // prepare parameters
+    //
+    let args     = {path: 'score', ...inParms};
+    args.path    = path.toLowerCase();
+    let _appEnv_ = jsonToDict(args, '_appEnv_');
 
-module.exports = async function descMain(store, event, context) {
+    //
+    // load casl program ( ideally this should be on the server, but...)
+    //
     
+    let caslStatements = await getProgram(casl);
+    caslStatements = _appEnv_ + ' ' + caslStatements;
 
-    let {rstore} = parseEvent(event);
-
-    let caslStatements = `
-        loadactionset "astore";
-        action table.loadTable /
-           caslib = "${rstore.caslib}" 
-           path   = "${rstore.name}.sashdat"
-           casout  = { caslib = "${rstore.caslib}"   name = "${rstore.name}" replace=TRUE};
-   
-        action astore.describe r=finalResult/
-          rstore = { caslib= "${rstore.caslib}" name = '${rstore.name}' };
-        send_response(finalResult);
-    `;
-   console.log( caslStatements);
-    let {session} = await casSetup(store, ['sccasl']);
     let payload = {
         action: 'sccasl.runcasl',
         data  : { code: caslStatements}
     }
 
-    let result    = await store.runAction(store, session, payload, 'describe');
+    let result   = await store.runAction(session, payload);
+    let r = result.items('results').toJS();
     await store.apiCall(session.links('delete'));
-
-    return {columns: scoreAsJson(result, 'InputVariables')};
+    return r;
 }
-

@@ -17,20 +17,29 @@
  */
 'use strict';
 
-let fs     = require("fs");
-let path   = require('path');
-module.exports.app = async function (event, context) {
-    let r = {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html' },
-        body: ht()
+module.exports = function parseEvent (event) {
+
+    let body = {};
+    let _appEnv_ = {
+        model: {
+           caslib: process.env.MODEL_CASLIB,
+           name  : process.env.MODEL_NAME
+        },
+        table: {
+            caslib: process.env.TABLE_CASLIB,
+            name  : process.env.TABLE_NAME
+        }
+    }
+    console.log(event.body);
+
+    if (event.body != null) {
+        body = (typeof event.body === 'string')
+            ? JSON.parse(event.body)
+            : Object.assign({}, event.body);
+        _appEnv_ = {..._appEnv_, ...body}  ;
     }
 
-    return r;
-}
-function ht () {
-    let indexPath = path.resolve( __dirname, '../public/index.html');
-    let h = fs.readFileSync(indexPath, 'utf8');
-    return h;
-} 
+    // console.log(_appEnv_);
+    return _appEnv_;
 
+}

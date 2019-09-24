@@ -1,5 +1,5 @@
 {
-  "name": "sls-sentiment",
+  "name": "serverless-sentiment",
   "version": "0.1.0",
   "description": "sentiment analysis as a serverless function",
   "main": "index.js",
@@ -8,20 +8,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sassoftware/restaf-demos"
+    "url": "https://gitlab.sas.com/kumar/viya-restapi-demos"
   },
   "keywords": [
     "serverless",
     "lambda",
     "sentiment",
-    "Viya"
+    "Viya",
+    "restaf"
   ],
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "serverless-offline": "latest"
-  },
   "dependencies": {
-    "restaf": "latest"
+    "aws-sdk": "^2.524.0",
+    "restaf": "^1.5.4"
+    
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.7.2"
   }
 }

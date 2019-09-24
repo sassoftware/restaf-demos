@@ -18,29 +18,25 @@
 
 'use strict';
 
-
 module.exports = async function casSetup (store, actionSets) {
-debugger;
+
 let { casManagement } = await store.addServices('casManagement');
 
 let servers = await store.apiCall(casManagement.links('servers'));
-let p = { data: { name: 'raf' } };
-let serverName = servers.itemsList(0);
 
-let session = await store.apiCall(servers.itemsCmd(serverName, 'createSession'), p);
-// let executeAction = session.links('execute');
+let serverName = servers.itemsList(0);
+let session = await store.apiCall(servers.itemsCmd(serverName, 'createSession'));
 
 if (actionSets !== null){
-        let l = actionSets.length;
-        for ( let i = 0; i < l ; i++){
-        let p = {
-                action: 'builtins.loadActionSet',
-                data: { actionSet: actionSets[i]}
-        };
-        await store.runAction(store, session, p);
-       // console.log( `${actionSets[i]} has been loaded`)
-        }
-}
+    let l = actionSets.length;
+    for (let i = 0; i < l ; i++){
+            let p = {
+                    action: 'builtins.loadActionSet',
+                    data  : { actionSet: actionSets[i]}
+            };
+            await store.runAction(session, p);
+            }
+    }
 return {servers: servers, session: session}
 }
 

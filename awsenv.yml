@@ -1,18 +1,15 @@
 
-role: arn:yourrole
-vpc:
-  securityGroupIds:
-    - sg1
-  subnetIds:
-    - subnet1
-    - subnet2
-deploymentBucket:
-  name: bucket1
-environment:
-  VIYA_SERVER: http://xx.xxx.xx.xx
-  CLIENTID: raf
-  CLIENTSECRET: raf
-  USER: superuser
-  PASSWORD: superfly
-  ASTORE: paysimsvdd.sasast
-  CASLIB: casuser
+# role: arn:yourrole
+# vpc:
+#   securityGroupIds:
+#    - sg1
+#  subnetIds:
+#    - subnet1
+#    - subnet2
+# deploymentBucketName: bucketName
+#
+# environment: 
+#  MAINKEY: 
+#  MAINREGION: 
+#  A:
+#  B:

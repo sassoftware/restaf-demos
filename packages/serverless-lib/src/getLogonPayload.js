@@ -16,15 +16,17 @@
  *
  */
 'use strict';
- module.exports = function getPayload() {
-    let p = {
-        authType    : 'password',
-        host        : `${process.env.VIYA_SERVER}`,
-        user        : process.env['USER'],
-        password    : process.env['PASSWORD'],
-        clientID    : process.env['CLIENTID'],
-        clientSecret: (process.env.hasOwnProperty('CLIENTSECRET')) ? process.env[ 'CLIENTSECRET' ] : ''
-        };
-        console.log(p);
-    return p;
+let getSecrets = require('./getSecrets');
+
+ module.exports = async function getLogonPayload () {
+     let secrets = await getSecrets();
+     let payload = {
+         authType    : 'password',
+         host        : secrets.VIYA_SERVER,
+         user        : secrets.USER,
+         password    : secrets.PASSWORD,
+         clientID    : secrets.CLIENTID,
+         clientSecret: (secrets.CLIENTSECRET == null) ? '' : secrets.CLIENTSECRET
+     }
+     return payload;
  }

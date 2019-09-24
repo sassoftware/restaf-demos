@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: scoreAstore-saskdk-cors
+service: reportimage
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -19,6 +19,7 @@ service: scoreAstore-saskdk-cors
 
 plugins:
  - serverless-offline
+ - serverless-plugin-monorepo
 
 variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
 # path to your awsenv file - use what is appropriate for you
@@ -39,7 +40,6 @@ provider:
   #  - sentiment
   deploymentBucket:
     name: ${self:custom.deploymentBucketName}
-
   environment: ${self:custom.environment}
 
 # you can add packaging information here
@@ -48,54 +48,20 @@ package:
     - src/**
     - lib/**
     - public/**
-exclude:
+# exclude:
 
 functions:
-
-  root: 
-    handler: src/root.root
-    events:
-      - http:
-          path: /
-          method: get
-          cors: 
-            origin: '*'
-
+  
   app: 
-    handler: src/app.app
+    handler: src/src.app
     events:
       - http:
           path: app
           method: get
-          cors: 
-            origin: '*'
 
-  test:
-    handler: src/test.test
+  sentiment:
+    handler: src/image.image
     events:
       - http:
-          path: test
-          method: get
-          cors:
-            origin: '*'
-         
-
-  score:
-    handler: src/score.score
-    events:
-      - http:
-          path: score
+          path: image
           method: post
-          cors: 
-            origin: '*'
-  #        private: true
-
-  describe:
-    handler: src/describe.describe
-    events:
-      - http:
-          path: describe
-          method: post
-          cors: 
-            origin: '*'
-  #       private: true

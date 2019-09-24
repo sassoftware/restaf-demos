@@ -11,34 +11,28 @@
 #
 # Happy Coding!
 
-service: reportimage
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+service: sentiment-saskdk-v7
 
 plugins:
  - serverless-offline
-
+ 
 variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
 # path to your awsenv file - use what is appropriate for you
 # If you want to use the awsenv.yml in the root of restaf-demos repo then use
 # custom: ${file(../../../awsenv.yml)}
 
-custom: ${file(../../../../awsenv.yml)}
+custom: ${file(../../../awsenv.yml)}
 provider: 
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   region: us-east-1
-  stage: demo
+  stage: dev
   role: ${self:custom.role}
   vpc: ${self:custom.vpc}
+  deploymentBucket: ${self:deploymentBucket}
   timeout: 30
   memorySize: 1024
-  # apiKeys:
-  #  - sentiment
-  deploymentBucket:
-    name: ${self:custom.deploymentBucketName}
+
   environment: ${self:custom.environment}
 
 # you can add packaging information here
@@ -52,15 +46,15 @@ package:
 functions:
   
   app: 
-    handler: src/src.app
+    handler: src/app.app
     events:
       - http:
           path: app
           method: get
 
   sentiment:
-    handler: src/image.image
+    handler: src/sentiment.sentiment
     events:
       - http:
-          path: image
+          path: sentiment
           method: post
