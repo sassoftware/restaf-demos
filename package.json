@@ -1,6 +1,6 @@
 {
   "name": "restaf-demos",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
@@ -41,5 +41,4 @@
     "lodash": ">=4.17.15",
     "mem": "^5.1.1"
   }
-
 }
