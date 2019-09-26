@@ -7,64 +7,152 @@
 module.exports = function scoreCasl(){
     let casl = `
      
-   
     /*
     cas mycas;  
     proc cas;  
-    _appEnv_ = {  
+    
+    _appEnv_1 = {  
         path = '/describe', 
-        model    = { caslib='public', name='GRADIENT_BOOSTING___BAD_2', type= "astore"},   
-        table    = { caslib='public', name='CLUSTER_TEST2'}  
-        filter   = {fips='13045', year_num=2013}
-        selectors={'state', 'year'}  
+        model    = { caslib='models', name='cms_sdoh_risk_stratification_cluster'}, 
+        table = { caslib= "public", name = "cluster_test2"},
+        scenario = {
+          SDOH_Physically_Unhealthy_Days_=  4.3,
+          SDOH_Per_Adults_Bachelors =  19.6,
+          SDOH_Unemployment_Rate = 9.6,
+          SDOH_Median_Household_Income= 45493
+	    }
+ 
     };  
-    */
-    r = {Error= 'No path'};  
-    print _appEnv_;  
-    if ( _appEnv_.path eq '/selectors') then do;  
-        r = selectionLists(_appEnv_.selectors, _appEnv_.table.caslib, _appEnv_.table.name);  
-    end;  
-    else if ( _appEnv_.path eq '/contents') then do; 
-        r = contents(_appEnv_.table.caslib, _appEnv_.table.name); 
-    end; 
-    else if (_appEnv_.path eq '/describe') then do;
-        if ( _appEnv_.model.type eq 'ds') then do;
-           r = fetchData( _appEnv_.filter, _appEnv_.table);
-        end;
-        else if ( _appEnv_.model.type eq 'astore') then do;
-          r = astoreDescribe(_appEnv_.model);
-        end;
-    end;
-    else if (_appEnv_.path eq '/score') then do; 
-        r =  runScoreCode(_appEnv_.model,  _appEnv_.scenario);  
-    end;  
-    else do;
-      r = {Errors = 'Invalid action option specified' || _appEnv_.path};
-    end;
-        
-    result = {casResults = r};  
-    print result; 
-    send_response(result); 
 
+    _appEnv_2 = {  
+        path = '/score', 
+        model    = { caslib='models', name='cms_sdoh_risk_stratification_cluster'}, 
+        table = { caslib= "public", name = "cluster_test2"},
+        scenario = {
+          SDOH_Physically_Unhealthy_Days_=  4.3,
+          SDOH_Per_Adults_Bachelors =  19.6,
+          SDOH_Unemployment_Rate = 9.6,
+          SDOH_Median_Household_Income= 45493
+	    }
+ 
+    };  
+
+    _appEnv_3 = {  
+        path = '/describe', 
+        model    = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'},
+        table = { caslib="", name=""}, 
+        scenario = {
+          sensor_ratio =  4.3,
+          days_out_of_service =  5
+	    }
+    };  
+
+    
+    _appEnv_4 = {  
+        path = '/score', 
+        model    = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'},
+        table = { caslib="", name=""}, 
+        scenario = {
+          sensor_ratio =  4.3,
+          days_out_of_service =  5
+	    }
+    };  
+    result = runMain(_appEnv_1);
+    result = runMain(_appEnv_2);
+    result = runMain(_appEnv_3);
+    result = runMain(_appEnv_4);
+*/
+    result = runMain(_appEnv_);
+    send_response(result);
+
+    function runMain(_appEnv_) ;
+	    r = {Error= 'No path'};  
+	    print _appEnv_;  
+	    if ( _appEnv_.path eq '/selectors') then do;  
+	        r = selectionLists(_appEnv_.selectors, _appEnv_.table.caslib, _appEnv_.table.name);  
+	    end;  
+	    else if ( _appEnv_.path eq '/contents') then do; 
+	        r = contents(_appEnv_.table.caslib, _appEnv_.table.name); 
+	    end; 
+	    else if (_appEnv_.path eq '/describe') then do;
+	       r = describeModel(_appEnv_);
+	    end;
+	    else if (_appEnv_.path eq '/score') then do; 
+	        r =  runScoreCode(_appEnv_.model,  _appEnv_.scenario);  
+	    end;  
+	    else do;
+	      r = {Errors = 'Invalid action option specified' || _appEnv_.path};
+	    end;
+	        
+	    result = {casResults = r}; 
+        print '***************************************************************'; 
+	    print result; 
+        print '***************************************************************'; 
+	    return result; 
+    end;
+
+    /*-----------------------------------------*/
+    /* describeModel                           */
+    /*-----------------------------------------*/
+
+    function describeModel(_appEnv_) ;
+        s = checkAndLoadTable(_appEnv_.model.caslib, _appEnv_.model.name);  
+        if ( s ne 0 ) then do;  
+	        results = {Errors= 'Unable to access ' ||_appEnv.model.caslib||'.'||_appenv_.model.name};  
+	        return results;  
+	        end;
+
+        mtype = isModel(_appEnv_.model.caslib, _appEnv_.model.name);
+        if ( mtype EQ 'astore') then do;
+           r = astoreDescribe(_appEnv_.model);
+        end;
+        else do;
+           s = checkAndLoadTable(_appEnv_.table.caslib, _appEnv_.table.name);  
+          if ( s ne 0 ) then do;  
+	        results = {Errors= 'Unable to access ' ||_appEnv_.table.caslib||'.'||_appEnv_.table.name};  
+	        return results;  
+	        end;
+           r = contents( _appEnv_.table.caslib, _appEnv_.table.name);
+        end;
+     return r;
+	end;
+
+    /*-----------------------------------------*/
+    /* isModel: is it model table              */ 
     /*-----------------------------------------*/ 
+
+    function isModel(caslib, name) ;
+         table.columnInfo r = result / 
+                table = {caslib=caslib , name=name}; 
+         validTable = false;
+         mtype = 'bad';
+	     do c over result.columninfo; 
+	        if ( upcase(c.Column) eq 'DATASTEPSRC') then do;
+	           mtype = 'ds';
+	        end;
+	        else if ( upcase(c.Column) eq '_STATE_' ) then do;
+	          mtype = 'astore';
+	        end;
+	    end; 
+        print 'Specified model type: ' || mtype;
+        return mtype;
+    end;
+
+    /*-----------------------------------------*/
     /* Returns contents of the specified table */ 
     /*-----------------------------------------*/ 
 
-    function contents(caslib, name) ; 
-        s = checkAndLoadTable(caslib, name);  
-            if ( s ne 0 ) then do;  
-            results = {Errors= 'Unable to access ' ||caslib||'.'||name};  
-            return results;  
-            end;  
+    function contents(caslib, name) ;   
         table.columnInfo r = result / 
                 table = {caslib=caslib , name=name}; 
-        columns ={{Column='_Index_',ID=0,Type='double',RawLength=5,FormattedLength=5,NFL=0,NFD=0}}; 
-        i = 2; 
+       /* columns ={{Column='_Index_',ID=0,Type='double',RawLength=5,FormattedLength=5,NFL=0,NFD=0}}; */
+        i = 1; 
+        columns = {};
         do c over result.columninfo; 
             columns[i] = c; 
             i = i + 1; 
         end; 
-        return columns; 
+        return {describe = columns, table = {}};  
     end; 
         
     /*------------------------------------------*/ 
@@ -111,6 +199,7 @@ module.exports = function scoreCasl(){
     /*------------------------------------------*/
     /* get a record                             */
     /*------------------------------------------*/
+
     function fetchData(filter, table);
         s = checkAndLoadTable(table.caslib, table.name);  
         if ( s ne 0 ) then do;  
@@ -140,45 +229,42 @@ module.exports = function scoreCasl(){
     /*------------------------------------------*/
 
     function astoreDescribe(model);
-      s = checkAndLoadTable(model.caslib, model.name);  
-      if ( s ne 0 ) then do;  
-          results = {Errors= 'Unable to access ' ||model.caslib||'.'||model.name};  
-          return results;  
-          end; 
-      print model;
       action astore.describe r=result/
           rstore = { caslib= model.caslib name = model.name };
       rows = resultsToDict(result.InputVariables);
-      print rows;
       return {describe = rows, table = result.InputVariables};
     end;
+
     /*------------------------------------------*/ 
     /* score                                    */ 
     /*------------------------------------------*/ 
-    function runScoreCode( model, scenario, modelCodeType);  
+    function runScoreCode( model, scenario);  
         s = checkAndLoadTable(model.caslib, model.name);  
         if ( s ne 0 ) then do;  
             results = {Errors= 'Unable to access ' ||model.caslib||'.'||model.name};  
             return results;  
             end;  
+        
+        mtype = isModel(model.caslib, model.name);
+
+        if ( mtype eq 'bad' ) then do;
+           results = {Error= model.caslib||'.'||model.name || ' is not recognized as a valid supported model. Please check your values'} ; 
+           return results;
+ 	       end;
         destroyTable('casuser', 'input');  
         argsToTable(scenario, 'casuser', 'input');
 
         destroyTable('casuser', 'output');  
-        print '**************************';
-        print model;
-        print '**************************';
 
-        if (model.type eq 'astore') then do;
-            print 'calling astore.score';
+        if (mtype eq 'astore') then do;
+            print 'Scoring with astore';
             action astore.score r = result/  
                 rstore = {caslib=model.caslib name=model.name}  
                 out    = {caslib='casuser' name='output'}  
                 table  = {caslib='casuser' name='input'};  
         end;
-        else if (model.type eq 'ds') then do;
-
-            print model.type;
+        else if (mtype eq 'ds') then do;
+            print 'scoring with datastep code';
             action datastep.runcodetable r = result/  
                 single='YES'  
                 codeTable= {caslib=model.caslib name=model.name}  

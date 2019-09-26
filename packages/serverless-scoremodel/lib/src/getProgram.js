@@ -22,7 +22,7 @@ module.exports = async function getProgram (files){
         let s = await getSrc(files[i]);
         src = src + s;
     }
-    src = src.replace(/\r/g, '');
+    src = src.replace(/\r?\n|\r/g, '');
     return src;
 }
 

@@ -21,7 +21,7 @@
 let fs = require('fs');
 
 module.exports = function config (defEnv) {
-    let appEnv = (process.argv[ 2 ]  == null) ? defEnv : process.argv[ 2 ];
+    let appEnv = (process.argv[ 2 ]  == null) ? process.env.RESTAFENV : process.argv[ 2 ];
     let data = fs.readFileSync(appEnv, 'utf8');
     let d = data.split(/\r?\n/);
     console.log(`Configuration file: ${appEnv}`);
