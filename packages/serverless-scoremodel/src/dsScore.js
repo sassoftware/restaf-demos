@@ -35,15 +35,15 @@ let dsScoreCasl    = require('../program/scoreCasl');
 //
 module.exports.dsScore  = async function (event, context) {
 
-	let store   = restaf.initStore(); /* initialize restaf         */
+	let store   = restaf.initStore({pem: null, rejectUnauthorized: false }); /* initialize restaf         */
 	
-	let path = {path :event.path.toLowerCase()};
+	let path = {path: event.path.toLowerCase()};
 	
 	try {
 		let inParms = await parseEvent(event);
 		let payload = await getLogonPayload(inParms);
 		await store.logon(payload);
-		let results = await runCasl(store, [dsScoreCasl],{...inParms, ...path} );
+		let results = await runCasl(store, [ dsScoreCasl ],{...inParms, ...path});
 		let casResults = results.items('results').toJS();
 		return setPayload(casResults);
 	} 

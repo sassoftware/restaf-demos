@@ -27,9 +27,21 @@ let getSecrets = require('./getSecrets');
          password    : secrets.PASSWORD,
          clientID    : secrets.CLIENTID,
          clientSecret: (secrets.CLIENTSECRET == null) ? '' : secrets.CLIENTSECRET
-     }
+     };
+
+    
      if (inParms.hasOwnProperty('test') === true) {
-        payload = {...payload, ...inParms.test};
+         if ( inParms.hasOwnProperty('token') === true) {
+            let test = inParms.test;
+            let payload = {
+                authType : 'server',
+                host     : test.host,
+                token    : test.token,
+                tokenType: 'bearer'
+            }
+        } else { 
+            payload = {...payload, ...inParms.test};
+         }
      }
      // console.log(payload);
      return payload;
