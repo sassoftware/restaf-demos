@@ -131,10 +131,10 @@ module.exports = function scoreCasl (){
                 end; 
      
             mtype = isModel(_appEnv_.model.caslib, _appEnv_.model.name); 
-            if ( mtype EQ 'astore') then do; 
+            if ( mtype EQ 'astore' ) then do; 
                r = astoreDescribe(_appEnv_.model); 
             end; 
-            else do; 
+            else if (mytpe EQ 'ds') then do;
                s = checkAndLoadTable(_appEnv_.table.caslib, _appEnv_.table.name);   
               if ( s ne 0 ) then do;   
                 results = {Errors= 'Unable to access ' ||_appEnv_.table.caslib||'.'||_appEnv_.table.name};   
@@ -142,6 +142,9 @@ module.exports = function scoreCasl (){
                 end; 
                r = contents( _appEnv_.table.caslib, _appEnv_.table.name); 
             end; 
+            else if (mtype EQ 'ds2') then do;
+                r = astoreDescribe(_appEnv_.model);
+            end;
          return r; 
         end; 
      

@@ -6,7 +6,7 @@
   "scripts": {
     "runAPI": "node runAPI",
     "debugAPI": "node --inspect-brk runAPI",
-    "test": "cd ./packages/samples && node"
+    "test": "cd ./packages/examples && node"
   },
   "repository": "https://github.com/sassoftware/restaf-demos",
   "keywords": [
@@ -25,7 +25,14 @@
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
   "private": true,
   "workspaces": {
-    "packages": [ "packages/*" ],
-    "nohoist": [ "**/serverless-*/**"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/serverless-*/**"
+    ]
+  },
+  "dependencies": {
+    "restaf-commons": "1.6.1"
   }
 }
