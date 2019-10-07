@@ -12,48 +12,48 @@ module.exports = function scoreCasl (){
          
      
         _appEnv_1 = {   
-            path = '/describe',  
-            model    = { caslib='models', name='cms_sdoh_risk_stratification_cluster'},  
+            path  = '/describe',  
+            model = { caslib='models', name='cms_sdoh_risk_stratification_cluster'},  
             table = { caslib= "public", name = "cluster_test2"}, 
             scenario = { 
               SDOH_Physically_Unhealthy_Days_=  4.3, 
-              SDOH_Per_Adults_Bachelors =  19.6, 
-              SDOH_Unemployment_Rate = 9.6, 
-              SDOH_Median_Household_Income= 45493 
+              SDOH_Per_Adults_Bachelors      =  19.6, 
+              SDOH_Unemployment_Rate         = 9.6, 
+              SDOH_Median_Household_Income   = 45493 
             } 
       
         };   
      
         _appEnv_2 = {   
-            path = '/score',  
-            model    = { caslib='models', name='cms_sdoh_risk_stratification_cluster'},  
+            path  = '/score',  
+            model = { caslib='models', name='cms_sdoh_risk_stratification_cluster'},  
             table = { caslib= "public", name = "cluster_test2"}, 
             scenario = { 
-              SDOH_Physically_Unhealthy_Days_=  4.3, 
-              SDOH_Per_Adults_Bachelors =  19.6, 
-              SDOH_Unemployment_Rate = 9.6, 
-              SDOH_Median_Household_Income= 45493 
+              SDOH_Physically_Unhealthy_Days_ =  4.3, 
+              SDOH_Per_Adults_Bachelors       =  19.6, 
+              SDOH_Unemployment_Rate          = 9.6, 
+              SDOH_Median_Household_Income    = 45493 
             } 
       
         };   
      
         _appEnv_3 = {   
-            path = '/describe',  
-            model    = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'}, 
-            table = { caslib="", name=""},  
+            path  = '/describe',  
+            model = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'}, 
+            table = { caslib='', name=''},  
             scenario = { 
-              sensor_ratio =  4.3, 
+              sensor_ratio        =  4.3, 
               days_out_of_service =  5 
             } 
         };   
      
          
         _appEnv_4 = {   
-            path = '/score',  
-            model    = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'}, 
-            table = { caslib="", name=""},  
+            path  = '/score',  
+            model = { caslib='modelstore', name='_LBP6S3ZAQGO614AJKDJT3AF93'}, 
+            table = { caslib='', name=''},  
             scenario = { 
-              sensor_ratio =  4.3, 
+              sensor_ratio        =  4.3, 
               days_out_of_service =  5 
             } 
         };   
@@ -134,7 +134,7 @@ module.exports = function scoreCasl (){
             if ( mtype EQ 'astore' ) then do; 
                r = astoreDescribe(_appEnv_.model); 
             end; 
-            else if (mytpe EQ 'ds') then do;
+            else if (mtype EQ 'ds' or mtype EQ 'ds2') then do;
                s = checkAndLoadTable(_appEnv_.table.caslib, _appEnv_.table.name);   
               if ( s ne 0 ) then do;   
                 results = {Errors= 'Unable to access ' ||_appEnv_.table.caslib||'.'||_appEnv_.table.name};   
@@ -142,9 +142,6 @@ module.exports = function scoreCasl (){
                 end; 
                r = contents( _appEnv_.table.caslib, _appEnv_.table.name); 
             end; 
-            else if (mtype EQ 'ds2') then do;
-                r = astoreDescribe(_appEnv_.model);
-            end;
          return r; 
         end; 
      
