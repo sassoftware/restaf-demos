@@ -26,3 +26,7 @@
 ## Version 0.6.3
 
 - Added CORS support to sls-scoreAstore example
+
+# Version 1.0.0
+
+- fix security issue
