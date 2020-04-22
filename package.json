@@ -34,5 +34,10 @@
   },
   "dependencies": {
     "restaf-commons": "1.6.1"
+  },
+  "resolutions": {
+    "**/minimist": "^0.2.1",
+    "**/kind-of": "^6.0.3",
+    "**/serialize-javascript": "^2.1.1"
   }
 }
