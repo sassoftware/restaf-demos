@@ -21,7 +21,7 @@
 let restaf     = require('restaf');
 let fs         = require('fs');
 let path       = require('path');
-let {casSetup} = require('restaf-commons');
+let {casSetup} = require('@sassoftware/restaflib');
 
 let payload = require('./config')();
 let datadir = './data/astore';
