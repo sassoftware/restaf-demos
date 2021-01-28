@@ -23,8 +23,7 @@ let yargs = require('yargs');
 
 module.exports = function config () {
 
-	let argv   = yargs.argv;
-	let appEnv = argv.env == null ? process.env.RESTAFENV : argv.env;
+	let appEnv = '../../.env';
 
 	console.log('---------------------------------------');
 	console.log(`env file set to: ${appEnv}`);
@@ -33,24 +32,23 @@ module.exports = function config () {
 	if (appEnv != null) {
 		iconfig(appEnv);
 	}
-	
-	process.env.SAS_PROTOCOL =
-		process.env.SAS_SSL_ENABLED === "YES" ? "https://" : "http://";
-	let viyaServer = process.env.VIYA_SERVER;
-	
-	// left for backward compatability - preferred way is to specify http in the url
-	if (viyaServer.indexOf("http") < 0) {
-		viyaServer = `${process.env.SAS_PROTOCOL}${process.env.VIYA_SERVER}`;
-	}
-	return {
-		authType    : "password",
-		host        : viyaServer,
-		user        : process.env["USER"],
-		password    : process.env["PASSWORD"],
-		clientID    : process.env["CLIENTID"],
-		clientSecret: process.env.hasOwnProperty("CLIENTSECRET")
-		? process.env["CLIENTSECRET"]
-		: ""
+
+	if (process.env.TOKENFILE != null) {
+		return {
+			authType    : "server",
+			host        : process.env.VIYA_SERVER,
+			token       : fs.readFileSync(process.env.TOKENFILE, 'utf8'),
+			tokenType   : 'bearer'
+		}
+	} else {
+		return {
+			authType    : "password",
+			host        : process.env.VIYA_SERVER,
+			clientID    : 'sas.ec',
+			clientSecret: '',
+			user        : process.env.USER,
+			password    : process.env.PASSWORD
+		}
 	}
 }
 

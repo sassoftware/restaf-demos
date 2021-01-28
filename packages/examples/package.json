@@ -25,7 +25,8 @@
   },
   "scripts": {
     "start": "node",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "node "
   },
   "dependencies": {
     "@sassoftware/restaflib": "3.0.3",

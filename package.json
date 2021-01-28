@@ -6,7 +6,7 @@
   "scripts": {
     "runAPI": "node runAPI",
     "debugAPI": "node --inspect-brk runAPI",
-    "test": "cd ./packages/examples && node"
+    "test": "cd ./packages/examples && yarn test"
   },
   "repository": "https://github.com/sassoftware/restaf-demos",
   "keywords": [

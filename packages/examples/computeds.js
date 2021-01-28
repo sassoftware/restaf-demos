@@ -82,4 +82,4 @@ function viewer (folder) {
 // Run the example
 example(store, payload)
   .then(status => console.log(status))
-  .catch(err => console.log(err));
+  .catch(err => console.log(JSON.stringify(err, null,4)));

@@ -1,0 +1,102 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\kumar\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js test addServices.js
+
+PATH: 
+  C:\Users\kumar\AppData\Local\Temp\yarn--1611798015743-0.5576484495421159;C:\temp\restaf-demos\node_modules\.bin;C:\Users\kumar\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\temp\restaf-demos\node_modules\.bin;C:\Users\kumar\AppData\Local\Yarn\bin;C:\Program Files\libexec\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\SASHome\SASFoundation\9.4\ets\sasexe;C:\Program Files\SASHome\Secure\ccme4;C:\HashiCorp\Vagrant\bin;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\PuTTY\;c:\bin;C:\Program Files\Amazon\AWSCLIV2DevPreview\;;C:\Program Files\nodejs\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\kumar\AppData\Local\Microsoft\WindowsApps;\\ronco\public\dnt\tools;\\ronco\public\dnt\tools\inetW7\bin;C:\Program Files\Microsoft VS Code\bin;C:\Users\kumar\AppData\Local\Microsoft\WindowsApps;c:\bin;C:\Program Files\Amazon\AWSCLIV2DevPreview;C:\Users\kumar\AppData\Roaming\Dashlane\6.2015.0.34173\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kumar\AppData\Roaming\Dashlane\6.2015.0.34173\ucrt;C:\Users\kumar\AppData\Roaming\npm;
+
+Yarn version: 
+  1.22.5
+
+Node version: 
+  12.18.4
+
+Platform: 
+  win32 x64
+
+Trace: 
+  SyntaxError: C:\temp\restaf-demos\packages\examples\package.json: Unexpected string in JSON at position 608
+      at JSON.parse (<anonymous>)
+      at C:\Users\kumar\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\kumar\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\kumar\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "examples",
+    "version": "3.0.3",
+    "description": "Examples",
+    "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
+    "license": "Apache-2.0",
+    "keywords": [
+      "restaf",
+      "SAS",
+      "Viya",
+      "REST API"
+    ],
+    "main": "index.js",
+    "engines": {
+      "node": ">=10.16.0",
+      "npm": ">=6.10.0",
+      "yarn": ">=1.17.3"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/sassoftware/restaf/tree/master/packages/examples"
+    },
+    "bugs": {
+      "url": "https://github.com/sassoftware/restaf/issues"
+    },
+    "scripts": {
+      "start": "node",
+      "lint": "eslint . --fix"
+      "test": "cross-env RESTAFENV="
+    },
+    "dependencies": {
+      "@sassoftware/restaflib": "3.0.3",
+      "jwt-decode": "^2.2.0",
+      "@sassoftware/restaf": "3.0.3",
+      "win-ca": "^3.1.0"
+    },
+    "devDependencies": {
+      "@babel/cli": "^7.1.5",
+      "@babel/core": "^7.1.6",
+      "@babel/plugin-proposal-class-properties": "^7.1.0",
+      "@babel/plugin-proposal-decorators": "^7.1.6",
+      "@babel/plugin-proposal-do-expressions": "^7.0.0",
+      "@babel/plugin-proposal-export-default-from": "^7.0.0",
+      "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+      "@babel/plugin-proposal-function-bind": "^7.0.0",
+      "@babel/plugin-proposal-function-sent": "^7.1.0",
+      "@babel/plugin-proposal-json-strings": "^7.0.0",
+      "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
+      "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+      "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+      "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+      "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+      "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+      "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+      "@babel/plugin-syntax-import-meta": "^7.0.0",
+      "@babel/plugin-transform-regenerator": "^7.0.0",
+      "@babel/plugin-transform-runtime": "^7.1.0",
+      "@babel/preset-env": "^7.1.6",
+      "babel-eslint": "^10.0.1",
+      "babel-loader": "^8.0.4",
+      "eslint": "^5.12.1",
+      "eslint-plugin-react": "^7.11.1",
+      "eslint-plugin-redux-saga": "^0.10.0",
+      "lerna": "^3.14.1",
+      "prettyjson": "^1.2.1",
+      "showdown": "^1.9.0",
+      "webpack": "^4.26.0",
+      "webpack-cli": "^3.1.2",
+      "webpack-node-externals": "^1.7.2",
+      "yargs": "^12.0.5"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

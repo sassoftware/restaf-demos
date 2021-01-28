@@ -18,7 +18,7 @@
 
 'use strict';
 
-let restaf     = require('restaf');
+let restaf     = require('@sassoftware/restaf');
 let fs         = require('fs');
 let path       = require('path');
 let {casSetup} = require('@sassoftware/restaflib');
