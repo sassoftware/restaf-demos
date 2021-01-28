@@ -15,13 +15,13 @@
     "lambda",
     "sentiment",
     "Viya",
-    "restaf"
+    "@sassoftware/restaf"
   ],
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "prettyjson": "^1.2.1",
-    "restaf": "^1.6.2"
+    "@sassoftware/restaf": "^1.6.2"
   },
   "devDependencies": {
     "serverless-offline": "latest"

@@ -21,10 +21,10 @@
  */
 "use strict";
 
-let restaf        = require("restaf");
+let restaf        = require("@sassoftware/restaf");
 let payload       = require('./config')();
 let prtUtil       = require("./prtUtil");
-let {casSetup}      = require('restaf-commons');
+let {casSetup}      = require('@sassoftware/restaflib');
 let printCasTable = require("./lib/printCasTable");
 
 let store = restaf.initStore();

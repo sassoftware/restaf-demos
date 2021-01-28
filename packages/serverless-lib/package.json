@@ -10,6 +10,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "aws-sdk": "^2.524.0",
-    "restaf": "^1.6.2"
+    "@sassoftware/restaf": "^1.6.2"
   }
 }

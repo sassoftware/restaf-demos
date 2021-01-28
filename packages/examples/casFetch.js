@@ -21,8 +21,8 @@
  */
 'use strict';
 
-let restaf     = require('restaf');
-let {casSetup} = require('restaf-commons');
+let restaf     = require('@sassoftware/restaf');
+let {casSetup} = require('@sassoftware/restaflib');
 
 let prtUtil = require('./prtUtil');
 

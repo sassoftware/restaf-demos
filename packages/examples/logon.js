@@ -23,7 +23,7 @@
  */
 let restaf = require('restaf');
 let config = require('./config');
-let {decodeJwt} = require('restaf-commons');
+let {decodeJwt} = require('@sassoftware/restaflib');
 let payload  = config();
 let store = restaf.initStore();
 
