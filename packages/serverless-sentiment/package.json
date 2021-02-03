@@ -20,14 +20,14 @@
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "prettyjson": "^1.2.1",
-    "@sassoftware/restaf": "^1.6.2"
+    "prettyjson": "^1.2.1"
   },
   "devDependencies": {
     "serverless-offline": "latest"
   },
   "resolutions": {
     "lodash": ">=4.17.15",
-    "mem": "^5.1.1"
+    "mem": "^5.1.1",
+    "node-forge": "^0.10.0"
   }
 }

@@ -21,7 +21,7 @@
  * Logon to the Viya server
  * ---------------------------------------------------------------------------------
  */
-let restaf = require('restaf');
+let restaf = require('@sassoftware/restaf');
 let config = require('./config');
 let {decodeJwt} = require('@sassoftware/restaflib');
 let payload  = config();

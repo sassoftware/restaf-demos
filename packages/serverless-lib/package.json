@@ -9,7 +9,6 @@
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "aws-sdk": "^2.524.0",
-    "@sassoftware/restaf": "^1.6.2"
+    "aws-sdk": "^2.524.0"
   }
 }

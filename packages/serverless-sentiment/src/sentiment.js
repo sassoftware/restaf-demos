@@ -16,7 +16,7 @@
  * ---------------------------------------------------------------------------------------
  *
  */
-let restaf     = require('restaf');
+let restaf     = require('@sassoftware/restaf');
 let sentimentMain = require('./sentimentMain')
 let getPayload = require('../lib/getPayload');
 let setPayload = require('../lib/setPayload');

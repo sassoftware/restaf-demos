@@ -26,12 +26,11 @@
   "scripts": {
     "start": "node",
     "lint": "eslint . --fix",
-    "test": "node "
+    "test": "node ",
+    "debug": "node --inspect-brk"
   },
   "dependencies": {
-    "@sassoftware/restaflib": "3.0.3",
     "jwt-decode": "^2.2.0",
-    "@sassoftware/restaf": "3.0.3",
     "win-ca": "^3.1.0"
   },
   "devDependencies": {

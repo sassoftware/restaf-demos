@@ -6,7 +6,8 @@
   "scripts": {
     "runAPI": "node runAPI",
     "debugAPI": "node --inspect-brk runAPI",
-    "test": "cd ./packages/examples && yarn test"
+    "test": "cd ./packages/examples && yarn test",
+    "debug": "cd ./packages/examples && yarn debug"
   },
   "repository": "https://github.com/sassoftware/restaf-demos",
   "keywords": [
@@ -27,13 +28,7 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "**/serverless-*/**"
     ]
-  },
-  "dependencies": {
-    "restaf-commons": "1.6.1"
   },
   "resolutions": {
     "**/minimist": "^0.2.1",
@@ -42,5 +37,8 @@
   },
   "devDependencies": {
     "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "node-forge": "^0.10.0"
   }
 }
