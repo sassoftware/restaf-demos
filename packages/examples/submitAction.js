@@ -37,13 +37,13 @@ async function example (store, logonPayload) {
   let p = {
     action: 'datastep.runCode',
     data  : {
-      code: 'data casuser.score; do i = 1 to 5000; x1=10;x2=20;x3=30; score1 = x1+x2+x3;end; run; '
+      code: 'data casuser.score; do j = 1 to 5;do i = 1 to 1000000000; x1=10;x2=20;x3=30; score1 = x1+x2+x3;end; end; run; '
     }
   };
   
   const progress = (status, jobContext) => {
     console.log('progress ', status);
-    return (status.items.isIdle === false);
+    return false;
   }
 
   const onCompletion = (context, r) => {
@@ -53,10 +53,10 @@ async function example (store, logonPayload) {
   debugger;
   console.log(p);
   
-   let r = await store.runAction(session, p,'AAA', onCompletion,'wait',5,progress);
+   let r = await store.runAction(session, p,'AAA', onCompletion /*,'wait',1,progress*/);
 //  let r = await store.runAction(session,p);
    
-   console.log(JSON.stringify(r, null,4));
+   console.log(JSON.stringify(r.items(), null,4));
    await store.apiCall(session.links('delete'));
    return "returning to main";
 }
