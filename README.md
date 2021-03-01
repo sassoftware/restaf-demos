@@ -25,26 +25,50 @@ To run this application you need to do the following:
 2. Ask your system administrator to give you a clientid and clientSecret appropriate
 for password flow.
 
-### Creating env file
-Copy the demos.env file to some location.
-Edit demos.env file and follow the instructions in the file.
-Key values to set:
+> A note on password flow:  With the advent of TFA you must transistion away from using userid+password to run the examples in this repository. Instead use a saved token to execute these programs.
 
-1. VIYA_SERVER
-2. CLIENTID
-3. CLIENTSECRET
+### Edit the .env file
 
+The .env file is the way to specify configurations. 
 
+```env
+VIYA_SERVER= <your viya server url : ex: http://myviya.sas.com>
+# Preferred way
+# TOKENFILE=<path to a persisted viya authentication token>
+TOKENFILE=../../token
+
+## Alternate setup: Will work until the use of password flow is phased out.
+
+# CLIENTID=sas.ec
+# CLIENTSECRET=
+# USER=xxx
+# PASSWORD=ppp
+
+# if Viya server still has the unsigned certificate and your protocol is https
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+```
+
+### How to get token
+
+You can use the standard sas-cli.
+
+```cmd
+sas-viya auth login
+```
+
+Or you can use the newer version which uses authorization_code flow to get the token
+
+```cmd
+sas-viya auth loginCode
+```
+
+Save the token in some secure place (the .sas directory is a good place)
 
 ## Running the application
 ```
-node examples/<name of example> <location of env file>
+yarn test testname
 
-Example:
-If the modified env file is at ../demos.env then to run logon.js example enter
-
-node examples/logon ../demos/env
-```
 
 ## List of examples
 
@@ -70,11 +94,11 @@ node examples/logon ../demos/env
 
 - casUploadImages - upload images to file service
 
-- codeTable - create and execute a codeTable (useful in scoring)
-
 - computeds - execute a compute service
 
-- logon  - logon to a Viay server
+- computedsEasy - accessing compute service using restaflib
+
+- logon  - logon to a Viya server
 
 - paginate - paginate thru the file service and list the file names
 
@@ -87,6 +111,10 @@ node examples/logon ../demos/env
 - request - access an external url
 
 - submit - run a job in the background.
+
+- submitAction - run a cas job in the background
+
+- submitcasl - similar to submitAction for runcasl
 
 
 - reportList - list all the reports

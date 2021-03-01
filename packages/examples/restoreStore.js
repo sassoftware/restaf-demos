@@ -23,6 +23,8 @@ let payload = require('./config')();
 let store   = restaf.initStore();
 let prtUtil = require("./prtUtil");
 
+/* This code is here to show how to handle an obscure use case */
+
 /* --------------------------------------------------------------------------------
  * Logon to the restaf server and setup file service
  * ---------------------------------------------------------------------------------
