@@ -13,41 +13,18 @@ the desired goal with minimal coding.
 example:
 git clone https://github.com/sassoftware/restaf-demos.git
 cd restaf-demos
-npm install
+yarn
 ```
 
 ## Configure the app
 ### Server setup
 To run this application you need to do the following:
 
-1. Ask your system administrator to enable CORS using the SAS Environment Manager.
-
-2. Ask your system administrator to give you a clientid and clientSecret appropriate
+Ask your system administrator to give you a clientid and clientSecret appropriate
 for password flow.
 
-> A note on password flow:  With the advent of TFA you must transistion away from using userid+password to run the examples in this repository. Instead use a saved token to execute these programs.
+> A note on password flow:  With the advent of TFA you should start transistioning away from using userid+password to run the examples in this repository. Instead use a saved token to execute these programs.
 
-### Edit the .env file
-
-The .env file is the way to specify configurations. 
-
-```env
-VIYA_SERVER= <your viya server url : ex: http://myviya.sas.com>
-# Preferred way
-# TOKENFILE=<path to a persisted viya authentication token>
-TOKENFILE=../../token
-
-## Alternate setup: Will work until the use of password flow is phased out.
-
-# CLIENTID=sas.ec
-# CLIENTSECRET=
-# USER=xxx
-# PASSWORD=ppp
-
-# if Viya server still has the unsigned certificate and your protocol is https
-NODE_TLS_REJECT_UNAUTHORIZED=0
-
-```
 
 ### How to get token
 
@@ -65,10 +42,42 @@ sas-viya auth loginCode
 
 Save the token in some secure place (the .sas directory is a good place)
 
-## Running the application
-```
-yarn test testname
+### Edit the .env file
 
+The .env file is the way to specify configurations. 
+
+```env
+VIYA_SERVER= <your viya server url : ex: http://myviya.sas.com>
+# Preferred way
+# TOKENFILE=<path to a persisted viya authentication token>
+# ex: TOKENFILE=../../token
+
+## Alternate setup: Will work until the use of password flow is phased out.
+
+# CLIENTID=sas.ec
+# CLIENTSECRET=
+# USER=xxx
+# PASSWORD=ppp
+
+# if Viya server still has the unsigned certificate and your protocol is https
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+```
+
+
+## Running the application
+
+```md
+yarn test testname
+```
+
+### Debugging your code.
+
+```md
+yarn debug testname
+```
+
+Then use your favorite nodejs debugger. I use the chrome://inspect on Google chrome.
 
 ## List of examples
 
