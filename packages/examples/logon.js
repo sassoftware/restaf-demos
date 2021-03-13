@@ -23,7 +23,7 @@
  */
 let restaf = require('@sassoftware/restaf');
 let config = require('./config');
-let {decodeJwt} = require('@sassoftware/restaflib');
+
 let payload  = config();
 let store = restaf.initStore();
 
@@ -32,8 +32,6 @@ store
   .logon(payload)
   .then(msg => {
     console.log(JSON.stringify(store.connection(), null, 4));
-    let jwt = store.decodeJWT();
-    console.log(jwt);
     console.log(`Logon Status: ${msg}`);
     console.log("calling logoff");
     let c = store.connection();
