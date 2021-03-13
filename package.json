@@ -43,7 +43,7 @@
     "jest": "^26.6.3"
   },
   "dependencies": {
-    "@sassoftware/restaf": "next",
-		"@sassoftware/restaflib": "next"
+    "@sassoftware/restaf": "^3.2.4",
+    "@sassoftware/restaflib": "^3.2.4"
   }
 }
