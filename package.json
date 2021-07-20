@@ -42,8 +42,8 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "@sassoftware/restaf": "next",
-    "@sassoftware/restaflib": "next",
+    "@sassoftware/restaf": "^3.2.61",
+    "@sassoftware/restaflib": "^3.2.61",
     "jsdoc": "^3.6.7"
   }
 }
