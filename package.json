@@ -38,7 +38,10 @@
     "**/node-forge": "^0.10.0",
     "**/node-fetch": "^2.6.1",
     "**/elliptic": "^6.5.3",
-    "**/underscore": "1.12.1"
+    "**/underscore": "1.12.1",
+    "**/yargs-parser": "13.1.2",
+    "**/trim-newlines": "3.0.1",
+    "**/glob-parent": "5.1.2"
   },
   "devDependencies": {},
   "dependencies": {
