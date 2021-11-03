@@ -1,180 +1,146 @@
-# restaf-demos
 
-A collection of examples demonstrating then use of restaf in nodejs and in serverless functions
-The demos cover typical SAS software usages - running datastep, running cas actions,
-accessing VA reports etc...
+# Introduction
 
-Please review the source code to see how restaf is used to achieve
-the desired goal with minimal coding.
+One of the common activities is to import and export different contents in a Viya Server. The [viyacaddy package](https://github.com/sassoftware/restaf/tree/main/packages/viyacaddy) is make this job a little easier for a select set of data.
 
+This cli is useful for:
 
-## Install
-```
-example:
-git clone https://github.com/sassoftware/restaf-demos.git
-cd restaf-demos
-yarn
-```
+1. Exporting selected VA reports as json files.
 
-## Configure the app
-### Server setup
-To run this application you need to do the following:
+2. Importing Va reports stored as json files
 
-Ask your system administrator to give you a clientid and clientSecret appropriate
-for password flow.
+3. Importing hdat, sas7bat, csv files into CAS
 
-> A note on password flow:  With the advent of TFA you should start transistioning away from using userid+password to run the examples in this repository. Instead use a saved token to execute these programs.
+4. Importing .sas and .ds2 files into sashdat (for use with scoring actions)
 
+5. Importing .astore and .sasast files into sashdat
 
-### How to get token
+## Installing the cli
 
-You can use the standard sas-cli.
+You can install the cli as follows:
 
-```cmd
-sas-viya auth login
-```
+     npm install -g @sassoftware/viyacaddy
 
-Or you can use the newer version which uses authorization_code flow to get the token
+### Notes
 
-```cmd
-sas-viya auth loginCode
-```
+1. If you do not have nodejs installed on your system you can use  
 
-Save the token in some secure place (the .sas directory is a good place)
+## Usage
 
-### Edit the .env file
+The cli can be run in interactive mode or in "batch" mode.
 
-The .env file is the way to specify configurations. 
+### Interactive mode
 
-```env
-VIYA_SERVER= <your viya server url : ex: http://myviya.sas.com>
-# Preferred way
-# TOKENFILE=<path to a persisted viya authentication token>
-# ex: TOKENFILE=../../token
-
-## Alternate setup: Will work until the use of password flow is phased out.
-
-# CLIENTID=sas.ec
-# CLIENTSECRET=
-# USER=xxx
-# PASSWORD=ppp
-
-# if Viya server still has the unsigned certificate and your protocol is https
-NODE_TLS_REJECT_UNAUTHORIZED=0
-
+```sh
+npx @sassoftware/viyacaddy --host <viyaurl> 
 ```
 
 
-## Running the application
+Note that the default clientid sas.ec is used.
 
-```md
-yarn test testname
+### Batch mode
+
+```sh
+npx @sassoftware/viyacaddy  --env <your-env-file> -- file <cmdfile>
 ```
 
-### Debugging your code.
+The env file has the following format
 
-```md
-yarn debug testname
+```ini
+VIYA_SERVER=http://your-viya-server
+USER=username
+PASSWORD=password
 ```
 
-Then use your favorite nodejs debugger. I use the chrome://inspect on Google chrome.
+You can use a previously generated token instead of userid and password. Create a token and save it in some file (say mytoken) and modify the env file as follows
 
-## List of examples
-
-- addServices - initialization of specific Viya Services
-
-- appdata -  adding and retrieving app specific information from restaf
-
-- casds -  executing datastep in CAS
-
-- casEcho - executing echo action
-
-- casFetch - fetching data from CAS
-
-- casSentiment - sentiment analysis in CAS
-
-- casSessions - creating CAS sessions
-
-- casTables - list fileinfo for all tables in all caslibs
-
-- casUpload - upload a csv file and operate on it
-
-- casUploadAstore - upload a astore to cas
-
-- casUploadImages - upload images to file service
-
-- computeds - execute a compute service
-
-- computedsEasy - accessing compute service using restaflib
-
-- logon  - logon to a Viya server
-
-- paginate - paginate thru the file service and list the file names
-
-- reportElement - prints the named elements in a VA report
-
-- reportImage - generate an image(svg) for a report
-
-- reportList - list the names of all the reports
-
-- request - access an external url
-
-- submit - run a job in the background.
-
-- submitAction - run a cas job in the background
-
-- submitcasl - similar to submitAction for runcasl
-
-
-- reportList - list all the reports
-
-## Serverless Examples
-
-The serverless subdirectory has examples of using restaf to build AWS serverless functions.
-
-- sls-scoreAstore - scoring using an astore - astore must be stored on the Viya Server
-
-- sls-sentiment  - get sentiment score for a given text
-
-- sls-image - display an image for a SAS VA report
-
-
-### Configuring the serverless.yml
-
-In this version the serverless.yml references the awsenv.yml file to get information that is usually common between all 
-the serverless functions ( vpc, subnets etc...). 
-
-
-## Poor Man's version of debugging of Serverless functions
-
-IDE's like VSCode have capability to debug serverless functions. But not all users use this IDE.
-So I built a very simple way to invoke the API endpoints in nodejs debugger. 
-
-### Configuration
-
-In the env file add the following three options (see reataf.env for an example)
-
+```ini
+VIYA_SERVER=http://your-viya-server
+TOKEN_FILE=mytoken
 ```
 
-SLS=<serverless function name in examples dir>    <-- ex: sls-scoreAstore
-SLSPATH=path    <-- the specific sls path ex: score
-SLSPAYLOAD=<payload file path> <-- a json file with the payload(if POST or PUT)ex: score.json
+The cmdfile is a text file with a list of valid viyacaddy commands. These commands are executed in parallel.
 
-```
+## Current commands
 
-### Execution
+When data or report is imported, the cli will delete any existing file and create the new one.
+Also the new data will not be loaded into memory. That task is left to the applications that will use the tables and reports that are imported.
 
-To run with nodejs inspect issue the following command
+### Basic commands
 
-```
-npm run debugAPI <envfile with the information discussed above>
-```
+- logon - to logon to Viya. This command will prompt for username and password
+- exit  - to exit the cli
+- help  - get help on commands
 
-Then follow standard nodejs debugging process
+### Utility
 
-To run without debug turned on issue the following command
+- caslibs  -- lists the names of all caslibs
 
-```
-npm run runAPI <envfile with the information discussed above>
+### Tables command
 
+- tables import   -- to import hdat, b7dat,csv, astore, ds2 and sas files into cas tables in a caslib
 
+        tables import <input directory> <list of files|*> -c <caslib>
+
+- tables list -- to list the names of the tables in a specific caslib
+
+        tables list <caslib>
+
+### Reports command
+
+- Import VA reports from specified directory into a SAS Viya folder
+
+         reports import <input directory> <list of names|*> -f <folder>
+
+- Export VA reports in json format to specified directory
+
+         reports export  <list of reports> -d <directory-to-store-reports>
+
+- List reports in VA
+
+         reports list   -- list the names of all the reports
+
+### Notes on imported tables
+
+- sasb7dat,sashdat,csv -- sashdat file
+- astore -- sashdata file (schema: _index_ , _state_)
+- sas, ds2 -- sashdat - "model" table that can be executed with datastep.runCodeTable and ds2.runModel actions.(schema: modelName, dataStepsrc|ds2Src)
+
+## Examples
+
+1. *Import a.json and b.json from reportfiles directory into Public folder*  
+    - **reports import** ./reportfiles a.json b.json -f Public 
+
+2. *Import all files from reportfiles directory into Public folder*
+    - **reports import** ./reportfiles * -f Public 
+
+3. *Import files with spaces in name
+    - **reports import** ./reportfiles 'a report with spaces'  -f Public
+
+4. *Export reports a and b as json files into the reportsfiles directory*
+    - **reports export** a b -d ./reportfiles
+
+5. *List all the reports available to the user*
+    - **reports list**
+
+6. *Import the two files from data directory into Public caslib*
+    - **tables import**  ./data  iris.csv retails.sas7bdat -c Public
+
+7. *Import all the files in data directory into Public caslib*
+    - **tables import**  ./data  *  -c Public
+
+8. *List names of tables in the public caslib*
+    - **tables list** public 
+
+## Sample cmdfile
+
+Here is a sample command file
+
+    # import all report in the specificed directory
+    reports import c:/public/dev/reports * -f Public
+
+    # Import a sas program
+    tables import ../../data Cluster_SDOH6.sas -c public
+
+    # Import all data in a directory
+    tables import c:/public/dev/data * -c casuser
