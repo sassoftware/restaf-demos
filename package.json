@@ -9,11 +9,12 @@
   },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
+    "build": "rimraf -rf lib && babel src --out-dir lib",
     "start": "node --no-warnings cli",
     "pub": "npm publish --tag test --access public",
     "dkrbuild": "docker build"
   },
-  "repository": "https://github.com/sassoftware/restaf/tree/main/packages/viyacaddy",
+  "repository": "https://github.com/sassoftware/restaf-demos/tree/viyacaddy",
   "keywords": [
     "Viya",
     "restaf",
@@ -29,6 +30,7 @@
   "dependencies": {
     "@sassoftware/restaf": "3.4.0",
     "@sassoftware/restaflib": "3.4.0",
+    "rimraf": "^3.0.2",
     "strip-ansi": "^6.0.1",
     "vorpal": "^1.12.0",
     "yargs": "^17.2.1"
