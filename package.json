@@ -64,7 +64,7 @@
     "eslint": "^7.31.0"
   },
   "resolutions": {
-    "lodash": ">=4.17.21",
+    "lodash": "4.17.21",
     "inquirer": "8.2.0"
   }
 }
