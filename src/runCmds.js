@@ -15,20 +15,20 @@ module.exports = async function runCmds (store, cmdFile, vorpal) {
 	let n = cmdArray.length;
 	vorpal.log(`No of lines in cmd file: ${n}`);
 	for (let i = 0; i < n; i++) {
-		let cmd = cmdArray[ i ];
-		if (cmd.substr(0, 1) !== '#') {
+		let cmd = cmdArray[i];
+		if (cmd.substr(0, 1) != '#') {
 			if (cmd != null && cmd.length > 0) {
 				vorpal.log('------------------------------------');
-				vorpal.log(`Command in line[${i + 1}]: ${cmd}`);
+				vorpal.log(`cmd in line[${i + 1}]: ${cmd}`);
 				try {
-					await vorpal.exec(cmd);
-					vorpal.log('------------------------------------');
+					let result = await vorpal.exec(cmd);
+					// vorpal.log(`Result: ${result}`);
 				} catch (err) {
 					vorpal.log(err);
 				}
+				vorpal.log('------------------------------------');
 			}
 		}
 	}
-	return 'All cmds processed - waiting on completion';
+	return 'All cmds processed';
 };
-

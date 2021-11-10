@@ -1,281 +1,176 @@
 #!/usr/bin/env node
 /*
- * Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
- * SPDX-License-Identifier: Apache-2.0
- */
-'use strict';
+* Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+* SPDX-License-Identifier: Apache-2.0
+*/
+ 'use strict';
 
-const restaf  = require('@sassoftware/restaf');
-const vorpal  = require('vorpal')();
-const config  = require('./src/config');
-const logon   = require('./src/logon');
-const runCmds = require('./src/runCmds');
-const upload = require('./src/upload');
-const tableImport = require('./src/tableImport');
-const reportImport = require('./src/reportImport');
-const reportExport = require('./src/reportExport');
-const caslibList = require('./src/caslibList');
-const reportList = require('./src/reportList');
-const tablesList = require('./src/tablesList');
-const privateCR  = require('./src/privateCR');
-const fs = require('fs');
+const restaf     = require('@sassoftware/restaf');
+const vorpal     = require('vorpal')();
+const fss        = require('fs');
+const fs         = fss.promises;
+const config     = require('./src/config');
+const logon      = require('./src/logon');
+const addClient  = require('./src/addClient');
+const delClient  = require('./src/delClient');
+const listClient = require('./src/listClient');
+const detailClient = require('./src/detailClient');
+
+const runCmds    = require('./src/runCmds');
 
 let argv = require('yargs').argv;
-console.log(argv);
 let cmdFile = argv.file == null ? null : argv.file;
-let host = argv.host == null ? null : argv.host;
 let envFile = argv.env == null ? null : argv.env;
-
-console.log('cmdFile:', cmdFile);
-console.log('host ', host);
-console.log('env ', envFile);
+let host = argv.host == null ? null : argv.host;
+let ttl = argv.ttl == null ? null : argv.ttl;
+let clientConfigFile = argv.cfile == null ? null : argv.cfile; 
+let clientConfig = null;
 
 if (host !== null) {
     process.env.VIYA_SERVER = host;
     console.log(`VIYA_SERVER set to: ${process.env.VIYA_SERVER}`);
 }
-
 let payload = config(envFile);
 
-console.log(payload);
-let store = restaf.initStore();
+let store  = restaf.initStore({sslOptions: payload.sslOptions});
+if (clientConfigFile !== null ) {
+    let draw = fss.readFileSync(clientConfigFile, 'utf8');
+    clientConfig = JSON.parse(draw);
+    console.log(clientConfig);
 
-// let store = restaf.initStore();
+}
+
+// let clientConfig = (process.env.CLIENTIDCONFIG != null) ? process.env.CLIENTIDCONFIG : null;
 
 
 runCli(store, cmdFile);
 
 function runCli (store, cmdFile) {
-	vorpal
-		.command('logon')
-		.description('Logon to Viya')
-		.action((args, cb) => {
-			vorpal.activeCommand.prompt(
-				{
-					type   : 'input',
-					name   : 'user',
-					message: 'Enter your userid> '
-				},
-				result => {
-					payload.user = result.user;
-					vorpal.activeCommand.prompt(
-						{
-							type   : 'password',
-							name   : 'password',
-							message: 'Enter your password> '
-						},
-						result => {
-							payload.password = result.password;
-							logon(store, payload)
-								.then(() => {
-									vorpal.log('Logon Successful');
-									cb();
-								})
-								.catch(err => {
-									vorpal.log(JSON.stringify(err,null,4));
-									cb();
-								});
-						}
-					);
-				}
-			);
-		});
-	
-	vorpal
-		.command('privatecr')
-		.alias('cr')
-		.description('Create a domain, create credentials and register cr')
-		.validate((args) => {
-			if (args.options.file == null ) {
-				return 'Specify config file';
-			}
-			return true;
-		})
-		.option('-f --file <file>', 'JSON configuration file')
-		.action((args, callback) => {
-			privateCR(store, args, vorpal)
-				.then((r) => {
-					vorpal.log(r);
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-		});
+   
+    vorpal
+        .command('logon')
+        .description('Logon to Viya')
+        .action((args, cb)=> {
+           
+            vorpal.activeCommand.prompt({
+                type   : 'input',
+                name   : 'user',
+                message: 'Enter your userid> '
+            }, (result) => {
+                payload.user = result.user;
+                vorpal.activeCommand.prompt ({
+                    type   : 'password',
+                    name   : 'password',
+                    message: 'Enter your password> '
+                }, (result)=> {
+                    payload.password = result.password;
+                    logon(store, payload, vorpal)
+                        .then (r => {
+                            vorpal.log('Logon Successful');
+                            cb();
+                        })
+                        .catch (err => {
+                            vorpal.log(err);
+                            cb();
+                        });     
+                });
+            });
+        });
+    
+    vorpal
+        .command('list [all]')
+            .description('List clients. Use all option to include system clientids')
+            .action ((args,cb) => {
+                listClient(store, args.all, vorpal)
+                .then(r => { vorpal.log(r); vorpal.log(r); cb();})
+                .catch(e => { vorpal.log(e); cb();});
+            });
+    vorpal
+        .command('config <config>')
+            .description('File containing the configuration for clientid registeration')
+            .action ((args,cb) => {
+                fs.readFile(args.config, 'UTF8')
+                 .then (dataraw => {
+                    clientConfig = JSON.parse(dataraw);
+                    vorpal.log(`Clientid config set to:`);
+                    vorpal.log(JSON.stringify(clientConfig, null,4));
+                    cb();
+                 })
+                 .catch(err => {
+                     vorpal.log(err);
+                     cb();
+                 });
+            });
+    vorpal
+        .command('new <clientid>')
+            .alias('add')
+            .description('Add a new client with specified name')
+            .option('-t --type <type>', 'Grant Type')
+            .option('-r --redirect [redirect]', 'Redirect uri')
+            .option('-s --secret [secret]', 'Secret')
 
-	vorpal
-
-		.command(
-			'upload',
-			'Upload resources (data, code and astore)to cas tables')
-		.hidden()
-		.description('upload code, data or astore to sashdat')
-		.validate(args => {
-			if (args.options.file == null || args.options.output == null) {
-				return 'Both file and output must be specified';
-			}
-			return true;
-		})
-		.option(
-			'-f --file <file>',
-			'Currently supported extensions: sas, ds2, casl, sashdat, sasb7dat, astore , sasast, csv'
-		)
-		.option(
-			'-o --output <output>',
-			'output castable(caslib.name)- name will be upper-cased'
-		)
-
-		.action((args, callback) => {
-			upload(store, args, vorpal)
-				.then(r => {
-					vorpal.log(r);
-					callback();
-				})
-				.catch(err => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	
-	
-
-	vorpal
-		.command('tables import <dir> [files...]', 'import .sas, .ds2, .sashdat, .sasb7dat, .astore , .sasast, .csv')
-		.description('Import .sas, .ds2, .sashdat, .sasb7dat, .astore , .sasast, .csv into CAS Tables')
-		.validate((args) => {
-
-			let options = args.options;
-			if (options.caslib == null) {
-				return 'Target caslib must be specified';
-			}
-			return true;
-		})
-		// .option('-d --dir <dir>', 'input directory')
-		.option('-c --caslib <caslib>', 'target caslib')
-
-		.action((args, callback) => {
-			tableImport(store, args, vorpal)
-				.then((r) => {
-					vorpal.log(r);
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	
-	
-
-	vorpal
-		.command('reports list', 'List all reports')
-		.description('List all the VA reports')
-		.action((args, callback) => {
-			reportList(store, vorpal)
-				.then(r => callback())
-				.catch(err => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	
-	vorpal
-		.command('reports import <dir> [files...]', 'import VA reports')
-		.description('Import VA reports')
-		.validate((args) => {
-			let options = args.options;
-			if (options.folder == null && options.uri == null) {
-				return('Specify either folder or uri');
-			}
-			return true;
-		})
-		// .option('-d --dir <dir>','input directory')
-		.option('-f --folder <folder>', 'name of output folder(ex: Public)')
-		.option('-u --uri <uri>', 'specify parentUri in place of folder name')
-
-		.action((args, callback) => {
-			reportImport(store, args, vorpal)
-				.then((r) => {
-					vorpal.log(r);
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	vorpal
-		.command('reports export [files...]', 'Export report')
-		.description('Export VA reports')
-		.validate((args) => {
-			if (args.options.dir == null) {
-				vorpal.log('Destination directory must be specified');
-				return false;
-			}
-			return true;
-		})
-		.option('-d --dir <dir>', 'destination path(without filename')
-
-		.action((args, callback) => {
-			reportExport(store, args, vorpal)
-				.then((r) => {
-					vorpal.log(r);
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	
-	vorpal
-		.command('caslibs', 'List all caslibs')
-		.description('List all active caslibs')
-		.action((args, callback) => {
-			caslibList(store, args, vorpal)
-				.then(() => {
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-
-		});
-	
-	vorpal
-		.command('tables list <caslib> ', 'List tables in a caslib')
-		.description('List tables in a specified caslib')
-		.action((args, callback) => {
-			tablesList(store, args, vorpal)
-				.then(() => {
-					callback();
-				})
-				.catch((err) => {
-					vorpal.log(err);
-					callback();
-				});
-		});
-	
-	vorpal
-		.delimiter('>> ')
-		.log('Welcome to @sassoftware/viyacaddy')
-		.log('Enter help to get a list of all the commands')
-		.log('Use logon command to start your SAS Viya session')
-		.log('');
-
-	if (cmdFile === null) {
-		vorpal.show();
-	} else {
-		logon(store, payload)
-			.then(()=> {
-				vorpal.log(`command file: ${cmdFile}`);
-				return runCmds(store, cmdFile, vorpal);
-			})
-			.then(r => console.log(r))
-			.catch(err => {
-				vorpal.log(JSON.stringify(err,null,4));
+            .action ((args, cb) => {
+               addClient(store, args.clientid, args.options, clientConfig, ttl)
+               .then(r => { vorpal.log(r); cb();})
+               .catch(e => { vorpal.log(e); cb();});
+            });
+    vorpal
+        .command('delete <clientid>')
+            .alias('del')
+            .description('Delete specified client')
+            .action ((args,cb) => {
+                delClient(store, args.clientid)
+                .then(r => { vorpal.log(r); cb();})
+                .catch(e => { vorpal.log(e); cb();});
+            });
+     vorpal
+			.command('details <clientid>')
+			.alias('desc')
+			.description('Details of selected clienti')
+			.action((args, cb) => {
+				detailClient(store, args.clientid)
+					.then((r) => {
+						vorpal.log(r);
+						cb();
+					})
+					.catch((e) => {
+						vorpal.log(e);
+						cb();
+					});
 			});
-	}
+    vorpal
+        .command('token <file>')
+        .description('save current oauth token to specified file')
+        .action((args, cb) => {
+            let token = store.connection().token;
+            fs.writeFile(args.file, token)
+                .then(r => {
+                    vorpal.log(`token written to ${args.file}`);
+                    cb();
+                })
+                .catch(e => {
+                    vorpal.log(e);
+                    cb();
+                });
+        });
+
+
+    vorpal
+        .delimiter ('>> ')
+        .log('--------------------------------------')
+        .log('Welcome to @sassoftware/registerclient')
+        .log('Enter help to get a list of all the commands')
+        .log('Use logon command to start your SAS Viya session. User must be an admin.')
+        .log('');
+
+    if (cmdFile === null) {
+        vorpal.show();
+    } else {
+        logon(store, payload)
+            .then (() => runCmds(store, cmdFile, vorpal))
+            .then (r  => console.log(r))
+            .catch(err => {
+                vorpal.log(err);
+        });    
+    }
 }

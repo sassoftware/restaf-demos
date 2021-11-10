@@ -18,19 +18,17 @@
 
 'use strict';
 
-module.exports = async function logon (store, logonPayload) {
+module.exports = async function logon (store, logonPayload, vorpal) {
 
 	if (logonPayload !== null) {
 		if (store.connection() !== null) {
 			await store.logoff();
 		}
 	}
+
 	await store.logon(logonPayload);
-	let r = await store.addServices('folders', 'casManagement', 'reports');
-	let casManagement = r.casManagement;
-	let servers = await store.apiCall(casManagement.links('servers'));
-    store.setAppData('servers', servers);
-	return true;
+    await store.addServices('SASLogon');
+	return 'done';
 };
 
 

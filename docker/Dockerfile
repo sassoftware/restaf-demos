@@ -13,4 +13,4 @@ RUN npm install
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 ENV CLIENTID=sas.ec
 ENV CLIENTSECRET=
-CMD ["npx", "@sassoftware/viyacaddy"]
+CMD ["npx", "@sassoftware/registerclient"]

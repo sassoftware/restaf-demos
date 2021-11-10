@@ -1,5 +1,5 @@
 {
-  "name": "@sassoftware/viyacaddy",
+  "name": "@sassoftware/registerclient",
   "version": "3.4.0",
   "description": "collection of clis using rest apis",
   "engines": {
@@ -14,7 +14,7 @@
     "pub": "npm publish --tag test --access public",
     "dkrbuild": "docker build"
   },
-  "repository": "https://github.com/sassoftware/restaf-demos/tree/viyacaddy",
+  "repository": "https://github.com/sassoftware/restaf-demos/tree/registerclient",
   "keywords": [
     "Viya",
     "restaf",
@@ -25,7 +25,7 @@
   "license": "Apache-2.0",
   "main": "./cli.js",
   "bin": {
-    "viyacaddy": "cli.js"
+    "registerclient": "cli.js"
   },
   "dependencies": {
     "@sassoftware/restaf": "3.4.0",
