@@ -21,6 +21,7 @@ const privateCR  = require('./src/privateCR');
 const fs = require('fs');
 
 let argv = require('yargs').argv;
+console.log(argv);
 let cmdFile = argv.file == null ? null : argv.file;
 let host = argv.host == null ? null : argv.host;
 let envFile = argv.env == null ? null : argv.env;
