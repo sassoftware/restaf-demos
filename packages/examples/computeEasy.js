@@ -34,7 +34,7 @@ async function example (store, logonPayload) {
   let computeSession = await computeSetup(store, computeContext);
   
   let macros = {rows: 100};
-  let code = `data _null_; do i = 1 to &rows; x=1; end; run; `;
+  let code = `data _null_; do i = 1 to &rows; x=1; end; run;`;
 
   let computeSummary = await computeRun(
       store,
@@ -46,6 +46,8 @@ async function example (store, logonPayload) {
   
   let log = await restaflib.computeResults(store, computeSummary, 'log');
   viewer(log);
+  let ods = await restaflib.computeResults(store, computeSummary, 'ods');
+  console.log(ods);
   await store.apiCall(computeSession.links('delete'));
   return "All Done";
 }

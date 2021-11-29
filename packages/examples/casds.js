@@ -27,7 +27,7 @@ let listCaslibs   = require("./lib/listCaslibs");
 let printCasTable = require("./lib/printCasTable");
 let prtUtil = require("./prtUtil");
 
-let store = restaf.initStore({ casProxy: true });
+let store = restaf.initStore();
 
 async function example (store, logonPayload) {
   let { apiCall } = store;
