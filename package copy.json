@@ -8,6 +8,7 @@
     "yarn": ">=1.22.0"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "build": "rimraf -rf lib && babel src --out-dir lib",
     "start": "node --no-warnings cli",
     "pub": "npm publish --tag test --access public",
@@ -39,7 +40,7 @@
     "@babel/core": "^7.14.6"
   },
   "resolutions": {
-    "**/lodash": ">=4.17.21",
+    "lodash": "4.17.21",
     "**/inquirer": "8.2.0",
     "**/yargs-parser": ">=13.1.2",
     "**/node-notifier": "^8.0.1",
