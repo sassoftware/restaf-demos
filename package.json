@@ -8,7 +8,6 @@
     "yarn": ">=1.22.0"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "build": "rimraf -rf lib && babel src --out-dir lib",
     "start": "node --no-warnings cli",
     "pub": "npm publish --tag test --access public",
@@ -25,11 +24,11 @@
   "license": "Apache-2.0",
   "main": "./cli.js",
   "bin": {
-    "viyacaddy": "cli.js"
+    "@sassoftware/viyacaddy": "cli.js"
   },
   "dependencies": {
-    "@sassoftware/restaf": "3.4.0",
-    "@sassoftware/restaflib": "3.4.0",
+    "@sassoftware/restaf": "4.0.1",
+    "@sassoftware/restaflib": "4.0.1",
     "rimraf": "^3.0.2",
     "vorpal": "^1.12.0",
     "yargs": "^17.2.1"
