@@ -5,21 +5,6 @@ It can be run in interactive mode or in batch mode.
 The user of this app must have admin rights.
 
 ---
----
-
-## **Install**
-
----
-
-```script
-npm install -g @sassoftware/registerclient
-```
-
----
-
-This installs the registerclient as a global command.
-
----
 
 ## Quick start
 
@@ -31,35 +16,7 @@ The simplest way to use this cli is as follows:
 npx @sassoftware/registerclient --host <your viya server url>  
 ```
 
-## **Configuration**
-
----
-
-Create an env file ( call it register.env) with the following content
-
-```env
-VIYA_SERVER=http://<your viyaserver>
-AUTHTYPE=password
-CLIENTID=sas.ec or a valid clientid( appears that sas.ec is shipped as a default clientid)
-CLIENTSECRET=
-```
-
-Now add this enviroment variable
-
-SET RESTAFENV=register.env
-
----
-
-## **Interactive mode**
-
----
-Start the interactive session with this command:
-
-```script
-
-registerclient
-
-```
+On the prompt enter, enter logon command.
 
 This will put you into an interactive session where you can issue commands. Use the exit command to end the session.
 
@@ -71,7 +28,7 @@ This will put you into an interactive session where you can issue commands. Use 
 
 This mode is useful when you want to run these commands as part of some process. I use them to setup all my clientids when I am configuring a new server
 
-Create a version of the register.env file with two additional keys - USER and PASSWORD
+Create a version of the .env file with two additional keys - USER and PASSWORD
 
 ```env
 VIYA_SERVER=http://<your viyaserver>
@@ -86,7 +43,7 @@ Run the following command
 
 ```script
 
-registerclient --file yourcmdfile
+npx @sassoftware/registerclient --env your-envfile --file yourcmdfile
 
 ```
 
