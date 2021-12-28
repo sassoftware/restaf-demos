@@ -1,6 +1,6 @@
 {
   "name": "restaf-demos",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
@@ -49,7 +49,6 @@
     "jwt-decode": "^2.2.0",
     "win-ca": "^3.1.0",
     "yargs": "^16.2.0"
-    
   },
   "devDependencies": {}
 }
