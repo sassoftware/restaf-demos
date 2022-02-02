@@ -19,11 +19,11 @@
 "use strict";
 
 let fs = require('fs');
-let yargs = require('yargs');
+
 
 module.exports = function config () {
 
-	let appEnv = '../../.env';
+	let appEnv = '../.env';
 
 	console.log('---------------------------------------');
 	console.log(`env file set to: ${appEnv}`);
