@@ -27,11 +27,12 @@ let {casSetup} = require("@sassoftware/restaflib");
 
 let prtUtil = require("./prtUtil");
 
-let store = restaf.initStore();
+let store = restaf.initStore({casProxy: true});
 async function example () {
+  console.log(payload);
   let { session } = await casSetup(store, payload, "cas");
   console.log(JSON.stringify(session.links("execute"), null, 4));
-  console.log(JSON.stringify(session.links("casproxy"), null, 4));
+
   let p = {
     action: "echo",
     data  : { code: "data casuser.data1; x=1;put x= ; run; " }
