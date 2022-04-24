@@ -15,9 +15,34 @@
  * ---------------------------------------------------------------------------------------
  *
  */
- 'use strict';
- 
- let app   = require('./src/app').app;
- let image = require('./src/image').image;
- 
- module.exports = { app, image};
+
+/*
+ * Simple echo action example
+ */
+"use strict";
+
+let restaf     = require("@sassoftware/restaf");
+let payload    = require('./config')();
+let {casSetup} = require("@sassoftware/restaflib");
+
+let prtUtil = require("./prtUtil");
+
+let store = restaf.initStore({casProxy: true});
+async function example () {
+  console.log(payload);
+  let { session } = await casSetup(store, payload, "cas");
+  console.log(JSON.stringify(session.links("execute"), null, 4));
+
+  let p = {
+    action: "echo",
+    data  : { code: "data casuser.data1; x=1;put x= ; run; " }
+  };
+  debugger;
+  let r = await store.runAction(session, p);
+  console.log(JSON.stringify(r.items(), null, 4));
+  return "done";
+}
+
+example()
+  .then(r => console.log(r))
+  .catch(err => console.log(err));

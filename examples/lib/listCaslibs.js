@@ -15,14 +15,23 @@
  * ----------------------------------------------------------------------------------------
  *
  */
+
 'use strict';
- module.exports = function getPayload() {
-    return {
-        authType    : 'password',
-        host        : `${process.env.VIYA_SERVER}`,
-        user        : process.env['USER'],
-        password    : process.env['PASSWORD'],
-        clientID    : process.env['CLIENTID'],
-        clientSecret: (process.env.hasOwnProperty('CLIENTSECRET')) ? process.env[ 'CLIENTSECRET' ] : ''
-        };
- }
+let prtUtil    = require('../prtUtil');
+module.exports = async function listSessionTables(store, servers, session) {
+    let casserver = servers.itemsList(0);
+    let caslibs   = await store.apiCall(servers.itemsCmd(casserver, 'caslibs'));
+
+    // prtUtil.view(caslibs, 'caslibs');
+    for (let i = 0; i < caslibs.itemsList().size; i++) {
+        let s = caslibs.itemsList(i);
+        console.log(`========================caslib = ${s}`);
+        let tables = await store.apiCall(caslibs.itemsCmd(s, 'tables'));
+        let dataSets = tables.itemsList();
+        if ( dataSets.size > 0 ) {
+            dataSets.map(t => console.log(t));
+        } else {
+            console.log( 'No datasets in caslib');
+        }
+    }
+};

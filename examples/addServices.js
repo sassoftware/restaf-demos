@@ -20,7 +20,7 @@
 
 let restaf = require("@sassoftware/restaf");
 let payload = require('./config')();
-let store = restaf.initStore();
+let store = restaf.initStore({casProxy: true});
 let prtUtil = require("./prtUtil");
 
 /* --------------------------------------------------------------------------------

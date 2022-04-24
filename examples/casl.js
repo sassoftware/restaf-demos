@@ -6,7 +6,7 @@ let {casSetup} = require('@sassoftware/restaflib');
 
 let prtUtil = require("./prtUtil");
 
-let store = restaf.initStore();
+let store = restaf.initStore({casProxy: true});
 async function example () {
   let { session } = await casSetup (store, payload);
   // console.log(JSON.stringify(session.links(), null, 4));

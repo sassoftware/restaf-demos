@@ -1,22 +1,17 @@
 {
   "name": "restaf-demos",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
-    "runAPI": "node runAPI",
-    "debugAPI": "node --inspect-brk runAPI",
-    "test": "cd ./packages/examples && yarn test",
-    "debug": "cd ./packages/examples && yarn debug"
+    "test": "cd ./examples && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npm test",
+    "debug": "cd ./examples && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npm run debug"
   },
   "repository": "https://github.com/sassoftware/restaf-demos",
   "keywords": [
     "restaf",
     "http",
-    "REST",
-    "AWS",
-    "Lamda",
-    "serverless"
+    "REST"
   ],
   "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
   "license": "Apache-2.0",
@@ -24,12 +19,6 @@
     "url": "https://github.com/sassoftware/restaf-demos/issues"
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "resolutions": {
     "**/minimist": "^0.2.1",
     "**/kind-of": "^6.0.3",
@@ -44,10 +33,10 @@
     "**/glob-parent": "5.1.2"
   },
   "dependencies": {
-    "@sassoftware/restaf": "^4.0.1",
-    "@sassoftware/restaflib": "^4.0.1",
-    "win-ca": "^3.1.0",
-    "yargs": "^16.2.0"
-  },
-  "devDependencies": {}
+    "@sassoftware/restaf": "^4.0.9",
+    "@sassoftware/restaflib": "^4.0.9",
+    "cross-env": "^7.0.3",
+    "immutable": "^4.0.0-rc.12",
+    "prettyjson": "1.2.5"
+  }
 }

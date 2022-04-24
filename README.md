@@ -1,6 +1,6 @@
 # restaf-demos
 
-A collection of examples demonstrating then use of restaf in nodejs and in serverless functions
+A collection of examples demonstrating then use of restaf in nodejs
 The demos cover typical SAS software usages - running datastep, running cas actions,
 accessing VA reports etc...
 
@@ -11,9 +11,9 @@ the desired goal with minimal coding.
 ## Install
 ```
 example:
-git clone https://github.com/sassoftware/restaf-demos.git
+git clone https://github.com/sassoftware/restaf-demos -b restaf-demos
 cd restaf-demos
-yarn
+npm install
 ```
 
 ## Configure the app
@@ -68,13 +68,13 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 ## Running the application
 
 ```md
-yarn test testname
+npm test testname
 ```
 
 ### Debugging your code.
 
 ```md
-yarn debug testname
+npm debug testname
 ```
 
 Then use your favorite nodejs debugger. I use the chrome://inspect on Google chrome.
@@ -130,51 +130,4 @@ Then use your favorite nodejs debugger. I use the chrome://inspect on Google chr
 
 ## Serverless Examples
 
-The serverless subdirectory has examples of using restaf to build AWS serverless functions.
-
-- sls-scoreAstore - scoring using an astore - astore must be stored on the Viya Server
-
-- sls-sentiment  - get sentiment score for a given text
-
-- sls-image - display an image for a SAS VA report
-
-
-### Configuring the serverless.yml
-
-In this version the serverless.yml references the awsenv.yml file to get information that is usually common between all 
-the serverless functions ( vpc, subnets etc...). 
-
-
-## Poor Man's version of debugging of Serverless functions
-
-IDE's like VSCode have capability to debug serverless functions. But not all users use this IDE.
-So I built a very simple way to invoke the API endpoints in nodejs debugger. 
-
-### Configuration
-
-In the env file add the following three options (see reataf.env for an example)
-
-```
-
-SLS=<serverless function name in examples dir>    <-- ex: sls-scoreAstore
-SLSPATH=path    <-- the specific sls path ex: score
-SLSPAYLOAD=<payload file path> <-- a json file with the payload(if POST or PUT)ex: score.json
-
-```
-
-### Execution
-
-To run with nodejs inspect issue the following command
-
-```
-npm run debugAPI <envfile with the information discussed above>
-```
-
-Then follow standard nodejs debugging process
-
-To run without debug turned on issue the following command
-
-```
-npm run runAPI <envfile with the information discussed above>
-
-
+These have been removed since they have not been kept up with changes to AWS serverless functions.
