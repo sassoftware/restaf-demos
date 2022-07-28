@@ -51,8 +51,7 @@ async function example (store, logonPayload) {
       store,
       computeSession,
       code,
-      macros,
-      10,
+      macros,10
   );
   console.log(Date());
   let log = await restaflib.computeResults(store, computeSummary, 'log');

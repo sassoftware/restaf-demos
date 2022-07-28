@@ -33,8 +33,16 @@ async function example (store, logonPayload) {
 
   // get root end points, get list of contexts and create a sessuin ysubg the first context
   let { compute } = await store.addServices("compute");
+  let contextName='SAS Job Execution';
+  let p = {
+    qs: { filter: `contains(name,'${contextName}')`}
+  };
 
-  let contexts = await apiCall(compute.links("contexts"));
+  let contexts = await apiCall(compute.links("contexts"), p);
+  if (contexts.itemsList().size === 0) {
+    throw 'Context not found';
+  }
+  console.log(contexts.itemsList().toJS());
 
   // lookup the name of the first context and then use it to get the associated createSession restafLink
   let createSession = contexts.itemsCmd(contexts.itemsList(0), "createSession");
