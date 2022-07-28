@@ -42,13 +42,21 @@ async function example (store, logonPayload) {
 
   // Now run a simple data step in that session
   let payload = {
-    data: { code: [ `data _null_; do i = 1 to 100; x=1; end; run; ` ] }
+    data: { code: [ `data _null_; do i = 1 to 100; x=1; end; run; proc print data=sashelp.cars;run;` ] }
   };
 
   // Now execute the data step and wait for completion
+  console.log(Date());
   let job = await apiCall(session.links("execute"), payload);
-  let status = await store.jobState(job, null, 5, 2);
-
+  let qs = {
+    qs: {
+      newState: 'Completed',
+      timeout: 30
+    }
+  }
+  let status = await store.jobState(job, qs);
+  console.log(Date());
+  console.log(status);
   if (status.data === "running") {
     throw `ERROR: Job did not complete in allotted time`;
   } else {
@@ -61,6 +69,7 @@ async function example (store, logonPayload) {
       case "error":
         throw `Please correct errors and rerun program`;
       default:
+        console.log(status.data);
         break;
     }
   }

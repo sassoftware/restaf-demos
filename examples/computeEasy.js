@@ -33,21 +33,33 @@ async function example (store, logonPayload) {
   debugger;
   let computeSession = await computeSetup(store, computeContext);
   
-  let macros = {rows: 100};
-  let code = `data _null_; do i = 1 to &rows; x=1; end; run;`;
-
+  let macros = {data: 'sashelp.cars'};
+  let code = `ods html style=barrettsblue;  
+  data dtemp1;
+  set sashelp.cars;
+  run;
+  data dtemp2;
+  do i = 1 to 1000000;
+    output;
+  end;
+  run;
+  proc print data=&data;run;
+  ods html close;`
+  ;
+  console.log(Date());
   let computeSummary = await computeRun(
       store,
       computeSession,
       code,
       macros,
-      15,2  /*just a place holder values for checking job status */
+      10,
   );
-  
+  console.log(Date());
   let log = await restaflib.computeResults(store, computeSummary, 'log');
-  viewer(log);
   let ods = await restaflib.computeResults(store, computeSummary, 'ods');
-  console.log(ods);
+  console.log(Date());
+  viewer(log);
+  // console.log(ods);
   await store.apiCall(computeSession.links('delete'));
   return "All Done";
 }

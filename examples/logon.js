@@ -29,21 +29,27 @@ let config = require('./config');
 let payload  = config();
 let store = restaf.initStore();
 
-payload.keepAlive = null;
-store
-  .logon(payload)
-  .then(msg => {
+let p ={...payload, password: 'xxx'};
+
+runtest(p) 
+  .then (r => console.log(r))
+  .catch(err =>{
+    console.log(err);
     console.log(JSON.stringify(store.connection(), null, 4));
-    console.log(`Logon Status: ${msg}`);
-  
-    console.log(`Logon Status: ${msg}`);
-    let c = store.connection();
-    console.log(c);
-    let jwt = decodeJwt(c.token);
-    print.object(jwt, 'JWT');
-    return store.logoff();
+    return runtest(payload);
   })
-  .then(lmsg => {
-    console.log(`Connection status after logoff: ${lmsg}`);
-  })
+  .then(r => console.log(r))
   .catch(err => console.log(err));
+
+async function runtest(ip) {
+  console.log(ip);
+   let msg = await store.logon(ip);
+   console.log(JSON.stringify(store.connection(), null, 4));
+   console.log(`Logon Status: ${msg}`);
+ 
+   msg = await store.logoff();
+   console.log(JSON.stringify(store.connection(), null, 4));
+   console.log(`Logoff Status: ${msg}`);
+
+   return 'done';
+}
