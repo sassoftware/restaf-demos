@@ -12,12 +12,9 @@ module.exports = async function listClient (store, all, vorpal) {
 			authorization: 'bearer ' + store.connection()['token']
 		}
 	};
-	
-	
+
 	
 	let r = await store.request(payload);
-	// console.log(`${r.data.length} clientids detected`);
-	// console.log(JSON.stringify(r.data, null,4));
 	
 	vorpal.log('>>>>>>>>>>>>>>User defined clientids');
 	r.data.resources.map(rr => {

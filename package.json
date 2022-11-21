@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "rimraf -rf lib && babel src --out-dir lib",
-    "start": "node --no-warnings cli",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 && node --no-warnings cli",
     "pub": "npm publish --tag test --access public",
     "dkrbuild": "docker build"
   },
@@ -27,8 +27,9 @@
     "@sassoftware/registerclient": "cli.js"
   },
   "dependencies": {
-    "@sassoftware/restaf": "4.0.1",
-    "@sassoftware/restaflib": "4.0.1",
+    "@sassoftware/restaf": "^4.8.4",
+    "@sassoftware/restaflib": "^4.8.4",
+    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "vorpal": "^1.12.0",
     "yargs": "^17.2.1"

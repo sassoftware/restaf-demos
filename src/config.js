@@ -32,7 +32,7 @@ module.exports = function config (envFile) {
 	}
 	
 	if (process.env.CLIENTID == null) {
-		process.env.CLIENTID = 'sas.ec';
+		process.env.CLIENTID = 'sas.cli';
 		process.env.CLIENTSECRET = '';
 		console.log(`clientID set to default`);
 	}
@@ -54,7 +54,6 @@ module.exports = function config (envFile) {
 		logonPayload = {
 			authType: 'server',
 			host    : viyaServer,
-			
 			token    : process.env.VIYA_TOKEN,
 			tokenType: 'bearer',
 		};
@@ -69,6 +68,7 @@ module.exports = function config (envFile) {
 			clientSecret: process.env.hasOwnProperty('CLIENTSECRET') ? process.env['CLIENTSECRET'] : '',
 		};
 	}
+
 	let tls = {};
 
 	if (process.env.TLS_CERT != null) {

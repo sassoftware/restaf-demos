@@ -32,7 +32,8 @@ if (host !== null) {
 }
 let payload = config(envFile);
 
-let store  = restaf.initStore({sslOptions: payload.sslOptions});
+let store  = restaf.initStore();
+console.log(store.logon);
 if (clientConfigFile !== null ) {
     let draw = fss.readFileSync(clientConfigFile, 'utf8');
     clientConfig = JSON.parse(draw);
@@ -41,6 +42,7 @@ if (clientConfigFile !== null ) {
 }
 
 // let clientConfig = (process.env.CLIENTIDCONFIG != null) ? process.env.CLIENTIDCONFIG : null;
+
 
 
 runCli(store, cmdFile);
