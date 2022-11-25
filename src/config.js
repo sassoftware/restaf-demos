@@ -91,6 +91,7 @@ module.exports = function config (envFile) {
 		tls.passphrase = process.env.TLS_PW;
 	}
 	logonPayload.sslOptions = tls;
+	console.log(logonPayload);
 	return logonPayload;
 };
 
