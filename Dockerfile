@@ -1,4 +1,4 @@
-FROM node:13.8.0-alpine3.11
+FROM node:19.1-alpine3.15
 LABEL maintainer="deva.kumar@sas.com"
 RUN apk add --no-cache --upgrade bash
 WORKDIR /usr/src/app
@@ -11,6 +11,4 @@ RUN npm install
 # 
 
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-ENV CLIENTID=sas.ec
-ENV CLIENTSECRET=
 CMD ["npx", "@sassoftware/registerclient"]

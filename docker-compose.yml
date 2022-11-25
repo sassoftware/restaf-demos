@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  registerclient:
+    build: .
+    restart: always
+    environment:
+      - VIYA_SERVER=$V1

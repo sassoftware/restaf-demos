@@ -33,7 +33,6 @@ if (host !== null) {
 let payload = config(envFile);
 
 let store  = restaf.initStore();
-console.log(store.logon);
 if (clientConfigFile !== null ) {
     let draw = fss.readFileSync(clientConfigFile, 'utf8');
     clientConfig = JSON.parse(draw);
@@ -128,6 +127,7 @@ function runCli (store, cmdFile) {
      vorpal
 			.command('details <clientid>')
 			.alias('desc')
+            .alias('show')
 			.description('Details of selected clienti')
 			.action((args, cb) => {
 				detailClient(store, args.clientid)
