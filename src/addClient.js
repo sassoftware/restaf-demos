@@ -9,7 +9,6 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 	let clientSecret = (args.secret != null) ? args.secret.trim() : null;
 	let redirect = (args.redirect != null) ? args.redirect.trim() : null;
 	let configFile = (args.configFile == null) ? defaultConfigFile : args.configFile;
-	console.log(configFile);
 	if (configFile == null) {
 		let flow = (args.type  != null) ? args.type.trim() : ' ';
 			if (clientid === 'code') {
@@ -31,7 +30,7 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 		}
 		if (redirect != null) {
 			let redirectA = redirect.split(',');
-			configFile.client_id.redirect_uri = redirectA;
+			configFile.redirect_uri = redirectA;
 		}
 	} 
 
@@ -49,6 +48,7 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 		}
 	};
 
+	console.log(configFile);
 	try {
 		let r = await store.request(payload);
 		return `${clientid} has been added`;
