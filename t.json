@@ -1,0 +1,10 @@
+{
+  "client_id" : "webapps",
+  "client_secret": "secret",
+  "scope"     : ["openid", "webapps"],
+  "resource_ids": ["none"],
+  "autoapprove" : true,
+  "authorized_grant_types": "client_credentials",
+  "access_token_validity" : 746496000,
+  "use-session"         : true
+}

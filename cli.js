@@ -106,14 +106,29 @@ function runCli (store, cmdFile) {
         .command('new <clientid>')
             .alias('add')
             .description('Add a new client with specified name')
-            .option('-t --type <type>', 'Grant Type')
+            .option('-t --type [type]', 'Grant Type')
             .option('-r --redirect [redirect]', 'Redirect uri')
             .option('-s --secret [secret]', 'Secret')
+            .option('-f --file [configFile]', 'Config file')
 
             .action ((args, cb) => {
                addClient(store, args.clientid, args.options, clientConfig, ttl)
                .then(r => { vorpal.log(r); cb();})
                .catch(e => { vorpal.log(e); cb();});
+            });
+    vorpal
+        .command('clientid <configFile>')
+            .alias('id')
+            .description('Add a new client with specified config File')
+            .action ((args, cb) => {
+                console.log(args);
+                debugger;
+                let clientConfig = fss.readFileSync(args.configFile, 'utf8');
+                console.log(clientConfig);
+                let tjson = JSON.parse(clientConfig);
+                addClient(store, ' ', args.options, tjson, ttl)
+                .then(r => { vorpal.log(r); cb();})
+                .catch(e => { vorpal.log(e); cb();});
             });
     vorpal
         .command('delete <clientid>')

@@ -4,50 +4,43 @@
  */
 
 module.exports = async function addClient (store, clientid, args, defaultConfigFile, ttl) {
-	let flow = args.type.trim();
+	
     
 	let clientSecret = (args.secret != null) ? args.secret.trim() : null;
 	let redirect = (args.redirect != null) ? args.redirect.trim() : null;
 	let configFile = (args.configFile == null) ? defaultConfigFile : args.configFile;
-    if (clientid === 'code') {
-		clientid = 'authorization_code';
-	}
+	console.log(configFile);
+	if (configFile == null) {
+		let flow = (args.type  != null) ? args.type.trim() : ' ';
+			if (clientid === 'code') {
+			clientid = 'authorization_code';
+		}
+		let flowA = flow.split(',');
+		configFile = {
+			client_id   : clientid,
+			scope       : ['openid'],
+			resource_ids: ['none'],
+			autoapprove : true,
 
-	let flowA = flow.split(',');
+			authorized_grant_types: flowA,
+			// access_token_validity : (ttl == null) ? 86400 : ttl*24*60*60,
+			'use-session'         : true
+		};
+		if (clientSecret !== null) {
+			configFile.client_secret = clientSecret;
+		}
+		if (redirect != null) {
+			let redirectA = redirect.split(',');
+			configFile.client_id.redirect_uri = redirectA;
+		}
+	} 
+
 	
-
-	let data = {
-		client_id   : clientid,
-		scope       : ['openid', '*'],
-		resource_ids: ['none'],
-		autoapprove : true,
-
-		authorized_grant_types: flowA,
-		access_token_validity : (ttl == null) ? 86400 : ttl*24*60*60,
-		'use-session'         : true
-	};
-
-	
-	if (configFile != null) {
-		data = {...configFile};
-		data.client_id = clientid;
-		data.authorized_grant_types = flowA;
-	
-	}
-
-	if (clientSecret !== -null) {
-		data.client_secret = clientSecret;
-	}
-
-	if (redirect != null) {
-		let redirectA = redirect.split(',');
-		data.redirect_uri = redirectA;
-	}
 	
 	let payload = {
 		url   : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients`,
 		method: 'POST',
-		data  : data,
+		data  : configFile,
 
 		headers: {
 			'Content-Type': 'application/json',
