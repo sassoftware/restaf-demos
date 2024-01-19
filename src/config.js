@@ -19,6 +19,7 @@
 'use strict';
 
 let fs = require('fs');
+let getToken = require('./getToken');
 
 module.exports = function config (envFile) {
 	
@@ -45,10 +46,9 @@ module.exports = function config (envFile) {
 	if (viyaServer.indexOf('http') < 0) {
 		viyaServer = `http://${process.env.VIYA_SERVER}`;
 	}
-	if (process.env.TOKENFILE != null) {
-		let data = fs.readFileSync(process.env.TOKENFILE, 'utf8');
-		process.env.VIYA_TOKEN = data;
-	}
+
+	process.env.VIYA_TOKEN = getToken();
+	
 	
 	if (process.env.VIYA_TOKEN != null) {
 		logonPayload = {

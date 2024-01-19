@@ -17,7 +17,7 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 		let flowA = flow.split(',');
 		configFile = {
 			client_id   : clientid,
-			scope       : ['openid'],
+			scope       : ['openid',"*"],
 			resource_ids: ['none'],
 			autoapprove : true,
 

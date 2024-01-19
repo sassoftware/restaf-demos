@@ -27,8 +27,8 @@
     "@sassoftware/registerclient": "cli.js"
   },
   "dependencies": {
-    "@sassoftware/restaf": "^4.8.4",
-    "@sassoftware/restaflib": "^4.8.4",
+    "@sassoftware/restaf": "^5.2.1",
+    "@sassoftware/restaflib": "^5.2.1",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "vorpal": "^1.12.0",

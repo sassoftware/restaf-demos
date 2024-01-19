@@ -52,31 +52,16 @@ function runCli (store, cmdFile) {
         .command('logon')
         .description('Logon to Viya')
         .action((args, cb)=> {
-           
-            vorpal.activeCommand.prompt({
-                type   : 'input',
-                name   : 'user',
-                message: 'Enter your userid> '
-            }, (result) => {
-                payload.user = result.user;
-                vorpal.activeCommand.prompt ({
-                    type   : 'password',
-                    name   : 'password',
-                    message: 'Enter your password> '
-                }, (result)=> {
-                    payload.password = result.password;
-                    logon(store, payload, vorpal)
-                        .then (r => {
-                            vorpal.log('Logon Successful');
-                            cb();
-                        })
-                        .catch (err => {
-                            vorpal.log(err);
-                            cb();
-                        });     
-                });
-            });
-        });
+           logon(store, payload, vorpal)
+            .then (r => { 
+                vorpal.log('Logon Successful');
+                cb();
+            }) 
+            .catch (err => {
+                vorpal.log(err);
+                cb();
+            })
+        }); 
     
     vorpal
         .command('list [all]')
