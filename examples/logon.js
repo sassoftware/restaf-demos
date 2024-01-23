@@ -22,21 +22,17 @@
  * ---------------------------------------------------------------------------------
  */
 let restaf = require('@sassoftware/restaf');
-let {print, decodeJwt} = require('@sassoftware/restaflib');
-
 let config = require('./config');
 
 let payload  = config();
 let store = restaf.initStore();
 
-let p ={...payload, password: 'xxx'};
-
-runtest(p) 
+runtest(payload) 
   .then (r => console.log(r))
   .catch(err =>{
     console.log(err);
     console.log(JSON.stringify(store.connection(), null, 4));
-    return runtest(payload);
+    return 'done'
   })
   .then(r => console.log(r))
   .catch(err => console.log(err));
