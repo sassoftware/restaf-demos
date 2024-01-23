@@ -1,6 +1,6 @@
 {
   "name": "restaf-demos",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "nodejs demos for restaf",
   "main": "index.js",
   "scripts": {
