@@ -29,8 +29,7 @@ let prtUtil = require("./prtUtil");
 
 let store = restaf.initStore({casProxy: true});
 async function example () {
-  console.log(payload);
-  let { session } = await casSetup(store, payload, "cas");
+  let { session } = await casSetup(store, payload);
   console.log(JSON.stringify(session.links("execute"), null, 4));
 
   let p = {

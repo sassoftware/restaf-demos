@@ -33,10 +33,12 @@
     "**/glob-parent": "5.1.2"
   },
   "dependencies": {
-    "@sassoftware/restaf": "^4.4.5",
-    "@sassoftware/restaflib": "^4.4.5",
-    "cross-env": "^7.0.3",
+    "@sassoftware/restaf": "^5.2.3",
+    "@sassoftware/restaflib": "^5.2.3",
     "immutable": "^4.0.0-rc.12",
     "prettyjson": "1.2.5"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
