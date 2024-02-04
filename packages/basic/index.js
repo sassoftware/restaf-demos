@@ -42,7 +42,7 @@ async function main(prompt, apiKey) {
       required: ["keywords"]
     },
   };
-  
+
   // setup request to chat
   let createArgs = {
     model: "gpt-4",
@@ -56,7 +56,7 @@ async function main(prompt, apiKey) {
     ]);
   }
   // send request to chat and handle response
-  let fname = "gpt";
+ 
   let finalResponse = "";
   try {
     let completion = await openai.chat.completions.create(createArgs);
@@ -65,7 +65,7 @@ async function main(prompt, apiKey) {
     if (completionResponse.content) { // gpt handled the request
       finalResponse = completionResponse.content;
     } else if (completionResponse.function_call) { // gpt thinks the function should handle the request
-      fname = completionResponse.function_call.name;
+      fname = completionResponse.function_call.name;/* just to show this is in the completionResponse */
       const params = JSON.parse(completionResponse.function_call.arguments);
       // call the custom function
       finalResponse = await basic(params);
