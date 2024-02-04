@@ -1,84 +1,67 @@
-# registerclient
+# Examples of integrating gpt prompts into SAS Viya apps
 
-Application to manange clientids. The application runs as a cli.
-It can be run in interactive mode or in batch mode.
-The user of this app must have admin rights.
+This repository contains examples of integrating gpt into application targeting SAS Viya.
+The purpose is to demonstrate that integrating the power of gpt into one's own application is not rocket-science = the credit goes to the simplicity and elegance of the gpt api.
 
----
+Since the key audience for this repository is SAS customers the examples are focused on integrating gpt into applications for SAS Viya.
 
-## Quick start
+## Data Points
 
----
+1. gpt-4 version is used in this repo.
+   - if you are using a different version, search the repo for gpt-4 and change it to your version
+2. It is the user's reponsibility to get the api key for openai.
+   - The samples assume that the key is available as enviroment variable APPENV_USERKEY
+3. Most examples make use of SAS REST API to access SAS Viya. The applications use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to make these calls. See <https://sassoftware.github.io/restaf/> for more information.
+4. The source code in this repository is provided under Apache-2.0 licensing model.
 
-The simplest way to use this cli is as follows:
+## Installing the examples
 
-```cmd
-npx @sassoftware/registerclient --host <your viya server url>  
+- git clone https://github.com/sassoftware/restaf-demos opt-samples -b opt-samples
+- cd to opt-samples
+- npm install
+- Define the environment variables described below
+
+### Environment Variables
+
+- VIYA_SERVER - Set the value of this env variable to the url for your Viya Server
+- SASTOKEN - For nodejs applications this should have the location of the authentication information created by executing the following command
+  - sas-viya auth login|loginCode
+- CLIENTID, CLIENTSECRET - For web applications set this to the authorization_code clientid and clientsecret. The redirect should be set to <https://localhost:8080>
+- APPENV_USERKEY - Set to the api key from openai
+
+## Getting started - Basic example
+
+This example demonstrates setting up access to gpt and defining a function called basic. This function's sole purpose is to reformat user provided keywords as html, array or javascript object.
+The code is in ./packages/basic/index.js
+
+### Usage
+
+```sh
+npm start <some prompt as a quoted string>
 ```
 
-On the prompt enter, enter logon command.
+Some sample prompt and results:
 
-This will put you into an interactive session where you can issue commands. Use the exit command to end the session.
+### what is SAS Viya
 
----
-
-## **Batch mode**
-
----
-
-This mode is useful when you want to run these commands as part of some process. I use them to setup all my clientids when I am configuring a new server
-
-Create a version of the .env file with two additional keys - USER and PASSWORD
-
-```env
-VIYA_SERVER=http://<your viyaserver>
-AUTHTYPE=password
-CLIENTID=sas.ec or a valid clientid( appears that sas.ec is shipped as a default clientid)
-CLIENTSECRET=
-USER=<username>
-PASSWORD=<password>
+```txt
+SAS Viya is a cloud-based, in-memory analytics engine from SAS Institute, an American multinational developer of analytics software. SAS Viya provides quick, accurate results and reveals valuable insights from large amounts of data. It's capable of machine learning, text analytics, forecasting, optimization, and statistics. It can be used through a variety of programming languages including Python, R, Java, and Lua, or through its visual interface.
 ```
 
-Run the following command
+### keywords
 
-```script
-
-npx @sassoftware/registerclient --env your-envfile --file yourcmdfile
-
+```txt
+Sure, can you provide me with the keywords you want to process?
 ```
 
-The cmd file is a list of the commands(see below). They are executed in order.
-
-```text
-list
-add app1 -t implicit -r http://localhost:5000/app1
-add app2 -t authorization_code -s mysecret -r http://localhost:5000/callback
-list
-```
-
-## List of commands
-
-- logon - logon on to Viya server
-- list \<all\> - list current clientid. Use all option to include system clientids
-- delete clientid - delete the specified clientid( always returns 404 but work - no idea why)
-- add clientid \< options \> - add a new clientid
-- details clientid - print details of selected clientid
-
-### Options for the add command
-
-- -t  == grant type ==  typically one of these: password | implicit | authorization_code)
-- -s  == secret whatever you want(valid for password and authorization_code)
-- -r  == redirect_uri == valid for implicit and authorization_code(if multiple redirects seperate them by comma(,))
-
-## Notes
-
-The current configuration for all clientids is shown below:
+### keywords a,b,c as array
 
 ```js
-scope: ['openid', '*'],
-resource_ids: 'none',
-autoapprove: true,
-access_token_validity: 86400,
-'use-session': true
+[ 'a', 'b', 'c' ]
+```
 
+### keywords a,b,c as html
+
+```txt
+<ul><li>a</li><li>b</li><li>c</li></ul>
 ```

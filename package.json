@@ -1,50 +1,43 @@
 {
-  "name": "@sassoftware/registerclient",
-  "version": "5.0.0",
-  "description": "Manage registration of applications(clientid) in SAS Viya",
+  "name": "@sassoftware/gpt-samples",
+  "version": "1.0.0",
+  "description": "Examples of integrating gpt prompts into SAS Viya apps",
   "engines": {
     "node": ">=12.14.0",
-    "npm": ">=6.13.4",
-    "yarn": ">=1.22.0"
+    "npm": ">=9.7.2"
   },
   "scripts": {
-    "build": "rimraf -rf lib && babel src --out-dir lib",
-    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 && node --no-warnings cli",
-    "pub": "npm publish --tag test --access public",
-    "dkrbuild": "docker build"
+    "start": "cd ./packages/basic && node index.js"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/registerclient",
   "keywords": [
     "Viya",
+    "gpt",
+    "gpt functions",
     "restaf",
-    "casl",
-    "REST API"
+    "SASREST API"
   ],
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
-  "main": "./cli.js",
-  "bin": {
-    "@sassoftware/registerclient": "cli.js"
-  },
   "dependencies": {
-    "@sassoftware/restaf": "^5.2.1",
-    "@sassoftware/restaflib": "^5.2.1",
+    "@sassoftware/restaf": "next",
+    "@sassoftware/restaflib": "next",
     "cross-env": "^7.0.3",
+    "openai": "^4.26.0",
     "rimraf": "^3.0.2",
     "vorpal": "^1.12.0",
     "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.5",
-    "@babel/core": "^7.14.6"
-  },
-  "resolutions": {
-    "**/lodash": ">=4.17.21",
-    "**/inquirer": "8.2.0",
-    "**/yargs-parser": ">=13.1.2",
-    "**/node-notifier": "^8.0.1",
-    "**/trim-newlines": ">=4.0.1",
-    "**/mem": "^5.1.1",
-    "**/glob-parent": ">=5.1.2"
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-standard": "^5.0.0"
   }
 }
