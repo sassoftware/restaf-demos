@@ -93,7 +93,7 @@ The following starter files are included. Use .sas files if env VIYASOURCE is se
 ### Usage for SAS example
 
 ```sh
-npm start "run file <some path>"
+npm run basicSAS "run file <some path>"
 ```
 
 ### run  file ../programs/datastep.casl
