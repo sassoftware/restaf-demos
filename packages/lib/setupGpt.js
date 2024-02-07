@@ -21,6 +21,7 @@ function setupGpt(apiKey) {
     functions: functionSpecs
   };
   
+  
   return {openai, createArgs,functionList};
 
   };

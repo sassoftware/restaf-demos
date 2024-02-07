@@ -11,6 +11,7 @@ Since the key audience for this repository is SAS customers the examples are foc
 - [Installation and setup](#install)
 - [Getting started example](#basic)
 - [Example with access to Viya](#basicSAS)
+- [Interactive gpt session](#gpt)
 
 
 ## Data Points<a name="datapoint"></a>
@@ -279,5 +280,33 @@ npm run basicSAS "run file <some path>"
 ]
 
 
+```
+
+## Interactive GPT session<a name="gpt"> </a>
+
+This is interactive gpt session. Several functions to access Viya are enabled.
+
+### Usage of Interactive GPT session
+
+To start the session issue the following commands:
+
+```sh
+npm run gpt
+
+On the prompt, enter
+
+gpt
+
+This will start an interactive session
+
+enter 
+
+help 
+
+to see sample queries.
 
 ```
+
+The gpt session will stay active until you enter **exit**
+
+To exit the gtp session enter **exit**

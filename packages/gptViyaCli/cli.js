@@ -1,4 +1,4 @@
-
+#!/usr/bin/env node
 /*
 * Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
 * SPDX-License-Identifier: Apache-2.0
@@ -29,9 +29,42 @@ setupViya(source)
     console.log(JSON.stringify(err));
   });
 
+// main loop for running prompts
 const runCli = (appEnv) => {
+  vorpalcmd
+  .mode('gpt')
+  .delimiter('?')
+  .init(function(args, callback){
+    this.log('Welcome to gpt prompt.\nYou can enter your gpt prompts. To exit, type `exit`.');
+    callback();
+  })
+  .action(function(command, cb) {
+    var self = this;
+    gptPrompt(command, gptControl, appEnv)
+      .then (response => {
+          vorpalcmd.log(response);
+          cb();
+      })
+      .catch(err => {
+        vorpalcmd.log(err);
+      })
+  });
 
+     
+    vorpalcmd
+        .delimiter ('>')
+        .log('--------------------------------------')
+        .log('Welcome to cli for trying out gpt with Viya')
+        .log('Enter gpt to start gpt session')
+        .log('To exit the gpt session, type `exit`')
+        .log('To exit the cli type `exit`')
+        .log('')
+        .log('--------------------------------------');
+      
+    vorpalcmd.show()
+}
 
+/*
   vorpalcmd
       .command('p <prompt...>')
       .description('Enter prompt to ask GPT-4')
@@ -47,12 +80,4 @@ const runCli = (appEnv) => {
           vorpalcmd.log(err);
         })
       })
-    vorpalcmd
-        .delimiter ('>')
-        .log('--------------------------------------')
-        .log('Welcome to cli for trying out gpt with Viya')
-        .log('Enter help to get a list of all the commands')
-        .log('');
-
-    vorpalcmd.show();
-}
+      */

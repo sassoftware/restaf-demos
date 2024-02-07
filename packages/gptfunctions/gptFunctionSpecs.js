@@ -1,4 +1,4 @@
-import gptFunctions from './gptFunctions.js';
+import gptFunctions from "./gptFunctions.js";
 function gptFunctionSpecs() {
   let functionSpecs = [
     configFunctionSpec,
@@ -8,11 +8,11 @@ function gptFunctionSpecs() {
     listSASTablesFunctionSpec,
     listColumnsFunctionSpec,
     listFunctionsinAppSpec,
-    runSASFunctionSpec
+    runSASFunctionSpec,
   ];
 
   let functionList = gptFunctions();
-  return {functionSpecs,functionList};
+  return { functionSpecs, functionList };
 }
 
 const configFunctionSpec = {
@@ -39,11 +39,10 @@ const configFunctionSpec = {
     required: ["table"],
   },
 };
-// 
+//
 const getDataFunctionSpec = {
   name: "getData",
-  description:
-    "Get data for a table like casuser.cars",
+  description: "Get data for a table like casuser.cars",
   parameters: {
     properties: {
       table: {
@@ -53,8 +52,7 @@ const getDataFunctionSpec = {
       },
       count: {
         type: "integer",
-        description:
-          "Get this many rows. If not speified, then get 10 rows",
+        description: "Get this many rows. If not speified, then get 10 rows",
       },
     },
     type: "object",
@@ -74,67 +72,64 @@ const listSASObjectsFunctionSpec = {
       },
       count: {
         type: "integer",
-        description:
-          "Get this many rows. If not speified, then get 10 rows",
+        description: "Get this many rows. If not speified, then get 10 rows",
       },
     },
     type: "object",
-    required: ["resource"]
+    required: ["resource"],
   },
 };
 const listSASDataLibFunctionSpec = {
   name: "listSASDataLib",
   description:
-    "get a list of available data library",
-    properties: {},
-    type: "object"
-  };
+    "get a list of available SAS libs, calibs, librefs. A example would be list libs. If count is not is specified, then the function will return the first 10 libs",
+  properties: {},
+  type: "object",
+};
 const listSASTablesFunctionSpec = {
   name: "listSASTables",
   description:
-    "for a given library get the available tables(ex: library Samples ). List the specified count of tables. If not specified, then list 10 tables.",
+    "for a given library, lib , caslibs get the list available tables(ex: list tables for Samples. If count is not is specified, then the function will return the first 10 libs",
   parameters: {
     properties: {
       library: {
         type: "string",
-        description:
-          "A SAS library like casuser, sashelp, samples",
+        description: "A SAS library like casuser, sashelp, samples",
       },
       count: {
         type: "integer",
         description:
-          "Get this many rows. If not specified, then get 10 rows",
+          "Return only this many tables. If not specified, then return 10 tables.",
       },
     },
     type: "object",
-    required: ["library"]
+    required: ["library"],
   },
 };
 const listColumnsFunctionSpec = {
   name: "listColumns",
-  description:
-    "for a given table of the form a.b get the list columns in a table. Example is columns in like casuser.cars",
+  description: "get schema or columns for specified table. Table is of the form sashelp.cars",
   parameters: {
     properties: {
       table: {
         type: "string",
-        description:
-          "A table like sashelp.cars",
-      }
+        description: "A table like sashelp.cars",
+      },
     },
     type: "object",
-    required: ["table"]
-}
+    required: ["table"],
+  },
 };
 const runSASFunctionSpec = {
   name: "runSAS",
-  description: "run the code or file. code is specified as code='abc'. file is the path to the file to run",
+  description:
+    "run the specified file. The file is a path to the sas program",
   parameters: {
     properties: {
       file: {
         type: "string",
         description: "this is the file to run",
-      }
+      },
     },
     type: "object",
     required: ["file"],
@@ -146,8 +141,8 @@ const listFunctionsinAppSpec = {
   description: "help on prompts designed for Viya",
   parameters: {
     properties: {},
-    type: "object"
-}
+    type: "object",
+  },
 };
 
 export default gptFunctionSpecs;

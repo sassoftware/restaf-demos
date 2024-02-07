@@ -37,6 +37,8 @@ async function setupViya(source) {
     let {session, servers} = await restaflib.casSetup(store, null)
     appEnv.session = session;
     appEnv.servers = servers;
+    appEnv.casServerName = session.links("execute", "link", "server");
+    appEnv.serverName = session.links("execute", "link", "server");
   } else {
     appEnv.session = await restaflib.computeSetup(store);
     appEnv.server = null;

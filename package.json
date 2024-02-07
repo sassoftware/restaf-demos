@@ -7,10 +7,13 @@
     "npm": ">=9.7.2"
   },
   "type": "module",
+
   "scripts": {
     "start": "cd ./packages/basic && node index.js",
     "basicsas": "cd ./packages/basicSAS && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node index.js",
-    "gpt": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js"
+    "gpt": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
+    "debug": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js"
+
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/gpt-samples",
   "keywords": [

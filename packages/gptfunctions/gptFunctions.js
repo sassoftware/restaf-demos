@@ -6,7 +6,8 @@
 import  restafedit from '@sassoftware/restafedit'
 import restaflib from '@sassoftware/restaflib';
 import fs from 'fs/promises';
-import formatLog from '../lib/formatLog.js/formatLog.js'
+import logAsArray  from '../lib/logAsArray.js';
+import string2Table from '../lib/string2Table.js';
 
 const  { computeFetchData, casFetchData, caslRun, computeRun, computeResults} = restaflib;
 const {getLibraryList, getTableList, getTableColumns} = restafedit; 
@@ -59,7 +60,6 @@ function gptFunctions() {
   }
   async function listSASTables(params, appEnv) {
     let { library} = params;
-    console.log(library);
     let r = await getTableList(library, appEnv);
     return r;
   }
@@ -67,19 +67,11 @@ function gptFunctions() {
     let { table } = params;
     let {source} = appEnv;
     debugger;
-    let iTable = {}
-    let part = table.split('.');  
-    if (part.length === 2) {
-      iTable.caslib = part[0];
-      iTable.name = part[1];
-    } else {
-      return {Error: "Table name is not in the form library.table"};
+    let iTable = string2Table(table, source);
+    if (iTable === null) {
+      return "Table must be specified in the form casuser.cars or sashelp.cars"
     }
 
-    debugger;
-    console.log(iTable);
-    console.log(source);
-  
     let r = await getTableColumns(source, iTable, appEnv);
     debugger;
     return r;
@@ -88,20 +80,17 @@ function gptFunctions() {
     //TBD: need to move most of this code to restafedit
     let { table, count } = params;
     let {store, source, session} = appEnv;
-    let iTable = {};
-    let parts = table.split('.');
-    if (parts.length === 2) { 
-      iTable.caslib = parts[0];   
-      iTable.name = parts[1];
-    } else {
-      return {Error: "Table name is not in the form library.table"};  
+    let iTable = string2Table(table, source);
+    if (iTable === null) {
+      return "Table must be specified in the form casuser.cars or sashelp.cars"
     }
-
+    let result = ' ';
     if (source === 'cas') {
       let control = {
         table: iTable,
         limit: count == null ? 10 : count,
         start: 0,
+        where: "",
         format: true
       };
       let r  = await casFetchData(store, session, control);
@@ -120,22 +109,23 @@ function gptFunctions() {
   async function runSAS(params, appEnv) {
     let { file } = params;
     let {store, session} = appEnv;
-   
-  try { 
-    src= await fs.readFile(file, 'utf8');
-  }
-  catch (err) {
-    return "Error reading file" + file;
-  }
+    let src;
+    try { 
+      src= await fs.readFile(file, 'utf8');
+    }
+    catch (err) {
+      console.log(err);
+      return "Error reading file " + file;
+    }
   
-  if (appEnv.source === "cas") {
-    let r = await caslRun(store, session, src,{}, true); 
-    return r.results;;
-  } else {
-    let computeSummary = await computeRun(store, session, src);
-    let log = await computeResults(store, computeSummary, "log");
-    return formatLog(log);
-  }
+    if (appEnv.source === "cas") {
+      let r = await caslRun(store, session, src,{}, true); 
+      return r.results;;
+    } else {
+      let computeSummary = await computeRun(store, session, src);
+      let log = await computeResults(store, computeSummary, "log");
+      return logAsArray(log);
+    }
     
     
   }
