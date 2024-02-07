@@ -3,11 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const restaf = require('@sassoftware/restaf');
-const {casSetup, computeSetup} = require('@sassoftware/restaflib');
-const getToken = require('./getToken');
+/**
+ * Setup the Viya environment
+ * @param {string} source - cas or compute
+ * @returns {object} - appEnv
+ * @async
+ */
+ 
+import restaf from '@sassoftware/restaf';
+import restaflib from '@sassoftware/restaflib';
+import getToken from './getToken.js';
 
-module.exports = async function setup(source) {
+async function setupViya(source) {
 
   // logon payload
   let logonPayload = {
@@ -27,12 +34,14 @@ module.exports = async function setup(source) {
   }
   // create session and server objects
   if (source === 'cas') {
-    let {session, servers} = await casSetup(store, null)
+    let {session, servers} = await restaflib.casSetup(store, null)
     appEnv.session = session;
     appEnv.servers = servers;
   } else {
-    appEnv.session = await computeSetup(store);
+    appEnv.session = await restaflib.computeSetup(store);
     appEnv.server = null;
   }
+
   return appEnv;
 }
+export default setupViya;

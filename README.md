@@ -24,7 +24,7 @@ Since the key audience for this repository is SAS customers the examples are foc
 
 ## Installation and Setup<a name="install"></a>
 
-- git clone https://github.com/sassoftware/restaf-demos opt-samples -b opt-samples
+- git clone https://github.com/sassoftware/restaf-demos gpt-samples -b gpt-samples
 - cd to opt-samples
 - npm install
 - Define the environment variables described below
@@ -46,7 +46,7 @@ The code is in ./packages/basic/index.js
 ### Usage
 
 ```sh
-npm start <some prompt as a quoted string>
+npm start <some text>
 ```
 
 Some sample prompt and results:

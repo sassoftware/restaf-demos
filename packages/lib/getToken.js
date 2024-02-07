@@ -2,9 +2,8 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-const fs = require('fs');
-module.exports = function getToken() {
-  let fs = require('fs');
+import fs from 'fs';
+function getToken() {
   let authLoc = process.env.SASTOKEN;
   if (!authLoc) {
     authLoc = process.env['HOME'] + '/.sas/credentials.json';
@@ -18,4 +17,6 @@ module.exports = function getToken() {
     console.log('Error reading token from ' + authLoc);
     throw 'credentials file not found';
   }
+  
 }
+export default getToken;

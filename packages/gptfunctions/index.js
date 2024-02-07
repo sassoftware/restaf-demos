@@ -1,3 +1,4 @@
-import gptFunctions from "./gptFunctions";  
-import gptFunctionSpecs from "./gptFunctionSpecs";
-export { gptFunctions, gptFunctionSpecs };
+import gptFunctions from "./gptFunctions.js";  
+import gptFunctionSpecs from "./gptFunctionSpecs.js";
+import  gptPrompt from "./gptPrompt.js";
+export { gptFunctions, gptFunctionSpecs, gptPrompt };

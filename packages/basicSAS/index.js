@@ -3,21 +3,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const OpenAI = require("openai");
+import OpenAI from "openai";
+import restaflib from "@sassoftware/restaflib";
+import setupViya from "../lib/setupViya.js";
+import fs from "fs/promises";
+import logAsArray from "../lib/logAsArray.js";    
 let apiKey = process.env.APPENV_USERKEY;
-let setup = require("../lib/setup");
-let {caslRun, computeRun, computeResults} = require("@sassoftware/restaflib");
-let fs = require("fs").promises ;
+
+//let fss = fs.promises ;
 
 // read cmdline option and send it as prompt to gpt
-let prompt = process.argv[2];
+let prompt = ' ';
+if (process.argv.length > 1 ) {
+  for (let i=2; i < process.argv.length; i++) {
+    prompt += process.argv[i] + ' ';
+  }
+} 
 let source = process.env.VIYASOURCE;
 if (['cas', 'compute'].includes(source) == false) { 
   source = 'cas';
   console.log("VIYASOURCE not set, defaulting to cas");
 }
 
-setup(source)
+setupViya(source)
   .then((appEnv) => main(prompt, apiKey, appEnv))
   .then((response) => {
     console.log(JSON.stringify(response, null,4));
@@ -34,13 +42,9 @@ async function main(prompt, apiKey, appEnv) {
   // define a function spec
   const basicFunctionSpec = {
     name: "basic",
-    description: "run the code or file. code is specified as code='abc'. file is the path to the file to run. it is specified as file=abc. Format response as JSON",
+    description: "run the specified file",
     parameters: {
       properties: {
-        code: {
-          type: "string",
-          description: "code to be run",
-        },
         file: {
           type: "string",
           description: "this is the file to run",
@@ -58,26 +62,20 @@ async function main(prompt, apiKey, appEnv) {
     functions: [basicFunctionSpec],
   };
   // add prompt to messages array
-  if (prompt !== null) {
-    createArgs.messages = createArgs.messages.concat([
-      { role: "user", content: prompt },
-    ]);
-  }
+  createArgs.messages.push({ role: "user", content: prompt })
+  
   // send request to chat and handle response
 
   let finalResponse = "";
   try {
     let completion = await openai.chat.completions.create(createArgs);
     const completionResponse = completion.choices[0].message;
-
     if (completionResponse.content) {
       // gpt handled the request
       finalResponse = completionResponse.content;
     } else if (completionResponse.function_call) {
       // gpt thinks the function should handle the request
-      fname =
-        completionResponse.function_call
-          .name; /* just to show this is in the completionResponse */
+      // let fname = completionResponse.function_call.name; just to show this is in the completionResponse 
       const params = JSON.parse(completionResponse.function_call.arguments);
       // call the custom function
       finalResponse = await basic(params, appEnv);
@@ -90,32 +88,27 @@ async function main(prompt, apiKey, appEnv) {
 
 // custom function - process request and return response to gpt
 async function basic(params, appEnv) {
-  let { code, file } = params;
+  let { file } = params;
   let {store, session} = appEnv;
-  let filesrc = null;
-  
+ 
   // see if file was specified
-  if (file != null) {
-    try { 
-      src= await fs.readFile(file, 'utf8');
-    }
-    catch (err) {
-      return "Error reading file" + file;
-    }
-  } else {
-    src = code;
+ let src = '';
+  try { 
+    src= await fs.readFile(file, 'utf8');
   }
-  // if code was a also specified treat is preamble to code from file
+  catch (err) {
+    return "Error reading file" + file;
+  }
 
-  if (src != null) {
-    if (appEnv.source === "cas") {
-      let r = await caslRun(store, session, src,{}, true); 
-      return r.results;;
-    } else {
-      let computeSummary = await computeRun(store, session, src);
-      let log = await computeResults(store, computeSummary, "log");
-      return log;
-    }
+  if (appEnv.source === "cas") {
+    let r = await restaflib.caslRun(store, session, src,{}, true);
+    // do additional processing if needed 
+    return r.results;
+  } else {
+    let computeSummary = await restaflib.computeRun(store, session, src);
+    let log = await restaflib.computeResults(store, computeSummary, "log");
+    return {log: logAsArray(log)};
   }
+
   
 }

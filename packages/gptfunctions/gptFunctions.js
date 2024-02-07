@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {getLibraryList, getTableList, getTableColumns as getColumns} from '@sassoftware/restafedit';
-import { computeFetchData, casFetchData} from '@sassoftware/restaflib';
+import  restafedit from '@sassoftware/restafedit'
+import restaflib from '@sassoftware/restaflib';
+import fs from 'fs/promises';
+import formatLog from '../lib/formatLog.js/formatLog.js'
+
+const  { computeFetchData, casFetchData, caslRun, computeRun, computeResults} = restaflib;
+const {getLibraryList, getTableList, getTableColumns} = restafedit; 
 
 function gptFunctions() {
-  debugger;
-  console.log(getColumns);  
-  console.log(getTableList);
-  console.log(getLibraryList);
-  debugger;
   return {
     getForm,
     getData,
@@ -19,7 +19,8 @@ function gptFunctions() {
     listSASTables,
     listColumns,
     listFunctions,
-    listSASDataLib
+    listSASDataLib,
+    runSAS
     };
   async function getForm(params, appEnv) {
     let { source, table, keys, columns } = params;
@@ -78,8 +79,8 @@ function gptFunctions() {
     debugger;
     console.log(iTable);
     console.log(source);
-    console.log(getColumns);
-    let r = await getColumns(source, iTable, appEnv);
+  
+    let r = await getTableColumns(source, iTable, appEnv);
     debugger;
     return r;
   }
@@ -116,6 +117,28 @@ function gptFunctions() {
     }
     return result;
   }
+  async function runSAS(params, appEnv) {
+    let { file } = params;
+    let {store, session} = appEnv;
+   
+  try { 
+    src= await fs.readFile(file, 'utf8');
+  }
+  catch (err) {
+    return "Error reading file" + file;
+  }
+  
+  if (appEnv.source === "cas") {
+    let r = await caslRun(store, session, src,{}, true); 
+    return r.results;;
+  } else {
+    let computeSummary = await computeRun(store, session, src);
+    let log = await computeResults(store, computeSummary, "log");
+    return formatLog(log);
+  }
+    
+    
+  }
   async function listFunctions (params, appEnv) {
 
     let functionList =  [ 
@@ -125,6 +148,7 @@ function gptFunctions() {
         { name: "listSASTables", description: "list tables in casuser"},
         { name: "listColumns", description: "list columns in casuser.cars" },
         { name: "getData", description: "get data for casuser.cars and set count to 20" },
+        { name: "runSAS", description: "run the code in the specified file" },
         { name: "listFunctions", description: "help on prompts designed for Viya" },
       ];
     let r = functionList.map((f) => f.description);

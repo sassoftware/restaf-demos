@@ -1,4 +1,4 @@
-import gptFunctions from "./gptFunctions";
+import gptFunctions from './gptFunctions.js';
 function gptFunctionSpecs() {
   let functionSpecs = [
     configFunctionSpec,
@@ -8,13 +8,11 @@ function gptFunctionSpecs() {
     listSASTablesFunctionSpec,
     listColumnsFunctionSpec,
     listFunctionsinAppSpec,
+    runSASFunctionSpec
   ];
-  let messages = functionSpecs.map((item) => {
-    return {role: 'user', content: item.description};
-  });
-  messages.push({role: "system", content: "You are a prompt manager for TableEditor" });
+
   let functionList = gptFunctions();
-  return {functionSpecs, messages, functionList};
+  return {functionSpecs,functionList};
 }
 
 const configFunctionSpec = {
@@ -66,7 +64,7 @@ const getDataFunctionSpec = {
 const listSASObjectsFunctionSpec = {
   name: "listSASObjects",
   description:
-    "get a list of SAS resource like reports, files, folders. List the specified count of resources. If not specified, then list 10 resources.  ",
+    "get a list of SAS resources like reports, files, folders. An example would be list reports. List the specified count of resources. If not specified, then list 10 resources.  ",
   parameters: {
     properties: {
       resource: {
@@ -94,7 +92,7 @@ const listSASDataLibFunctionSpec = {
 const listSASTablesFunctionSpec = {
   name: "listSASTables",
   description:
-    "list tables in a SAS library like casuser, sashelp. List the specified count of tables. If not specified, then list 10 tables.",
+    "for a given library get the available tables(ex: library Samples ). List the specified count of tables. If not specified, then list 10 tables.",
   parameters: {
     properties: {
       library: {
@@ -115,7 +113,7 @@ const listSASTablesFunctionSpec = {
 const listColumnsFunctionSpec = {
   name: "listColumns",
   description:
-    "list columns in a table like casuser.cars, sashelp.cars",
+    "for a given table of the form a.b get the list columns in a table. Example is columns in like casuser.cars",
   parameters: {
     properties: {
       table: {
@@ -128,6 +126,21 @@ const listColumnsFunctionSpec = {
     required: ["table"]
 }
 };
+const runSASFunctionSpec = {
+  name: "runSAS",
+  description: "run the code or file. code is specified as code='abc'. file is the path to the file to run",
+  parameters: {
+    properties: {
+      file: {
+        type: "string",
+        description: "this is the file to run",
+      }
+    },
+    type: "object",
+    required: ["file"],
+  },
+};
+
 const listFunctionsinAppSpec = {
   name: "listFunctions",
   description: "help on prompts designed for Viya",
