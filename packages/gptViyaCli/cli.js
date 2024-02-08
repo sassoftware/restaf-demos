@@ -6,13 +6,13 @@
 
 import vorpal from 'vorpal';
 import setupViya from '../lib/setupViya.js';
-import gptPrompt from '../gptfunctions/gptPrompt.js';
-import setupGpt from '../lib/setupGpt.js';
+import gptPrompt from '../gpt/gptPrompt.js';
+import setupGpt from '../gpt/setupGpt.js';
 
 // process env variables
 let apiKey = process.env.APPENV_USERKEY;
 let source = process.env.VIYASOURCE;
-if (['cas', 'compute'].includes(source) == false) { 
+if (['cas', 'compute', 'none'].includes(source) == false) { 
   source = 'cas';
   console.log("VIYASOURCE not set, defaulting to cas");
 }
@@ -51,33 +51,15 @@ const runCli = (appEnv) => {
   });
 
      
-    vorpalcmd
-        .delimiter ('>')
-        .log('--------------------------------------')
-        .log('Welcome to cli for trying out gpt with Viya')
-        .log('Enter gpt to start gpt session')
-        .log('To exit the gpt session, type `exit`')
-        .log('To exit the cli type `exit`')
-        .log('')
-        .log('--------------------------------------');
-      
-    vorpalcmd.show()
-}
-
-/*
   vorpalcmd
-      .command('p <prompt...>')
-      .description('Enter prompt to ask GPT-4')
-      .action((args, cb)=> {
-        vorpalcmd.log('prompt: ' + args.prompt);
-        let p = args.prompt.join(' ');
-        gptPrompt(p, gptControl, appEnv)
-        .then (response => {
-            vorpalcmd.log(response);
-            cb();
-        })
-        .catch(err => {
-          vorpalcmd.log(err);
-        })
-      })
-      */
+      .delimiter ('>')
+      .log('--------------------------------------')
+      .log('Welcome to cli for trying out gpt with Viya')
+      .log('Enter gpt to start gpt session')
+      .log('To exit the gpt session, type `exit`')
+      .log('To exit the cli type `exit`')
+      .log('')
+      .log('--------------------------------------');
+    
+  vorpalcmd.show();
+}

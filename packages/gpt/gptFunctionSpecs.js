@@ -9,6 +9,8 @@ function gptFunctionSpecs() {
     listColumnsFunctionSpec,
     listFunctionsinAppSpec,
     runSASFunctionSpec,
+    basicFunctionSpec,
+    resumeFunctionSpec
   ];
 
   let functionList = gptFunctions();
@@ -145,4 +147,40 @@ const listFunctionsinAppSpec = {
   },
 };
 
+const basicFunctionSpec = {
+  name: "basic",
+  description: "format a comma-separated keywords like a,b,c into html, array, object",
+  parameters: {
+   
+    properties: {
+      keywords: {
+        type: "string",
+        description: "A comma-separated list of keywords like a,b,c",
+      },
+      format: {
+        type: "string",
+        enum: ["html", "array", "object"],
+        description: "Format the string"
+      },
+    },
+    type: "object",
+    required: ["keywords", "format"]
+  },
+};
+const resumeFunctionSpec = {
+  name: "resume",
+  description: "get resume for a person.ex: resume for deva",
+  parameters: {
+   
+    properties: {
+      person: {
+        type: "string",
+        description: "name of person",
+      },
+
+    },
+    type: "object",
+    required: ["person"]
+  },
+};
 export default gptFunctionSpecs;

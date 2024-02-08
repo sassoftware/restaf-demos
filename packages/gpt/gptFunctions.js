@@ -21,7 +21,9 @@ function gptFunctions() {
     listColumns,
     listFunctions,
     listSASDataLib,
-    runSAS
+    runSAS,
+    basic,
+    resume
     };
   async function getForm(params, appEnv) {
     let { source, table, keys, columns } = params;
@@ -144,5 +146,33 @@ function gptFunctions() {
     let r = functionList.map((f) => f.description);
     return r;
   }
+}
+async function basic(params) {
+  let { keywords, format } = params;
+
+  switch (format) {
+    case "html":
+      let t = "<ul>";
+      keywords.split(",").forEach((k) => {
+        t += `<li>${k}</li>`;
+      });
+      t += "</ul>";
+      return t;
+    case "array":
+      return keywords.split(",");
+    case "object":
+      let r = {};
+      keywords.split(",").forEach((k, i) => {
+        r[`key${i}`] = k;
+      });
+      return r;
+    default:
+      return params;
+  }
+}
+async function resume(params) {
+  let { person } = params;
+  let r = `Resume for ${person}: He did his undegraduate at IIT, Madras. He got his PHD from RPI, Troy, NY. He works for SAS and pretends to be a developer`;
+  return r;
 }
 export default gptFunctions;

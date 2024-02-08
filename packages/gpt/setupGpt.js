@@ -8,7 +8,7 @@
  * @returns {object} - openai, createArgs, functionList
  */
 import  OpenAI from 'openai';  
-import  gptFunctionSpecs from '../gptfunctions/gptFunctionSpecs.js';
+import  gptFunctionSpecs from './gptFunctionSpecs.js';
 function setupGpt(apiKey) {
   const openai = new OpenAI({ apiKey: apiKey });
   let {functionSpecs, functionList} = gptFunctionSpecs(); 

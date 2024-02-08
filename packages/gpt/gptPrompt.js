@@ -25,14 +25,15 @@ async function gptPrompt(prompt, gptControl, appEnv) {
     // Handle response from gpt
     if (completionResponse.content) {
       // gpt decided not to call our functions. Return the response from gpt
-      console.log(completionResponse.content);
+      createArgs.messages.push(completionResponse);
       return completionResponse.content;
     } else if (completionResponse.function_call) {
       // gpt wants us to call the specified function and return the result
       const fname = completionResponse.function_call.name;
       const params = JSON.parse(completionResponse.function_call.arguments);
-      let response = await functionList[fname](params, appEnv);
       createArgs.messages.push(completionResponse);
+      let response = await functionList[fname](params, appEnv);
+      createArgs.messages.push({ role: "user", content: JSON.stringify(response) });
       return response;
     }
   } catch (error) {
@@ -44,3 +45,5 @@ async function gptPrompt(prompt, gptControl, appEnv) {
 
 
 export default gptPrompt;
+
+//https://platform.openai.com/docs/guides/text-generation/chat-completions-api

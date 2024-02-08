@@ -31,8 +31,9 @@ async function main(prompt, apiKey) {
   // define a function spec
   const basicFunctionSpec = {
     name: "basic",
-    description: "format a comma-separated keywords like a,b,c into html, array, object. ",
+    description: "format a comma-separated keywords like a,b,c into html, array, object",
     parameters: {
+     
       properties: {
         keywords: {
           type: "string",
@@ -41,7 +42,7 @@ async function main(prompt, apiKey) {
         format: {
           type: "string",
           enum: ["html", "array", "object"],
-          description: "Format is html, array, object"
+          description: "Format the string"
         },
       },
       type: "object",
@@ -68,7 +69,7 @@ async function main(prompt, apiKey) {
   try {
     let completion = await openai.chat.completions.create(createArgs);
     const completionResponse = completion.choices[0].message;
-
+    console.log(JSON.stringify(completion, null,4));
     if (completionResponse.content) { // gpt handled the request
       finalResponse = completionResponse.content;
     } else if (completionResponse.function_call) { // gpt thinks the function should handle the request

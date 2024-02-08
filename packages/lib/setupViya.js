@@ -16,6 +16,9 @@ import getToken from './getToken.js';
 
 async function setupViya(source) {
 
+  if (source === 'none'){
+    return {source: 'none'}
+  };
   // logon payload
   let logonPayload = {
     authType: 'server',
