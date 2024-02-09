@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --no-warnings cli",
     "basic": "cd ./packages/basic && node index.js",
     "basicsas": "cd ./packages/basicSAS && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node index.js",
     "debug": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js",
