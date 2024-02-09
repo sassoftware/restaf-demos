@@ -29,24 +29,27 @@ async function setupViya(source) {
 
   // logon to the server
   let store = restaf.initStore({casProxy: true});
-  let msg = await store.logon(logonPayload);
+  await store.logon(logonPayload);
   let appEnv = {
     host: process.env.VIYA_SERVER,
+    logonPayload: logonPayload,
     store: store,
     source: source
   }
   // create session and server objects
   if (source === 'cas') {
-    let {session, servers} = await restaflib.casSetup(store, null)
+    let {session, servers} = await restaflib.casSetup(store, null);
     appEnv.session = session;
     appEnv.servers = servers;
-    appEnv.casServerName = session.links("execute", "link", "server");
-    appEnv.serverName = session.links("execute", "link", "server");
+    appEnv.casServerName = session.links("execute", "link", "server"); 
+ 
   } else {
     appEnv.session = await restaflib.computeSetup(store);
     appEnv.server = null;
   }
 
+  let ssid = await store.apiCall(appEnv.session.links("self"));
+  appEnv.sessionID = ssid.items("id");
   return appEnv;
 }
 export default setupViya;

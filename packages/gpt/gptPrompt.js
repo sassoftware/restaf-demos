@@ -20,20 +20,21 @@ async function gptPrompt(prompt, gptControl, appEnv) {
     
     // The actual call to GPT
     let completion = await openai.chat.completions.create(createArgs);
+   
     const completionResponse = completion.choices[0].message;
-    
+   
     // Handle response from gpt
     if (completionResponse.content) {
       // gpt decided not to call our functions. Return the response from gpt
-      createArgs.messages.push(completionResponse);
+      createArgs.messages.push({role: 'assistant', content: completionResponse.content});
       return completionResponse.content;
     } else if (completionResponse.function_call) {
       // gpt wants us to call the specified function and return the result
       const fname = completionResponse.function_call.name;
       const params = JSON.parse(completionResponse.function_call.arguments);
-      createArgs.messages.push(completionResponse);
+     
       let response = await functionList[fname](params, appEnv);
-      createArgs.messages.push({ role: "user", content: JSON.stringify(response) });
+      createArgs.messages.push({ role: "assistant", content: JSON.stringify(response) });
       return response;
     }
   } catch (error) {

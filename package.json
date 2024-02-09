@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/gpt-samples",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Examples of integrating gpt prompts into SAS Viya apps",
   "engines": {
     "node": ">=12.14.0",
@@ -8,12 +8,17 @@
   },
   "type": "module",
   "scripts": {
-    "start": "cd ./packages/basic && node index.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
+    "basic": "cd ./packages/basic && node index.js",
     "basicsas": "cd ./packages/basicSAS && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node index.js",
-    "gpt": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
-    "debug": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js"
+    "debug": "cd ./packages/gptViyaCli && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js",
+    "pub": "npm publish --tag dev --access public"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/gpt-samples",
+  "main": "./cli.js",
+  "bin": {
+    "@sassoftware/gpt-samples": "cli.js"
+  },
   "keywords": [
     "Viya",
     "gpt",
@@ -30,7 +35,7 @@
   },
   "dependencies": {
     "@sassoftware/restaf": "next",
-    "@sassoftware/restafedit": "^2.4.2",
+    "@sassoftware/restafedit": "^2.4.4",
     "@sassoftware/restaflib": "next",
     "cross-env": "^7.0.3",
     "openai": "^4.26.0",

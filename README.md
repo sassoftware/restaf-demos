@@ -1,20 +1,36 @@
-# Examples of integrating gpt prompts into SAS Viya apps
+# Examples of integrating gpt into SAS Viya apps
 
 This repository contains examples of integrating gpt into application targeting SAS Viya.
 The purpose is to demonstrate that integrating the power of gpt into one's own application is not rocket-science = the credit goes to the simplicity and elegance of the gpt api.
 
 Since the key audience for this repository is SAS customers the examples are focused on integrating gpt into applications for SAS Viya.
 
+Watch this repository for more examples.
+
+---
+
 ## Table of Contents
 
-- [Data Points](#datapoint)
-- [Installation and setup](#install)
-- [Getting started example](#basic)
-- [Example with access to Viya](#basicSAS)
-- [Interactive gpt session](#gpt)
+---
 
+- [Data Points](#datapoint)
+- [Running as a cli](#gpt)
+
+The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
+There are a few examples of using the gpt api that I created to understand how to build apps with gpt and Viya.
+You might find them useful.
+
+To clone the repository and run it locally, follow the instructions below.
+
+- [Installation and setup](#install)
+- [Basic example](#basic)
+- [Basic example with access to Viya](#basicSAS)
+
+---;
 
 ## Data Points<a name="datapoint"></a>
+
+---
 
 1. gpt-4 version is used in this repo.
    - if you are using a different version, search the repo for gpt-4 and change it to your version
@@ -23,31 +39,56 @@ Since the key audience for this repository is SAS customers the examples are foc
 3. Most examples make use of SAS REST API to access SAS Viya. The applications use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to make these calls. See <https://sassoftware.github.io/restaf/> for more information.
 4. The source code in this repository is provided under Apache-2.0 licensing model.
 
-## Installation and Setup<a name="install"></a>
-
-- git clone https://github.com/sassoftware/restaf-demos gpt-samples -b gpt-samples
-- cd to opt-samples
-- npm install
-- Define the environment variables described below
-
 ### Environment Variables
 
 - VIYA_SERVER - Set the value of this env variable to the url for your Viya Server
-- SASTOKEN - For nodejs applications this should have the location of the authentication information created by executing the following command
-  - sas-viya auth login|loginCode
-- CLIENTID, CLIENTSECRET - For web applications set this to the authorization_code clientid and clientsecret. The redirect should be set to <https://localhost:8080>
+- SASTOKEN - For nodejs applications this should have the location of the authentication information created by executing the following command. If the environment variable is not set, then it will default .sas/credentials in your home directory.
+  - sas-viya auth login|loginCode.
 - APPENV_USERKEY - Set to the api key from openai
-- VIYASOURCE - set this to either cas or compute. Defaults to cas. Used in examples that access Viya(see)
+- VIYASOURCE - set this to either cas, compute or none. Defaults to cas. Used in prompts that access Viya resources.
+
+---
+
+## Running as a cli<a name="gpt"> </a>
+
+---
+
+This is interactive gpt session.
+After setting the environment variables listed above, start the application as follows:
+
+```sh
+npx @sassoftware/gpt-samples@latest
+
+On the prompt, enter **gpt** to start the gpt session
+
+Enter **help** to get guidance on what is possible
+
+
+```
+
+The gpt session will stay active until you enter **exit**
+
+To exit the cli enter **exit** again.
+
+## Installation and Setup<a name="install"></a>
+
+The instruction below is for those users who wish to clone the code and extend the application.
+
+- git clone https://github.com/sassoftware/restaf-demos gpt-samples -b gpt-samples
+- cd gpt-samples
+- npm install
+- Define the environment variables described below
 
 ## Getting started - Basic example<a name="basic"></a>
 
 This example demonstrates setting up access to gpt and defining a function called basic. This function's sole purpose is to reformat user provided keywords as html, array or javascript object.
 The code is in ./packages/basic/index.js
 
+
 ### Usage
 
 ```sh
-npm start <some text>
+npm run basic <some text>
 ```
 
 Some sample prompt and results:
@@ -73,8 +114,11 @@ Sure, can you provide me with the keywords you want to process?
 ### keywords a,b,c as html
 
 ```txt
+
 <ul><li>a</li><li>b</li><li>c</li></ul>
+
 ```
+
 ## Example with access to Viya<a name="basicSAS"></a>
 
 This is similar to the previous example, except that the function has been replaced with a function that executes SAS code or casl code(depending on the value of VIYASOURCE).
@@ -82,7 +126,9 @@ This is similar to the previous example, except that the function has been repla
 The prompt should look something like this:
 
 ```sh
+
 run file path to your .sas file or .casl file
+
 ```
 
 The following starter files are included. Use .sas files if env VIYASOURCE is set to compute
@@ -281,32 +327,3 @@ npm run basicSAS "run file <some path>"
 
 
 ```
-
-## Interactive GPT session<a name="gpt"> </a>
-
-This is interactive gpt session. Several functions to access Viya are enabled.
-
-### Usage of Interactive GPT session
-
-To start the session issue the following commands:
-
-```sh
-npm run gpt
-
-On the prompt, enter
-
-gpt
-
-This will start an interactive session
-
-enter 
-
-help 
-
-to see sample queries.
-
-```
-
-The gpt session will stay active until you enter **exit**
-
-To exit the gtp session enter **exit**
