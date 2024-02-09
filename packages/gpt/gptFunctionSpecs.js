@@ -7,19 +7,29 @@ function gptFunctionSpecs() {
     listSASDataLibFunctionSpec,
     listSASTablesFunctionSpec,
     listColumnsFunctionSpec,
-    listFunctionsinAppSpec,
+   // listFunctionsinAppSpec - created dynamically
     runSASFunctionSpec,
     basicFunctionSpec,
-    resumeFunctionSpec
+    resumeFunctionSpec,
+    describeTableSpec
   ];
 
-  let functionList = gptFunctions();
+  let functionList = gptFunctions(functionSpecs);
+  functionSpecs.push(listFunctionsinAppSpec);
+
   return { functionSpecs, functionList };
 }
 
+const listFunctionsinAppSpec = {
+  name: "listFunctions",
+  description: "Show prompts",
+  parameters: {},
+  type: "object",
+  required: []
+};
 const configFunctionSpec = {
   name: "getForm",
-  description: "create a form for a table like sashelp.cars as a JSON object",
+  description: "Create a form for a table like sashelp.cars as a JSON object",
   parameters: {
     properties: {
       table: {
@@ -44,7 +54,7 @@ const configFunctionSpec = {
 //
 const getDataFunctionSpec = {
   name: "getData",
-  description: "Get data for a table like casuser.cars",
+  description: "Fetch data from a  table like casuser.cars. To limit the number of rows, specify the limit parameter",
   parameters: {
     properties: {
       table: {
@@ -52,19 +62,19 @@ const getDataFunctionSpec = {
         description:
           "The table to setup. The form of the table is casuser.cars",
       },
-      count: {
+      limit: {
         type: "integer",
-        description: "Get this many rows. If not speified, then get 10 rows",
+        description: "Fetch only the specified number of rows"
       },
     },
     type: "object",
-    required: ["table"],
+    required: ["table", "limit"],
   },
 };
 const listSASObjectsFunctionSpec = {
   name: "listSASObjects",
   description:
-    "get a list of SAS resources like reports, files, folders. An example would be list reports. List the specified count of resources. If not specified, then list 10 resources.  ",
+    "get a list of SAS resources like reports, files, folders. Specify the limit parameter to limit the number of items returned",
   parameters: {
     properties: {
       resource: {
@@ -72,45 +82,66 @@ const listSASObjectsFunctionSpec = {
         description:
           "The objecttable to setup. The form of the table is casuser.cars",
       },
-      count: {
+      limit: {
         type: "integer",
-        description: "Get this many rows. If not speified, then get 10 rows",
+        description: "Get this many items",
       },
     },
     type: "object",
-    required: ["resource"],
+    required: ["resource", "limit"],
   },
 };
 const listSASDataLibFunctionSpec = {
   name: "listSASDataLib",
   description:
-    "get a list of available SAS libs, calibs, librefs. A example would be list libs. If count is not is specified, then the function will return the first 10 libs",
-  properties: {},
+    "get a list of available SAS libs, calibs, librefs. A example would be list libs. If limit is not is specified, then the function will return the first 10 libs",
+  parameters: {
+    properties: {
+      limit: {
+        type: "integer",
+        description: "Return only this many libs. If not specified, then return 10 libs.",
+      },
+    },
   type: "object",
+  }
 };
 const listSASTablesFunctionSpec = {
   name: "listSASTables",
   description:
-    "for a given library, lib , caslibs get the list available tables(ex: list tables for Samples. If count is not is specified, then the function will return the first 10 libs",
+    "for a given library, lib , caslibs get the list available tables(ex: list tables for Samples)",
   parameters: {
     properties: {
       library: {
         type: "string",
         description: "A SAS library like casuser, sashelp, samples",
       },
-      count: {
+      limit: {
         type: "integer",
         description:
           "Return only this many tables. If not specified, then return 10 tables.",
       },
     },
     type: "object",
-    required: ["library"],
+    required: ["library", "limit"], 
   },
 };
 const listColumnsFunctionSpec = {
   name: "listColumns",
-  description: "get schema or columns for specified table. Table is of the form sashelp.cars",
+  description: "Get schema or columns for specified table. Table is of the form sashelp.cars",
+  parameters: {
+    properties: {
+      table: {
+        type: "string",
+        description: "A table like sashelp.cars",
+      },
+    },
+    type: "object",
+    required: ["table"],
+  },
+};
+const describeTableSpec = {
+  name: "describeTable",
+  description: "Describe the table like sashelp. return information on the table like columns, types, keys",
   parameters: {
     properties: {
       table: {
@@ -138,14 +169,7 @@ const runSASFunctionSpec = {
   },
 };
 
-const listFunctionsinAppSpec = {
-  name: "listFunctions",
-  description: "help on prompts designed for Viya",
-  parameters: {
-    properties: {},
-    type: "object",
-  },
-};
+
 
 const basicFunctionSpec = {
   name: "basic",
@@ -169,18 +193,23 @@ const basicFunctionSpec = {
 };
 const resumeFunctionSpec = {
   name: "resume",
-  description: "get resume for a person.ex: resume for deva",
+  description: "get resume for a person.ex: resume for deva Deva is a developer",
   parameters: {
    
     properties: {
+     
       person: {
         type: "string",
         description: "name of person",
+      }, 
+      resume: {
+        type: "string",
+        description: "resume for person",
       },
 
     },
     type: "object",
-    required: ["person"]
+    required: ["person", "resume"]
   },
 };
 export default gptFunctionSpecs;
