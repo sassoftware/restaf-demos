@@ -197,15 +197,13 @@ async function describeTable(params, appEnv) {
       },
     },
   };
-  console.log("appControl", appControl);
-  console.log(sessionID);
-  debugger;
+
   let tappEnv = await restafedit.setup(appEnv.logonPayload, appControl, sessionID);
   let r = await restafedit.scrollTable("first", tappEnv);
-  console.log(r);
+  let tableSummary = await restafedit.getTableSummary(tappEnv);
   let describe = {
     table: iTable,
-    summary: restafedit.getTableSummary(tappEnv),
+    tableSummary: tableSummary,
     columns: tappEnv.state.columns,
     data: tappEnv.state.data,
   };
