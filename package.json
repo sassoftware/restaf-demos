@@ -10,7 +10,7 @@
   "scripts": {
     "build": "rimraf -rf lib && babel src --out-dir lib",
     "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 && node --no-warnings cli",
-    "pub": "npm publish --tag test --access public",
+    "pub": "npm publish --tag latest --access public",
     "dkrbuild": "docker build"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/registerclient",

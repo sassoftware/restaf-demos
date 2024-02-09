@@ -9,11 +9,15 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 	let clientSecret = (args.secret != null) ? args.secret.trim() : null;
 	let redirect = (args.redirect != null) ? args.redirect.trim() : null;
 	let configFile = (args.configFile == null) ? defaultConfigFile : args.configFile;
+	
 	if (configFile == null) {
 		let flow = (args.type  != null) ? args.type.trim() : ' ';
-			if (clientid === 'code') {
-			clientid = 'authorization_code';
+		console.log(flow);
+		/*
+		if (flow === 'code') {
+			flow = 'authorization_code';
 		}
+		*/
 		let flowA = flow.split(',');
 		configFile = {
 			client_id   : clientid,
@@ -28,8 +32,9 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 		if (clientSecret !== null) {
 			configFile.client_secret = clientSecret;
 		}
-		if (redirect != null) {
-			let redirectA = redirect.split(',');
+		let redirectx = redirect.replaceAll("$VIYA_SERVER",process.env.VIYA_SERVER);
+		if (redirectx != null) {
+			let redirectA = redirectx.split(',');
 			configFile.redirect_uri = redirectA;
 		}
 	} 
