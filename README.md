@@ -1,10 +1,21 @@
-# registerclient
+# @sassoftware/registerclient
+
+## Breaking changes
+
+- The authentication is consitent with other viya cli plugins
+  - Use sas-cli auth login|loginCode to setup authentication
 
 Application to manange clientids. The application runs as a cli.
 It can be run in interactive mode or in batch mode.
 The user of this app must have admin rights.
 
 ---
+
+## Setup
+
+## Authentication and setup
+
+1. Use sas-cli auth login}|loginCode to create authentication tokens
 
 ## Quick start
 
@@ -13,7 +24,7 @@ The user of this app must have admin rights.
 The simplest way to use this cli is as follows:
 
 ```cmd
-npx @sassoftware/registerclient --host <your viya server url>  
+npx @sassoftware/registerclient 
 ```
 
 On the prompt enter, enter logon command.
@@ -28,22 +39,12 @@ This will put you into an interactive session where you can issue commands. Use 
 
 This mode is useful when you want to run these commands as part of some process. I use them to setup all my clientids when I am configuring a new server
 
-Create a version of the .env file with two additional keys - USER and PASSWORD
-
-```env
-VIYA_SERVER=http://<your viyaserver>
-AUTHTYPE=password
-CLIENTID=sas.ec or a valid clientid( appears that sas.ec is shipped as a default clientid)
-CLIENTSECRET=
-USER=<username>
-PASSWORD=<password>
-```
 
 Run the following command
 
 ```script
 
-npx @sassoftware/registerclient --env your-envfile --file yourcmdfile
+npx @sassoftware/registerclient --file yourcmdfile
 
 ```
 

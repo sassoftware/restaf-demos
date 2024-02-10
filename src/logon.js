@@ -19,13 +19,6 @@
 'use strict';
 
 module.exports = async function logon (store, logonPayload, vorpal) {
-
-	if (logonPayload !== null) {
-		if (store.connection() !== null) {
-			await store.logoff();
-		}
-	}
-	
 	await store.logon(logonPayload);
     await store.addServices('SASLogon');
 	return 'done';
