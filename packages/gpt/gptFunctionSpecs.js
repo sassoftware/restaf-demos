@@ -11,7 +11,8 @@ function gptFunctionSpecs() {
     runSASFunctionSpec,
     basicFunctionSpec,
     resumeFunctionSpec,
-    describeTableSpec
+    describeTableSpec,
+    readFileFunctionSpec
   ];
 
   let functionList = gptFunctions(functionSpecs);
@@ -74,7 +75,7 @@ const getDataFunctionSpec = {
 const listSASObjectsFunctionSpec = {
   name: "listSASObjects",
   description:
-    "get a list of SAS resources like reports, files, folders. Specify the limit parameter to limit the number of items returned",
+    "list SAS resources like reports, files, folders. Specify the limit parameter to limit the number of items returned",
   parameters: {
     properties: {
       resource: {
@@ -94,7 +95,7 @@ const listSASObjectsFunctionSpec = {
 const listSASDataLibFunctionSpec = {
   name: "listSASDataLib",
   description:
-    "get a list of available SAS libs, calibs, librefs. A example would be list libs. If limit is not is specified, then the function will return the first 10 libs",
+    "list available SAS libs, calibs, librefs. A example would be list libs. If limit is not is specified, then the function will return the first 10 libs",
   parameters: {
     properties: {
       limit: {
@@ -168,9 +169,21 @@ const runSASFunctionSpec = {
     required: ["file"],
   },
 };
-
-
-
+const readFileFunctionSpec = {
+  name: "readFile",
+  description:
+    "read a file. The file is a path to the file",
+  parameters: {
+    properties: {
+      file: {
+        type: "string",
+        description: "this is the file to run",
+      },
+    },
+    type: "object",
+    required: ["file"],
+  },
+};
 const basicFunctionSpec = {
   name: "basic",
   description: "format a comma-separated keywords like a,b,c into html, array, object",

@@ -6,7 +6,7 @@
 import OpenAI from "openai";
 
 let apiKey = process.env.APPENV_USERKEY;
-;
+
 // read cmdline option and send it as prompt to gpt
 let prompt = ' ';
 if (process.argv.length > 1 ) {
@@ -74,6 +74,7 @@ async function main(prompt, apiKey) {
       finalResponse = completionResponse.content;
     } else if (completionResponse.function_call) { // gpt thinks the function should handle the request
       let fname = completionResponse.function_call.name;/* just to show this is in the completionResponse */
+      console.log('function name: ' + fname);
       const params = JSON.parse(completionResponse.function_call.arguments);
       // call the custom function
       finalResponse = await basic(params);
@@ -90,21 +91,23 @@ async function basic(params) {
   let { keywords, format } = params;
 
   switch (format) {
-    case "html":
+    case "html":{
       let t = "<ul>";
       keywords.split(",").forEach((k) => {
         t += `<li>${k}</li>`;
       });
       t += "</ul>";
       return t;
+    }
     case "array":
       return keywords.split(",");
-    case "object":
+    case "object":{
       let r = {};
       keywords.split(",").forEach((k, i) => {
         r[`key${i}`] = k;
       });
       return r;
+    }
     default:
       return params;
   }

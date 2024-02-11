@@ -2,14 +2,14 @@
 
 This repository contains examples of integrating gpt into application targeting
  SAS Viya.
-The purpose is to demonstrate that integrating the power of gpt into one's own 
-application is not rocket-science = the credit goes to the simplicity 
-and elegance of the gpt api.
 
-Since the key audience for this repository is SAS customers the examples are 
-focused on integrating gpt into applications for SAS Viya.
+The examples use **gpt-4 with functions**. Many of the functions use
+ [@sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit](https://sassoftware.github.io/restaf) to make REST API calls to SAS Viya.
 
-Watch this repository for more examples.
+The functions are small and easy to follow. Feel free to change these to suit own 
+programming style.
+
+The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
 
 ---
 
@@ -19,14 +19,6 @@ Watch this repository for more examples.
 
 - [Data Points](#datapoint)
 - [Running as a cli](#gpt)
-
-The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
-There are a few examples of using the gpt api that I created to understand how to
- build apps with gpt and Viya.
-You might find them useful.
-
-To clone the repository and run it locally, follow the instructions below.
-
 - [Installation and setup](#install)
 - [Basic example](#basic)
 - [Basic example with access to Viya](#basicSAS)
@@ -37,31 +29,30 @@ To clone the repository and run it locally, follow the instructions below.
 
 ---
 
-1. gpt-4 version is used in this repo.
-   - if you are using a different version, search the repo for gpt-4 and change 
-   it to your version
+1. gpt-4 model is the default openai model.
+    - OPENAI_MODEL - To change the model, set this enviroment variable
+    to the desired model.
 2. It is the user's reponsibility to get the api key for openai.
-   - The samples assume that the key is available as enviroment variable APPENV_USERKEY
+   - The samples assume that the key is available as environment variable
+   OPENAI_KEY
 3. Most examples make use of SAS REST API to access SAS Viya. The applications
 use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to
-make these calls. See <https://sassoftware.github.io/restaf/> 
+make these calls. See <https://sassoftware.github.io/restaf/>
 for more information.
 4. The source code in this repository is provided under
- Apache-2.0 licensing model.
+ Apache-2.0 licensing model
+
+### Authentication
+
+Please sas-cli auth login|logCode to setup authentication token.
 
 ### Environment Variables
 
-- VIYA_SERVER - Set the value of this env variable to the url for your
-Viya Server
-- SASTOKEN - For nodejs applications this should have the location of
-the authentication information created by executing the following command.
- If the environment variable is not set, then it will default .sas/credentials
-  in your home directory.
-  - sas-viya auth login|loginCode.
-- APPENV_USERKEY - Set to the api key from openai
+- OPENAI_KEY - Set this to the api key from openai
+- OPENAI_MODEL - (optional) set to the model you want to use(defaults to gpt-4)
 - VIYASOURCE - set this to either cas, compute or none. Defaults to cas. Used in
-prompts that access Viya resources. Use none if you want to use it
- without accessing Viya.
+prompts that access Viya resources. The 'none' value is useful if you want to 
+use this cli as a standard chat without accessing Viya.
 
 ---
 
@@ -69,19 +60,17 @@ prompts that access Viya resources. Use none if you want to use it
 
 ---
 
-This is interactive gpt session.
 After setting the environment variables listed above, start the application as 
 follows:
 
 ```text
 npx @sassoftware/gpt-samples@latest
 
+```
+
 On the prompt, enter **gpt** to start the gpt session
 
 Enter **help** to get guidance on what is possible
-
-
-```
 
 The gpt session will stay active until you enter **exit**
 
@@ -103,7 +92,6 @@ This example demonstrates setting up access to gpt and defining a function calle
  html, array or JavaScript object.
 The code is in ./packages/basic/index.js
 
-
 ### Usage
 
 ```text
@@ -112,25 +100,25 @@ npm run basic <some text>
 
 Some sample prompt and results:
 
-### what is SAS Viya
+### npm run basic  what is SAS Viya
 
 ```text
 SAS Viya is a cloud-based, in-memory analytics engine from SAS Institute, an American multinational developer of analytics software. SAS Viya provides quick, accurate results and reveals valuable insights from large amounts of data. It's capable of machine learning, text analytics, forecasting, optimization, and statistics. It can be used through a variety of programming languages including Python, R, Java, and Lua, or through its visual interface.
 ```
 
-### keywords
+### npm run basic keywords
 
 ```text
 Sure, can you provide me with the keywords you want to process?
 ```
 
-### keywords a,b,c as array
+### npm run basic keywords a,b,c as array
 
 ```javascript
 [ 'a', 'b', 'c' ]
 ```
 
-### keywords a,b,c as html
+### npm run basic keywords a,b,c as html
 
 ```text
 
@@ -140,7 +128,7 @@ Sure, can you provide me with the keywords you want to process?
 
 ## Example with access to Viya<a name="basicSAS"></a>
 
-This is similar to the previous example The  basic function now executes SAS code 
+This is similar to the previous example The  basic function now executes SAS code
 or casl code.
 
 The prompt should look something like this:
@@ -220,6 +208,8 @@ npm run basicSAS "run file <some path>"
 ```
 
 ### run file ../programs/datastep.sas
+
+Make sure the env variable VIYASOURCE is set to compute.
 
 ```json
 [

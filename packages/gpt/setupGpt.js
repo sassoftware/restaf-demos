@@ -7,16 +7,17 @@
  * @param {string} apiKey - openai api key
  * @returns {object} - openai, createArgs, functionList
  */
-import  OpenAI from 'openai';  
-import  gptFunctionSpecs from './gptFunctionSpecs.js';
+import OpenAI from 'openai';  
+import gptFunctionSpecs from './gptFunctionSpecs.js';
 function setupGpt(apiKey) {
   const openai = new OpenAI({ apiKey: apiKey });
   let {functionSpecs, functionList} = gptFunctionSpecs(); 
 
   // setup request to chat
 
+  let m = process.env.OPENAI_MODEL;
   let createArgs = {
-    model: (process.env.OPENAI_MODEL == null) ? 'gpt-4' : process.env.OPENAI_MODEL,
+    model: (m == null || m.trim().length === 0 ) ? 'gpt-4' : m,
     messages: [{ role: "system", content: "you are designed to specific questions using the functions" }],
     functions: functionSpecs
   };
@@ -24,5 +25,5 @@ function setupGpt(apiKey) {
   
   return {openai, createArgs,functionList};
 
-  };
+  }
   export default setupGpt;

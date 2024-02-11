@@ -8,7 +8,7 @@ import restaflib from "@sassoftware/restaflib";
 import setupViya from "../lib/setupViya.js";
 import fs from "fs/promises";
 import logAsArray from "../lib/logAsArray.js";    
-let apiKey = process.env.APPENV_USERKEY;
+let apiKey = process.env.API_USER_KEY;
 
 //let fss = fs.promises ;
 

@@ -9,7 +9,7 @@ import fs from "fs/promises";
 import logAsArray from "../lib/logAsArray.js";
 import string2Table from "../lib/string2Table.js";
 
-const { computeFetchData, casFetchData, caslRun, computeRun, computeResults } =
+const { computeFetchData, casFetchData, caslRun, computeRun,computeSetupTables, computeResults } =
   restaflib;
 const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
@@ -26,10 +26,11 @@ function gptFunctions(functionSpecs) {
     basic,
     resume,
     describeTable,
+    readFile
   };
   // create a wrapper for listFunctions
   function wrapper(functionSpecs) {
-    return async (params, appEnv) => {
+    return async () => {
       let r = functionSpecs.map((f) => f.description);
       return r;
     };
@@ -40,7 +41,8 @@ function gptFunctions(functionSpecs) {
 }
 
 async function getForm(params, appEnv) {
-  let { source, table, keys, columns } = params;
+  let { table, keys, columns } = params;
+  let { source } = appEnv;
   // Return the incoming parameters to give user a chance to review
 
   return {
@@ -101,34 +103,8 @@ async function listColumns(params, appEnv) {
   return r;
 }
 async function getData(params, appEnv) {
-  //TBD: need to move most of this code to restafedit
-  let { table, limit } = params;
-  let { store, source, session } = appEnv;
-  let iTable = string2Table(table, source);
-  if (iTable === null) {
-    return "Table must be specified in the form casuser.cars or sashelp.cars";
-  }
-  let result = " ";
-  if (source === "cas") {
-    let control = {
-      table: iTable,
-      limit: limit == null ? 10 : limit,
-      start: 0,
-      where: "",
-      format: true,
-    };
-    let r = await casFetchData(store, session, control);
-    result = r.data.rows;
-  } else {
-    let control = {
-      qs: { limit: limit == null ? 10 : limit, start: 0, format: true },
-    };
-
-    let tableSummary = computeSetupTables(store, session, iTable);
-    let r = await computeFetchData(store, tableSummary, iTable, null, control);
-    result = r.rows;
-  }
-  return result;
+  let r = await describeTable(params, appEnv);
+  return r.data;
 }
 async function runSAS(params, appEnv) {
   let { file } = params;
@@ -150,26 +126,38 @@ async function runSAS(params, appEnv) {
     return logAsArray(log);
   }
 }
+async function readFile(params, appEnv) {
+  let { file } = params;
+  try {
+    let src = await fs.readFile(file, "utf8");
+    return src;
+  } catch (err) {
+    console.log(err);
+    return "Error reading file " + file;
+  };
+}
 
 async function basic(params) {
   let { keywords, format } = params;
 
   switch (format) {
-    case "html":
+    case "html":{
       let t = "<ul>";
       keywords.split(",").forEach((k) => {
         t += `<li>${k}</li>`;
       });
       t += "</ul>";
       return t;
+    }
     case "array":
       return keywords.split(",");
-    case "object":
+    case "object":{
       let r = {};
       keywords.split(",").forEach((k, i) => {
         r[`key${i}`] = k;
       });
       return r;
+    }
     default:
       return params;
   }
@@ -199,7 +187,7 @@ async function describeTable(params, appEnv) {
   };
 
   let tappEnv = await restafedit.setup(appEnv.logonPayload, appControl, sessionID);
-  let r = await restafedit.scrollTable("first", tappEnv);
+  await restafedit.scrollTable("first", tappEnv);
   let tableSummary = await restafedit.getTableSummary(tappEnv);
   let describe = {
     table: iTable,
@@ -210,7 +198,7 @@ async function describeTable(params, appEnv) {
   return describe;
 }
 async function resume(params) {
-  return params.person + ' resume is ' +  params.resume;
+  return params.person + ' resume is ' + params.resume;
 }
 
 export default gptFunctions;

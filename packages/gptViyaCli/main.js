@@ -11,7 +11,7 @@ import setupGpt from "../gpt/setupGpt.js";
 
 function main() {
   // process env variables
-  let apiKey = process.env.APPENV_USERKEY;
+  let apiKey = process.env.OPENAI_KEY;
   let source = process.env.VIYASOURCE;
   if (["cas", "compute", "none"].includes(source) == false) {
     source = "cas";
@@ -42,7 +42,7 @@ function main() {
         callback();
       })
       .action(function (command, cb) {
-        var self = this;
+        // var self = this; -- just as a reminder that this is available
         gptPrompt(command, gptControl, appEnv)
           .then((response) => {
             vorpalcmd.log(response);
@@ -52,7 +52,7 @@ function main() {
             vorpalcmd.log(err);
           });
       });
-
+    
     vorpalcmd
       .delimiter(">")
       .log("--------------------------------------")
@@ -61,8 +61,9 @@ function main() {
       .log("To exit the gpt session, type `exit`")
       .log("To exit the cli type `exit`")
       .log("")
-      .log("--------------------------------------");
-
+      .log("--------------------------------------")
+    
+    
     vorpalcmd.show();
   };
 }

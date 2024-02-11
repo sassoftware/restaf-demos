@@ -18,12 +18,13 @@ async function setupViya(source) {
 
   if (source === 'none'){
     return {source: 'none'}
-  };
+  }
   // logon payload
+  let {token, host} = getToken();
   let logonPayload = {
     authType: 'server',
-    host: process.env.VIYA_SERVER,
-    token: getToken(),
+    host: host,
+    token: token,
     tokenType: 'bearer'
   }
 
@@ -31,7 +32,7 @@ async function setupViya(source) {
   let store = restaf.initStore({casProxy: true});
   await store.logon(logonPayload);
   let appEnv = {
-    host: process.env.VIYA_SERVER,
+    host: host,
     logonPayload: logonPayload,
     store: store,
     source: source
