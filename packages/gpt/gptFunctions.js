@@ -164,7 +164,7 @@ async function basic(params) {
 }
 async function describeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
-  let { table, limit } = params;
+  let { table, limit, format} = params;
   let { source, sessionID } = appEnv;
   let iTable = string2Table(table, source);
   if (iTable === null) {
@@ -180,7 +180,7 @@ async function describeTable(params, appEnv) {
       qs: {
         start: 0,
         limit: limit == null ? 2 : limit,
-        format: true,
+        format: (format == null) ? true : format,
         where: " ",
       },
     },

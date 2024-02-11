@@ -67,6 +67,10 @@ const getDataFunctionSpec = {
         type: "integer",
         description: "Fetch only the specified number of rows"
       },
+      "format": {
+        type: "boolean",
+        description: "Format the string - true or false"
+      },  
     },
     type: "object",
     required: ["table", "limit"],
@@ -142,12 +146,16 @@ const listColumnsFunctionSpec = {
 };
 const describeTableSpec = {
   name: "describeTable",
-  description: "Describe the table like sashelp. return information on the table like columns, types, keys",
+  description: "Describe the table like sashelp. return information on the table like columns, types, keys. Optionally format the data",
   parameters: {
     properties: {
       table: {
         type: "string",
         description: "A table like sashelp.cars",
+      },
+      format: {
+        type: "boolean",
+        description: "If true then format the data"
       },
     },
     type: "object",
