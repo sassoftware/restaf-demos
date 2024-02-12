@@ -21,7 +21,6 @@
     "@sassoftware/gpt-samples": "cli.js"
   },
   "keywords": [
-    "Viya",
     "gpt",
     "gpt functions",
     "restaf",

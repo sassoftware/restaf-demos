@@ -70,7 +70,7 @@ npx @sassoftware/gpt-samples@latest
 
 ```
 
-On the prompt, enter **gpt** to start the gpt session
+On the prompt, enter **chat** to start the gpt session
 
 Enter **help** to get guidance on what is possible
 

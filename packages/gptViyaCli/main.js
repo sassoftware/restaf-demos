@@ -33,11 +33,11 @@ function main() {
   // main loop for running prompts
   const runCli = (appEnv) => {
     vorpalcmd
-      .mode("gpt")
+      .mode("chat")
       .delimiter("?")
       .init(function (args, callback) {
-        this.log("Enter prompts to be processed by gpt");
-        this.log("To exit gpt mode,  enter exit.");
+        this.log("Enter prompts to be processed by chatgpt");
+        this.log("To exit chat mode,  enter exit.");
         this.log("To see descriptions of the available funtions enter `help`");
         callback();
       })
@@ -56,9 +56,9 @@ function main() {
     vorpalcmd
       .delimiter(">")
       .log("--------------------------------------")
-      .log("Welcome to cli for trying out gpt with Viya")
-      .log("Enter gpt to start gpt session")
-      .log("To exit the gpt session, type `exit`")
+      .log("Welcome to cli for trying out chatgpt with Viya")
+      .log("Enter chat to start gpt session")
+      .log("To exit the chat session, type `exit`")
       .log("To exit the cli type `exit`")
       .log("")
       .log("--------------------------------------")

@@ -166,6 +166,7 @@ async function describeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
   let { table, limit, format} = params;
   let { source, sessionID } = appEnv;
+  console.log("describeTable", table, source, limit, format );
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
@@ -180,7 +181,7 @@ async function describeTable(params, appEnv) {
       qs: {
         start: 0,
         limit: limit == null ? 2 : limit,
-        format: (format == null) ? true : format,
+        format: (format == null) ? false : format,
         where: " ",
       },
     },
