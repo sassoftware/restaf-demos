@@ -6,7 +6,9 @@ This repository contains examples of integrating gpt into application targeting
 The examples use **gpt-4 with functions**. Many of the functions use
  [@sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit](https://sassoftware.github.io/restaf) to make REST API calls to SAS Viya.
 
-The functions are small and easy to follow. Feel free to change these to suit own 
+![image info](./chatgpt.png)
+
+The functions are small and easy to follow. Feel free to change these to suit own
 programming style.
 
 The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>

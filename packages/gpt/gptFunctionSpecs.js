@@ -146,7 +146,7 @@ const listColumnsFunctionSpec = {
 };
 const describeTableSpec = {
   name: "describeTable",
-  description: "Describe the table like sashelp. return information on the table like columns, types, keys. Optionally format the data",
+  description: "Describe the table like sashelp.cars . return information on the table like columns, types, keys. Optionally format the data",
   parameters: {
     properties: {
       table: {

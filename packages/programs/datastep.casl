@@ -1,6 +1,2 @@
-action datastep.runcode/ single='YES' code = 'data casuser.a; x=1; run;';
-action table.fetch r=r1/
-  table= { caslib= 'casuser', name= 'a' } ;
-  run;
-  describe r1;
-send_response({casResults= {result=r1}});
+action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';
+send_response({casResults={result=result}});

@@ -6,7 +6,7 @@
 
 import vorpal from "vorpal";
 import setupViya from "../lib/setupViya.js";
-import gptPrompt from "../gpt/gptPrompt.js";
+import chatgpt from "../gpt/chatgpt.js";
 import setupGpt from "../gpt/setupGpt.js";
 
 function main() {
@@ -43,7 +43,7 @@ function main() {
       })
       .action(function (command, cb) {
         // var self = this; -- just as a reminder that this is available
-        gptPrompt(command, gptControl, appEnv)
+        chatgpt(command, gptControl, appEnv)
           .then((response) => {
             vorpalcmd.log(response);
             cb();
