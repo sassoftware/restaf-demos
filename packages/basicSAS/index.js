@@ -56,7 +56,7 @@ async function main(prompt, apiKey, appEnv) {
         }
       },
       type: "object",
-      required: ["code"],
+      required: ["file"],
     },
   };
 

@@ -25,14 +25,20 @@ async function chatgpt(prompt, gptControl, appEnv) {
     // Handle response from gpt
     if (completionResponse.content) {
       // gpt decided not to call our functions. Return the response from gpt
-      createArgs.messages.push({role: 'assistant', content: completionResponse.content});
-      
       return completionResponse.content;
     } else if (completionResponse.function_call) {
       // gpt wants us to call the specified function and return the result
       const fname = completionResponse.function_call.name;
       const params = JSON.parse(completionResponse.function_call.arguments);
-     
+
+      //handle management functions
+      
+      if (fname === 'clearChat') {
+        return 'clear'
+      } 
+      if (fname === 'historyChat') {
+        return createArgs.messages
+      }
       let response = await functionList[fname](params, appEnv);
 
       // push the response from the function to the messages array

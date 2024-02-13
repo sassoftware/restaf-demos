@@ -18,7 +18,6 @@ if (process.argv.length >= 3 ) {
   process.exit(1);
 }
 
-// call main function to process the request
 main(prompt, apiKey)
   .then((response) => {
     console.log(response);

@@ -8,9 +8,9 @@ import restaflib from "@sassoftware/restaflib";
 import fs from "fs/promises";
 import logAsArray from "../lib/logAsArray.js";
 import string2Table from "../lib/string2Table.js";
+import rows2csv from "../lib/rows2csv.js";
 
-const { computeFetchData, casFetchData, caslRun, computeRun,computeSetupTables, computeResults } =
-  restaflib;
+const { caslRun, computeRun, computeResults } = restaflib;
 const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
 function gptFunctions(functionSpecs) {
@@ -31,7 +31,9 @@ function gptFunctions(functionSpecs) {
   // create a wrapper for listFunctions
   function wrapper(functionSpecs) {
     return async () => {
-      let r = functionSpecs.map((f) => f.description);
+      let r = functionSpecs.map((f) => {
+        return { functionName: f.name, description: f.description };
+      });
       return r;
     };
   }
@@ -84,8 +86,8 @@ async function listSASTables(params, appEnv) {
     qs: {
       limit: limit == null ? 10 : limit,
       start: 0,
-    },  
-  }
+    },
+  };
   let r = await getTableList(library, appEnv, p);
   return r;
 }
@@ -104,7 +106,7 @@ async function listColumns(params, appEnv) {
 }
 async function getData(params, appEnv) {
   let r = await describeTable(params, appEnv);
-  return r.data;
+  return {table: r.table, data: r.data};
 }
 async function runSAS(params, appEnv) {
   let { file } = params;
@@ -134,14 +136,14 @@ async function readFile(params, appEnv) {
   } catch (err) {
     console.log(err);
     return "Error reading file " + file;
-  };
+  }
 }
 
 async function basic(params) {
   let { keywords, format } = params;
 
   switch (format) {
-    case "html":{
+    case "html": {
       let t = "<ul>";
       keywords.split(",").forEach((k) => {
         t += `<li>${k}</li>`;
@@ -151,7 +153,7 @@ async function basic(params) {
     }
     case "array":
       return keywords.split(",");
-    case "object":{
+    case "object": {
       let r = {};
       keywords.split(",").forEach((k, i) => {
         r[`key${i}`] = k;
@@ -164,9 +166,10 @@ async function basic(params) {
 }
 async function describeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
-  let { table, limit, format} = params;
+  let { table, limit, format, where, csv } = params;
   let { source, sessionID } = appEnv;
-  console.log("describeTable", table, source, limit, format );
+  csv = csv == null ? false : csv;
+
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
@@ -181,25 +184,30 @@ async function describeTable(params, appEnv) {
       qs: {
         start: 0,
         limit: limit == null ? 2 : limit,
-        format: (format == null) ? false : format,
-        where: " ",
+        format: format == null ? false : format,
+        where: where == null ? "" : where,
       },
     },
   };
 
-  let tappEnv = await restafedit.setup(appEnv.logonPayload, appControl, sessionID);
+  let tappEnv = await restafedit.setup(
+    appEnv.logonPayload,
+    appControl,
+    sessionID
+  );
   await restafedit.scrollTable("first", tappEnv);
   let tableSummary = await restafedit.getTableSummary(tappEnv);
+
   let describe = {
     table: iTable,
     tableSummary: tableSummary,
     columns: tappEnv.state.columns,
-    data: tappEnv.state.data,
+    data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data),
   };
   return describe;
 }
 async function resume(params) {
-  return params.person + ' resume is ' + params.resume;
+  return params.person + " resume is " + params.resume;
 }
 
 export default gptFunctions;
