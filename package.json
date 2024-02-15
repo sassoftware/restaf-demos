@@ -34,9 +34,9 @@
     ]
   },
   "dependencies": {
-    "@sassoftware/restaf": "next",
-    "@sassoftware/restafedit": "^2.4.5",
-    "@sassoftware/restaflib": "next",
+    "@sassoftware/restaf": "^5.2.4",
+    "@sassoftware/restafedit": "^2.4.7",
+    "@sassoftware/restaflib": "^5.2.4",
     "cross-env": "^7.0.3",
     "openai": "^4.26.0",
     "rimraf": "^3.0.2",

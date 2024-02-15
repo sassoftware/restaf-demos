@@ -198,11 +198,17 @@ async function describeTable(params, appEnv) {
   await restafedit.scrollTable("first", tappEnv);
   let tableSummary = await restafedit.getTableSummary(tappEnv);
 
+  // Move to scrolltable with an raw option
+  let rows = tappEnv.state.data.map((row) => {
+    delete row._rowIndex;
+    delete row._modified;
+    return row;
+  });
   let describe = {
     table: iTable,
     tableSummary: tableSummary,
     columns: tappEnv.state.columns,
-    data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data),
+    data: (csv === false ) ? rows : rows2csv(rows)
   };
   return describe;
 }
