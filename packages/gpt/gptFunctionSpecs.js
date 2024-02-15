@@ -23,8 +23,8 @@ function gptFunctionSpecs() {
 }
 
 const listFunctionsinAppSpec = {
-  name: 'listFunctions',
-  description: 'Show prompts',
+  name: 'activeFunctions',
+  description: 'return information on the available functions',
   parameters: {},
   type: 'object',
   required: []

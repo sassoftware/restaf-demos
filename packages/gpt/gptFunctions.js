@@ -38,7 +38,7 @@ function gptFunctions(functionSpecs) {
     };
   }
   // add the wrapped function to flist
-  flist.listFunctions = wrapper(functionSpecs);
+  flist.activeFunctions = wrapper(functionSpecs);
   return flist;
 }
 

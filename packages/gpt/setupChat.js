@@ -18,7 +18,7 @@ function setupChat(apiKey) {
   let m = process.env.OPENAI_MODEL;
   let createArgs = {
     model: (m == null || m.trim().length === 0 ) ? 'gpt-4' : m,
-    messages: [{ role: "system", content: "you are designed to specific questions using the functions" }],
+    messages: [{ role: "system", content: "you are designed to access Viya" }],
     functions: functionSpecs
   };
 

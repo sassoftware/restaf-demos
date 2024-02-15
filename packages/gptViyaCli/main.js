@@ -55,7 +55,7 @@ function main() {
         chatgpt(command, gptControl, appEnv)
           .then((response) => {
             if (response === "clear") {
-              gptControl.createArgs.messages = [].gptControl.originalMessages;
+              gptControl.createArgs.messages = [].concat(gptControl.originalMessages);
             }
             if (response === "history") {
               response = gptControl.createArgs.messages;
