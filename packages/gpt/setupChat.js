@@ -9,7 +9,7 @@
  */
 import OpenAI from 'openai';  
 import gptFunctionSpecs from './gptFunctionSpecs.js';
-function setupGpt(apiKey) {
+function setupChat(apiKey) {
   const openai = new OpenAI({ apiKey: apiKey });
   let {functionSpecs, functionList} = gptFunctionSpecs(); 
 
@@ -23,7 +23,7 @@ function setupGpt(apiKey) {
   };
 
   
-  return {openai, createArgs,functionList};
+  return {openai, createArgs,functionList, originalMessages: [].concat(createArgs.messages)};
 
   }
-  export default setupGpt;
+  export default setupChat;
