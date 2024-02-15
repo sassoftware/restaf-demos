@@ -4,9 +4,9 @@
  */
 import gptFunctionSpecs from './gptFunctionSpecs.js';
 function toolSpecs() {
-  let {listFunctionsSpecs, functionList} = gptFunctionSpecs();
+  let {functionSpecs, functionList} = gptFunctionSpecs();
 
-  let tools = listFunctionsSpecs.map((f) => {
+  let tools = functionSpecs.map((f) => {
     return {
       type:'function',
       function: f

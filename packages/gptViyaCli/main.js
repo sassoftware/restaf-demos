@@ -55,12 +55,12 @@ function main() {
         chatgpt(command, gptControl, appEnv)
           .then((response) => {
             if (response === "clear") {
-              gptControl.createArgs.messages = [].gptControl.orignalMessages;
+              gptControl.createArgs.messages = [].gptControl.originalMessages;
             }
             if (response === "history") {
               response = gptControl.createArgs.messages;
             }
-            vorpalcmd.log(response);
+            vorpalcmd.log(JSON.stringify(response, null,4));
             cb();
           })
           .catch((err) => {
@@ -74,8 +74,11 @@ function main() {
         this.log("Enter prompts ");
         this.log("To exit chat mode,  enter exit.");
         this.log("To see descriptions of the available functions enter `help`");
-        gptControl = setupAssist(apiKey);
-        cb();
+        setupAssist(apiKey)
+        .then ((control) => {
+          gptControl = control;
+          cb();
+        })
       })
       .action(function (command, cb) {
         // var self = this; -- just as a reminder that this is available

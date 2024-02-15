@@ -23,9 +23,9 @@ async function setupAssist(apiKey) {
     model: (m == null || m.trim().length === 0 ) ? 'gpt-4-turbo-preview' : m,
     tools: tools
   };
+  let assistant = await openai.beta.assistants.create(createArgs);
 
-  
-  return {openai, createArgs,thread, functionList};
+  return {openai, assistant, thread, functionList};
 
   }
   export default setupAssist;

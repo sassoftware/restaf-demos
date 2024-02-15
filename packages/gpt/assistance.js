@@ -13,47 +13,35 @@
  */
 
 async function assistance(prompt, gptControl, appEnv) {
-  let {openai, createArgs, functionList} = gptControl;
-  try {
-    //add user prompt to the message array
-    createArgs.messages.push({ role: "user", content: prompt })
-    
-    // The actual call to GPT
-    let completion = await openai.chat.completions.create(createArgs);
+  let {openai, assistant, thread, functionList} = gptControl;
 
-    const completionResponse = completion.choices[0].message;
-   
-    // Handle response from gpt
-    if (completionResponse.content) {
-      // gpt decided not to call our functions. Return the response from gpt
-      return completionResponse.content;
-    } else if (completionResponse.function_call) {
-      // gpt wants us to call the specified function and return the result
-      const fname = completionResponse.function_call.name;
-      const params = JSON.parse(completionResponse.function_call.arguments);
-
-      //handle management functions
-      
-      if (fname === 'clearChat') {
-        return 'clear'
-      } 
-      if (fname === 'historyChat') {
-        return createArgs.messages
-      }
-      let response = await functionList[fname](params, appEnv);
-
-      // push the response from the function to the messages array
-      createArgs.messages.push({ role: "assistant", content: JSON.stringify(response) });
-      return response;
+  //add the user request to thread
+  const message = await openai.beta.threads.messages.create(
+    thread.id,
+    {
+      role: "user",
+      content: prompt
     }
-  } catch (error) {
-    debugger;
-    console.log(error);
-    return {Error: error};
+  );
+
+  let run = await openai.beta.threads.runs.create(
+    thread.id,
+    { 
+      assistant_id: assistant.id,
+      instructions: "Help user with their request",
+    }
+  );
+  let runStatus = await openai.beta.threads.runs.retrieve(
+    thread.id,
+    run.id
+  );
+
+  const messages = await openai.beta.threads.messages.list(
+    thread.id
+  );
+  debugger;
+  return messages;
   }
-}
-
-
 export default assistance;
 
 //https://platform.openai.com/docs/guides/text-generation/chat-completions-api
