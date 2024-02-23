@@ -4,11 +4,14 @@
  */
 
 /**
- * 
+ * @async
+ * @description This function is the main entry for chatgpt
+ * @function chatgpt
  * @param {string} openai - openai object 
  * @param {string} userRequest - user request to GPT
- * @param {*} appEnv - app environment object(has store, sessionID, etc.)
- * @returns {*} - response from GPT(can be text, string, html etc...)
+ * @param {object} gptControl - gpt session control object
+ * @param {object} appEnv - Viya Session environment (has store, sessionID, etc.)
+ * @returns {promise} - response from GPT(can be text, string, html etc...)
  */
 
 async function chatgpt(prompt, gptControl, appEnv) {

@@ -2,18 +2,23 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+/**
+ * setup specification and functions for GPT
+ * 
+ */
 
 import restafedit from "@sassoftware/restafedit";
 import restaflib from "@sassoftware/restaflib";
-import fs from "fs/promises";
+import fs from "fs";
+
 import logAsArray from "../lib/logAsArray.js";
 import string2Table from "../lib/string2Table.js";
 import rows2csv from "../lib/rows2csv.js";
-
+const fss = fs.promises;
 const { caslRun, computeRun, computeResults } = restaflib;
 const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
-function gptFunctions(functionSpecs) {
+function functions(functionSpecs) {
   let flist = {
     getForm,
     getData,
@@ -26,7 +31,9 @@ function gptFunctions(functionSpecs) {
     basic,
     resume,
     describeTable,
-    readFile
+    readFile,
+    welcome,
+    appManager
   };
   // create a wrapper for listFunctions
   function wrapper(functionSpecs) {
@@ -42,6 +49,22 @@ function gptFunctions(functionSpecs) {
   return flist;
 }
 
+async function appManager(params, _appEnv, gptControl) {
+  let { analysis} = params;
+  let { openai, assistant } = gptControl;
+
+  const fileid = await openai.files.create({
+    file: fs.createReadStream(analysis, 'utf8'),
+    purpose: "assistants",
+  })
+  const assistantFileid = await openai.beta.assistants.files.create(
+    assistant.id, {file_id: fileid});
+  console.log(assistantFileid);
+  return `File ${path} added to assistant`;
+}
+async function welcome(params, appEnv) {
+  return 'Welcome back'
+}
 async function getForm(params, appEnv) {
   let { table, keys, columns } = params;
   let { source } = appEnv;
@@ -113,7 +136,7 @@ async function runSAS(params, appEnv) {
   let { store, session } = appEnv;
   let src;
   try {
-    src = await fs.readFile(file, "utf8");
+    src = await fss.readFile(file, "utf8");
   } catch (err) {
     console.log(err);
     return "Error reading file " + file;
@@ -128,10 +151,23 @@ async function runSAS(params, appEnv) {
     return logAsArray(log);
   }
 }
-async function readFile(params, appEnv) {
-  let { file } = params;
+async function readFile(params, _appEnv, gptControl) {
+  let { file, action } = params;
+  let { openai, assistant } = gptControl;
+
+  if (action === 'upload') {
+    const fileid = await openai.files.create({
+      file: fs.createReadStream(file, 'utf8'),
+      purpose: "assistants",
+   });
+   console.log('.......................', fileid);
+    const assistantFileid = await openai.beta.assistants.files.create(
+      assistant.id, {file_id: fileid.id});
+    console.log(assistantFileid);
+    return `File ${file} added to assistant`;
+  }
   try {
-    let src = await fs.readFile(file, "utf8");
+    let src = await fss.readFile(file, "utf8");
     return src;
   } catch (err) {
     console.log(err);
@@ -216,4 +252,4 @@ async function resume(params) {
   return params.person + " resume is " + params.resume;
 }
 
-export default gptFunctions;
+export default functions;

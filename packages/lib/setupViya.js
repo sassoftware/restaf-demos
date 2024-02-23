@@ -16,8 +16,18 @@ import getToken from './getToken.js';
 
 async function setupViya(source) {
 
-  if (source === 'none'){
-    return {source: 'none'}
+  let appEnv = {  
+    host: null,
+    logonPayload: null,
+    store: null,
+    session: null,
+    servers: null,
+    casServerName: null,
+    source: source,
+    sessionID: null
+  }
+  if (source === 'none'|| source == null){
+    return appEnv;
   }
   // logon payload
   let {token, host} = getToken();
@@ -31,7 +41,7 @@ async function setupViya(source) {
   // logon to the server
   let store = restaf.initStore({casProxy: true});
   await store.logon(logonPayload);
-  let appEnv = {
+  appEnv = {
     host: host,
     logonPayload: logonPayload,
     store: store,

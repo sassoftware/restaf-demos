@@ -12,22 +12,25 @@
  */
 import OpenAI from 'openai';  
 
-import specs from '../gptFunctions/functionSpecs.js';
+import specs from '../gptFunctions/specs.js';
 import createAssistant from './createAssistant.js';
 import openAssistant from './openAssistant.js';
-import  {OpenAIClient, OpenAIKeyCredential} from '@azure/openai';
-console.log(OpenAIClient, OpenAIKeyCredential);
+import {AssistantsClient, OpenAIKeyCredential } from "@azure/openai-assistants";
 
 
-async function setupAssist(provider, assistanceName,threadReuse,specs, instructions) {
+async function setupAssist(provider, assistanceName) {
 
   // azureai open includes url and key
   // openai includes key
-  let {tools , functionList} = specs;
+
   let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_KEY_AZURE;
   let endpoint = process.env.OPENAI_URL_AZURE;
   let openai = (provider === 'openai') ? new OpenAI({ apiKey: apiKey }) : 
-        new OpenAIClient(endpoint, new OpenAIKeyCredential(apiKey));
+        new AssistantsClient(endpoint,new AzureKeyCredential(apiKey));
+   
+  console.log(openai);
+  //setup control information
+  let {tools , functionList} = specs(); 
 
  // Check if assistant exists(otherwise create it)
   const myAssistants = await openai.beta.assistants.list({
@@ -43,8 +46,8 @@ async function setupAssist(provider, assistanceName,threadReuse,specs, instructi
 
   // Either create a new assistant or reuse the existing one(preferred)
   let gptControl = (assistant == null) 
-                     ? await createAssistant(openai, name, instructions, threadReuse, tools)
-                     : await openAssistant(openai, assistant, instructions, threadReuse, tools);
+                     ? await createAssistant(openai, name, tools)
+                     : await openAssistant(openai, assistant);
   gptControl.functionList = functionList;
   return gptControl;
 

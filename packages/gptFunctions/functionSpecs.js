@@ -1,6 +1,6 @@
-import gptFunctions from './gptFunctions.js';
-function gptFunctionSpecs() {
-  let functionSpecs = [
+import functions from './functions.js';
+function functionSpecs() {
+  let specs = [
     configFunctionSpec,
     listSASObjectsFunctionSpec,
     listSASDataLibFunctionSpec,
@@ -14,34 +14,50 @@ function gptFunctionSpecs() {
     readFileFunctionSpec,
     clearChatFunctionSpec,
     historyChatFunctionSpec,
+    welcomeFunctionSpec
+  ];
+ 
+  // function specs for chat
+  specs.push(listFunctionsinAppSpec);
+
+  // Create tools array  for use with Assistant API
+  let tools = [
+    {type: 'retrieval'},
+    {type: 'code_interpreter'}
   ];
 
-  let functionList = gptFunctions(functionSpecs);
-  functionSpecs.push(listFunctionsinAppSpec);
+  specs.forEach((f) => {
+    let r = {
+      type: "function",
+      function: Object.assign({}, f),
+    };
+    tools.push(r);
+  });
 
-  return { functionSpecs, functionList };
+  let functionList = functions(functionSpecs);
+  return { specs, tools, functionList };
+}
+
+const welcomeFunctionSpec = {
+  name: 'welcome',
+  description: 'Welcome back to the SAS Assistant',
+  parameters: {}
 }
 
 const listFunctionsinAppSpec = {
   name: 'activeFunctions',
   description: 'return information on the available functions',
-  parameters: {},
-  type: 'object',
-  required: []
+  parameters: {}
 };
 const clearChatFunctionSpec = {
   name: 'clearChat',
   description: 'Clear the chat history to start a new conversation. Reduces cost of GPT',
-  parameters: {},
-  type: 'object',
-  required: []
+  parameters: {}
 }
 const historyChatFunctionSpec = {
   name: 'historyChat',
   description: 'history of current chat session. Shows the chat history.',
-  parameters: {},
-  type: 'object',
-  required: []
+  parameters: {}
 }
 const configFunctionSpec = {
   name: 'getForm',
@@ -214,6 +230,11 @@ const readFileFunctionSpec = {
         type: 'string',
         description: 'this is the file to run',
       },
+      action: {
+        type: 'string',
+        enum: ['upload', 'action2', 'action3'],
+        description: 'what action to take'
+      }
     },
     type: 'object',
     required: ['file'],
@@ -260,4 +281,4 @@ const resumeFunctionSpec = {
     required: ['person', 'resume']
   },
 };
-export default gptFunctionSpecs;
+export default functionSpecs;
