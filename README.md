@@ -143,9 +143,9 @@ run file path to your .sas file or .casl file
 
 The following starter files are included. Use .sas files if env VIYASOURCE is set to compute
 
-- ../programs/echo.casl
-- ../programs/datastep.casl
-- ../programs/datastep.sas  
+- ../../programs/echo.casl
+- ../../programs/datastep.casl
+- ../../programs/datastep.sas  
 
 ### Usage for SAS example
 
