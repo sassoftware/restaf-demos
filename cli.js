@@ -93,12 +93,12 @@ async function setupSession() {
     },
   ];
   let answers = await inquirer.prompt(questions);
+  console.log('answers', answers);
   answers.credentials = {
     openaiKey: process.env.OPENAI_KEY,
     azureaiKey: process.env.OPENAI_AZ_KEY,
     azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
   }
-  console.log('answers', answers);
   answers.specs = functionSpecs();
   return answers;
 }
