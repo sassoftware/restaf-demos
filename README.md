@@ -20,7 +20,7 @@ The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
 ---
 
 - [Data Points](#datapoint)
-- [Running as a cli](#gpt)
+- [SAS Assistant](#gpt)
 - [Installation and setup](#install)
 - [Basic example](#basic)
 - [Basic example with access to Viya](#basicSAS)
