@@ -11,9 +11,9 @@ import restafedit from "@sassoftware/restafedit";
 import restaflib from "@sassoftware/restaflib";
 import fs from "fs";
 
-import logAsArray from "../lib/logAsArray.js";
-import string2Table from "../lib/string2Table.js";
-import rows2csv from "../lib/rows2csv.js";
+import logAsArray from "../packages/lib/logAsArray.js";
+import string2Table from "../packages/lib/string2Table.js";
+import rows2csv from "../packages/lib/rows2csv.js";
 const fss = fs.promises;
 const { caslRun, computeRun, computeResults } = restaflib;
 const { getLibraryList, getTableList, getTableColumns } = restafedit;
@@ -28,7 +28,7 @@ function functions(functionSpecs) {
     //listFunctions,
     listSASDataLib,
     runSAS,
-    basic,
+    keywords,
     resume,
     describeTable,
     readFile,
@@ -70,12 +70,13 @@ async function getForm(params, appEnv) {
   let { source } = appEnv;
   // Return the incoming parameters to give user a chance to review
 
-  return {
+ let r = {
     source: source == null ? "cas" : source,
     table: table,
     keys: keys == null ? [] : keys.split(","),
     columns: columns == null ? [] : columns.split(","),
   };
+  return JSON.stringify(r);
 }
 
 async function listSASObjects(params, appEnv) {
@@ -97,11 +98,11 @@ async function listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList().toJS();
-  return items;
+  return JSON.stringify(items);
 }
 async function listSASDataLib(params, appEnv) {
   let r = await getLibraryList(appEnv);
-  return r;
+  return JSON.stringify(r);
 }
 async function listSASTables(params, appEnv) {
   let { library, limit } = params;
@@ -112,7 +113,7 @@ async function listSASTables(params, appEnv) {
     },
   };
   let r = await getTableList(library, appEnv, p);
-  return r;
+  return JSON.stringify(r);
 }
 async function listColumns(params, appEnv) {
   let { table } = params;
@@ -125,11 +126,11 @@ async function listColumns(params, appEnv) {
 
   let r = await getTableColumns(source, iTable, appEnv);
   debugger;
-  return r;
+  return JSON.stringify(r);
 }
 async function getData(params, appEnv) {
-  let r = await describeTable(params, appEnv);
-  return {table: r.table, data: r.data};
+  let r = await idescribeTable(params, appEnv);
+  return JSON.stringify({table: r.table, data: r.data});
 }
 async function runSAS(params, appEnv) {
   let { file } = params;
@@ -144,7 +145,7 @@ async function runSAS(params, appEnv) {
 
   if (appEnv.source === "cas") {
     let r = await caslRun(store, session, src, {}, true);
-    return r.results;
+    return JSON.stringify(r.results);
   } else {
     let computeSummary = await computeRun(store, session, src);
     let log = await computeResults(store, computeSummary, "log");
@@ -175,7 +176,7 @@ async function readFile(params, _appEnv, gptControl) {
   }
 }
 
-async function basic(params) {
+async function keywords(params) {
   let { keywords, format } = params;
 
   switch (format) {
@@ -201,11 +202,16 @@ async function basic(params) {
   }
 }
 async function describeTable(params, appEnv) {
+ let r = await idescribeTable(params, appEnv);
+ return JSON.stringify(r);
+
+}
+async function idescribeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
   let { table, limit, format, where, csv } = params;
   let { source, sessionID } = appEnv;
   csv = csv == null ? false : csv;
-
+  console.log(params);
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
@@ -231,20 +237,15 @@ async function describeTable(params, appEnv) {
     appControl,
     sessionID
   );
+  debugger;
   await restafedit.scrollTable("first", tappEnv);
   let tableSummary = await restafedit.getTableSummary(tappEnv);
-
-  // Move to scrolltable with an raw option
-  let rows = tappEnv.state.data.map((row) => {
-    delete row._rowIndex;
-    delete row._modified;
-    return row;
-  });
+  debugger;
   let describe = {
     table: iTable,
     tableSummary: tableSummary,
     columns: tappEnv.state.columns,
-    data: (csv === false ) ? rows : rows2csv(rows)
+    data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
   };
   return describe;
 }

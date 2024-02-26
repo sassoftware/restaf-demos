@@ -11,45 +11,43 @@
  * @returns {promise} - return {openai, assistant, thread, functionList}
  */
 import OpenAI from 'openai';  
+import  {OpenAIClient, OpenAIKeyCredential} from '@azure/openai'
 
-import specs from '../gptFunctions/specs.js';
 import createAssistant from './createAssistant.js';
 import openAssistant from './openAssistant.js';
-import {AssistantsClient, OpenAIKeyCredential } from "@azure/openai-assistants";
+import setupViya from '../lib/setupViya.js';
 
-
-async function setupAssist(provider, assistanceName) {
+async function setupAssistant(config) {
 
   // azureai open includes url and key
   // openai includes key
-
-  let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_KEY_AZURE;
-  let endpoint = process.env.OPENAI_URL_AZURE;
+  let {provider, assistantName, credentials} = config;
+ // let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_AZ_KEY;
+  let apiKey = (provider === 'openai') ? credentials.openaiKey : credentials.azureaiKey;
+  let endpoint = credentials.azureaiEndpoint;
   let openai = (provider === 'openai') ? new OpenAI({ apiKey: apiKey }) : 
-        new AssistantsClient(endpoint,new AzureKeyCredential(apiKey));
-   
-  console.log(openai);
-  //setup control information
-  let {tools , functionList} = specs(); 
+        new OpenAIClient(endpoint, new OpenAIKeyCredential(apiKey));
 
- // Check if assistant exists(otherwise create it)
+ // Wishlist: Wish could open with query of name and let it succeed or fail
   const myAssistants = await openai.beta.assistants.list({
     order: "desc",
-    limit: "20",
+    limit: "100",
   });
-  let name = (assistanceName == null || assistanceName.trim().length === 0 ) ? "SAS_Assistant" : assistanceName;
   let assistant = myAssistants.data.find((a) => { 
-    if (a.name === name) {
+    if (a.name === assistantName) {
       return a;
     }
   });
 
   // Either create a new assistant or reuse the existing one(preferred)
+  debugger;
   let gptControl = (assistant == null) 
-                     ? await createAssistant(openai, name, tools)
-                     : await openAssistant(openai, assistant);
-  gptControl.functionList = functionList;
-  return gptControl;
+                     ? await createAssistant(openai, config)
+                     : await openAssistant(openai, assistant, config);
+                     
+  // setup viya session
+  let appEnv = await setupViya(config.source);
+  return {gptControl, appEnv};
 
   }
-  export default setupAssist;
+  export default setupAssistant;

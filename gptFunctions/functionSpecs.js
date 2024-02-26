@@ -9,7 +9,7 @@ function functionSpecs() {
     describeTableSpec,
     getDataFunctionSpec,
     runSASFunctionSpec,
-    basicFunctionSpec,
+    keywordsFunctionSpec,
     resumeFunctionSpec,
     readFileFunctionSpec,
     clearChatFunctionSpec,
@@ -240,8 +240,8 @@ const readFileFunctionSpec = {
     required: ['file'],
   },
 };
-const basicFunctionSpec = {
-  name: 'basic',
+const keywordsFunctionSpec = {
+  name: 'keywords',
   description: 'format a comma-separated keywords like a,b,c into html, array, object',
   parameters: {
    

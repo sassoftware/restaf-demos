@@ -10,13 +10,12 @@
  * @param {string} assistant - assistant object
  * @returns {promise} - return {thread, assistant}
  */
-async function loadThread(openai, assistant, threadReuse) {
+async function loadThread(openai, assistant, reuseThread) {
   let thread_id = assistant.metadata.thread_id;
- // let lastRunId = assistant.metadata.lastRunId;
 
-  // see if it exists
   let thread = null;
-  if (threadReuse === false) {
+  // If we are reusing the thread, try to retrieve it
+  if (reuseThread === false) {
     try {
       thread = await openai.beta.threads.retrieve(thread_id);
     } catch (error) {

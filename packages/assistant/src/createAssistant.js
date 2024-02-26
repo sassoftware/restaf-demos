@@ -7,29 +7,31 @@
  * @function setupAssist
  * @description   Setup the GPT Assistant
  * @param {string} apiKey - openai api key
- * @param {string} assistanceName - name of the assistant(default is SAS_Assistant)
+ * @param {object} config - configuration object
  * @returns {promise} - return {openai, assistant, thread, functionList}
  */
-async function createAssistant(openai, name, instructions, threadReuse, tools) {
-
+async function createAssistant(openai, config) {
+let {assistantName, instructions, model, specs} = config;
+// Create a new thread(could have used an existing one, but not yet implemented)
 let thread = await openai.beta.threads.create({
-  metadata: {assistanceName: name}}
+  metadata: {assistanceName: assistantName, lastRunId: '0'}}
 );
-let m = process.env.OPENAI_MODEL;
+
 let createArgs = {
-  name: name,
+  name: assistantName,
   instructions: instructions,
-  model: (m == null || m.trim().length === 0 ) ? 'gpt-4-turbo-preview' : m,
-  tools: tools,
+  model: model, 
+  tools: specs.tools,
   metadata:{ thread_id: thread.id, lastRunId: '0'},
 };
-
+debugger;
 let assistant = await openai.beta.assistants.create(createArgs);
 console.log('-----------------------------------');
-console.log('New Assistant: ', name, assistant.id);
+console.log('New Assistant: ', assistantName , assistant.id);
 console.log('New Thread: ', thread.id);
 console.log('-----------------------------------');
-
-return {openai, assistant, thread};
+// for clarity
+let gptControl = {openai, assistant, thread, specs};
+return gptControl;
 }
 export default createAssistant;

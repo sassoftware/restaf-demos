@@ -9,16 +9,17 @@ import pollRun from "./pollRun.js";
 
 /**
  * @async
- * @description - This function is the main entry point for the GPT assistant
- * @function assistant
+ * @description - Run the latest prompt from the user
+ * @function runAssistant
  * @param {string} prompt - User prompt
  * @param {object} gptControl - gpt  session control object
  * @param {object} appEnv - Viya session control object(has store, sessionID, etc. to talk to Viya server)
  * @returns {*} - response from GPT(can be text, string, html etc...)
  */
 
-async function assistant(prompt, gptControl, appEnv) {
-  let { openai, assistant, thread } = gptControl;
+async function runAssistant(prompt, gptControl, appEnv) {
+  let { openai, assistant, thread, specs } = gptControl;
+  let {functionList} = specs;
 
   //add the user request to thread
   let run = null;
@@ -87,6 +88,6 @@ async function assistant(prompt, gptControl, appEnv) {
     return { runStatus: runStatus.status };
   }
 }
-export default assistant;
+export default runAssistant;
 
 //https://platform.openai.com/docs/guides/text-generation/chat-completions-api
