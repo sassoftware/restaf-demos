@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/gpt-samples",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Examples of integrating gpt prompts into SAS Viya apps",
   "engines": {
     "node": ">=18.0.0",
