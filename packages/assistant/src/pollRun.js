@@ -23,9 +23,9 @@ async function pollRun(thread, run, gptControl) {
   }
   // Since there is no streaming support, sleep and poll the status
   do {
-    debugger;
+    
     runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    debugger;
+    
     console.log("-------------------", runStatus.status);
     if (
       !(

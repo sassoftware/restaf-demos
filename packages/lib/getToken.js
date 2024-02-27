@@ -5,12 +5,12 @@
 import fs from 'fs';
 import os from 'os';
 function getToken() {
-  debugger;
+  
   const homedir = os.homedir();
   if (process.env.SAS_CLI_CONFIG){
     homedir = process.env.SAS_CLI_CONFIG;
   }
-  debugger;
+  
   let sep = (os.platform() === 'win32') ? '\\' : '/';
   let credentials = homedir + sep + '.sas' + sep + 'credentials.json';
   let url = homedir + sep + '.sas' + sep + 'config.json';

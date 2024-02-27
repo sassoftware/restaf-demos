@@ -40,7 +40,7 @@ async function setupAssistant(config) {
   });
 
   // Either create a new assistant or reuse the existing one(preferred)
-  debugger;
+  
   let gptControl = (assistant == null) 
                      ? await createAssistant(openai, config)
                      : await openAssistant(openai, assistant, config);

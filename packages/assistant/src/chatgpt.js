@@ -49,7 +49,7 @@ async function chatgpt(prompt, gptControl, appEnv) {
       return response;
     }
   } catch (error) {
-    debugger;
+    
     console.log(error);
     return {Error: error};
   }

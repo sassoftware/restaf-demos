@@ -69,9 +69,9 @@ async function runAssistant(prompt, gptControl, appEnv) {
 
   // Poll and wait for the run to complete
   let runStatus = await pollRun(thread, run, gptControl);
-  debugger;
+  
   if (runStatus.status === "completed") {
-    debugger;
+    
     const message = await getLatestMessage  (openai, thread, 1);
     return message; 
   } else if (runStatus.status === 'requires_action') {

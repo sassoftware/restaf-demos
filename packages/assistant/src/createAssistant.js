@@ -23,7 +23,7 @@ let createArgs = {
   tools: specs.tools,
   metadata:{ thread_id: '0', lastRunId: '0'},
 };
-debugger;
+
 let assistant = await openai.beta.assistants.create(createArgs);
 console.log('-----------------------------------');
 console.log('New Assistant: ', assistantName , assistant.id);

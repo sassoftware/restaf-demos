@@ -17,9 +17,9 @@ import pollRun from "./pollRun.js";
 async function required_action(runStatus, thread, run,  gptControl, appEnv) {
   let{openai,specs} = gptControl;
   let {functionList} = specs;
-  debugger;
+  
   let requiredActions = runStatus.required_action.submit_tool_outputs.tool_calls;
-  debugger;
+  
   let toolsOutput = [];
   for (let action of requiredActions) {
     let functionName = action.function.name;
