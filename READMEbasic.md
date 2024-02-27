@@ -31,30 +31,39 @@ The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
 
 ---
 
-1. gpt-4 model is the default openai model.
-    - OPENAI_MODEL - To change the model, set this enviroment variable
-    to the desired model.
-2. It is the user's reponsibility to get the api key for openai.
-   - The samples assume that the key is available as environment variable
-   OPENAI_KEY
-3. Most examples make use of SAS REST API to access SAS Viya. The applications
+### Requirements
+
+1. Make sure the node version is >=18.0.0
+2. gpt-4-turbo model is the default openai model..
+3. It is the user's reponsibility to get the api key for openai.
+   The following environment variables are read.
+    - If provider is openai:
+       - openaiKey: process.env.OPENAI_KEY,
+
+    - If provider is azureai:
+      - azureaiKey: process.env.OPENAI_AZ_KEY,
+      - azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
+
+4. Recommend reusing a thread that was created in a earlier session.
+   Run the tool once by selecting **true** for thread option to get the threadid.
+   You can also get it from the openai Assistant playground.
+    - OPENAI_THREAD - the id of the thread.
+
+5. Most examples useSAS REST API to access SAS Viya. The applications
 use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to
 make these calls. See <https://sassoftware.github.io/restaf/>
 for more information.
-4. The source code in this repository is provided under
+
+6. The source code in this repository is provided under
  Apache-2.0 licensing model
 
 ### Authentication
 
 Please sas-cli auth login|logCode to setup authentication token.
 
-### Environment Variables
+### Running without a Viya
 
-- OPENAI_KEY - Set this to the api key from openai
-- OPENAI_MODEL - (optional) set to the model you want to use(defaults to gpt-4)
-- VIYASOURCE - set this to either cas, compute or none. Defaults to cas. Used in
-prompts that access Viya resources. The 'none' value is useful if you want to 
-use this cli as a standard chat without accessing Viya.
+Select **none** for Viya server at the initial prompt.
 
 ---
 

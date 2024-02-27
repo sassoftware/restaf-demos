@@ -21,6 +21,10 @@ setupSession()
 
 async function run(config) {
   let {gptControl, appEnv} = await setupAssistant(config);
+  if (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length === 0) {
+    process.env.OPENAI_THREADID= gptControl.threadid;
+    console.log('Save this threadid in env OPENAI_THREADID', gptControl.threadid)
+  }
   let questions = {
     type: 'input',
     name: 'prompt',
@@ -43,8 +47,8 @@ async function run(config) {
 async function setupSession() {
   console.log('Setup session. CTRL C to exit');
   
-  let threadMessage = (process.env.OPENAI_THREAD == null || process.env.OPENAI_THREAD.trim().length === 0) ?
-                       `true to reuse` : `if true, will use  env=${process.env.OPENAI_THREAD}`;
+  let threadMessage = (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length === 0) ?
+                       `true to reuse` : `if true, will use  env=${process.env.OPENAI_THREADID}`;
   
 
   let questions = [
@@ -99,6 +103,7 @@ async function setupSession() {
     },
   ];
   let answers = await inquirer.prompt(questions);
+  answers.threadid = (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length == 0) ? '0' : process.env.OPENAI_THREADID;
   console.log('answers', answers);
   answers.credentials = {
     openaiKey: process.env.OPENAI_KEY,
@@ -107,7 +112,6 @@ async function setupSession() {
   }
   answers.specs = functionSpecs();
   answers.instructions = instructions();
-  answers.threadid = (process.env.OPENAI_THREAD == null || process.env.OPENAI_THREAD.trim().length == 0) ? '0' : process.env.OPENAI_THREAD;
   return answers;
 }
 

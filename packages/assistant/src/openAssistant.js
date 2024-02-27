@@ -31,6 +31,7 @@ async function openAssistant(openai, assistant, config) {
     openai: openai,
     assistant: r.assistant,
     thread: r.thread,
+    threadid: r.thread.id,
     specs: config.specs
   };
   return gptControl;
