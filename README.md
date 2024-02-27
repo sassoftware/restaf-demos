@@ -1,12 +1,11 @@
-# Examples of integrating gpt into SAS Viya apps
+# A sample Assistant for Viya using OPENAI Assistant and SAS Viya
 
-This repository contains examples of integrating gpt into application targeting
- SAS Viya.
+The key examples are:
 
-The examples use **gpt-4 with functions**. Many of the functions use
- [@sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit](https://sassoftware.github.io/restaf) to make REST API calls to SAS Viya.
+1. Assistant - An assistant built with openai Assistant API with functions 
+using SAS REST API. This is the main focus of this repository.
 
-![image info](./chatgpt.png)
+2. Couple of basic examples demonstrating chatgpt with functions.
 
 The functions are small and easy to follow. Feel free to change these to suit own
 programming style.
@@ -20,7 +19,7 @@ The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
 ---
 
 - [Data Points](#datapoint)
-- [Running as a cli](#gpt)
+- [SAS Assistant](#gpt)
 - [Installation and setup](#install)
 - [Basic example](#basic)
 - [Basic example with access to Viya](#basicSAS)
@@ -31,38 +30,48 @@ The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
 
 ---
 
-1. gpt-4 model is the default openai model.
-    - OPENAI_MODEL - To change the model, set this enviroment variable
-    to the desired model.
-2. It is the user's reponsibility to get the api key for openai.
-   - The samples assume that the key is available as environment variable
-   OPENAI_KEY
-3. Most examples make use of SAS REST API to access SAS Viya. The applications
+### Requirements
+
+1. Make sure the node version is >=18.0.0
+2. gpt-4-turbo model is the default openai model..
+3. It is the user's reponsibility to get the api key for openai.
+   The following environment variables are read.
+    - If provider is openai:
+       - openaiKey: process.env.OPENAI_KEY,
+
+    - If provider is azureai:
+      - azureaiKey: process.env.OPENAI_AZ_KEY,
+      - azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
+
+4. Recommend reusing a thread that was created in a earlier session.
+   Run the tool once by selecting **true** for thread option to get the threadid.
+   You can also get it from the openai Assistant playground.
+    - OPENAI_THREADID - the id of the thread.
+
+5. Most examples useSAS REST API to access SAS Viya. The applications
 use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to
 make these calls. See <https://sassoftware.github.io/restaf/>
 for more information.
-4. The source code in this repository is provided under
+
+6. The source code in this repository is provided under
  Apache-2.0 licensing model
 
 ### Authentication
 
 Please sas-cli auth login|logCode to setup authentication token.
 
-### Environment Variables
+### Running without a Viya
 
-- OPENAI_KEY - Set this to the api key from openai
-- OPENAI_MODEL - (optional) set to the model you want to use(defaults to gpt-4)
-- VIYASOURCE - set this to either cas, compute or none. Defaults to cas. Used in
-prompts that access Viya resources. The 'none' value is useful if you want to 
-use this cli as a standard chat without accessing Viya.
+Select **none** for Viya server at the initial prompt.
+
 
 ---
 
-## Running as a cli<a name="gpt"> </a>
+## Running the Assistant<a name="gpt"> </a>
 
 ---
 
-After setting the environment variables listed above, start the application as 
+After setting the environment variables listed above, start the application as
 follows:
 
 ```text
@@ -70,13 +79,18 @@ npx @sassoftware/gpt-samples@latest
 
 ```
 
-On the prompt, enter **chat** to start the gpt session
+Answer the configuration prompts. The tool will create or reuse and existing assistant.
+User can then enter prompts for the assistant.
 
 Enter **help** to get guidance on what is possible
 
 The gpt session will stay active until you enter **exit**
 
-To exit the cli enter **exit** again.
+---
+
+## Cloning the repository
+
+---
 
 ## Installation and Setup<a name="install"></a>
 
@@ -85,7 +99,13 @@ The instruction below is for those users who wish to clone the code and extend t
 - git clone https://github.com/sassoftware/restaf-demos gpt-samples -b gpt-samples
 - cd gpt-samples
 - npm install
-- Define the environment variables described below
+
+
+### Customizing the application.
+
+The contents of the folder gptFunctions can be modified to suit your needs.
+See online documentation [here](https://platform.openai.com/docs/assistants/overview)
+
 
 ## Getting started - Basic example<a name="basic"></a>
 
