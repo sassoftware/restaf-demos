@@ -1,3 +1,13 @@
+/*
+ * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * @description Function specs for the assistant
+ * @function functionSpecs
+ * @returns {object} - object containing specs, tools, functionList
+ * 
+ */
 import functions from './functions.js';
 function functionSpecs() {
   let specs = [

@@ -35,6 +35,7 @@ let gptControl = {
   openai,
   assistant: r.assistant, 
   thread: r.thread,
+  threadid: r.thread.id,
  specs};
 return gptControl;
 }

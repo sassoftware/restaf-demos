@@ -1,3 +1,12 @@
+
+/*
+ * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * @description Instructions for the assistant
+ * @returns {string} - instructions for the assistant
+ */
 function instructions() {
  return `
  You are a Assistant designed for SAS users. You can help SAS users with their SAS related questions and provide information
