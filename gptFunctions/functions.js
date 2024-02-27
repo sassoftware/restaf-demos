@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
- * setup specification and functions for GPT
+ * @description Function for the assistant
+ * @function functionSpecs
+ * @returns {object} - object containing function specs 
+ * @returns {object} - a functions object({f1: function1, f2: function2, ...})
  * 
  */
 

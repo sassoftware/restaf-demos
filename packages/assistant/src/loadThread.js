@@ -7,6 +7,7 @@
  * @function loadThread
  * @description   reattach thread from previous session
  * @param {string} apiKey - openai api key
+ * @param {string} threadid - thread id
  * @param {string} assistant - assistant object
  * @returns {promise} - return {thread, assistant}
  */

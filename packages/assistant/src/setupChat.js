@@ -5,7 +5,6 @@
 /**
  * @description   Setup the GPT Chat
  * @function      setupChat
- * @param {string} apiKey - openai api key
  * @returns {object} - {openai, createArgs, functionList,originalMessages}
  */
 // https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-assistants-readme?view=azure-node-preview&source=recommendations
