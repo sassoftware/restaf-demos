@@ -38,13 +38,18 @@ function functions(functionSpecs) {
   // create a wrapper for listFunctions
   function wrapper(functionSpecs) {
     return async () => {
+      /*
       let r = functionSpecs.map((f) => {
         return { functionName: f.name, description: f.description };
       });
+      */
+     let r = JSON.stringify
+     console.log(r);
       return r;
     };
   }
   // add the wrapped function to flist
+
   flist.activeFunctions = wrapper(functionSpecs);
   return flist;
 }

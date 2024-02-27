@@ -1,2 +1,3 @@
 import functionSpecs from "./functionSpecs.js";
-export { functionSpecs };
+import instructions from "./instructions.js";
+export { functionSpecs, instructions };

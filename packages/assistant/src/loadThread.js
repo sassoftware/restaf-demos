@@ -10,20 +10,21 @@
  * @param {string} assistant - assistant object
  * @returns {promise} - return {thread, assistant}
  */
-async function loadThread(openai, assistant, reuseThread) {
-  let thread_id = assistant.metadata.thread_id;
+async function loadThread(openai, threadid, assistant, reuseThread) {
+ // let thread_id = assistant.metadata.thread_id;
 
   let thread = null;
   // If we are reusing the thread, try to retrieve it
-  if (reuseThread === false) {
+  if (reuseThread === true && threadid != '0') {
     try {
-      thread = await openai.beta.threads.retrieve(thread_id);
+      thread = await openai.beta.threads.retrieve(threadid);
     } catch (error) {
       console.log(error); 
       console.log(error.status);
       console.log(`Error status ${error.status}. Unable to retrieve the thread ${thread_id}`);
     }
   }
+
   // If still no thread, create a new one
   if (thread == null) {
     console.log('Creating new thread' );

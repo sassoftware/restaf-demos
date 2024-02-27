@@ -15,27 +15,30 @@
  */
 import pollRun from "./pollRun.js";
 async function required_action(runStatus, thread, run,  gptControl, appEnv) {
-  let{openai,assistant, specs} = gptControl;
+  let{openai,specs} = gptControl;
   let {functionList} = specs;
   debugger;
   let requiredActions = runStatus.required_action.submit_tool_outputs.tool_calls;
   debugger;
   let toolsOutput = [];
   for (let action of requiredActions) {
-    let functioName = action.function.name;
-    console.log('Requested function: ', functioName);
+    let functionName = action.function.name;
+    console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
-    let response = await functionList[functioName](params, appEnv, gptControl);
+    let response = await functionList[functionName](params, appEnv, gptControl);
 
     toolsOutput.push({
       tool_call_id: action.id,
       output: JSON.stringify(response),
     });
  }
+// submit the outputs to the thread
  let newRun = await openai.beta.threads.runs.submitToolOutputs(
   thread.id, run.id, { tool_outputs: toolsOutput });
 
+// wait for output to appear in the thread messages
  let outputStatus = await pollRun(thread, newRun, gptControl);
+
 return outputStatus;
 }
 export default required_action;

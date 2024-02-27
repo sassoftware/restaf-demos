@@ -34,7 +34,8 @@ function functionSpecs() {
     tools.push(r);
   });
 
-  let functionList = functions(functionSpecs);
+  let functionList = functions(specs);
+  
   return { specs, tools, functionList };
 }
 

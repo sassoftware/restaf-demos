@@ -6,6 +6,7 @@
 
 import inquirer from 'inquirer';
 import functionSpecs from './gptFunctions/functionSpecs.js';
+import instructions from './gptFunctions/instructions.js';
 import { setupAssistant, runAssistant} from './packages/assistant/index.js';
 setupSession()
   .then((config) => {
@@ -41,6 +42,11 @@ async function run(config) {
 }
 async function setupSession() {
   console.log('Setup session. CTRL C to exit');
+  
+  let threadMessage = (process.env.OPENAI_THREAD == null || process.env.OPENAI_THREAD.trim().length === 0) ?
+                       `true to reuse` : `if true, will use  env=${process.env.OPENAI_THREAD}`;
+  
+
   let questions = [
     {
       type: 'list',
@@ -65,20 +71,20 @@ async function setupSession() {
         return 'gpt-4-turbo-preview'
       },
     },
-    /*
-    {
-      type: 'list',
-      name: 'reuseThread',
-      //checked: 'YES',
-      choices: ['YES', 'NO'],
-      message: 'Reuse previous thread?',
-    },
-    */
     {
       type: 'boolean',
       name: 'reuseThread',
       checked: true,
-     // choices: ['YES', 'NO'],
+      message: threadMessage,
+      default() {
+        return true;
+      }
+    },
+    
+    {
+      type: 'list',
+      name: 'reuseThread',
+      choices: ['YES', 'NO', ],
       message: 'Reuse previous thread?(true/false)',
       default() {
         return true;
@@ -100,6 +106,8 @@ async function setupSession() {
     azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
   }
   answers.specs = functionSpecs();
+  answers.instructions = instructions();
+  answers.threadid = (process.env.OPENAI_THREAD == null || process.env.OPENAI_THREAD.trim().length == 0) ? '0' : process.env.OPENAI_THREAD;
   return answers;
 }
 
