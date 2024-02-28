@@ -13,11 +13,13 @@ import pollRun from "./pollRun.js";
  * @function runAssistant
  * @param {string} prompt - User prompt
  * @param {object} gptControl - gpt  session control object
- * @param {object} appEnv - Viya session control object(has store, sessionID, etc. to talk to Viya server)
+ * @param {object} appEnv - application info - ex: Viya session control object(has store, sessionID, etc. to talk to Viya server)
+ * @param {string} instructions - Additional instructions for the run
  * @returns {*} - response from GPT(can be text, string, html etc...)
+ * @notes - This function will run the assistant with the prompt and return the response from the assistant.
  */
 
-async function runAssistant(prompt, gptControl, appEnv) {
+async function runAssistant(prompt, gptControl, appEnv, instructions) {
   let { openai, assistant, thread, specs } = gptControl;
   let {functionList} = specs;
 
@@ -60,12 +62,12 @@ async function runAssistant(prompt, gptControl, appEnv) {
   });
   // console.log(assistant.id);
   // console.log(JSON.stringify(thread, null, 4));
-  run = await openai.beta.threads.runs.create(thread.id, {
+  let runArgs = {
     assistant_id: assistant.id,
-    instructions: `Help user use SAS Viya to accomplish a task
-                      Allow users to query for information from a Viya Server.
-                      Allow users to query the retrieved information`,
-  });
+    instructions: (instructions != null) ? instructions : ''
+  };
+
+  run = await openai.beta.threads.runs.create(thread.id, runArgs);
 
   // Poll and wait for the run to complete
   let runStatus = await pollRun(thread, run, gptControl);

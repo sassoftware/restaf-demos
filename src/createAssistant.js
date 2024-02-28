@@ -11,7 +11,7 @@ import loadThread from "./loadThread.js";
  * @description   Setup the GPT Assistant
  * @param {string} apiKey - openai api key
  * @param {object} config - configuration object
- * @returns {promise} - return {openai, assistant, thread, functionList}
+ * @returns {promise} - return gptControl{openai, assistant, thread, threadid, functions specs}
  */
 async function createAssistant(openai, config) {
 let {assistantName, instructions, model, specs, reuseThread} = config;

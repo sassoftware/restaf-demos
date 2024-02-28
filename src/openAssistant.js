@@ -9,7 +9,7 @@
  * @param {string} apiKey - openai api key
  * @param {string} assistant - assistant object
  * @param {object} config - configuration object
- * @returns {promise} - return {openai, assistant, thread, functionList}
+ * @returns {promise} - return {openai, assistant, thread, threadid, function specs}
  */
 import loadThread from './loadThread.js'; 
 async function openAssistant(openai, assistant, config) {

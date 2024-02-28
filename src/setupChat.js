@@ -6,6 +6,7 @@
  * @description   Setup the GPT Chat
  * @function      setupChat
  * @returns {object} - {openai, createArgs, functionList,originalMessages}
+ * @notes  Here for reference only - not used in this library
  */
 // https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-assistants-readme?view=azure-node-preview&source=recommendations
 import OpenAI from 'openai';  

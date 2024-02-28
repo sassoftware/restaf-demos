@@ -15,11 +15,11 @@ import  {OpenAIClient, OpenAIKeyCredential} from '@azure/openai'
 
 import createAssistant from './createAssistant.js';
 import openAssistant from './openAssistant.js';
-import setupViya from '../lib/setupViya.js';
 
 async function setupAssistant(config) {
 
   // azureai open includes url and key
+  // the azureai is not supported yet.
   // openai includes key
   let {provider, assistantName, credentials} = config;
  // let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_AZ_KEY;
@@ -40,14 +40,10 @@ async function setupAssistant(config) {
   });
 
   // Either create a new assistant or reuse the existing one(preferred)
-  
   let gptControl = (assistant == null) 
                      ? await createAssistant(openai, config)
                      : await openAssistant(openai, assistant, config);
-                     
-  // setup viya session
-  let appEnv = await setupViya(config.source);
-  return {gptControl, appEnv};
+  return gptControl; 
 
   }
   export default setupAssistant;

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
- * The two main functions for the assistant
+ * exported entries
  */
-import setupAssistant from './src/setupAssistant.js';
-import runAssistant from './src/runAssistant.js';
-import closeAssistant from './src/closeAssistant.js';
+import setupAssistant from './setupAssistant.js';
+import runAssistant from './runAssistant.js';
+import closeAssistant from './closeAssistant.js';
 export { setupAssistant, runAssistant, closeAssistant};

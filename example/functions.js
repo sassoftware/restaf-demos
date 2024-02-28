@@ -14,9 +14,9 @@ import restafedit from "@sassoftware/restafedit";
 import restaflib from "@sassoftware/restaflib";
 import fs from "fs";
 
-import logAsArray from "../packages/lib/logAsArray.js";
-import string2Table from "../packages/lib/string2Table.js";
-import rows2csv from "../packages/lib/rows2csv.js";
+import logAsArray from "./lib/logAsArray.js";
+import string2Table from "./lib/string2Table.js";
+import rows2csv from "./lib/rows2csv.js";
 const fss = fs.promises;
 const { caslRun, computeRun, computeResults } = restaflib;
 const { getLibraryList, getTableList, getTableColumns } = restafedit;

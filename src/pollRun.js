@@ -13,6 +13,7 @@
  * @params {object} run - run object    
  * @params {object} gptControl - gpt  session control object
  * @returns {object} - runStatus from openai.beta.threads.runs.retrieve
+ * @notes - Will wait for completion(!(queued,in_progress, cancelling))
  */
 async function pollRun(thread, run, gptControl) {
   let { openai, assistant} = gptControl;

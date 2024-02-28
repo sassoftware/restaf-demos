@@ -12,8 +12,9 @@
  
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
+import getToken from './getToken.js';
 
-async function setupViya(source, logonPayload) {
+async function setupViya(source) {
 
   let appEnv = {  
     host: null,
@@ -27,6 +28,14 @@ async function setupViya(source, logonPayload) {
   }
   if (source === 'none'|| source == null){
     return appEnv;
+  }
+  // logon payload
+  let {token, host} = getToken();
+  let logonPayload = {
+    authType: 'server',
+    host: host,
+    token: token,
+    tokenType: 'bearer'
   }
 
   // logon to the server

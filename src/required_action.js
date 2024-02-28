@@ -8,10 +8,12 @@
  * @async
  * @description - Handle required actions for Assistant
  * @function required_action
- * @param {string} prompt - User prompt
+ * @param {object} runStatus - run status object
+ * @param {object} thread - thread object
+ * @param {object} run - run object
  * @param {object} gptControl - gpt  session control object
  * @param {object} appEnv - Viya session control object(has store, sessionID, etc. to talk to Viya server)
- * @returns {*} - response from GPT(can be text, string, html etc...)
+ * @returns {*} - status from submitToolOutputs
  */
 import pollRun from "./pollRun.js";
 async function required_action(runStatus, thread, run,  gptControl, appEnv) {
