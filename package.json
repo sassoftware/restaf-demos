@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/openai-assistantjs",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A library to access openau assistant",
   "engines": {
     "node": ">=18.0.0",
@@ -32,8 +32,7 @@
   ],
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@sassoftware/restaf": "^5.2.4",
     "@sassoftware/restafedit": "^2.4.7",
