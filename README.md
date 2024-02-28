@@ -48,6 +48,7 @@ See below for the config's schema
       azureaiKey: azureai key, 
       azureaiEndpoint: azureai endpoint
     }
+    server: 'none'|'cas'|'compute'
 }
 
 ```

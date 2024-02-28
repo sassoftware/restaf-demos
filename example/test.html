@@ -1,14 +1,17 @@
 <html lang="en">
 <head><meta charset="utf-8">
-<script src="https://unpkg.com/@sassoftware/openai-assistantjs@latest"></script>
+<script src="https://unpkg.com/@sassoftware/openai-assistantjs@dev/dist/index.umd.js"></script>
 
 <script>
   console.log(assistantjs);
+  console.log(openai);
+  let gptControl;
 </script>
 <script>
   function setup() {
     let config = {
     provider:  'openai', /* azureai is coming soon */
+    server: 'none', /* none, local, or a url to a server */
     assistantName: 'SAS_ASSISTANT_BASIC', /* ex: SAS_ASSISTANT. Reuse name to keep costs down */
     instructions :  'You are assistant who can do calculations', /* instructions for the assistant. Ignored if assistant exists */
     model: 'gpt-4-turbo', /* the gpt model you want to use */
@@ -27,19 +30,23 @@
     functionList: {}
     }
   }
-  assistantjs.setup(config)
+  console.log(assistantjs);
+  assistantjs.setupAssistant(config)
   .then ((r)=> {
     gptControl = r;
+    console.log(gptControl);
   })
   .catch ((e)=> {
     console.log(e);
   })
+}
 </script>
 <script>
   function onClick() {
     let text = document.getElementById('prompt').value;
     runAssistant(text, {}, gptControl)
     .then (r => {
+      debugger;
       document.getElementById('log').innerHTML += r + '<br>';
     })
     .catch (e => {
