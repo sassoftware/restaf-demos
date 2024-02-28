@@ -1,361 +1,92 @@
-# A sample Assistant for Viya using OPENAI Assistant and SAS Viya
+# Building and Running Openai Assistant in JavaScript Made Simple
 
-The key examples are:
+This library simplifies the development and execution of an Assistant.
 
-1. Assistant - An assistant built with openai Assistant API with functions 
-using SAS REST API. This is the main focus of this repository.
+It handles all the interactions with openai. It has the following methods:
 
-2. Couple of basic examples demonstrating chatgpt with functions.
+- setupAssistant   -- as the name suggests it setup the assistant session
+- runAssistant -- takes a prompt and runs the assistan and returns the reponse
 
-The functions are small and easy to follow. Feel free to change these to suit own
-programming style.
+Useful links:
 
-The code is in <https://github.com/sassoftware/restaf-demos/tree/gpt-samples>
+[Assistant documentation](https://platform.openai.com/docs/assistants/overview)
 
----
+## Import
 
-## Table of Contents
+- Install the library @sassoftwae/openai-assistantjs@latest
 
----
-
-- [Data Points](#datapoint)
-- [SAS Assistant](#gpt)
-- [Installation and setup](#install)
-- [Basic example](#basic)
-- [Basic example with access to Viya](#basicSAS)
-
----;
-
-## Data Points<a name="datapoint"></a>
-
----
-
-### Requirements
-
-1. Make sure the node version is >=18.0.0
-2. gpt-4-turbo model is the default openai model..
-3. It is the user's reponsibility to get the api key for openai.
-   The following environment variables are read.
-    - If provider is openai:
-       - openaiKey: process.env.OPENAI_KEY,
-
-    - If provider is azureai:
-      - azureaiKey: process.env.OPENAI_AZ_KEY,
-      - azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
-
-4. Recommend reusing a thread that was created in a earlier session.
-   Run the tool once by selecting **true** for thread option to get the threadid.
-   You can also get it from the openai Assistant playground.
-    - OPENAI_THREADID - the id of the thread.
-
-5. Most examples useSAS REST API to access SAS Viya. The applications
-use @sassoftware/restaf, @sassoftware/restaflib and @sassoftware/restafedit to
-make these calls. See <https://sassoftware.github.io/restaf/>
-for more information.
-
-6. The source code in this repository is provided under
- Apache-2.0 licensing model
-
-### Authentication
-
-Please sas-cli auth login|logCode to setup authentication token.
-
-### Running without a Viya
-
-Select **none** for Viya server at the initial prompt.
-
-
----
-
-## Running the Assistant<a name="gpt"> </a>
-
----
-
-After setting the environment variables listed above, start the application as
-follows:
-
-```text
-npx @sassoftware/gpt-samples@latest
-
-```
-
-Answer the configuration prompts. The tool will create or reuse and existing assistant.
-User can then enter prompts for the assistant.
-
-Enter **help** to get guidance on what is possible
-
-The gpt session will stay active until you enter **exit**
-
----
-
-## Cloning the repository
-
----
-
-## Installation and Setup<a name="install"></a>
-
-The instruction below is for those users who wish to clone the code and extend the application.
-
-- git clone https://github.com/sassoftware/restaf-demos gpt-samples -b gpt-samples
-- cd gpt-samples
-- npm install
-
-
-### Customizing the application.
-
-The contents of the folder gptFunctions can be modified to suit your needs.
-See online documentation [here](https://platform.openai.com/docs/assistants/overview)
-
-
-## Getting started - Basic example<a name="basic"></a>
-
-This example demonstrates setting up access to gpt and defining a function called
- basic. This function's sole purpose is to reformat user provided keywords as 
- html, array or JavaScript object.
-The code is in ./packages/basic/index.js
-
-### Usage
-
-```text
-npm run basic <some text>
-```
-
-Some sample prompt and results:
-
-### npm run basic  what is SAS Viya
-
-```text
-SAS Viya is a cloud-based, in-memory analytics engine from SAS Institute, an American multinational developer of analytics software. SAS Viya provides quick, accurate results and reveals valuable insights from large amounts of data. It's capable of machine learning, text analytics, forecasting, optimization, and statistics. It can be used through a variety of programming languages including Python, R, Java, and Lua, or through its visual interface.
-```
-
-### npm run basic keywords
-
-```text
-Sure, can you provide me with the keywords you want to process?
-```
-
-### npm run basic keywords a,b,c as array
+- Import the two entry points as follows:
 
 ```javascript
-[ 'a', 'b', 'c' ]
+import { setupAssistant, runAssistant} from '@sassoftware/openai-assistantjs';
 ```
 
-### npm run basic keywords a,b,c as html
+## setupAssistant
 
-```text
+### Syntax for setupAssistant
 
-<ul><li>a</li><li>b</li><li>c</li></ul>
+```javascript
 
-```
+const gptControl = await setupAssistant(config)
 
-## Example with access to Viya<a name="basicSAS"></a>
-
-This is similar to the previous example The  basic function now executes SAS code
-or casl code.
-
-The prompt should look something like this:
-
-```text
-
-run file path to your .sas file or .casl file
+See below for the config's schema
 
 ```
 
-The following starter files are included. Use .sas files if env VIYASOURCE is set to compute
+### Config object
 
-- ../../programs/echo.casl
-- ../../programs/datastep.casl
-- ../../programs/datastep.sas  
-
-### Usage for SAS example
-
-```text
-npm run basicSAS "run file <some path>"
-```
-
-### run  file ../programs/datastep.casl
-
-```json
+```javascript
 {
-    "casResults": {
-        "result": {
-            "Fetch": {
-                "_ctb": true,
-                "attributes": {
-                    "Action": {
-                        "type": "string",
-                        "value": "fetch"
-                    },
-                    "Actionset": {
-                        "type": "string",
-                        "value": "table"
-                    },
-                    "CreateTime": {
-                        "type": "double",
-                        "value": 2022787095.92428
-                    }
-                },
-                "label": "Selected Rows from Table A",
-                "name": "Fetch",
-                "rows": [
-                    [
-                        1,
-                        1
-                    ]
-                ],
-                "schema": [
-                    {
-                        "attributes": {},
-                        "format": "",
-                        "label": "",
-                        "name": "_Index_",
-                        "type": "int",
-                        "width": 8
-                    },
-                    {
-                        "attributes": {},
-                        "format": "",
-                        "label": "",
-                        "name": "x",
-                        "type": "double",
-                        "width": 8
-                    }
-                ],
-                "title": "Selected Rows from Table A"
-            }
-        }
+    provider:  'openai', /* azureai is coming soon */
+    assistantName:  'a name for the assistant', /* ex: SAS_ASSISTANT. Reuse name to keep costs down */
+    instructions:  'some assistant instructions', /* instructions for the assistant. Ignored if assistant exists */
+    model: 'gpt-4', /* the gpt model you want to use */
+    reuseThread: true|false, /* if false it will create a new thread. else will use the specified threadid */
+    threadid:  '0' | a valid threadid, /* Unfortunately there is no api to manage threads. So reusing might be a good option (with its drawbacks)*/
+    credentials: {/* credentials for openai or azureai */
+      openaiKey: openai key,
+      azureaiKey: azureai key, 
+      azureaiEndpoint: azureai endpoint
     }
 }
 
 ```
 
-### run file ../programs/datastep.sas
+## runAssistant
 
-Make sure the env variable VIYASOURCE is set to compute.
+Use this to process user's prompts
 
-```json
-[
-    {
-        "line": "1    options NOSYNTAXCHECK OBS=MAX;%let syscc=0;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "2    data a;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "3      x=1;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "4    run;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "NOTE: The data set WORK.A has 1 observations and 1 variables.",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "NOTE: DATA statement used (Total process time):",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      real time           0.00 seconds",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      cpu time            0.00 seconds",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      ",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "5    ",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "6    proc print; run;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "NOTE: There were 1 observations read from the data set WORK.A.",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "NOTE: The PROCEDURE PRINT printed page 1.",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "NOTE: PROCEDURE PRINT used (Total process time):",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      real time           0.05 seconds",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      cpu time            0.06 seconds",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "      ",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "",
-        "type": "note",
-        "version": 1
-    },
-    {
-        "line": "7    ",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "8    ;",
-        "type": "source",
-        "version": 1
-    },
-    {
-        "line": "",
-        "type": "note",
-        "version": 1
-    }
-]
+### Syntax for runAssistant
 
+```javascript
+
+const msg = await runAssistant(prompt, gptControl, appEnv, instructions)
 
 ```
+
+The parameters are:
+
+- prompt - the user's prompt(ex: add 1 + 1)
+- gptControl - the control object from the setupAssistant call
+- appEnv - null | some object defined by user(see functions below),\
+- instructions - null | additional instructions for this run
+
+This function will wait for prompt to be handled (success or failure) and
+return the final response.
+Note that this response will be in the thread's messages.
+
+## Functions
+
+The parameters to the functions are augmented with two additional parameters.
+
+So the parmeters for a function looks like this;
+
+```javascript
+async function myfunction(params, appEnv, gptControl)
+```
+
+- params - schema depends on the specification as explained in openai document
+- appEnv - this was passed to runAssistant
+- gptControl - this was returned by setupAssistant
+
+appEnv and gptControl are convenience parameters to help the developer.

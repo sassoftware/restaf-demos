@@ -15,14 +15,15 @@ import loadThread from "./loadThread.js";
  */
 async function createAssistant(openai, config) {
 let {assistantName, instructions, model, specs, reuseThread} = config;
-
 let createArgs = {
   name: assistantName,
   instructions: instructions,
   model: model, 
-  tools: specs.tools,
   metadata:{ thread_id: '0', lastRunId: '0'},
 };
+if (specs.tools !== null){
+  createArgs.tools = specs.tools;
+}
 
 let assistant = await openai.beta.assistants.create(createArgs);
 console.log('-----------------------------------');
