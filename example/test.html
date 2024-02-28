@@ -1,10 +1,9 @@
 <html lang="en">
 <head><meta charset="utf-8">
-<script src="https://unpkg.com/@sassoftware/openai-assistantjs@dev/dist/index.umd.js"></script>
+<script src="https://unpkg.com/@sassoftware/openai-assistantjs@0.1.3"></script>
 
 <script>
   console.log(assistantjs);
-  console.log(openai);
   let gptControl;
 </script>
 <script>
@@ -16,9 +15,9 @@
     instructions :  'You are assistant who can do calculations', /* instructions for the assistant. Ignored if assistant exists */
     model: 'gpt-4-turbo', /* the gpt model you want to use */
     reuseThread: true, /* if false it will create a new thread. else will use the specified threadid */
-    threadid:  'thread_YpBGqqx46Tzs9Uxq0RoFynPW', /* Unfortunately there is no api to manage threads. So reusing might be a good option (with its drawbacks)*/
+    threadid:  'xxx', /* Unfortunately there is no api to manage threads. So reusing might be a good option (with its drawbacks)*/
     credentials: {/* credentials for openai or azureai */
-      openaiKey: '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',
+      openaiKey: '',
       azureaiKey: '',
       azureaiEndpoint: ''
     },

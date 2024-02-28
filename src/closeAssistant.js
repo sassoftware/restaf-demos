@@ -11,6 +11,7 @@
  * @returns {boolean} - true
  */
 async function closeAssistant(_gptControl, _appEnv) {
+  console.log('in closeAssistant');
   return true;
 }
 export default closeAssistant;

@@ -25,7 +25,8 @@ async function setupAssistant(config) {
  // let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_AZ_KEY;
   let apiKey = (provider === 'openai') ? credentials.openaiKey : credentials.azureaiKey;
   let endpoint = credentials.azureaiEndpoint;
-  let openai = (provider === 'openai') ? new OpenAI({ apiKey: apiKey }) : 
+  console.log(apiKey);
+  let openai = (provider === 'openai') ? new OpenAI({ apiKey: apiKey,  dangerouslyAllowBrowser: true }) : 
         new OpenAIClient(endpoint, new OpenAIKeyCredential(apiKey));
 
  // Wishlist: Wish could open with query of name and let it succeed or fail
