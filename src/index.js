@@ -8,4 +8,6 @@
 import setupAssistant from './setupAssistant.js';
 import runAssistant from './runAssistant.js';
 import closeAssistant from './closeAssistant.js';
-export { setupAssistant, runAssistant, closeAssistant};
+import getLatestMessage from './getLatesMessage.js';
+import getMessages from './getMessages.js';
+export { setupAssistant, runAssistant, getLatestMessage,getMessages,closeAssistant};

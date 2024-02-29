@@ -10,7 +10,7 @@ import instructions from './instructions.js';
 import setupViya from './lib/setupViya.js';
 
 // import { setupAssistant, runAssistant} from './packages/assistant/index.js';
-import { setupAssistant, runAssistant} from '../dist/index.module.js';
+import { setupAssistant, runAssistant, getMessages} from '../dist/index.module.js';
 setupSession()
   .then((config) => {
     return run(config);
@@ -22,6 +22,7 @@ setupSession()
     console.log(err);
   });
 
+// function to run user's prompt
 async function run(config) {
   let gptControl = await setupAssistant(config);
   // setup viya connection
@@ -46,6 +47,8 @@ async function run(config) {
     }
     let response = await runAssistant(prompt, gptControl, appEnv);
     console.log(response);
+    let messages = await getMessages(gptControl, 5);
+    console.log(messages);
   } 
 
   return "assistant session ended";

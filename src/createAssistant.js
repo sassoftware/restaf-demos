@@ -21,7 +21,7 @@ let createArgs = {
   model: model, 
   metadata:{ thread_id: '0', lastRunId: '0'},
 };
-if (specs.tools !== null){
+if (specs.tools != null ){
   createArgs.tools = specs.tools;
 }
 

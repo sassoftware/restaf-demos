@@ -32,34 +32,12 @@ async function runAssistant(prompt, gptControl, appEnv, instructions) {
       content: prompt,
     });
   } catch (error) {
+    //tbd: recovery?
     console.log(`status = ${error.status}. Unable to add the prompt to the thread`);
     console.log('will try to cancel the last run');
-    console.log(error);
-    if (error.status === 400 && assistant.metadata.lastRunId !== '0') {
-      try {
-        run = await openai.beta.threads.runs.cancel(thread.id, assistant.metadata.lastRunId);
-        assistant = await openai.beta.assistants.update(assistant.id, {
-          metadata: { thread_id: thread.id, lastRunId: run.id }})
-        gptControl.assistant = assistant;
-        console.log("Cancelled the last run");
-      } catch (error) {
-        console.log('Unable to cancel the last run');
-        console.log(error);
-      }
-    } else {
-      await openai.beta.threads.del(thread.id);
-      thread = await openai.beta.threads.create({
-        metadata: { assistanceName: assistant.name, lastRunId: '0'},
-      });
-      gptControl.thread = thread;
-      console.log("Deleted old thread and created a new one");
-      
-    }
+    return {status: error.status, message: error};
   }
-  newMessage = await openai.beta.threads.messages.create(thread.id, {
-    role: "user",
-    content: prompt,
-  });
+  
   // console.log(assistant.id);
   // console.log(JSON.stringify(thread, null, 4));
   let runArgs = {
