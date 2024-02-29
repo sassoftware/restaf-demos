@@ -47,8 +47,7 @@ async function run(config) {
     }
     let response = await runAssistant(prompt, gptControl, appEnv);
     console.log(response);
-    let messages = await getMessages(gptControl, 5);
-    console.log(messages);
+   
   } 
 
   return "assistant session ended";
@@ -121,7 +120,7 @@ async function setupSession() {
   }
   answers.specs = functionSpecs();
   answers.instructions = instructions();
-  console.log('answers', answers);
+
   return answers;
 }
 

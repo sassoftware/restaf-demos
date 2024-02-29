@@ -2,8 +2,7 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-
-import getLatestMessage from "./getLatesMessage.js";
+import getLatestMessage from "./getLatestMessage.js";
 import required_action from "./required_action.js";
 import pollRun from "./pollRun.js";
 
@@ -21,7 +20,7 @@ import pollRun from "./pollRun.js";
 
 async function runAssistant(prompt, gptControl, appEnv, instructions) {
   let { openai, assistant, thread, specs } = gptControl;
-  let {functionList} = specs;
+//  let {functionList} = specs;
 
   //add the user request to thread
   let run = null;
@@ -38,8 +37,6 @@ async function runAssistant(prompt, gptControl, appEnv, instructions) {
     return {status: error.status, message: error};
   }
   
-  // console.log(assistant.id);
-  // console.log(JSON.stringify(thread, null, 4));
   let runArgs = {
     assistant_id: assistant.id,
     instructions: (instructions != null) ? instructions : ''
@@ -52,8 +49,8 @@ async function runAssistant(prompt, gptControl, appEnv, instructions) {
   
   if (runStatus.status === "completed") {
     
-    const message = await getLatestMessage  (openai, thread, 1);
-    return message; 
+    const message = await getLatestMessage (gptControl, 1); 
+    return message;
   } else if (runStatus.status === 'requires_action') {
     let r = await required_action(
       runStatus,
@@ -62,7 +59,7 @@ async function runAssistant(prompt, gptControl, appEnv, instructions) {
       gptControl,
       appEnv
     );
-    let message = await getLatestMessage  (openai, thread,1);
+    let message = await getLatestMessage(gptControl, 5);
     return message;
   } else {
     return { runStatus: runStatus.status };

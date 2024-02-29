@@ -4,10 +4,12 @@
  */
 /**
  * 
- * @description Return sepcified number of messagesfrom thread
+ * @description Return sepcified number of messages from thread
  * @param {object}  gptControl- openai control object
  * @param {number} limit - limit the number of messages to return
- * @returns {*} - messages - array of messages
+ * @returns {*} - messages - array of messages[ {id, role, type, content}]
+ * @notes - This function will return the specified number of messages from the thread
+ * Typically the top 2 will be the assistant message and user's prompt
  */
 async function getMessages(gptControl, limit) {  
   let {openai, thread} = gptControl;
