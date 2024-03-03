@@ -7,7 +7,7 @@
  * @async
  * @description This function is the main entry for chatgpt
  * @function chatgpt
- * @param {string} openai - openai object 
+ * @param {string} client - client object 
  * @param {string} userRequest - user request to GPT
  * @param {object} gptControl - gpt session control object
  * @param {object} appEnv - Viya Session environment (has store, sessionID, etc.)
@@ -15,13 +15,13 @@
  */
 
 async function chatgpt(prompt, gptControl, appEnv) {
-  let {openai, createArgs, functionList} = gptControl;
+  let {client, createArgs, functionList} = gptControl;
   try {
     //add user prompt to the message array
     createArgs.messages.push({ role: "user", content: prompt })
     
     // The actual call to GPT
-    let completion = await openai.chat.completions.create(createArgs);
+    let completion = await client.chat.completions.create(createArgs);
 
     const completionResponse = completion.choices[0].message;
    
@@ -58,4 +58,4 @@ async function chatgpt(prompt, gptControl, appEnv) {
 
 export default chatgpt;
 
-//https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+//https://platform.client.com/docs/guides/text-generation/chat-completions-api

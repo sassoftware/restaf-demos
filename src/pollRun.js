@@ -8,15 +8,15 @@
  * @async
  * @description - Poll run status since there is no streaming support
  * @function pollRun
- * @params {object} openai - openai object
+ * @params {object} client - client object
  * @params {object} thread - thread object
  * @params {object} run - run object    
  * @params {object} gptControl - gpt  session control object
- * @returns {object} - runStatus from openai.beta.threads.runs.retrieve
+ * @returns {object} - runStatus from client.beta.threads.runs.retrieve
  * @notes - Will wait for completion(!(queued,in_progress, cancelling))
  */
 async function pollRun(thread, run, gptControl) {
-  let { openai, assistant} = gptControl;
+  let { client} = gptControl;
   let done = null;
   let runStatus = null;
   function sleep(ms) {
@@ -24,8 +24,8 @@ async function pollRun(thread, run, gptControl) {
   }
   // Since there is no streaming support, sleep and poll the status
   do {
-    
-    runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+    debugger;
+    runStatus = await client.beta.threads.runs.retrieve(thread.id, run.id);
     
     console.log("-------------------", runStatus.status);
     if (
@@ -35,17 +35,21 @@ async function pollRun(thread, run, gptControl) {
         runStatus.status === "cancelling"
       )
     ) {
+      debugger;
       done = runStatus.status;
     } else {
       await sleep(2000);
-      // console.log("waited 2000 ms");
+      console.log("waited 2000 ms");
     }
   } while (done === null);
 
-  let newAssistant = await openai.beta.assistants.update(assistant.id, {
+  /*
+  let newAssistant = await client.beta.assistants.update(assistant.id, {
     metadata: { thread_id: thread.id, lastRunId: run.id} 
   });
-  gptControl.assistant = newAssistant;
+  */
+  debugger;
+ //  gptControl.assistant = newAssistant;
   return runStatus;
 
 }

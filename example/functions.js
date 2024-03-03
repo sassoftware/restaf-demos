@@ -90,6 +90,7 @@ async function getForm(params, appEnv) {
 async function listSASObjects(params, appEnv) {
   let { resource, limit } = params;
   let store = appEnv.store;
+  debugger;
   limit = limit == null ? 10 : limit;
   if (
     ["files", "folders", "reports"].includes(resource.toLowerCase()) === false
@@ -106,6 +107,7 @@ async function listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList().toJS();
+  debugger;
   return JSON.stringify(items);
 }
 async function listSASDataLib(params, appEnv) {

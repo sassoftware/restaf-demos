@@ -5,15 +5,15 @@
 /**
  * @description   Setup the GPT Chat
  * @function      setupChat
- * @returns {object} - {openai, createArgs, functionList,originalMessages}
+ * @returns {object} - {client, createArgs, functionList,originalMessages}
  * @notes  Here for reference only - not used in this library
  */
-// https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-assistants-readme?view=azure-node-preview&source=recommendations
-import OpenAI from 'openai';  
+// https://learn.microsoft.com/en-us/javascript/api/overview/azure/client-assistants-readme?view=azure-node-preview&source=recommendations
+import OpenAI from 'client';  
 import specs from '../gptFunctions/functionSpecs.js'; 
 function setupChat() {
   let apiKey = process.env.OPENAI_KEY;
-  const openai = new OpenAI({ apiKey: apiKey });
+  const client = new OpenAI({ apiKey: apiKey });
   let {functionSpecs, functionList} = specs(); 
 
   // setup request to chat
@@ -26,7 +26,7 @@ function setupChat() {
   };
 
   
-  return {openai, createArgs,functionList, originalMessages: [].concat(createArgs.messages)};
+  return {client, createArgs,functionList, originalMessages: [].concat(createArgs.messages)};
 
   }
   export default setupChat;

@@ -1,12 +1,66 @@
-# Building and Running Openai Assistant in JavaScript Made Simple
+# A nodejs starter library to help SAS users build ASSISTANTS
 
-This library simplifies the development and execution of an Assistant.
+## Uses openai ASSISTANT api
 
-It handles all the interactions with openai. It has the following methods:
+## Install the library into your application
 
-- setupAssistant   -- as the name suggests it setup the assistant session
-- runAssistant -- takes a prompt and runs the assistan and returns the reponse
-- getMessages -- get a specified number of messages from the thread
+```cmd
+npm install @sassoftware/openai-assistantjs
+
+Then import the following two entries in your nodejs code
+
+import {setupAssistant, runAssistant} from "@sassoftware/openai-assistantjs";
+
+```
+
+## Sample program
+
+See the examples folder in the repository for a working application.
+
+```javascript
+// Import the two key methods from @sassoftware/openai-assistantjs
+// import {setupAssistant, runAssistant} from "@sassoftware/openai-assistantjs";
+async function run(config) {
+
+  // setup assistant 
+  let gptControl = await setupAssistant(config);
+
+  // creating application data.(optional) 
+  let appEnv = await setupViya(process.env.APPENV_SOURCE);
+
+  console.log('--------------------------------------');
+  console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
+  console.log('Thread: ', gptControl.thread.id);
+  console.log('--------------------------------------');
+
+  // Using inquirer.js to create an interactive session
+  // Pick your method(ex: readLines)
+
+  let questions = {
+    type: "input",
+    name: "prompt",
+    message: ">",
+  };
+
+  let quita = ["exit", "quit", "q"];
+  while (true) {
+    // get user's prompt
+    let answer = await inquirer.prompt(questions);
+    let prompt = answer.prompt;
+    if (quita.includes(prompt.toLowerCase())) {
+      break;
+    }
+    //Note appEnv is passed to runAssistant
+    // run assistant will pass both gptControl and appEnv to tools functions
+    let promptInstructions = ' ';
+    let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
+    console.log(response);
+  }
+
+  return "assistant session ended";
+}
+
+```
 
 Useful links:
 
@@ -14,12 +68,11 @@ Useful links:
 
 ## Import
 
-- Install the library @sassoftwae/openai-assistantjs@latest
-
+- Install the library @sassoftware/openai-assistantjs@latest
 - Import the two entry points as follows:
 
 ```javascript
-import { setupAssistant, runAssistant, getMessages} from '@sassoftware/openai-assistantjs';
+import { setupAssistant, runAssistant} from '@sassoftware/openai-assistantjs';
 ```
 
 ## setupAssistant
@@ -36,21 +89,27 @@ See below for the config's schema
 
 ### Config object
 
-```javascript
-{
-    provider:  'openai', /* azureai is coming soon */
-    assistantName:  'a name for the assistant', /* ex: SAS_ASSISTANT. Reuse name to keep costs down */
-    instructions:  'some assistant instructions', /* instructions for the assistant. Ignored if assistant exists */
-    model: 'gpt-4', /* the gpt model you want to use */
-    reuseThread: true|false, /* if false it will create a new thread. else will use the specified threadid */
-    threadid:  '0' | a valid threadid, /* Unfortunately there is no api to manage threads. So reusing might be a good option (with its drawbacks)*/
-    credentials: {/* credentials for openai or azureai */
-      openaiKey: openai key,
-      azureaiKey: azureai key, 
-      azureaiEndpoint: azureai endpoint
-    }
-}
+The example below sets the values from environment variables.
+You can set these directly also.
 
+```javascript
+let config = {
+  provider: process.env.OPENAI_PROVIDER, 
+  model: 'gpt-4-0125-preview', // change this to your perference
+  credentials: { // credentials from the provider- recommend using env vaiables
+    openaiKey: process.env.OPENAI_KEY,
+    azureaiKey: process.env.OPENAI_AZ_KEY,
+    azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT,
+  },
+  assistantName: process.env.OPENAI_ASSISTANTNAME, // name of the assistant
+  assistantid: process.env.OPENAI_ASSISTANTID|0,// if you know the assistant id
+  threadid: process.env.OPENAI_THREADID '0,// threadid if you know it. else a new one will be created
+  instructions: <string with instructions for the assistant>,// instructions for the assistant
+  domainTools: {
+    tools: <see provider documentation>
+    functionList: {nameoffunction: function, ...}
+  }
+}
 ```
 
 ## runAssistant
@@ -61,49 +120,43 @@ Use this to process user's prompts
 
 ```javascript
 
-const msg = await runAssistant(prompt, gptControl, appEnv, instructions)
+const msg = await runAssistant(
+  gptControl, // from setupAssistant
+  prompt, // User's prompt
+  instructions,// additional instructions for this run or a blank string
+  appEnv; // Some object you want to make available to the tool function
+
+The msg has the following schema similar to this. 
+Handling of non-text content has not been tested yet.
+
+  [ { 
+  id: <id of message>
+  role: 'user'|'assistant",
+  type: type of the content(ex: text),
+  content: the content that was returned
+ }
+ ...]
 
 ```
 
-The parameters are:
+```text
+Notes on functions:
 
-- prompt - the user's prompt(ex: add 1 + 1)
-- gptControl - the control object from the setupAssistant call
-- appEnv - null | some object defined by user(see functions below)
-- instruction - null | instructions specific to this request
+All functions of a tool heve the following enhanced arguments. 
 
-Returns the last message.
+async somefunction(params, appEnv, gptControl).
 
-This function will wait for prompt to be handled (success or failure) and
-return the final response. It will handle the calls(if needed) to 
-functions associate with this assistant.
+params has the schema based on the specifications of the tools (see openai documentation) 
+If appEnv and gptControl are purely convenience parameters. Use them as you see fit.
 
-Note that this response will be in the thread's messages.
-
-## getMessages
-
-Use this to get a specified number of messages from the thread. Useful for 
-displaying the thread in a UI
-
-### Syntax for getMesssages
-
-```javascript
-const messages = await getMessages(gptControl,limit)
 ```
 
-The parameters are:
-
-- gptControl -- from setupAssistant
-- limit - the number of messages to retrieve in an array
-
- Note that the order is in the default order. So in a typical situation
- the first message will be the response from the Assistant.
  The response has the following schema:
 
  ```javascript
 
  [ { 
-  id: <id of messagge>
+  id: <id of message>
   role: 'user'|'assistant",
   type: type of the content(ex: text),
   content: the content that was returned

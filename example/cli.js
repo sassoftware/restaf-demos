@@ -4,123 +4,86 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import inquirer from 'inquirer';
-import functionSpecs from './functionSpecs.js';
-import instructions from './instructions.js';
-import setupViya from './lib/setupViya.js';
+import inquirer from "inquirer";
+
+import functionSpecs from "./functionSpecs.js";
+import instructions from "./instructions.js";
+import setupViya from "./lib/setupViya.js";
+import 'dotenv/config';
 
 // import { setupAssistant, runAssistant} from './packages/assistant/index.js';
-import { setupAssistant, runAssistant, getMessages} from '../dist/index.module.js';
-setupSession()
-  .then((config) => {
-    return run(config);
+import {setupAssistant, runAssistant} from "../dist/index.module.js";
+
+setupConfig()
+  .then (config => {
+    run(config); 
   })
-  .then ((r) => {
-    console.log(r)
-  })
-  .catch((err) => {
+  .catch(err => {
     console.log(err);
   });
 
 // function to run user's prompt
 async function run(config) {
+  debugger;
   let gptControl = await setupAssistant(config);
-  // setup viya connection
-  let appEnv = await setupViya(config.source);
+  // creating application data.(optional) 
+  // 
+  let appEnv = await setupViya(process.env.APPENV_SOURCE);
 
-  if (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length === 0) {
-    process.env.OPENAI_THREADID=gptControl.threadid;
-    console.log('For future use, save this threadid in env OPENAI_THREADID', gptControl.threadid)
-  }
+  console.log('--------------------------------------');
+  console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
+  console.log('Thread: ', gptControl.thread.id);
+  console.log('--------------------------------------');
+
   let questions = {
-    type: 'input',
-    name: 'prompt',
-    message: '>'
-  }
+    type: "input",
+    name: "prompt",
+    message: ">",
+  };
 
-  let quita = ['exit', 'quit', 'q'];
+  let quita = ["exit", "quit", "q"];
   while (true) {
+    debugger;
     let answer = await inquirer.prompt(questions);
+    debugger;
     let prompt = answer.prompt;
-    if (quita.includes(prompt.toLowerCase())){ 
+    if (quita.includes(prompt.toLowerCase())) {
       break;
     }
-    let response = await runAssistant(prompt, gptControl, appEnv);
+    //Note appEnv is passed to runAssistant
+    // run assistant will pass both gtpControl and appEnv to tools functions
+    let promptInstructions = ' ';
+    let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
     console.log(response);
-   
-  } 
+  }
 
   return "assistant session ended";
 }
-async function setupSession() {
-  console.log('Setup session. CTRL C to exit');
-  
-  let threadMessage = (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length === 0) ?
-                       `true to reuse` : `if true, will use  env=${process.env.OPENAI_THREADID}`;
-  
+async function setupConfig() {
+  let config = {
+    provider: process.env.OPENAI_PROVIDER, // openai or azureai 
+    model: process.env.OPENAI_MODEL, // pick one of the models 
+    credentials: { // credentials from the provider
+      openaiKey: process.env.OPENAI_KEY,
+      azureaiKey: process.env.OPENAI_AZ_KEY,
+      azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT,
+    },
+    assistantName: process.env.OPENAI_ASSISTANTNAME, // name of the assistant
+    assistantid: process.env.OPENAI_ASSISTANTID,// if you know the assistant id
+    threadid: process.env.OPENAI_THREADID,// threadid if you know it. else a new one will be created
+    instructions: instructions(),// instructions for the assistant
+    domainTools: functionSpecs(),// {tools, functionList} -see provider documentation
+    appEnv: null, // this is passed to the domainTools function (see below)
+  };
 
-  let questions = [
-    {
-      type: 'list',
-      name: 'provider',
-      // checked: 'openai',
-      choices: ['openai', 'azureai'],
-      message: 'Provider(azureai not ready for primetime)'
-    },
-    {
-      type: 'input',
-      name: 'assistantName',
-      message: 'Assistant name? (default: SAS_ASSISTANT)',
-      default() {
-        return 'SAS_ASSISTANT';
-      },
-    },
-    {
-      type: 'input',
-      name: 'model',
-      message: 'Model? (default: gpt-4-turbo-preview)',
-      default() {
-        return 'gpt-4-turbo-preview'
-      },
-    },
-    {
-      type: 'boolean',
-      name: 'reuseThread',
-      checked: true,
-      message: threadMessage,
-      default() {
-        return true;
-      }
-    },
-    
-    {
-      type: 'list',
-      name: 'reuseThread',
-      choices: ['YES', 'NO', ],
-      message: 'Reuse previous thread?(true/false)',
-      default() {
-        return true;
-      }
-    },
-    {
-      type: 'list',
-      name: 'source',
-      // checked: 'none',
-      choices: ['none', 'cas', 'compute'],
-      message: 'Viya server: none, cas, compute',
-    },
-  ];
-  let answers = await inquirer.prompt(questions);
-  answers.threadid = (process.env.OPENAI_THREADID == null || process.env.OPENAI_THREADID.trim().length == 0) ? '0' : process.env.OPENAI_THREADID;
-  console.log('answers', answers);
-  answers.credentials = {
-    openaiKey: process.env.OPENAI_KEY,
-    azureaiKey: process.env.OPENAI_AZ_KEY,
-    azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT
-  }
-  answers.specs = functionSpecs();
-  answers.instructions = instructions();
-
-  return answers;
+  // In this demo, we are enabling VIYA API calls using @sassoftware/restaf
+  // Make sure you have run sas-viya auth login|loginCode
+  // APPENV_SOURCE = cas |compute|none
+  // ex: cas - will use the cas viya session
+  // ex: compute - will use the compute viya session
+  // ex: none - will not use viya session
+  // ex: cas,compute - sessions for both cas and compute
+  
+  return config;
+  
 }
-

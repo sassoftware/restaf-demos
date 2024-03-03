@@ -15,17 +15,19 @@ import restaflib from '@sassoftware/restaflib';
 import getToken from './getToken.js';
 
 async function setupViya(source) {
-
-  let appEnv = {  
-    host: null,
-    logonPayload: null,
-    store: null,
-    session: null,
-    servers: null,
-    casServerName: null,
-    source: source,
-    sessionID: null
-  }
+ let appEnv=  {
+  host: null,
+  logonPayload: null,
+  store: null,
+  source: 'none',
+  currentSource: null,
+  session: null,
+  servers: null,
+  serverName: null,
+  sessionID: null,
+  compute: {},
+  cas: {}
+}
   if (source === 'none'|| source == null){
     return appEnv;
   }
@@ -41,26 +43,33 @@ async function setupViya(source) {
   // logon to the server
   let store = restaf.initStore({casProxy: true});
   await store.logon(logonPayload);
-  appEnv = {
-    host: host,
-    logonPayload: logonPayload,
-    store: store,
-    source: source
-  }
+  appEnv.host = host;
+  appEnv.logonPayload = logonPayload;
+  appEnv.store = store;
+  
   // create session and server objects
-  if (source === 'cas') {
+  // Allow sessions for both servers and cas
+  if (source.indexOf('cas') >= 0 ) {
     let {session, servers} = await restaflib.casSetup(store, null);
-    appEnv.session = session;
-    appEnv.servers = servers;
-    appEnv.casServerName = session.links("execute", "link", "server"); 
- 
-  } else {
-    appEnv.session = await restaflib.computeSetup(store);
-    appEnv.server = null;
-  }
+    let casServerName = session.links('execute', 'link', 'server');
+    appEnv.cas = {
+      session: session,
+      servers: servers,
+      casServerName: casServerName
+    }
+    let ssid = await store.apiCall(appEnv.session.links('self'));
+    appEnv.cas.sessionID = ssid.items('id');
+  } 
 
-  let ssid = await store.apiCall(appEnv.session.links("self"));
-  appEnv.sessionID = ssid.items("id");
+  if (source.indexOf('compute') > 0) {
+    appEnv.compute = {
+      servers: null
+    }
+    appEnv.compute.session = await restaflib.computeSetup(store);
+    let ssid = await store.apiCall(appEnv.session.links('self'));
+    appEnv.compute.sessionID = ssid.items('id');
+  }
+ 
   return appEnv;
 }
 export default setupViya;

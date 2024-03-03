@@ -10,60 +10,60 @@ import pollRun from "./pollRun.js";
  * @async
  * @description - Run the latest prompt from the user
  * @function runAssistant
- * @param {string} prompt - User prompt
+ *
  * @param {object} gptControl - gpt  session control object
- * @param {object} appEnv - application info - ex: Viya session control object(has store, sessionID, etc. to talk to Viya server)
+ * @param {string} prompt - user's prompt
  * @param {string} instructions - Additional instructions for the run
- * @returns {*} - response from GPT(can be text, string, html etc...)
+ * @param {object} appEnv - application info - ex: Viya session control object(has store, sessionID, etc. to talk to Viya server)
+ 
+ * @returns {promise} - response from GPT(can be text, string, html etc...)
  * @notes - This function will run the assistant with the prompt and return the response from the assistant.
- */
+ * @example 
+ *  let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv); 
+*/
 
-async function runAssistant(prompt, gptControl, appEnv, instructions) {
-  let { openai, assistant, thread, specs } = gptControl;
-//  let {functionList} = specs;
-
+async function runAssistant(gptControl,prompt, instructions, appEnv) {
+  let { client, assistant, thread, specs } = gptControl;
   //add the user request to thread
-  let run = null;
-  let newMessage = null;
   try {
-    newMessage = await openai.beta.threads.messages.create(thread.id, {
+    let _newMessage = await client.beta.threads.messages.create(thread.id, {
       role: "user",
       content: prompt,
     });
+    let r = await runPrompt(gptControl, appEnv, instructions);
+    return r;
   } catch (error) {
     //tbd: recovery?
-    console.log(`status = ${error.status}. Unable to add the prompt to the thread`);
-    console.log('will try to cancel the last run');
-    return {status: error.status, message: error};
+    debugger;
+    console.log(
+      `status = ${error.status}. Unable to add the prompt to the thread`
+    );
+    console.log(error);
+    throw new Error('Unable to add the prompt to the thread. See console for more details');
   }
-  
+}
+async function runPrompt(gptControl, appEnv, instructions) {
+  let { client, assistant, thread } = gptControl;
   let runArgs = {
     assistant_id: assistant.id,
-    instructions: (instructions != null) ? instructions : ''
+    instructions: instructions != null ? instructions : "",
   };
-
-  run = await openai.beta.threads.runs.create(thread.id, runArgs);
-
-  // Poll and wait for the run to complete
+  // Run the assistant with the prompt and poll for completion
+  let run = await client.beta.threads.runs.create(thread.id, runArgs);
+  debugger;
   let runStatus = await pollRun(thread, run, gptControl);
-  
+
+  //check for completion status
+  let message;
   if (runStatus.status === "completed") {
-    
-    const message = await getLatestMessage (gptControl, 1); 
-    return message;
-  } else if (runStatus.status === 'requires_action') {
-    let r = await required_action(
-      runStatus,
-      thread,
-      run,
-      gptControl,
-      appEnv
-    );
-    let message = await getLatestMessage(gptControl, 5);
-    return message;
+    message = await getLatestMessage(gptControl, 5);
+  } else if (runStatus.status === "requires_action") {
+    let r = await required_action(runStatus, thread, run, gptControl, appEnv);
+    message = await getLatestMessage(gptControl, 5);
   } else {
-    return { runStatus: runStatus.status };
+    message = [{ runStatus: runStatus.status }];
   }
+  return message;
 }
 export default runAssistant;
 
