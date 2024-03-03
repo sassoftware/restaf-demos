@@ -36,6 +36,8 @@ async function setupAssistant(config) {
       throw new Error('Missing Azure Endpoint');
     }
     client = new OpenAIClient(endpoint, new OpenAIKeyCredential(azureaiKey));
+    debugger;
+    console.log(Object.keys(client));
   } else {
     throw new Error('Invalid provider. Must be openai or azureai.');
   }
