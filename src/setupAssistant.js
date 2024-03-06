@@ -10,40 +10,20 @@
  * @returns {promise} - return gptControl object}
  */
 import OpenAI from 'openai';
-import { OpenAIClient, OpenAIKeyCredential } from '@azure/openai';
 import loadThread from './loadThread.js';
 import createAssistant from './createAssistant.js';
 
 async function setupAssistant(config) {
-  let { provider, credentials } = config;
-  let {openaiKey, azureaiKey, azureaiEndpoint} = credentials;
+  let {credentials } = config;
+  let {openaiKey} = credentials;
   // let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_AZ_KEY;
 
   //
   debugger;
-  let client = null;
-  if (provider === 'openai') {
-    if (openaiKey == null) {
-      throw new Error('Missing OpenAI API Key');
-    }
-    client = new OpenAI({ apiKey: openaiKey, dangerouslyAllowBrowser: true });
-
-  } else if (provider === 'azureai') {
-    if (azureaiKey == null) {
-      throw new Error('Missing Azure API Key');
-    }
-    if (azureaiEndpoint == null) {
-      throw new Error('Missing Azure Endpoint');
-    }
-    client = new OpenAIClient(endpoint, new OpenAIKeyCredential(azureaiKey));
-    debugger;
-    console.log(Object.keys(client));
-  } else {
-    throw new Error('Invalid provider. Must be openai or azureai.');
-  }
-
+  let client = new OpenAI({ apiKey: openaiKey, dangerouslyAllowBrowser: true });
   debugger;
   let gptControl = {
+    provider: 'openai',
     client: client,
     assistant: null,
     thread: null,
