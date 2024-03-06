@@ -9,6 +9,7 @@ import inquirer from "inquirer";
 import functionSpecs from "./functionSpecs.js";
 import instructions from "./instructions.js";
 import setupViya from "./lib/setupViya.js";
+import uploadFile from "./lib/uploadFile.js";
 import 'dotenv/config';
 
 // import { setupAssistant, runAssistant} from './packages/assistant/index.js';
@@ -50,19 +51,27 @@ async function run(config) {
     if (quita.includes(prompt.toLowerCase())) {
       break;
     }
-    //Note appEnv is passed to runAssistant
-    // run assistant will pass both gtpControl and appEnv to tools functions
-    let promptInstructions = ' ';
-    let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
-    console.log(response);
+    if (prompt.substring(0, 1) === "!") {
+      let f = prompt.substring(1).trim();
+      let params = {filename: f, purpose: "assistants"}
+      let r = await uploadFile(params, appEnv, gptControl);
+      console.log(r);
+    } else {
+      //Note appEnv is passed to runAssistant
+      // run assistant will pass both gtpControl and appEnv to tools functions
+      let promptInstructions = ' ';
+      let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
+      console.log(response);
+    }
   }
+   
 
   return "assistant session ended";
 }
 async function setupConfig() {
   let config = {
     provider: process.env.OPENAI_PROVIDER, // openai or azureai 
-    model: process.env.OPENAI_MODEL, // pick one of the models 
+    model: 'gpt-4-turbo-preview', // pick one of the models 
     credentials: { // credentials from the provider
       openaiKey: process.env.OPENAI_KEY,
       azureaiKey: process.env.OPENAI_AZ_KEY,
