@@ -248,15 +248,21 @@ async function idescribeTable(params, appEnv) {
     sessionID
   );
   debugger;
-  await restafedit.scrollTable("first", tappEnv);
-  let tableSummary = await restafedit.getTableSummary(tappEnv);
-  debugger;
-  let describe = {
-    table: iTable,
-    tableSummary: tableSummary,
-    columns: tappEnv.state.columns,
-    data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
-  };
+  let describe={};
+  try {
+    await restafedit.scrollTable("first", tappEnv);
+    let tableSummary = await restafedit.getTableSummary(tappEnv);
+    debugger;
+    describe = {
+      table: iTable,
+      tableSummary: tableSummary,
+      columns: tappEnv.state.columns,
+      data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
+    };
+  } catch (err) {
+    console.log(err);
+    describe = {error: err};
+  }
   return describe;
 }
 async function resume(params) {

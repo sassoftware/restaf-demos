@@ -12,18 +12,19 @@
  
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
-import getToken from './getToken.js';
 
-async function setupViya(source) {
+
+async function setupViya(source, logonPayload) {
  let appEnv=  {
-  host: null,
-  logonPayload: null,
+  host: logonPayload.host,
+  logonPayload: logonPayload,
   store: null,
   source: 'none',
-  currentSource: null,
+  currentSource: source,
   session: null,
   servers: null,
   serverName: null,
+  casServerName: null, 
   sessionID: null,
   compute: {},
   cas: {}
@@ -31,24 +32,21 @@ async function setupViya(source) {
   if (source === 'none'|| source == null){
     return appEnv;
   }
-  // logon payload
-  let {token, host} = getToken();
-  let logonPayload = {
-    authType: 'server',
-    host: host,
-    token: token,
-    tokenType: 'bearer'
-  }
+  // get list of sources. First one in list is the default
+  let sources = source.split(',');
+  let defaultSource = sources[0];
 
   // logon to the server
   let store = restaf.initStore({casProxy: true});
   await store.logon(logonPayload);
-  appEnv.host = host;
+  appEnv.host = logonPayload.host;
   appEnv.logonPayload = logonPayload;
   appEnv.store = store;
   
   // create session and server objects
   // Allow sessions for both servers and cas
+  
+  // cas service
   if (source.indexOf('cas') >= 0 ) {
     let {session, servers} = await restaflib.casSetup(store, null);
     let casServerName = session.links('execute', 'link', 'server');
@@ -57,19 +55,35 @@ async function setupViya(source) {
       servers: servers,
       casServerName: casServerName
     }
-    let ssid = await store.apiCall(appEnv.session.links('self'));
+    let ssid = await store.apiCall(session.links('self'));
     appEnv.cas.sessionID = ssid.items('id');
+    if (defaultSource === 'cas') {
+      appEnv.source = 'cas';
+      appEnv.session = session;
+      appEnv.servers = servers;
+      appEnv.serverName = casServerName;
+      appEnv.casServerName = casServerName;
+      appEnv.sessionID = appEnv.cas.sessionID;
+    }
   } 
 
+  // compute service
   if (source.indexOf('compute') > 0) {
     appEnv.compute = {
       servers: null
     }
-    appEnv.compute.session = await restaflib.computeSetup(store);
+    let session = await restaflib.computeSetup(store);
     let ssid = await store.apiCall(appEnv.session.links('self'));
     appEnv.compute.sessionID = ssid.items('id');
+    if (defaultSource === 'compute') {
+      appEnv.source = 'compute';
+      appEnv.session = session;
+      appEnv.servers = null;
+      appEnv.serverName = null;
+      appEnv.sessionID = appEnv.compute.sessionID;
+    }
   }
- 
+  console.log(appEnv);
   return appEnv;
 }
 export default setupViya;

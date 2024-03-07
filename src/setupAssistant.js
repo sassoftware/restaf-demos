@@ -15,12 +15,9 @@ import createAssistant from './createAssistant.js';
 
 async function setupAssistant(config) {
   let {credentials } = config;
-  let {openaiKey} = credentials;
-  // let apiKey = (provider === 'openai') ? process.env.OPENAI_KEY : process.env.OPENAI_AZ_KEY;
-
-  //
+  let {key} = credentials;
   debugger;
-  let client = new OpenAI({ apiKey: openaiKey, dangerouslyAllowBrowser: true });
+  let client = new OpenAI({ apiKey: key, dangerouslyAllowBrowser: true });
   debugger;
   let gptControl = {
     provider: 'openai',
