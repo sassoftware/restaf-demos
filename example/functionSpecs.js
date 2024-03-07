@@ -20,7 +20,7 @@ function functionSpecs() {
     getDataFunctionSpec,
     runSASFunctionSpec,
     keywordsFunctionSpec,
-    resumeFunctionSpec,
+   // resumeFunctionSpec,
     readFileFunctionSpec,
     clearChatFunctionSpec,
     historyChatFunctionSpec,

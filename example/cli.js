@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import inquirer from "inquirer";
-
-import functionSpecs from "./functionSpecs.js";
-import instructions from "./instructions.js";
-import setupViya from "./lib/setupViya.js";
-import uploadFile from "./lib/uploadFile.js";
+import inquirer from 'inquirer';
+import fs from 'fs';
+import functionSpecs from './functionSpecs.js';
+import instructions from './instructions.js';
+import setupViya from './lib/setupViya.js';
+//import uploadFile from './lib/uploadFile.js';
 import 'dotenv/config';
 
 // import { setupAssistant, runAssistant} from './packages/assistant/index.js';
-import {setupAssistant, runAssistant} from "../dist/index.module.js";
+import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
 setupConfig()
   .then (config => {
@@ -37,12 +37,12 @@ async function run(config) {
   console.log('--------------------------------------');
 
   let questions = {
-    type: "input",
-    name: "prompt",
-    message: ">",
+    type: 'input',
+    name: 'prompt',
+    message: '>',
   };
 
-  let quita = ["exit", "quit", "q"];
+  let quita = ['exit', 'quit', 'q'];
   while (true) {
     debugger;
     let answer = await inquirer.prompt(questions);
@@ -51,10 +51,10 @@ async function run(config) {
     if (quita.includes(prompt.toLowerCase())) {
       break;
     }
-    if (prompt.substring(0, 1) === "!") {
+    if (prompt.substring(0, 1) === '!') {
       let f = prompt.substring(1).trim();
-      let params = {filename: f, purpose: "assistants"}
-      let r = await uploadFile(params, appEnv, gptControl);
+      let fileHandle = fs.createReadStream(f);
+      let r = await uploadFile(fileHandle,"assistants", gptControl)
       console.log(r);
     } else {
       //Note appEnv is passed to runAssistant
@@ -66,7 +66,7 @@ async function run(config) {
   }
    
 
-  return "assistant session ended";
+  return 'assistant session ended';
 }
 async function setupConfig() {
   let config = {

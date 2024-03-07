@@ -10,4 +10,5 @@ import runAssistant from './runAssistant.js';
 import closeAssistant from './closeAssistant.js';
 import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
-export { setupAssistant, runAssistant, getLatestMessage,getMessages,closeAssistant};
+import uploadFile from './uploadFile.js';
+export { setupAssistant, runAssistant, getLatestMessage,getMessages,closeAssistant, uploadFile};

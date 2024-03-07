@@ -27,11 +27,11 @@ async function createAssistant(client, config) {
   let assistant = null;
   debugger;
   console.log(assistantid);
-  if (assistantid !== "0") {
-    debugger;
+  let newAssistant = (assistantid === "0" || assistantid == null);
+  if (newAssistant == false){ 
     assistant = await client.beta.assistants.retrieve(assistantid);
     debugger;
-  } else {
+  } else if (assistantName != null) {
     // local rules: avoid creating a new assistant if one exists
     // use name to find the assistant
     // wish there was a way to filter on names in the API call
