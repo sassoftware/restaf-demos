@@ -15,9 +15,10 @@ import restaflib from '@sassoftware/restaflib';
 
 
 async function setupViya(source, logonPayload) {
+
  let appEnv=  {
-  host: logonPayload.host,
-  logonPayload: logonPayload,
+  host: null,
+  logonPayload: null,
   store: null,
   source: 'none',
   currentSource: source,
@@ -29,9 +30,11 @@ async function setupViya(source, logonPayload) {
   compute: {},
   cas: {}
 }
-  if (source === 'none'|| source == null){
-    return appEnv;
-  }
+  
+if (source === 'none'){
+  return appEnv;
+}
+appEnv.host= logonPayload.host;
   // get list of sources. First one in list is the default
   let sources = source.split(',');
   let defaultSource = sources[0];

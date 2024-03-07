@@ -23,24 +23,23 @@ import pollRun from "./pollRun.js";
 */
 
 async function runAssistant(gptControl,prompt, instructions, appEnv) {
-  let { client, assistant, thread, specs } = gptControl;
+  let { client, thread } = gptControl;
+
   //add the user request to thread
   try {
     let _newMessage = await client.beta.threads.messages.create(thread.id, {
       role: "user",
       content: prompt,
     });
-    let r = await runPrompt(gptControl, appEnv, instructions);
-    return r;
   } catch (error) {
-    //tbd: recovery?
     debugger;
-    console.log(
-      `status = ${error.status}. Unable to add the prompt to the thread`
-    );
     console.log(error);
-    throw new Error('Unable to add the prompt to the thread. See console for more details');
+    throw new Error('Request failed on adding user message to thread.');
   }
+  // now run the thread
+  // assume caller will catch any thrown errors
+  let r = await runPrompt(gptControl, appEnv, instructions);
+  return r;
 }
 async function runPrompt(gptControl, appEnv, instructions) {
   let { client, assistant, thread } = gptControl;
@@ -50,7 +49,6 @@ async function runPrompt(gptControl, appEnv, instructions) {
   };
   // Run the assistant with the prompt and poll for completion
   let run = await client.beta.threads.runs.create(thread.id, runArgs);
-  debugger;
   let runStatus = await pollRun(thread, run, gptControl);
 
   //check for completion status
@@ -58,7 +56,9 @@ async function runPrompt(gptControl, appEnv, instructions) {
   if (runStatus.status === "completed") {
     message = await getLatestMessage(gptControl, 5);
   } else if (runStatus.status === "requires_action") {
+    // make sure that required_action closes the thread run
     let r = await required_action(runStatus, thread, run, gptControl, appEnv);
+    console.log('getting latest message ')
     message = await getLatestMessage(gptControl, 5);
   } else {
     message = [{ runStatus: runStatus.status }];

@@ -28,13 +28,8 @@ async function pollRun(thread, run, gptControl) {
     runStatus = await client.beta.threads.runs.retrieve(thread.id, run.id);
     
     console.log("-------------------", runStatus.status);
-    if (
-      !(
-        runStatus.status === "queued" ||
-        runStatus.status === "in_progress" ||
-        runStatus.status === "cancelling"
-      )
-    ) {
+    if ( !(runStatus.status === "queued" ||runStatus.status === "in_progress" ||
+          runStatus.status === "cancelling")) {
       debugger;
       done = runStatus.status;
     } else {
@@ -43,13 +38,6 @@ async function pollRun(thread, run, gptControl) {
     }
   } while (done === null);
 
-  /*
-  let newAssistant = await client.beta.assistants.update(assistant.id, {
-    metadata: { thread_id: thread.id, lastRunId: run.id} 
-  });
-  */
-  debugger;
- //  gptControl.assistant = newAssistant;
   return runStatus;
 
 }

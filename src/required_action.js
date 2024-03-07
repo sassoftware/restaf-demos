@@ -29,14 +29,22 @@ async function required_action(runStatus, thread, run,  gptControl, appEnv) {
     console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
     debugger;
-    let response = await functionList[functionName](params, appEnv, gptControl);
-    debugger;
-    toolsOutput.push({
-      tool_call_id: action.id,
-      output: JSON.stringify(response),
-    });
+    try {
+       let response = await functionList[functionName](params, appEnv, gptControl);
+        toolsOutput.push({
+          tool_call_id: action.id,
+          output: JSON.stringify(response),
+        });
+      }
+    catch(err){
+      toolsOutput.push({
+        tool_call_id: action.id,
+        output: JSON.stringify(err),
+      })
+    }
  }
 // submit the outputs to the thread
+ console.log('Adding output to messages');
  let newRun = await client.beta.threads.runs.submitToolOutputs(
   thread.id, run.id, { tool_outputs: toolsOutput });
 

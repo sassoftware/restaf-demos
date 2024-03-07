@@ -31,6 +31,8 @@ async function run(config) {
   // creating application data.(optional) 
   // 
   let logonPayload = null;
+  let source =(process.env.VIYASOURCE == null|| process.env.VIYASOURCE.trim().length ===0) ? 'none' : process.env.VIYASOURCE; 
+
   if (process.env.VIYASOURCE != null) {
     let {token, host} = getToken();
     logonPayload = {
@@ -41,7 +43,7 @@ async function run(config) {
     }
   }
 
-  let appEnv = await setupViya(process.env.VIYASOURCE, logonPayload);
+  let appEnv = await setupViya(source, logonPayload);
 
   console.log('--------------------------------------');
   console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 

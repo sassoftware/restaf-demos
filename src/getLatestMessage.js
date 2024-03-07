@@ -13,7 +13,7 @@
 async function getLatestMessage(gptControl, limit) {  
   let {client, thread} = gptControl;
   const messages = await client.beta.threads.messages.list(thread.id, {limit:limit});
-  //console.log('body', JSON.stringify(messages.body.data, null, 4));
+ 
   let output = [];
   let data = messages.data;
   for (let i = 0; i < messages.data.length; i++){
