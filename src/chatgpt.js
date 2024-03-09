@@ -5,6 +5,7 @@
 
 /**
  * @async
+ * @private
  * @description This function is the main entry for chatgpt
  * @function chatgpt
  * @param {string} client - client object 
@@ -58,4 +59,4 @@ async function chatgpt(prompt, gptControl, appEnv) {
 
 export default chatgpt;
 
-//https://platform.client.com/docs/guides/text-generation/chat-completions-api
+//https://platform.client.com/docs/guides/text-generation/chat-completions-assistantApi

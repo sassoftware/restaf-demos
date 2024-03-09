@@ -2,35 +2,35 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import getLatestMessage from "./getLatestMessage.js";
-import required_action from "./required_action.js";
-import pollRun from "./pollRun.js";
+import getLatestMessage from './getLatestMessage.js';
+import required_action from './required_action.js';
+import pollRun from './pollRun.js';
+//import toolsOutput from './toolsOuput.js';
 
 /**
  * @async
  * @description - Run the latest prompt from the user
  * @function runAssistant
  *
- * @param {object} gptControl - gpt  session control object
+ * @param {gptControl} gptControl - gpt  session control object
  * @param {string} prompt - user's prompt
- * @param {string} instructions - Additional instructions for the run
- * @param {object} appEnv - application info - ex: Viya session control object(has store, sessionID, etc. to talk to Viya server)
- 
+ * @param {string} instructions - Additional instructions for the run 
  * @returns {promise} - response from GPT(can be text, string, html etc...)
- * @notes - This function will run the assistant with the prompt and return the response from the assistant.
+ * @example - This function will run the assistant with the prompt and return the response from the assistant.
  * @example 
- *  let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv); 
-*/
+ *  let prompt = 'fetch 20 records from cars from public';
+ *  let promptInstructions = 'some instructions';
+ *  let response = await runAssistant(gptControl, prompt, promptInstructions); 
+ *  console.log(response);
+ */
 
-async function runAssistant(gptControl,prompt, instructions, appEnv) {
-  let { client, thread } = gptControl;
+
+async function runAssistant(gptControl,prompt, instructions) {
+  let {thread, assistantApi, appEnv } = gptControl;
 
   //add the user request to thread
   try {
-    let _newMessage = await client.beta.threads.messages.create(thread.id, {
-      role: "user",
-      content: prompt,
-    });
+    let _newMessage = await assistantApi.createMessage(thread.id,'user',prompt);
   } catch (error) {
     debugger;
     console.log(error);
@@ -42,22 +42,23 @@ async function runAssistant(gptControl,prompt, instructions, appEnv) {
   return r;
 }
 async function runPrompt(gptControl, appEnv, instructions) {
-  let { client, assistant, thread } = gptControl;
+  let { assistantApi, assistant, thread } = gptControl;
   let runArgs = {
-    assistant_id: assistant.id,
-    instructions: instructions != null ? instructions : "",
+    assistantId: assistant.id,
+    instructions: instructions != null ? instructions : '',
   };
   // Run the assistant with the prompt and poll for completion
-  let run = await client.beta.threads.runs.create(thread.id, runArgs);
-  let runStatus = await pollRun(thread, run, gptControl);
+  let run = await assistantApi.createRun(thread.id, runArgs);
+  gptControl.run = run;
+  let runStatus = await pollRun(run, gptControl);
 
   //check for completion status
   let message;
-  if (runStatus.status === "completed") {
+  if (runStatus.status === 'completed') {
     message = await getLatestMessage(gptControl, 5);
-  } else if (runStatus.status === "requires_action") {
+  } else if (runStatus.status === 'requires_action') {
     // make sure that required_action closes the thread run
-    let r = await required_action(runStatus, thread, run, gptControl, appEnv);
+    let r = await required_action(runStatus, gptControl, appEnv);
     console.log('getting latest message ')
     message = await getLatestMessage(gptControl, 5);
   } else {
@@ -67,4 +68,4 @@ async function runPrompt(gptControl, appEnv, instructions) {
 }
 export default runAssistant;
 
-//https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+//https://platform.openai.com/docs/guides/text-generation/chat-completions-assistantApi

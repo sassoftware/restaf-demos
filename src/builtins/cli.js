@@ -6,12 +6,15 @@
 
 import inquirer from 'inquirer';
 import fs from 'fs';
+import functionSpecs from './functionSpecs.js';
+import instructions from './instructions.js';
+import setupViya from './lib/setupViya.js';
 import getToken from './lib/getToken.js';
 
 import 'dotenv/config';
 
-import { setupAssistant, runAssistant, cancelRun, uploadFile} from '../src/index.js';
-// import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
+// import { setupAssistant, runAssistant} from './packages/assistant/index.js';
+import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
 setupConfig('openai')
   .then (config => {
@@ -24,9 +27,23 @@ setupConfig('openai')
 // function to run user's prompt
 async function run(config) {
   debugger;
-  console.log(config);
   let gptControl = await setupAssistant(config);
   // creating application data.(optional) 
+  // 
+  let logonPayload = null;
+  let source =(process.env.VIYASOURCE == null|| process.env.VIYASOURCE.trim().length ===0) ? 'none' : process.env.VIYASOURCE; 
+
+  if (process.env.VIYASOURCE != null) {
+    let {token, host} = getToken();
+    logonPayload = {
+      authType: 'server',
+      host: host,
+      token: token,
+      tokenType: 'bearer'
+    }
+  }
+
+  let appEnv = await setupViya(source, logonPayload);
 
   console.log('--------------------------------------');
   console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
@@ -53,15 +70,12 @@ async function run(config) {
       let fileHandle = fs.createReadStream(f);
       let r = await uploadFile(fileHandle,"assistants", gptControl)
       console.log(r);
-    } else if (prompt.toLowerCase() === 'cancel') {
-      let r = await cancelRun(gptControl);
-      console.log(r);
-    }else {
+    } else {
       //Note process.env is passed to runAssistant
       // run assistant will pass both gtpControl and process.env to tools functions
       let promptInstructions = ' ';
       try {
-        let response = await runAssistant(gptControl, prompt, promptInstructions);
+        let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
         console.log(response);
       } catch (err) {
         console.log(err);
@@ -97,17 +111,16 @@ async function setupConfig(provider) {
     }
   };
   let r = config[provider];
-  r.domainTools = {tools: [], functionList: {}, instructions: ''};
-  r.viyaConfig = null;
-  if (process.env.VIYASOURCE != null) {
-    let {token, host} = getToken();
-    let logonPayload = {
-      authType: 'server',
-      host: host,
-      token: token,
-      tokenType: 'bearer'
-    }
-  r.viyaConfig = {logonPayload: logonPayload, source: process.env.VIYASOURCE};; 
-  }
+  r.instructions = instructions();
+  r.domainTools = functionSpecs();
   return r;
 }
+
+// In this demo, we are enabling VIYA API calls using @sassoftware/restaf
+// Make sure you have run sas-viya auth login|loginCode
+// process.env_SOURCE = cas |compute|none
+// ex: cas - will use the cas viya session
+// ex: compute - will use the compute viya session
+// ex: none - will not use viya session
+// ex: cas,compute - sessions for both cas and compute
+  

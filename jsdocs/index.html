@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Home</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li><li><a href="global.html#uploadFile">uploadFile</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p></p>
+                    <h1>Home</h1>
+                </header>
+                
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>A nodejs starter library to help SAS users build ASSISTANTS</h1>
+<h2>Uses openai ASSISTANT api</h2>
+<h2>Install the library into your application</h2>
+<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/openai-assistantjs
+
+Then import the following two entries in your nodejs code
+
+import {setupAssistant, runAssistant} from &quot;@sassoftware/openai-assistantjs&quot;;
+
+</code></pre>
+<h2>Sample program</h2>
+<p>See the examples folder in the repository for a working application.</p>
+<pre class="prettyprint source lang-javascript"><code>// Import the two key methods from @sassoftware/openai-assistantjs
+// import {setupAssistant, runAssistant} from &quot;@sassoftware/openai-assistantjs&quot;;
+async function run(config) {
+
+  // setup assistant 
+  let gptControl = await setupAssistant(config);
+
+  // creating application data.(optional) 
+  let appEnv = await setupViya(process.env.APPENV_SOURCE);
+
+  console.log('--------------------------------------');
+  console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
+  console.log('Thread: ', gptControl.thread.id);
+  console.log('--------------------------------------');
+
+  // Using inquirer.js to create an interactive session
+  // Pick your method(ex: readLines)
+
+  let questions = {
+    type: &quot;input&quot;,
+    name: &quot;prompt&quot;,
+    message: &quot;>&quot;,
+  };
+
+  let quita = [&quot;exit&quot;, &quot;quit&quot;, &quot;q&quot;];
+  while (true) {
+    // get user's prompt
+    let answer = await inquirer.prompt(questions);
+    let prompt = answer.prompt;
+    if (quita.includes(prompt.toLowerCase())) {
+      break;
+    }
+    //Note appEnv is passed to runAssistant
+    // run assistant will pass both gptControl and appEnv to tools functions
+    let promptInstructions = ' ';
+    let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
+    console.log(response);
+  }
+
+  return &quot;assistant session ended&quot;;
+}
+
+</code></pre>
+<p>Useful links:</p>
+<p><a href="https://platform.openai.com/docs/assistants/overview">Assistant documentation</a></p>
+<h2>Import</h2>
+<ul>
+<li>Install the library @sassoftware/openai-assistantjs@latest</li>
+<li>Import the two entry points as follows:</li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>import { setupAssistant, runAssistant} from '@sassoftware/openai-assistantjs';
+</code></pre>
+<h2>setupAssistant</h2>
+<h3>Syntax for setupAssistant</h3>
+<pre class="prettyprint source lang-javascript"><code>
+const gptControl = await setupAssistant(config)
+
+See below for the config's schema
+
+</code></pre>
+<h3>Config object</h3>
+<p>The example below sets the values from environment variables.
+You can set these directly also.</p>
+<pre class="prettyprint source lang-javascript"><code>let config = {
+  provider: process.env.OPENAI_PROVIDER, 
+  model: 'gpt-4-0125-preview', // change this to your perference
+  credentials: { // credentials from the provider- recommend using env vaiables
+    openaiKey: process.env.OPENAI_KEY,
+    azureaiKey: process.env.OPENAI_AZ_KEY,
+    azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT,
+  },
+  assistantName: process.env.OPENAI_ASSISTANTNAME, // name of the assistant
+  assistantid: process.env.OPENAI_ASSISTANTID|0,// if you know the assistant id
+  threadid: process.env.OPENAI_THREADID '0,// threadid if you know it. else a new one will be created
+  instructions: &lt;string with instructions for the assistant>,// instructions for the assistant
+  domainTools: {
+    tools: &lt;see provider documentation>
+    functionList: {nameoffunction: function, ...}
+  }
+}
+</code></pre>
+<h2>runAssistant</h2>
+<p>Use this to process user's prompts</p>
+<h3>Syntax for runAssistant</h3>
+<pre class="prettyprint source lang-javascript"><code>
+const msg = await runAssistant(
+  gptControl, // from setupAssistant
+  prompt, // User's prompt
+  instructions,// additional instructions for this run or a blank string
+  appEnv; // Some object you want to make available to the tool function
+
+The msg has the following schema similar to this. 
+Handling of non-text content has not been tested yet.
+
+  [ { 
+  id: &lt;id of message>
+  role: 'user'|'assistant&quot;,
+  type: type of the content(ex: text),
+  content: the content that was returned
+ }
+ ...]
+
+</code></pre>
+<pre class="prettyprint source lang-text"><code>Notes on functions:
+
+All functions of a tool heve the following enhanced arguments. 
+
+async somefunction(params, appEnv, gptControl).
+
+params has the schema based on the specifications of the tools (see openai documentation) 
+If appEnv and gptControl are purely convenience parameters. Use them as you see fit.
+
+</code></pre>
+<p>The response has the following schema:</p>
+<pre class="prettyprint source lang-javascript"><code>
+[ { 
+ id: &lt;id of message>
+ role: 'user'|'assistant&quot;,
+ type: type of the content(ex: text),
+ content: the content that was returned
+}
+...]
+
+</code></pre>
+<h2>Functions</h2>
+<p>The parameters to the functions are augmented with two additional parameters.</p>
+<p>So the parmeters for a function looks like this;</p>
+<pre class="prettyprint source lang-javascript"><code>async function myfunction(params, appEnv, gptControl)
+</code></pre>
+<ul>
+<li>params - schema depends on the specification as explained in openai document</li>
+<li>appEnv - this was passed to runAssistant</li>
+<li>gptControl - this was returned by setupAssistant</li>
+</ul>
+<p>appEnv and gptControl are convenience parameters to help the developer.</p></article>
+    </section>
+
+
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+
+</body>
+</html>

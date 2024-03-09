@@ -4,24 +4,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import pollRun from "./pollRun.js";
 /**
  * @async
- * @description - Handle required actions for Assistant
+ * @private
  * @function required_action
+ * @description   Get the required action from the run status and execute the action
  * @param {object} runStatus - run status object
- * @param {object} thread - thread object
- * @param {object} run - run object
- * @param {object} gptControl - gpt  session control object
- * @param {object} appEnv - Viya session control object(has store, sessionID, etc. to talk to Viya server)
- * @returns {promise} - status from submitToolOutputs
+ * @param {gptControl} gptControl - gptControl object
+ * @returns {promise} - return the output status
+ *  
+ * @example
+ *  let outputStatus = await required_action(runStatus, gptControl);
  */
-import pollRun from "./pollRun.js";
-async function required_action(runStatus, thread, run,  gptControl, appEnv) {
-  let{client,specs} = gptControl;
-  let {functionList} = specs;
+
+async function required_action(runStatus,gptControl) {
+  let{assistantApi,appEnv, domainSpecs, provider, thread, run} = gptControl;
+  let {functionList} = domainSpecs;
   
   // get the required actions from the run status
-  let requiredActions = runStatus.required_action.submit_tool_outputs.tool_calls;
+
+  let requiredActions = (provider === 'openai') 
+                          ? runStatus.required_action.submit_tool_outputs.tool_calls
+                          : runStatus.requiredAction.submitToolOutputs.toolCalls;
   
   let toolsOutput = [];
   for (let action of requiredActions) {
@@ -31,11 +36,18 @@ async function required_action(runStatus, thread, run,  gptControl, appEnv) {
     debugger;
     try {
        let response = await functionList[functionName](params, appEnv, gptControl);
+       if (provider === 'openai') {
         toolsOutput.push({
           tool_call_id: action.id,
           output: JSON.stringify(response),
         });
+      } else {
+        toolsOutput.push({
+          toolCallId: action.id,
+          output: JSON.stringify(response),
+        });
       }
+    }
     catch(err){
       toolsOutput.push({
         tool_call_id: action.id,
@@ -45,12 +57,17 @@ async function required_action(runStatus, thread, run,  gptControl, appEnv) {
  }
 // submit the outputs to the thread
  console.log('Adding output to messages');
- let newRun = await client.beta.threads.runs.submitToolOutputs(
-  thread.id, run.id, { tool_outputs: toolsOutput });
+ let newRun = (provider === 'openai') 
+            ? await assistantApi.submitToolOutputsToRun(
+                thread.id, run.id, { tool_outputs: toolsOutput })
+            : await assistantApi.submitToolOutputs( 
+                thread.id, run.id, toolsOutput);
 
 // wait for output to appear in the thread messages
- let outputStatus = await pollRun(thread, newRun, gptControl);
+ let outputStatus = await pollRun(newRun, gptControl);
 
 return outputStatus;
 }
+
+
 export default required_action;

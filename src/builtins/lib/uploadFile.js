@@ -1,22 +1,16 @@
 
-/** 
+/*
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-/**
- * 
- * Upload a file and attach it to the assistant
- * @param {object} fileHandle - from host file system
- * @param {string}  purpose - assistants|Fine-turning
- * @param {gptControl} gptControl - gptControl object
- * @returns {promise} - return the final file ids from the assistant
- */
-async function uploadFile(fileHandle,purpose, gptControl) {
+import fs from "fs";
+async function uploadFile(params, _appEnv, gptControl) {
+  let { filename, purpose} = params;
   let { client, assistant } = gptControl;
 
   // get fileid
   const fileId = await client.files.create({
-    file: fileHandle,
+    file: fs.createReadStream(filename),
     purpose: purpose})
   console.log('.......................', fileId); 
   
@@ -36,6 +30,6 @@ async function uploadFile(fileHandle,purpose, gptControl) {
   } catch (e) {
     console.log(e);
   }
-  return currentFileIds;
+  return currentFileIds
 }
 export default uploadFile;

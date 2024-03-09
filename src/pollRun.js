@@ -6,17 +6,16 @@
 
 /**
  * @async
+ * @private
  * @description - Poll run status since there is no streaming support
  * @function pollRun
- * @params {object} client - client object
- * @params {object} thread - thread object
- * @params {object} run - run object    
- * @params {object} gptControl - gpt  session control object
+ * @param {object} run - active run object 
+ * @param {object} gptControl - gpt  session control object
  * @returns {object} - runStatus from client.beta.threads.runs.retrieve
- * @notes - Will wait for completion(!(queued,in_progress, cancelling))
+ * @example - Will wait for completion(!(queued,in_progress, cancelling))
  */
-async function pollRun(thread, run, gptControl) {
-  let { client} = gptControl;
+async function pollRun(run, gptControl) {
+  let {assistantApi, thread} = gptControl;
   let done = null;
   let runStatus = null;
   function sleep(ms) {
@@ -25,7 +24,8 @@ async function pollRun(thread, run, gptControl) {
   // Since there is no streaming support, sleep and poll the status
   do {
     debugger;
-    runStatus = await client.beta.threads.runs.retrieve(thread.id, run.id);
+
+   runStatus = await assistantApi.getRun(thread.id, run.id);
     
     console.log("-------------------", runStatus.status);
     if ( !(runStatus.status === "queued" ||runStatus.status === "in_progress" ||

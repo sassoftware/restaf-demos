@@ -13,7 +13,8 @@
     "debug": "cd example && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js",
     "build": "rimraf dist && microbundle --name assistantjs",
     "pub": "npm publish --tag dev --access public",
-    "lint": "eslint . --ext .js --fix"
+    "lint": "eslint . --ext .js --fix",
+    "jsdoc": "jsdoc -c jsdoc.json"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/openai-assistantjs",
   "source": "./src/index.js",
@@ -32,24 +33,25 @@
     "gpt",
     "gpt functions",
     "openai assistant",
+    "azureai assistant",
     "SAS REST API",
     "restaf"
   ],
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@sassoftware/restafedit": "^2.4.7",
     "openai": "^4.26.0"
   },
   "devDependencies": {
-    "@sassoftware/restaf": "^5.2.4",
-    "@sassoftware/restafedit": "^2.4.7",
-    "@sassoftware/restaflib": "^5.2.4",
     "babel-loader": "^9.1.3",
+    "better-docs": "^2.7.3",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
     "eslint-plugin-n": "^16.6.2",
     "inquirer": "^9.2.15",
+    "jsdoc": "^4.0.2",
     "microbundle": "^0.15.1",
     "rimraf": "^3.0.2"
   }

@@ -11,4 +11,13 @@ import closeAssistant from './closeAssistant.js';
 import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
 import uploadFile from './uploadFile.js';
-export { setupAssistant, runAssistant, getLatestMessage,getMessages,closeAssistant, uploadFile};
+import cancelRun from './cancelRun.js';
+export {
+  setupAssistant,
+  runAssistant,
+  getLatestMessage,
+  getMessages,
+  closeAssistant,
+  uploadFile,
+  cancelRun,
+};

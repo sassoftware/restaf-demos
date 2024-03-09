@@ -4,6 +4,7 @@
  */
 /**
  * @async
+ * @private
  * @description - Close Viya connections.
  * @function closeAssistant
  * @param {object} gptControl - gpt session control object

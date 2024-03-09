@@ -1,6 +1,6 @@
 # A nodejs starter library to help SAS users build ASSISTANTS
 
-## Uses openai ASSISTANT api
+## Works with openai Assistant api and azureai Assistant api
 
 ## Install the library into your application
 
@@ -15,7 +15,7 @@ import {setupAssistant, runAssistant} from "@sassoftware/openai-assistantjs";
 
 ## Sample program
 
-See the examples folder in the repository for a working application.
+This is a fully functional program. 
 
 ```javascript
 // Import the two key methods from @sassoftware/openai-assistantjs
@@ -24,9 +24,6 @@ async function run(config) {
 
   // setup assistant 
   let gptControl = await setupAssistant(config);
-
-  // creating application data.(optional) 
-  let appEnv = await setupViya(process.env.APPENV_SOURCE);
 
   console.log('--------------------------------------');
   console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 

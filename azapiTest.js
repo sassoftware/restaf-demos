@@ -28,7 +28,8 @@ async function runMain() {
     tools: [{ type: "code_interpreter" }]
   };
   console.log(parm);
-  const assistant = await client.createAssistant(parm);
+  let x = client.createAssistant;
+  const assistant = await x(parm);
   console.log(assistant);
   // let s = await client.getAssistant(xxx)
   let s = await client.listAssistants();

@@ -4,20 +4,22 @@
  */
 /**
  * @async
+ * @private
  * @function loadThread
  * @description   new thread or open existing thread
- * @params {object} client - client object
- * @param {object} config - configuration object
+ * @param {object} gptControl - gptControl object
  * @returns {promise} - return thread object
  */
-async function loadThread(client, config) {
-  let {threadid} = config; 
+async function loadThread(gptControl) {
+  let {threadid, assistantApi} = gptControl;
   let thread = null;
   // If we are reusing the thread, try to retrieve it
+
+  console.log('threadid', threadid);
   try {
-    thread = (threadid === '0') 
-      ? await client.beta.threads.create({ metadata: { assistantName: assistant.name }})
-      : await client.beta.threads.retrieve(threadid);
+    thread = (threadid === '0' || threadid == null) 
+      ? await assistantApi.createThread()
+      : await assistantApi.getThread(threadid);
   } catch (error) {
     console.log(error); 
     console.log(error.status);
