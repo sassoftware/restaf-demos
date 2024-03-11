@@ -4,6 +4,7 @@
  */
 
 import OpenAI from 'openai';
+import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
 import loadThread from './loadThread.js';
 import createAssistant from './createAssistant.js';
 import functionSpecs from './builtins/functionSpecs.js';
@@ -20,27 +21,36 @@ import apiMapper from './apiMapper.js';
 
 async function setupAssistant(config) {
   let {credentials } = config;
-  let {key} = credentials;
+  let {key, endPoint} = credentials;
 
   // create the client
   debugger;
-  let client = new OpenAI({ apiKey: key, dangerouslyAllowBrowser: true });
-  debugger;
+  let client = null;
+  if (config.provider === 'openai') {
+     client = new OpenAI({ apiKey: key, dangerouslyAllowBrowser: true });
+  } else {
+    client = new AssistantsClient(endPoint, new AzureKeyCredential(key, {}));
+  }
 
   //
   // now add user specs and functions.
   // In pass 1 the user list is prepended to the default list
 
-  let builtinTools = functionSpecs();
-  let userTools = config.domainTools.tools.concat(builtinTools.tools);
-  let userFunctions = Object.assign(config.domainTools.functionList, builtinTools.functionList);
-  let userInstructions = (config.instructions)  ? config.instructions + builtinTools.instructions : builtinTools.instructions;
-  let specs = {tools: userTools, functionList: userFunctions};
+  let builtinTools = functionSpecs(config.provider);
+  let specs={};
+  if (config.domainTools.replace === true) {
+    specs = config.domainTools;
+  } else {
+    let userTools = config.domainTools.tools.concat(builtinTools.tools);
+    let userFunctions = Object.assign(config.domainTools.functionList, builtinTools.functionList);
+    let userInstructions = (config.instructions)  ? config.instructions + builtinTools.instructions : builtinTools.instructions;
+    specs = {tools: userTools, functionList: userFunctions, instructions: userInstructions};
+  }
   let gptControl = {
     provider: config.provider,
     model: config.model,
-    domainSpecs: specs,
-    instructions: userInstructions,
+    domainTools: specs,
+    instructions: specs.userInstructions,
 
     assistantName: config.assistantName,
     assistant: null,
@@ -55,10 +65,9 @@ async function setupAssistant(config) {
     assistantApi: apiMapper(client, config.provider)
     //config: config save the config for runtime changes
   };
-  if (gptControl.a)
-  console.log(gptControl)
   
   // setup Viya connections
+  debugger;
   gptControl.appEnv = await setupViya(config.viyaConfig);
   
   // create assistant and thread

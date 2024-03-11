@@ -61,7 +61,18 @@ async function _listSASObjects(params, appEnv) {
   return JSON.stringify(items);
 }
 async function _listSASDataLib(params, appEnv) {
-  let r = await getLibraryList(appEnv);
+  let { limit, source, start} = params;
+  let payload = {
+    qs: {
+      limit: (limit == null) ? 10 : limit,
+      start: (start == null) ? 0 : start
+    },
+  };
+  console.log('payload', payload);
+  debugger;
+  let r = await getLibraryList(appEnv, payload);
+  debugger;
+  console.log(r);
   return JSON.stringify(r);
 }
 async function _listSASTables(params, appEnv) {
@@ -72,7 +83,7 @@ async function _listSASTables(params, appEnv) {
       start: 0,
     },
   };
-  let r = await _getTableList(library, appEnv, p);
+  let r = await getTableList(library, appEnv, p);
   return JSON.stringify(r);
 }
 async function _listColumns(params, appEnv) {
@@ -84,12 +95,12 @@ async function _listColumns(params, appEnv) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
   }
 
-  let r = await _getTableColumns(source, iTable, appEnv);
+  let r =  await getTableList(library, appEnv, p);
   debugger;
   return JSON.stringify(r);
 }
 async function _getData(params, appEnv) {
-  let r = await idescribeTable(params, appEnv);
+  let r = await _idescribeTable(params, appEnv);
   return JSON.stringify({table: r.table, data: r.data});
 }
 async function _runSAS(params, appEnv) {
@@ -132,7 +143,7 @@ async function _contextData(params, _appEnv, gptControl) {
 */
 async function _keywords(params) {
   let { keywords, format } = params;
-
+console.log('keywords', keywords, format);
   switch (format) {
     case "html": {
       let t = "<ul>";

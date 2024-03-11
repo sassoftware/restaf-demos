@@ -3,7 +3,7 @@
   "recurseDepth": 10,
   "source": {
     "include": [
-      "main-types.js",
+      "types.js",
       "./src"
  ],
     "exclude": ["./examples", "./snippets", "./programs", "./dist", "./src/builtins"],
@@ -28,7 +28,7 @@
   },
   "opts": {
     "template": "node_modules/better-docs",
-    "destination": "./jsdocs",
+    "destination": "./docs",
     "recurse": true,
     "private": true,
     "readme": "./README.md",

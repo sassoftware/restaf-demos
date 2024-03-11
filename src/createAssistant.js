@@ -15,19 +15,17 @@
 
 
 async function createAssistant(gptControl) {
-  let { assistantName, model, assistantid, instructions, domainSpecs, assistantApi } = gptControl;
+  let { assistantName, model, assistantid, instructions, domainTools, assistantApi } = gptControl;
  
   // create args for assistant create
   let createArgs = {
     name: assistantName,
     instructions: instructions,
     model: model, 
-    tools: domainSpecs.tools,
+    tools: domainTools.tools,
   };
-
-  let assistant = null;
   debugger;
-  console.log(assistantid);
+  let assistant = null;
   let newAssistant = (assistantid === "0" || assistantid == null);
   if (newAssistant == false){ 
     assistant = await assistantApi.getAssistant(assistantid);
@@ -48,6 +46,8 @@ async function createAssistant(gptControl) {
     });
     // if first time using this name, create the assistant
     if (assistant == null) {
+      debugger;
+      console.log('Creating new assistant');
       assistant = await assistantApi.createAssistant(createArgs);
     }
   }

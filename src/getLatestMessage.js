@@ -11,7 +11,8 @@
  * @example - This function will return latest assistant messages based on limit
  */
 async function getLatestMessage(gptControl, limit) {  
-  let {client, thread, assistantApi} = gptControl;
+  let {thread, assistantApi} = gptControl;
+  debugger;
   const messages = await assistantApi.listMessages(thread.id, {limit:limit});
  
   let output = [];

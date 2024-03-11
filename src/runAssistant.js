@@ -33,8 +33,10 @@ async function runAssistant(gptControl,prompt, instructions) {
     let _newMessage = await assistantApi.createMessage(thread.id,'user',prompt);
   } catch (error) {
     debugger;
-    console.log(error);
-    throw new Error('Request failed on adding user message to thread.');
+    console.log(error.status);
+    console.log(error.error);
+   // throw new Error('Request failed on adding user message to thread.');
+   return JSON.stringify(error.error);
   }
   // now run the thread
   // assume caller will catch any thrown errors
@@ -48,6 +50,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
     instructions: instructions != null ? instructions : '',
   };
   // Run the assistant with the prompt and poll for completion
+  debugger;
   let run = await assistantApi.createRun(thread.id, runArgs);
   gptControl.run = run;
   let runStatus = await pollRun(run, gptControl);

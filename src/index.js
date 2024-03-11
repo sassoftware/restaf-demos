@@ -7,7 +7,7 @@
  */
 import setupAssistant from './setupAssistant.js';
 import runAssistant from './runAssistant.js';
-import closeAssistant from './closeAssistant.js';
+import deleteAssistant from './deleteAssistant.js';
 import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
 import uploadFile from './uploadFile.js';
@@ -17,7 +17,7 @@ export {
   runAssistant,
   getLatestMessage,
   getMessages,
-  closeAssistant,
+  deleteAssistant,
   uploadFile,
   cancelRun,
 };

@@ -11,9 +11,19 @@
  * @example - This function will cancel the run
  */
 
-async function cancelRun(gptControl) {
+async function cancelRun(gptControl, threadid, runid) {
   let {assistantApi, thread, run} = gptControl;  
 
+  if (threadid != null || runid != null) {
+    try {
+      console.log('Cancelling run', threadid, runid);
+      let status = await assistantApi.cancelRun(threadid, runid);
+      return status;
+    } catch (error) {
+      console.log("Error cancelling the run ", error, threadid, runid);
+      return null;
+    }
+  }
   if (run === null || thread === null) {
     console.log('No run or thread to cancel');
     return null;

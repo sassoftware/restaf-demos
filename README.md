@@ -9,59 +9,112 @@ npm install @sassoftware/openai-assistantjs
 
 Then import the following two entries in your nodejs code
 
-import {setupAssistant, runAssistant} from "@sassoftware/openai-assistantjs";
+import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 
 ```
 
 ## Sample program
 
-This is a fully functional program. 
+This is a fully functional chat program
 
 ```javascript
-// Import the two key methods from @sassoftware/openai-assistantjs
-// import {setupAssistant, runAssistant} from "@sassoftware/openai-assistantjs";
-async function run(config) {
 
-  // setup assistant 
+import fs from 'fs';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+import 'dotenv/config';
+import getToken from './lib/getToken.js';
+import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
+
+// setup configuration
+let config = setupConfig(process.env.OPENAI_PROVIDER);
+
+// extend or replace with your own tools
+config.domainTools = {
+    tools: [], functionList: {}, instructions: '', replace: false,
+};
+
+// run a chat session
+chat(config)
+  .then((r) => console.log('done'))
+  .catch((err) => console.log(err));
+
+async function chat(config) {
   let gptControl = await setupAssistant(config);
 
-  console.log('--------------------------------------');
-  console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
-  console.log('Thread: ', gptControl.thread.id);
-  console.log('--------------------------------------');
+  // create readline interface and chat with user
+  const rl = readline.createInterface({ input, output });
 
-  // Using inquirer.js to create an interactive session
-  // Pick your method(ex: readLines)
-
-  let questions = {
-    type: "input",
-    name: "prompt",
-    message: ">",
-  };
-
-  let quita = ["exit", "quit", "q"];
+  // process user input
   while (true) {
-    // get user's prompt
-    let answer = await inquirer.prompt(questions);
-    let prompt = answer.prompt;
-    if (quita.includes(prompt.toLowerCase())) {
+    let prompt = await rl.question('>');
+    // exit session
+    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
+      rl.close();
       break;
     }
-    //Note appEnv is passed to runAssistant
-    // run assistant will pass both gptControl and appEnv to tools functions
+    // let assistant process the prompt
     let promptInstructions = ' ';
-    let response = await runAssistant(gptControl, prompt, promptInstructions,appEnv);
-    console.log(response);
+    try {
+      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+    break;
   }
+}
 
-  return "assistant session ended";
+// a reusable function to setup the configuration
+function setupConfig(provider) {
+  let config = {
+    openai: {
+      provider: process.env.OPENAI_PROVIDER,
+      model: process.env.OPENAI_MODEL,
+      credentials: {
+        key: process.env.OPENAI_KEY,
+      },
+      assistantid: process.env.OPENAI_ASSISTANTID,
+      assistantName: process.env.OPENAI_ASSISTANTNAME,
+      threadid: process.env.OPENAI_THREADID,
+    },
+    azureai: {
+      provider: process.env.OPENAI_PROVIDER,
+      model: process.env.AZUREAI_MODEL,
+      credentials: {
+        key: process.env.AZUREAI_KEY,
+        endPoint: process.env.AZUREAI_ENDPOINT,
+      },
+      assistantid: process.env.AZUREAI_ASSISTANTID,
+      assistantName: process.env.AZUREAI_ASSISTANTNAME,
+      threadid: '0', //process.env.AZUREAI_THREADID
+    },
+  };
+  let r = config[provider];
+ 
+  r.viyaConfig = null;
+  if (process.env.VIYASOURCE != null) {
+    let { token, host } = getToken();
+    let logonPayload = {
+      authType: 'server',
+      host: host,
+      token: token,
+      tokenType: 'bearer',
+    };
+    r.viyaConfig = {
+      logonPayload: logonPayload,
+      source: process.env.VIYASOURCE,
+    };
+  }
+  return r;
 }
 
 ```
 
 Useful links:
 
-[Assistant documentation](https://platform.openai.com/docs/assistants/overview)
+[openai Assistant Documentation](https://platform.openai.com/docs/assistants/overview)
+[azureai Assistant Documentation] (https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-assistants-readme?view=azure-node-preview)
 
 ## Import
 
@@ -70,18 +123,6 @@ Useful links:
 
 ```javascript
 import { setupAssistant, runAssistant} from '@sassoftware/openai-assistantjs';
-```
-
-## setupAssistant
-
-### Syntax for setupAssistant
-
-```javascript
-
-const gptControl = await setupAssistant(config)
-
-See below for the config's schema
-
 ```
 
 ### Config object
@@ -94,86 +135,18 @@ let config = {
   provider: process.env.OPENAI_PROVIDER, 
   model: 'gpt-4-0125-preview', // change this to your perference
   credentials: { // credentials from the provider- recommend using env vaiables
-    openaiKey: process.env.OPENAI_KEY,
-    azureaiKey: process.env.OPENAI_AZ_KEY,
-    azureaiEndpoint: process.env.OPENAI_AZ_ENDPOINT,
+    key: process.env.OPENAI_KEY,
+    endpoint: process.env.OPENAI_AZ_ENDPOINT, // required for azureai
   },
   assistantName: process.env.OPENAI_ASSISTANTNAME, // name of the assistant
   assistantid: process.env.OPENAI_ASSISTANTID|0,// if you know the assistant id
   threadid: process.env.OPENAI_THREADID '0,// threadid if you know it. else a new one will be created
-  instructions: <string with instructions for the assistant>,// instructions for the assistant
+  instructions: ,// instructions for the assistant
   domainTools: {
     tools: <see provider documentation>
     functionList: {nameoffunction: function, ...}
+    instructions: <string with instructions for the assistant>
+    replace: false, // append this to default tools or replace them
   }
 }
 ```
-
-## runAssistant
-
-Use this to process user's prompts
-
-### Syntax for runAssistant
-
-```javascript
-
-const msg = await runAssistant(
-  gptControl, // from setupAssistant
-  prompt, // User's prompt
-  instructions,// additional instructions for this run or a blank string
-  appEnv; // Some object you want to make available to the tool function
-
-The msg has the following schema similar to this. 
-Handling of non-text content has not been tested yet.
-
-  [ { 
-  id: <id of message>
-  role: 'user'|'assistant",
-  type: type of the content(ex: text),
-  content: the content that was returned
- }
- ...]
-
-```
-
-```text
-Notes on functions:
-
-All functions of a tool heve the following enhanced arguments. 
-
-async somefunction(params, appEnv, gptControl).
-
-params has the schema based on the specifications of the tools (see openai documentation) 
-If appEnv and gptControl are purely convenience parameters. Use them as you see fit.
-
-```
-
- The response has the following schema:
-
- ```javascript
-
- [ { 
-  id: <id of message>
-  role: 'user'|'assistant",
-  type: type of the content(ex: text),
-  content: the content that was returned
- }
- ...]
-
- ```
-
-## Functions
-
-The parameters to the functions are augmented with two additional parameters.
-
-So the parmeters for a function looks like this;
-
-```javascript
-async function myfunction(params, appEnv, gptControl)
-```
-
-- params - schema depends on the specification as explained in openai document
-- appEnv - this was passed to runAssistant
-- gptControl - this was returned by setupAssistant
-
-appEnv and gptControl are convenience parameters to help the developer.

@@ -28,9 +28,9 @@ function functionSpecs(provider) {
 
   // Create tools array  for use with Assistant API
   let tools = [
-    {type: 'retrieval'},
+    {type: 'code_interpreter'}
   ];
-  if (provider != 'openai') {
+  if (provider === 'openai') {
     tools.push({type: 'retrieval'});
   }
   
@@ -105,13 +105,22 @@ const _listSASObjectsFunctionSpec = {
 const _listSASDataLibFunctionSpec = {
   name: '_listSASDataLib',
   description:
-    'list available SAS libs, calibs, librefs. A example would be list libs. If limit is not is specified, then the function will return the first 10 libs',
+    `list available SAS libs, calibs, librefs.
+     A example would be list libs. 
+     If limit is not is specified, then the function 
+     will return the first 10 libs.
+     Optionally allow user to specify the source as cas or compute.`,
   parameters: {
     properties: {
       limit: {
         type: 'integer',
         description: 'Return only this many libs. If not specified, then return 10 libs.',
       },
+      source: {
+        type: 'string',
+        description: 'The source of the data. cas or compute',
+        enum: ['cas', 'compute'],
+      }
     },
   type: 'object',
   }
@@ -119,7 +128,9 @@ const _listSASDataLibFunctionSpec = {
 const _listSASTablesFunctionSpec = {
   name: '_listSASTables',
   description:
-    'for a given library, lib , caslibs get the list available tables(ex: list tables for Samples)',
+    `for a given library, lib or caslibs get the list of available tables
+    (ex: list tables for Samples)
+    Optionally let user specify the source as cas or compute.`,
   parameters: {
     properties: {
       library: {
@@ -131,9 +142,14 @@ const _listSASTablesFunctionSpec = {
         description:
           'Return only this many tables. If not specified, then return 10 tables.',
       },
+      source: {
+        type: 'string',
+        description: 'The source of the data. cas or compute',
+        enum: ['cas', 'compute'],
+      }
     },
     type: 'object',
-    required: ['library', 'limit'], 
+    required: ['library'], 
   },
 };
 const _listColumnsFunctionSpec = {

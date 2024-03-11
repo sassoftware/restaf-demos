@@ -4,75 +4,89 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import inquirer from 'inquirer';
-import fs from 'fs';
-import getToken from './lib/getToken.js';
+import fs from "fs";
+import * as readline from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
+import "dotenv/config";
+import getToken from "./lib/getToken.js";
+import {setupAssistant, runAssistant, cancelRun, uploadFile} from "../src/index.js";
 
-import 'dotenv/config';
-
-import { setupAssistant, runAssistant, cancelRun, uploadFile} from '../src/index.js';
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
-setupConfig('openai')
-  .then (config => {
-    run(config); 
-  })
-  .catch(err => {
-    console.log(err);
-  });
+// setup configuration
+let config = setupConfig(process.env.OPENAI_PROVIDER);
+console.log("-------------------------------------------------");
+console.log("Configuration: ", config);
+console.log("-------------------------------------------------");
 
-// function to run user's prompt
-async function run(config) {
-  debugger;
-  console.log(config);
+chat(config)
+  .then((r) => console.log("done"))
+  .catch((err) => console.log(err));
+
+async function chat(config) {
   let gptControl = await setupAssistant(config);
-  // creating application data.(optional) 
+  console.log("--------------------------------------");
+  console.log("Current session:");
+  console.log("Provider: ", gptControl.provider);
+  console.log("Model: ", gptControl.model); 
+  console.log(
+    "Assistant: ",
+    gptControl.assistant.name,
+    "Assistant id",
+    gptControl.assistant.id
+  );
+  console.log("Threadid: ", gptControl.thread.id);
+  console.log('Viya Source:', gptControl.appEnv.source);
+  console.log("--------------------------------------");
 
-  console.log('--------------------------------------');
-  console.log('Assistant: ', gptControl.assistant.name,   gptControl.assistant.id); 
-  console.log('Thread: ', gptControl.thread.id);
-  console.log('--------------------------------------');
-
-  let questions = {
-    type: 'input',
-    name: 'prompt',
-    message: '>',
-  };
-
-  let quita = ['exit', 'quit', 'q'];
+  // create readline interface and chat with user
+  const rl = readline.createInterface({ input, output });
   while (true) {
-    debugger;
-    let answer = await inquirer.prompt(questions);
-    debugger;
-    let prompt = answer.prompt;
-    if (quita.includes(prompt.toLowerCase())) {
+    let prompt = await rl.question(">");
+    // exit session
+    if (prompt.toLowerCase() === "exit" || prompt.toLowerCase() === "quit") {
+      rl.close();
       break;
     }
-    if (prompt.substring(0, 1) === '!') {
-      let f = prompt.substring(1).trim();
-      let fileHandle = fs.createReadStream(f);
-      let r = await uploadFile(fileHandle,"assistants", gptControl)
-      console.log(r);
-    } else if (prompt.toLowerCase() === 'cancel') {
-      let r = await cancelRun(gptControl);
-      console.log(r);
-    }else {
-      //Note process.env is passed to runAssistant
-      // run assistant will pass both gtpControl and process.env to tools functions
-      let promptInstructions = ' ';
-      try {
-        let response = await runAssistant(gptControl, prompt, promptInstructions);
-        console.log(response);
-      } catch (err) {
-        console.log(err);
+    let cmd = prompt.split(" ")[0].toLowerCase();
+
+    switch (cmd) {
+      case "<": {
+        // upload file and attach to assistant
+        let f = prompt.substring(1).trim();
+        let fileHandle = fs.createReadStream(f);
+        let r = await uploadFile(fileHandle, "assistants", gptControl);
+        console.log(r);
+        break;
+      }
+      case "cancel": {
+        //cancel current run
+        let a = prompt.split(" ");
+        let r = await cancelRun(gptControl, a[1], a[2]);
+        console.log(r);
+        break;
+      }
+      default: {
+        //Note process.env is passed to runAssistant
+        // run assistant will pass both gtpControl and process.env to tools functions
+        let promptInstructions = " ";
+        try {
+          let response = await runAssistant(
+            gptControl,
+            prompt,
+            promptInstructions
+          );
+          console.log(response);
+        } catch (err) {
+          console.log(err);
+        }
+        break;
       }
     }
   }
-   
-
-  return 'assistant session ended';
 }
-async function setupConfig(provider) {
+
+function setupConfig(provider) {
   let config = {
     openai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -82,32 +96,41 @@ async function setupConfig(provider) {
       },
       assistantid: process.env.OPENAI_ASSISTANTID,
       assistantName: process.env.OPENAI_ASSISTANTNAME,
-      threadid: process.env.OPENAI_THREADID
+      threadid: 'thread_BjcI5VNc8fnsKaKo0I1B9DeM' //process.env.OPENAI_THREADID,
     },
     azureai: {
-      provider: process.env.AZUREAI_PROVIDER,
+      provider: process.env.OPENAI_PROVIDER,
       model: process.env.AZUREAI_MODEL,
       credentials: {
         key: process.env.AZUREAI_KEY,
-        endPoint: process.env.AZUREAI_ENDPOINT
+        endPoint: process.env.AZUREAI_ENDPOINT,
       },
       assistantid: process.env.AZUREAI_ASSISTANTID,
       assistantName: process.env.AZUREAI_ASSISTANTNAME,
-      threadid: process.env.AZUREAI_THREADID
-    }
+      threadid: '0', // process.env.AZUREAI_THREADID,
+      logLevel: null
+    },
   };
   let r = config[provider];
-  r.domainTools = {tools: [], functionList: {}, instructions: ''};
+  r.domainTools = {
+    tools: [],
+    functionList: {},
+    instructions: "",
+    replace: false,
+  };
   r.viyaConfig = null;
-  if (process.env.VIYASOURCE != null) {
-    let {token, host} = getToken();
+  if (process.env.APPENV_SOURCE != null) {
+    let { token, host } = getToken();
     let logonPayload = {
-      authType: 'server',
+      authType: "server",
       host: host,
       token: token,
-      tokenType: 'bearer'
-    }
-  r.viyaConfig = {logonPayload: logonPayload, source: process.env.VIYASOURCE};; 
+      tokenType: "bearer",
+    };
+    r.viyaConfig = {
+      logonPayload: logonPayload,
+      source: process.env.APPENV_SOURCE,
+    };
   }
   return r;
 }

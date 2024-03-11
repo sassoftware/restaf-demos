@@ -11,21 +11,32 @@
  * @returns {promise} - return thread object
  */
 async function loadThread(gptControl) {
-  let {threadid, assistantApi} = gptControl;
+  let {assistant, assistantApi} = gptControl;
   let thread = null;
-  // If we are reusing the thread, try to retrieve it
+  let threadid = gptControl.threadid;
 
-  console.log('threadid', threadid);
   try {
-    thread = (threadid === '0' || threadid == null) 
-      ? await assistantApi.createThread()
-      : await assistantApi.getThread(threadid);
+    // local rules: try to use the last used thread
+    if (threadid === '-1' ){ 
+      threadid = assistant.metadata.lastThread;
+    }
+    if (threadid === '0' || threadid == null) {
+      console.log('Creating new thread');
+      thread = await assistantApi.createThread();
+      let newAssistant = await assistantApi.updateAssistant(assistant.id, {metadata: {lastThread: thread.id}});
+      gptControl.assistant = newAssistant;
+    } else {
+      thread = await assistantApi.getThread(threadid);
+    }
   } catch (error) {
     console.log(error); 
-    console.log(error.status);
-    throw new Error(`Error status ${error.status}. Unable to retrieve the thread ${threadid}. see console for details.`);
+    throw new Error(`Error status ${error.status}. Failed to create thread. See console for details.`);
   }
   debugger;
+
+  // local rules: save the thread id in the assistant metadata
+  
+ 
   return thread;
 }
 export default loadThread;

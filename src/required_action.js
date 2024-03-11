@@ -5,6 +5,7 @@
  */
 
 import pollRun from "./pollRun.js";
+
 /**
  * @async
  * @private
@@ -19,8 +20,8 @@ import pollRun from "./pollRun.js";
  */
 
 async function required_action(runStatus,gptControl) {
-  let{assistantApi,appEnv, domainSpecs, provider, thread, run} = gptControl;
-  let {functionList} = domainSpecs;
+  let{assistantApi,appEnv, domainTools, provider, thread, run} = gptControl;
+  let {functionList} = domainTools;
   
   // get the required actions from the run status
 
@@ -31,36 +32,50 @@ async function required_action(runStatus,gptControl) {
   let toolsOutput = [];
   for (let action of requiredActions) {
     let functionName = action.function.name;
+
     console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
     debugger;
-    try {
-       let response = await functionList[functionName](params, appEnv, gptControl);
-       if (provider === 'openai') {
-        toolsOutput.push({
-          tool_call_id: action.id,
-          output: JSON.stringify(response),
-        });
-      } else {
-        toolsOutput.push({
-          toolCallId: action.id,
-          output: JSON.stringify(response),
-        });
+    let target = functionList[functionName];
+    if (target == null){
+      let err = (`Function ${functionName} not found. 
+      Probable causes: 
+        Using thread that had outdated tool references.
+        Currrent specs point has mistmatch with function name
+        `);
+      toolsOutput.push(setError(action.id, err, provider)); 
+    } else {
+      try {
+        debugger;
+        let response = await functionList[functionName](params, appEnv, gptControl);
+        console.log('Response from function: ', response);
+        if (provider === 'openai') {
+          toolsOutput.push({
+            tool_call_id: action.id,
+            output: JSON.stringify(response),
+          });
+        } else {
+          toolsOutput.push({
+            toolCallId: action.id,
+            output: JSON.stringify(response),
+          });
+        }
       }
-    }
-    catch(err){
-      toolsOutput.push({
-        tool_call_id: action.id,
-        output: JSON.stringify(err),
-      })
+      catch(err){
+        toolsOutput.push(setError(action.id, err, provider));
+      }
     }
  }
 // submit the outputs to the thread
  console.log('Adding output to messages');
+ console.log('toolsOutput', toolsOutput);
+ console.log(provider);
+ debugger;
+ console.log(toolsOutput);
  let newRun = (provider === 'openai') 
             ? await assistantApi.submitToolOutputsToRun(
                 thread.id, run.id, { tool_outputs: toolsOutput })
-            : await assistantApi.submitToolOutputs( 
+            : await assistantApi.submitToolOutputsToRun( 
                 thread.id, run.id, toolsOutput);
 
 // wait for output to appear in the thread messages
@@ -68,6 +83,12 @@ async function required_action(runStatus,gptControl) {
 
 return outputStatus;
 }
-
+function setError(actionid, error, provider){
+  if (provider === 'openai') {
+    return {tool_call_id: actionid, output: JSON.stringify(error)};
+  } else {
+    return {toolCallId: actionid, output: JSON.stringify(error)};
+  }
+}
 
 export default required_action;

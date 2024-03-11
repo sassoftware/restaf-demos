@@ -15,11 +15,12 @@
  */
 
 /**
- * tool specs
+ * tool specification
  * @typedef {object} toolspecs
  * @property {array} tools - array of tool definitions
- * @property {object} functionList - object of tool functions
+ * @property {object} functionList - object of tool functions{a: function, b: function, ...}
  * @property {string} instructions - instructions string
+ * @property {boolean} replace - replace flag(false) - append user tools to builtins
  */
 
 /**
@@ -33,6 +34,7 @@
  * @property {string} threadid - thread i
  * @property {toolspecs} domainTools - domain tools
  * @property {object} viyaConfig - viya config
+ * @property {string} logLevel - log level
  */
 
 
@@ -60,7 +62,7 @@
  * @typedef {object} gptControl
  * @property {string} provider - provider name
  * @property {string} model - model name
- * @property {toolspecs} additional tools prepended to the builtins
+ * @property {toolspecs} domainTools tools prepended to the builtins
  * @property {string} instructions- Instructions string|null. If null default instructions is used
  * 
  * @property {string} assistantName - assistant name

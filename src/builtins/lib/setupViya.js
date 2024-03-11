@@ -28,24 +28,28 @@ async function setupViya(viyaConfig) {
   sessionID: null,
   compute: {},
   cas: {},
-  userData: null,
+  userData: null
 }
 
-if (viyaConfig == null) {
-  return appEnv;
-}
-if (viyaConfig.source == 'none') {
-  appEnv.userData = viyaConfig.userData;
-  return appEnv;
-}
+  if (viyaConfig == null) {
+    return appEnv;
+  }
+  if (viyaConfig.source == 'none') {
+    appEnv.userData = viyaConfig.userData;
+    appEnv.logonPayload = viyaConfig.logonPayload;
+    appEnv.currentSource = 'none';
+    return appEnv;
+  }
 
-// setup Viya
-let {source, logonPayload} = viyaConfig;
-
-appEnv.host= logonPayload.host;
-  // get list of sources. First one in list is the default
+  // setup Viya
+  let {source, logonPayload} = viyaConfig;
   let sources = source.split(',');
   let defaultSource = sources[0];
+  appEnv.currentSource = defaultSource;
+
+  appEnv.host= logonPayload.host;
+    // get list of sources. First one in list is the default
+ 
 
   // logon to the server
   let store = restaf.initStore({casProxy: true});
