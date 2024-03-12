@@ -12,10 +12,10 @@
  * @returns {promise} - return the final file ids from the assistant
  */
 async function uploadFile(fileHandle,purpose, gptControl) {
-  let { client, assistant } = gptControl;
+  let { assistantApi, assistant } = gptControl;
 
   // get fileid
-  const fileId = await client.files.create({
+  const fileId = await assistantApi.createFile({
     file: fileHandle,
     purpose: purpose})
   console.log('.......................', fileId); 
@@ -26,7 +26,7 @@ async function uploadFile(fileHandle,purpose, gptControl) {
   console.log(currentFileIds);
   debugger;
   try {
-    let newAssistant = await client.beta.assistants.update(assistant.id, 
+    let newAssistant = await assistantApi.updateAssistant(assistant.id, 
       {
       file_ids: currentFileIds
       });

@@ -107,7 +107,7 @@ function setupConfig(provider) {
       },
       assistantid: process.env.AZUREAI_ASSISTANTID,
       assistantName: process.env.AZUREAI_ASSISTANTNAME,
-      threadid: '0', // process.env.AZUREAI_THREADID,
+      threadid: '-1', // process.env.AZUREAI_THREADID,
       logLevel: null
     },
   };
