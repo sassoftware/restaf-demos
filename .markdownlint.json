@@ -15,7 +15,8 @@
       "javascript",
       "json",
       "markdown",
-      "text"
+      "text",
+      "cmd"
     ],
     "language_only": true
   },

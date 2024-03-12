@@ -1,0 +1,13 @@
+## Copilot
+gpt-4-0125-preview and gpt-4-1106-preview are distinct versions of the GPT-4 Turbo model, each with its own set of features. Let's break down the differences:
+- gpt-4-0125-preview:
+    - This version aims to reduce "laziness" in task completions.
+    - It provides improved performance in chat interactions and traditional completions.
+    - However, it does not include all the features of gpt-4-1106-preview.
+- gpt-4-1106-preview:
+    - Features include:
+        - Enhanced instruction following.
+        - JSON mode for more structured interactions.
+        - Reproducible outputs for consistent results.
+        - Other improvements not present in gpt-4-0125-preview.
+In summary, while gpt-4-0125-preview is optimized for chat tasks, gpt-4-1106-preview offers additional capabilities and refinements. Choose the version that best aligns with your specific requirements! 

@@ -1,0 +1,39 @@
+{
+  "plugins": ["plugins/markdown"],
+  "recurseDepth": 10,
+  "source": {
+    "include": [
+      "types.js",
+      "./src"
+ ],
+    "exclude": ["./examples", "./snippets", "./programs", "./dist", "./src/builtins"],
+    "includePattern": ".js",
+    "excludePattern": "(node_modules)"
+  },
+  "tags": {
+    "allowUnknownTags": ["category"],
+    "dictionaries": ["jsdoc"] 
+  }, 
+ 
+  "templates": {
+    "cleverLinks": true,
+    "search": true,
+    "monospaceLinks": true,
+    "useLongnameInNav": true,
+    "showInheritedInNav": true,
+    "default": {
+      "outputSourceFiles": false
+      }
+    
+  },
+  "opts": {
+    "template": "node_modules/better-docs",
+    "destination": "./docs",
+    "recurse": true,
+    "private": true,
+    "readme": "./README.md",
+    "tutorials": "./tutorials"
+  }
+  
+}
+  

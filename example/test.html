@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html  lang="en">
+<title>OpenAI Assistant.js</title>
+<head>
+    <meta charset="utf-8">
+    <!--link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="module"> import * as openai from "https://cdn.jsdelivr.net/npm/openai@4.28.4/+esm" </script>
+<script type="module">
+import azureopenai from 'https://cdn.jsdelivr.net/npm/@azure/openai@1.0.0-beta.11/+esm'
+</script>
+<script type="module">
+import azureopenaiAssistants from 'https://cdn.jsdelivr.net/npm/@azure/openai-assistants@1.0.0-beta.5/+esm'
+</script>
+<script src="https://unpkg.com/@sassoftware/restaf@5.2.4"></script>
+<script src="https://unpkg.com/@sassoftware/restaflib@5.2.4"></script>
+<script src="https://unpkg.com/@sassoftware/restafedit@2.4.7"></script>
+-->
+
+<script type="module">
+  import {runAssistant, gptControl} from 
+    'https://unpkg.com/@sassoftware/openai-assistantjs@0.6.0/dist/index.modern.js';
+    console.log('runAssistant', runAssistant); 
+    </script>
+</script>
+<script>
+  function setup() {
+    let config = {
+      provider:  'openai', /* azureai is coming soon */
+      server: 'none', /* none, local, or a url to a server */
+      assistantName: 'SAS_ASSISTANT_BASIC', /* ex: SAS_ASSISTANT. Reuse name to keep costs down */
+      instructions :  'You are assistant who can do calculations', /* instructions for the assistant. Ignored if assistant exists */
+      model: 'gpt-4-turbo', /* the gpt model you want to use */
+      reuseThread: true, /* if false it will create a new thread. else will use the specified threadid */
+      threadid:  'xxx', /* Unfortunately there is no api to manage threads. So reusing might be a good option (with its drawbacks)*/
+      credentials: {/* credentials for openai or azureai */
+        openaiKey: '',
+        azureaiKey: '',
+        azureaiEndpoint: ''
+      },
+      specs: {
+        tools: [
+        {type: 'retrieval'},
+        {type: 'code_interpreter'}
+      ],
+    functionList: {}
+    }
+  }
+}
+</script>
+<script>
+  function onClick() {
+    let text = document.getElementById('prompt').value;
+    runAssistant(text, {}, gptControl)
+    .then (r => {
+      debugger;
+      document.getElementById('log').innerHTML += r + '<br>';
+    })
+    .catch (e => {
+      document.getElementById('log').innerHTML += e + '<br>';
+    })
+  }
+</script>
+<style>
+  .box {
+  width: 80vh;
+  height: 60vh;
+  border: 1px solid black;
+  padding: 2px 4px;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+.box2 {
+  border: 1px solid black;
+  padding: 2px 4px;
+}
+.log {
+  margin-top: 8px;
+  font-family: monospace;
+}
+
+</style>
+</head>
+
+<body onload="setup()">
+  <h2> Quick test of OpenAI Assistant.js</h2>
+  <div class=""box2">
+  <textarea id="prompt" name="prompt" rows="4" cols="90"></textarea>
+  <button onclick="onClick()"">Run</button>
+  </div>
+  <br>
+  <div class="box">
+    <label for="log">Answer</label>
+    <div class="log" id="log"></div>
+  </div>
+
+</body>
+</html>
