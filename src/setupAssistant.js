@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// import OpenAI from 'openai';
-import { OpenAIAssistant, OpenAI } from './azurelib.js';
-// import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
+import OpenAI from 'openai';
+
+import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
 import loadThread from './loadThread.js';
 import createAssistant from './createAssistant.js';
 import functionSpecs from './builtins/functionSpecs.js';
@@ -23,9 +23,6 @@ import apiMapper from './apiMapper.js';
 async function setupAssistant(config) {
   let {credentials } = config;
   let {key, endPoint} = credentials;
-  let {AssistantsClient, AzureKeyCredential} = OpenAIAssistant;
-  
-
   // create the client
   debugger;
   let client = null;

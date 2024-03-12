@@ -12,7 +12,6 @@ import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
 import uploadFile from './uploadFile.js';
 import cancelRun from './cancelRun.js';
-import { OpenAIAssistant } from "./azurelib.js";
 export  {
   setupAssistant,
   runAssistant,
@@ -20,6 +19,5 @@ export  {
   getMessages,
   deleteAssistant,
   uploadFile,
-  cancelRun,
-  OpenAIAssistant
+  cancelRun
 };
