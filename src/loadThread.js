@@ -19,6 +19,9 @@ async function loadThread(gptControl) {
     // local rules: try to use the last used thread
     if (threadid === '-1' ){ 
       threadid = assistant.metadata.lastThread;
+      if (threadid != null)  {
+        console.log('Attempting to use previous ', threadid);
+      }
     }
     if (threadid === '0' || threadid == null) {
       console.log('Creating new thread');

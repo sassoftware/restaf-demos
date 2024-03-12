@@ -96,7 +96,7 @@ function setupConfig(provider) {
       },
       assistantid: process.env.OPENAI_ASSISTANTID,
       assistantName: process.env.OPENAI_ASSISTANTNAME,
-      threadid: 'thread_BjcI5VNc8fnsKaKo0I1B9DeM' //process.env.OPENAI_THREADID,
+      threadid: '-1' //process.env.OPENAI_THREADID,
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
