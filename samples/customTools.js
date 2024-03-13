@@ -9,19 +9,70 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 import getToken from './getToken.js'; 
 let {host, token} = getToken();
 
+// Add another tool 
+
+// Tool specification
+let customTools = [
+  {
+    type: 'function',
+    function: {
+      name: 'SASCatalog',
+      description: `get specifiied metadata from SAS Catalog Manager Information Catlog`,
+      parameters: {
+        properties:{
+          metadata: {
+            type: 'string',
+            description: `finds the specified metadata in SAS Catalog`,
+            enum: ['tags','catalogStatistics','indices']
+          }
+        },
+        type: 'object',
+        required: ['information']
+      }
+    }
+  }
+];
+
+//handler for the custom tool SASCatalog
+async function SASCatalog(params, appEnv) {
+  let {metadata} =  params;
+  let {store} = appEnv;
+  console.log(metadata);
+  let {catalog} = await store.addServices('catalog');
+  try {
+    debuggger;
+    let result = await store.apiCall(catalog(metadata));
+    console.log('---',result.items().toJS());
+    return JSON.stringify(result.items().toJS());
+    } 
+  catch (err) {
+    debugger;
+    return JSON.stringify(err);
+  }
+}
+
+let functionList = {
+  SASCatalog: SASCatalog
+}
+
+let instructions = 
+  `You are an assistant to help users seach thru the SAS Information Catalog for metadata.
+  They can then use this information to do futher analysis`;
+
+ 
 // setup configuration
 let config = {
-  provider: 'azureai',// or 'azureai'
-  model: 'gpt-4-turbo-review', 
+  provider: 'openai', 
+  model: 'gpt-4-turbo-preview', 
   credentials: {
-    key: process.env.AZUREAI__KEY, // obtain from provider
-    endPoint: process.env.AZUREAI_ENDPOINT//obtain from provider
+    key: process.env.OPENAI_KEY, // for security get it from environment
+    endPoint: null
   },
   assistantid: '0', //let system create a new assistant
-  assistantName: "SAS_ASSISTANT",
-
+  assistantName: "SAS_ASSISTANT_EXTEND",
   threadid: '0', // let system create a new thread
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
+  domainTools: {tools: customTools, functionList: functionList, instructions: instructions, replace: false},
+
   viyaConfig: {
     logonPayload: {
       authType: 'server',
@@ -29,7 +80,7 @@ let config = {
       token: token,// viya token | null
       tokenType: 'bearer'// if token is specified
       },
-    source: 'cas' 
+    source: 'none' 
   }  
 }
 

@@ -24,7 +24,7 @@
     "default": {
       "outputSourceFiles": false,
       "staticFiles": {
-        "include": ["./samples"]
+        "include": ["samples"]
 
       }
     }

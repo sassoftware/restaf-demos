@@ -1,4 +1,4 @@
-# A step-by-step to creating your first Assistant
+# Add custom tool to extend the Assistant
 
 > Set type to "module" in your package.json
 
@@ -26,19 +26,59 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 import getToken from './getToken.js'; 
 let {host, token} = getToken();
 
+// Add another tool 
+
+// Tool specification
+let customTools: [
+  {
+    type: 'function',
+    function: {
+      name: 'SASCatalog',
+      description: `Searches thru SAS Information Catlog for desired information`,
+      parameters: {
+        properties:{
+          information: {
+            type: 'string',
+            description: `finds the specified information in
+                           SAS Catalog`
+          }
+        }
+        type: 'object',
+        required: ['information']
+      }
+    }
+  }
+];
+
+//handler for the custom tool SASCatalog
+async function SASCatalog(params, appEnv) {
+  let {information} =  params;
+  let r = {
+    name: 'SASCatalog',
+    params: params,
+    notes: 'Add code to do some real work'
+  }
+  return JSON.stringify(r);
+}
+let functionList = {
+  SASCatalog: SASCatalog
+}
 // setup configuration
 let config = {
-  provider: 'openai',// or 'azureai'
-  model: 'gpt-4-turbo-review', // or 'gpt-3-turbo-review'
+  provider: 'openai', 
+  model: 'gpt-4-turbo-review', 
   credentials: {
-    key: process.env.OPENAI_KEY, // for safety get it from environment
+    key: process.env.OPENAI_KEY, // for security get it from environment
     endPoint: null
   },
   assistantid: '0', //let system create a new assistant
   assistantName: "SAS_ASSISTANT",
 
   threadid: '0', // let system create a new thread
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
+
+  
+  domainTools: {tools: tools, functionList: functionList, instructions: '', replace: false},
+
   viyaConfig: {
     logonPayload: {
       authType: 'server',
