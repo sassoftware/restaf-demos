@@ -11,6 +11,8 @@ Then import the following two entries in your nodejs code
 
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 
+The full list of entries exported are:
+
 ```
 
 ## Sample program

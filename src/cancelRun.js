@@ -12,7 +12,7 @@
  */
 
 async function cancelRun(gptControl, threadid, runid) {
-  let {assistantApi, thread, run} = gptControl;  
+  let {assistantApi, assistant, thread, run} = gptControl;  
 
   if (threadid != null || runid != null) {
     try {
@@ -24,7 +24,7 @@ async function cancelRun(gptControl, threadid, runid) {
       return null;
     }
   }
-  if (run === null || thread === null) {
+  if (run == null || thread == null) {
     console.log('No run or thread to cancel');
     return null;
   }
@@ -39,6 +39,10 @@ async function cancelRun(gptControl, threadid, runid) {
     status = await assistantApi.cancelRun(thread.id, run.id);
   } catch (error) {
     console.log("Error cancelling the run", error);
+    throw new Error(`
+    Cancel run failed.  
+    Best action is to simply wait for a while for it to timeout 
+    The last alternative is to delete the Assistant ${assistant.name} and restart your session`);
   }
   return status;
 }

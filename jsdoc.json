@@ -14,7 +14,7 @@
     "allowUnknownTags": ["category"],
     "dictionaries": ["jsdoc"] 
   }, 
- 
+  
   "templates": {
     "cleverLinks": true,
     "search": true,
@@ -22,8 +22,12 @@
     "useLongnameInNav": true,
     "showInheritedInNav": true,
     "default": {
-      "outputSourceFiles": false
+      "outputSourceFiles": false,
+      "staticFiles": {
+        "include": ["./samples"]
+
       }
+    }
     
   },
   "opts": {

@@ -27,7 +27,10 @@ function apiMapper(client, provider) {
     let [id] = args;
     return client.beta.assistants.retrieve(id)
   }
-
+  const deleteAssistant = (client) => (...args) =>{
+    let [id] = args;
+    return client.beta.assistants.del(id)
+  }
   const createAssistant = (client) => (...args) =>{
     let [options] = args;
     return client.beta.assistants.create(options)
@@ -41,12 +44,10 @@ function apiMapper(client, provider) {
 
   const listMessages = (client) => (...args) =>{
     let [threadid, options] = args;
-    console.log(threadid, options);
     return client.beta.threads.messages.list(threadid, options)
   }
 
   const createMessage = (client) => (...args) =>{
-    
     let [threadid, role, content] = args;
     let options = {
       role: role,
@@ -105,7 +106,7 @@ function apiMapper(client, provider) {
       listAssistants: listAssistants(client),
       createAssistant: createAssistant(client),
       getAssistant: getAssistant(client),
-      deleteAssistant: getAssistant(client),
+      deleteAssistant: deleteAssistant(client),
       updateAssistant: updateAssistant(client),
     
       createThread: createThread(client),

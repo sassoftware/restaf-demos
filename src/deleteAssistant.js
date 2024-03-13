@@ -4,21 +4,42 @@
  */
 /**
  * @async
- * @private
  * @description - Delete assistant
  * @function closeAssistant
  * @param {object} gptControl - gpt session control object
  * @param {object} assistantid - Assistant id
- * @returns {boolean} - true
+ * @returns {promise} - status string 
  */
 async function deleteAssistant(gptControl, assistantid) {
+  let { assistantApi, assistant } = gptControl;
   console.log('in closeAssistant');
-  let {assistantApi} = gptControl;
-  let id = (assistantid) ? assistantid : gptControl.assistant.id;
-  if (id != null) {
-    let status = await assistantApi.deleteAssistant(id);
-    return status;
+  if (assistantid != null) {
+    try {
+      if (assistantid != null) {
+        await assistantApi.deleteAssistant(id);
+        return `Assistant ${assistantid} deleted.`
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error(`
+        Delete of assistant ${assistantid} failed`);   
+    }
   }
-  // should we delete the thread associated with this assistant?
+
+  try {
+    if (assistant.metadata.lastThread != null) {
+      let status = await assistantApi.deleteThread(assistant.metadata.lastThread);
+      console.log('Thread ${assistant.metadata.lastThread} deleted', status);
+      status = await assistantApi.deleteAssistant(assistant.id);
+      console.log(`Assistant ${assistant.name} deleted`, status);
+      return `Assistant ${assistant.name} deleted`;
+
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error(`Failed to delete session and thread
+    ${error}`);
+  }
+
 }
 export default deleteAssistant;

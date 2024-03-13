@@ -48,7 +48,6 @@ async function required_action(runStatus,gptControl) {
       try {
         debugger;
         let response = await functionList[functionName](params, appEnv, gptControl);
-        console.log('Response from function: ', response);
         if (provider === 'openai') {
           toolsOutput.push({
             tool_call_id: action.id,
@@ -67,11 +66,7 @@ async function required_action(runStatus,gptControl) {
     }
  }
 // submit the outputs to the thread
- console.log('Adding output to messages');
- console.log('toolsOutput', toolsOutput);
- console.log(provider);
  debugger;
- console.log(toolsOutput);
  let newRun = (provider === 'openai') 
             ? await assistantApi.submitToolOutputsToRun(
                 thread.id, run.id, { tool_outputs: toolsOutput })

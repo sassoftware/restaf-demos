@@ -17,7 +17,7 @@
     "wpack": "rimraf dist && npm run umd && npm run esm",
     "pub": "npm publish --tag dev --access public",
     "lint": "eslint . --ext .js --fix",
-    "jsdoc": "jsdoc -c jsdoc.json"
+    "jsdoc": "rimraf docs && jsdoc -c jsdoc.json"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs",
   "source": "./src/index.js",

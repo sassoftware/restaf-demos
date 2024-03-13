@@ -35,8 +35,11 @@ async function runAssistant(gptControl,prompt, instructions) {
     debugger;
     console.log(error.status);
     console.log(error.error);
-   // throw new Error('Request failed on adding user message to thread.');
-   return JSON.stringify(error.error);
+     throw new Error(`
+     Request failed on adding user message to thread.
+     See error below. 
+     If thread is active, you can try canceling the run.
+     ${error.status} ${error.error}`);
   }
   // now run the thread
   // assume caller will catch any thrown errors
