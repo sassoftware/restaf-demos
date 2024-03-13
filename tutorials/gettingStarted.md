@@ -105,4 +105,4 @@ If source was set to 'cas' or 'compute' you can issue prompts that will use the
 
 ## Peak ahead
 
-In the next example will discuss how to add your own tools.
+In the next example will discuss how to add your own tools,

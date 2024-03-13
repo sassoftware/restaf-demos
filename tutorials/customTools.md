@@ -15,7 +15,6 @@ This is a fully functional chat program
 
 ```javascript
 
-import fs from 'fs';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
@@ -34,7 +33,7 @@ let customTools: [
     type: 'function',
     function: {
       name: 'SASCatalog',
-      description: `Searches thru SAS Information Catlog for desired information`,
+      description: `Searches thru SAS Information Catalog for desired information`,
       parameters: {
         properties:{
           information: {

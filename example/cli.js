@@ -9,6 +9,8 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import 'dotenv/config';
 import getToken from './lib/getToken.js';
+import catalogTools from './catalogTools.js';
+console.log(catalogTools());
 import {
   setupAssistant,
   runAssistant,
@@ -24,7 +26,7 @@ let config = setupConfig(process.env.OPENAI_PROVIDER);
 console.log('-------------------------------------------------');
 console.log('Configuration: ', config);
 console.log('-------------------------------------------------');
-
+config.domainTools = catalogTools();
 chat(config)
   .then((r) => console.log('done'))
   .catch((err) => console.log(err));
@@ -57,7 +59,10 @@ async function chat(config) {
     let cmda = prompt.toLocaleLowerCase().split(' ');
     let cmd = cmda[0];
     if (cmd === 'delete' && cmda[1] === 'assistant') {
-      cmd = 'deleteAssistant';
+      cmd = 'deleteAssistant'; // delete assistant
+    }
+    if (cmd === 'create' && cmda[1] === 'assistant') {
+      cmd = 'createAssistant'; // create assistant
     }
     try {
       switch (cmd) {
@@ -80,6 +85,11 @@ async function chat(config) {
           //cancel current run
           let r = await deleteAssistant(gptControl, null);
           console.log(r);
+          break;
+        }
+        case 'createAssistant': {
+          //cancel current run
+          gptControl = await setupAssistant(config);
           break;
         }
         default: {
@@ -144,7 +154,7 @@ function setupConfig(provider) {
     };
     r.viyaConfig = {
       logonPayload: logonPayload,
-      source: 'none', //process.env.APPENV_SOURCE,
+      source: 'cas', //process.env.APPENV_SOURCE,
     };
   }
   return r;

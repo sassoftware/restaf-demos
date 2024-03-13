@@ -1,159 +1,65 @@
 # A nodejs starter library to help SAS users build ASSISTANTS
 
-## Works with openai Assistant api and azureai Assistant api
+> Works with openai Assistant api and azureai Assistant api
 
-## Install the library into your application
+## What is the ASSISTANT?
 
-```cmd
-npm install @sassoftware/openai-assistantjs
+The explanation is from
+<https://platform.openai.com/docs/assistants/overview?context=with-streaming>
 
-Then import the following two entries in your nodejs code
+The Assistants API allows you to build AI assistants within your own 
+applications.
 
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
+An Assistant has instructions and can leverage models, tools,
+and knowledge to respond to user queries. The Assistants API currently supports
+three types of tools: Code Interpreter, Retrieval, and Function calling.
 
-The full list of entries exported are:
+You can explore the capabilities of the Assistants API using the
+Assistants playground or by building a step-by-step integration application
 
-```
+*Overview*
+A typical integration of the Assistants API has the following flow:
 
-## Sample program
+Create an Assistant by defining its custom instructions and picking a model.
+If helpful, add files and enable tools like Code Interpreter, Retrieval, and
+Function calling.
 
-This is a fully functional chat program
+1. Create a Thread when a user starts a conversation.
+2. Add Messages to the Thread as the user asks questions.
+3. Run the Assistant on the Thread to generate a response by calling the model
+ and the tools.
 
-```javascript
+## Why use Assistant API?
 
-import fs from 'fs';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import 'dotenv/config';
-import getToken from './lib/getToken.js';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
+1. The conversation thread is maintained by the system.
+2. The code interpreter tool can generate and run python code
+3. The retrieval tool works with files that have been uploaded
+   and attached to an instance of the assistant.
+   I think of it as an easy way to create a RAG.
 
-// setup configuration
-let config = setupConfig(process.env.OPENAI_PROVIDER);
+  a. Note: Unfortunately I have not been able to find a version on azureai
+  that supports retrieval. Hopefully this will be resolved soon.
 
-// extend or replace with your own tools
-config.domainTools = {
-    tools: [], functionList: {}, instructions: '', replace: false,
-};
+## @sassoftware/viya-assistantjs
 
-// run a chat session
-chat(config)
-  .then((r) => console.log('done'))
-  .catch((err) => console.log(err));
+@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
+key features
 
-async function chat(config) {
-  let gptControl = await setupAssistant(config);
+1. Write your first assistant in a few minutes.
+2. Supports both openai Assistant and azureai Assistant.
+3. Uses the azureai API pattern to support openai Assistant.
+This allows switching between the two with simple configuration changes.
+4. It comes with a builtin tools for integration with Viya
+    - listing reports, librefs
+    - listing tables in a specified library
+    - retrieving data from a specified table
+    - executing SAS code or casl code
+5. Append to/or replace the builtin tools with your own tools
+6. Run the library in nodejs or browser enviroment - usually a react application
+7. Comes with documentation to make the journey less painful
 
-  // create readline interface and chat with user
-  const rl = readline.createInterface({ input, output });
+## Usage Notes
 
-  // process user input
-  while (true) {
-    let prompt = await rl.question('>');
-    // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
-      rl.close();
-      break;
-    }
-    // let assistant process the prompt
-    let promptInstructions = ' ';
-    try {
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-    break;
-  }
-}
-
-// a reusable function to setup the configuration
-function setupConfig(provider) {
-  let config = {
-    openai: {
-      provider: process.env.OPENAI_PROVIDER,
-      model: process.env.OPENAI_MODEL,
-      credentials: {
-        key: process.env.OPENAI_KEY,
-      },
-      assistantid: process.env.OPENAI_ASSISTANTID,
-      assistantName: process.env.OPENAI_ASSISTANTNAME,
-      threadid: process.env.OPENAI_THREADID,
-    },
-    azureai: {
-      provider: process.env.OPENAI_PROVIDER,
-      model: process.env.AZUREAI_MODEL,
-      credentials: {
-        key: process.env.AZUREAI_KEY,
-        endPoint: process.env.AZUREAI_ENDPOINT,
-      },
-      assistantid: process.env.AZUREAI_ASSISTANTID,
-      assistantName: process.env.AZUREAI_ASSISTANTNAME,
-      threadid: '0', //process.env.AZUREAI_THREADID
-    },
-  };
-  let r = config[provider];
- 
-  r.viyaConfig = null;
-  if (process.env.VIYASOURCE != null) {
-    let { token, host } = getToken();
-    let logonPayload = {
-      authType: 'server',
-      host: host,
-      token: token,
-      tokenType: 'bearer',
-    };
-    r.viyaConfig = {
-      logonPayload: logonPayload,
-      source: process.env.VIYASOURCE,
-    };
-  }
-  return r;
-}
-
-```
-
-Useful links:
-
-- [openai Assistant Documentation](https://platform.openai.com/docs/assistants/overview)
-
-- [Create a Azureai Resource](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/OpenAI)
-
-- [Azure Deployments](https://oai.azure.com/portal/abcb00d2df8a4bbea3282cf3f41e2908/deployment?tenantid=b1c14d5c-3625-45b3-a430-9552373a0c2f)
-
-- [azureai Assistant Documentation](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-assistants-readme?view=azure-node-preview)
-
-## Import
-
-- Install the library @sassoftware/openai-assistantjs@latest
-- Import the two entry points as follows:
-
-```javascript
-import { setupAssistant, runAssistant} from '@sassoftware/openai-assistantjs';
-```
-
-### Config object
-
-The example below sets the values from environment variables.
-You can set these directly also.
-
-```javascript
-let config = {
-  provider: process.env.OPENAI_PROVIDER, 
-  model: 'gpt-4-0125-preview', // change this to your perference
-  credentials: { // credentials from the provider- recommend using env vaiables
-    key: process.env.OPENAI_KEY,
-    endpoint: process.env.OPENAI_AZ_ENDPOINT, // required for azureai
-  },
-  assistantName: process.env.OPENAI_ASSISTANTNAME, // name of the assistant
-  assistantid: process.env.OPENAI_ASSISTANTID|0,// if you know the assistant id
-  threadid: process.env.OPENAI_THREADID '0,// threadid if you know it. else a new one will be created
-  instructions: ,// instructions for the assistant
-  domainTools: {
-    tools: <see provider documentation>
-    functionList: {nameoffunction: function, ...}
-    instructions: <string with instructions for the assistant>
-    replace: false, // append this to default tools or replace them
-  }
-}
-```
+Please refer to the documentation and tutorials
+for details on using this library
+See the gettingStarted tutorial to begin programming.
