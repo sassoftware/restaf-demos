@@ -52,6 +52,22 @@
                     Documentation
                 </a>
                 
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-gettingStarted.html">
+                                gettingStarted
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
                 
                 
             </div>
@@ -70,7 +86,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li><li><a href="global.html#uploadFile">uploadFile</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#closeAssistant">closeAssistant</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li><li><a href="global.html#uploadFile">uploadFile</a></li></ul></div>
                 
             </nav>
         </div>
@@ -311,6 +327,205 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
         <pre class="prettyprint"><code>- This function will cancel the run</code></pre>
     
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="closeAssistant">
+        <a class="href-link" href="#closeAssistant">#</a>
+        
+            
+                <span class='tag'>async</span>
+            
+        
+        <span class="code-name">
+            
+                closeAssistant<span class="signature">(gptControl, assistantid)</span><span class="type-signature"> &rarr; {promise}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <ul>
+<li>Delete assistant</li>
+</ul>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>gptControl</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">object</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>gpt session control object</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>assistantid</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">object</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>Assistant id</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>status string</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">promise</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
 
 
 </div>
