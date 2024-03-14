@@ -2,6 +2,59 @@
 
 > Works with openai Assistant api and azureai Assistant api
 
+## @sassoftware/viya-assistantjs
+
+@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
+key features
+
+1. Write your first assistant in a few minutes.
+2. Supports both openai Assistant and azureai Assistant.
+3. Uses the azureai API pattern to support openai Assistant.
+This allows switching between the two with simple configuration changes.
+4. It comes with a builtin tools for integration with Viya
+    - listing reports, librefs
+    - listing tables in a specified library
+    - retrieving data from a specified table
+5. Append to/or replace the builtin tools with your own tools
+6. Run the library in nodejs or browser enviroment - usually a react application
+7. Comes with documentation to make the journey less painful
+
+## The main loop for your Assistant
+
+> Install dependencies
+> setup the config object and call the chat function below
+
+```javascript
+async function chat(config) {
+  //Setup assistant
+  let gptControl = await setupAssistant(config);
+
+  // create readline interface and chat with user
+  const rl = readline.createInterface({ input, output });
+
+  // process user input in a loop
+  while (true) {
+    let prompt = await rl.question('>');
+    // exit session
+    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
+      rl.close();
+      break;
+    }
+    // let assistant process the prompt
+    let promptInstructions = ' ';
+    try {
+      // run prompt
+      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+
+
+```
+
 ## What is the ASSISTANT?
 
 The explanation is from
@@ -40,22 +93,7 @@ Function calling.
   a. Note: Unfortunately I have not been able to find a version on azureai
   that supports retrieval. Hopefully this will be resolved soon.(https://github.com/Azure/azure-sdk-for-js/issues/28550)
 
-## @sassoftware/viya-assistantjs
 
-@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
-key features
-
-1. Write your first assistant in a few minutes.
-2. Supports both openai Assistant and azureai Assistant.
-3. Uses the azureai API pattern to support openai Assistant.
-This allows switching between the two with simple configuration changes.
-4. It comes with a builtin tools for integration with Viya
-    - listing reports, librefs
-    - listing tables in a specified library
-    - retrieving data from a specified table
-5. Append to/or replace the builtin tools with your own tools
-6. Run the library in nodejs or browser enviroment - usually a react application
-7. Comes with documentation to make the journey less painful
 
 ## Usage Notes
 

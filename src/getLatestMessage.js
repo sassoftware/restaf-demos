@@ -5,7 +5,7 @@
 /**
  * @async
  * @description Return the latest message from thread
- * @param {object}  gptControl - client control object
+ * @param {gptControl}  gptControl - client control object
  * @param {number} limit - limit the number of messages to return
  * @returns {promise} - messages - array of latest assistant messages[ {id, role, type, content}]
  * @example - This function will return latest assistant messages based on limit

@@ -25,7 +25,7 @@
 
 /**
  * setup configurations
- * @typedef {object} setupConfig
+ * @typedef {object} config
  * @property {string} provider - provider name
  * @property {string} model - model name
  * @property {credentials} credentials - credentials object
@@ -78,6 +78,7 @@
  * @property {object} client - client object for openai|azureai
  * @property {object} run  - active run object|null
  * @property {assistantApi} api - commong api object for openai and azureai. Follows azuereai api
+ * @property {boolean} retrievalFlag - retrieval flag
  */
   
 

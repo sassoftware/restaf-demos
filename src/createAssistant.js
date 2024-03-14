@@ -8,7 +8,7 @@
  * @private
  * @function createAssistant
  * @description   Create a new assistant
- * @param {object} gptControl - gptControl object
+ * @param {gptControl} gptControl - gptControl object
  * @returns {promise} - return assistant object
  */
 

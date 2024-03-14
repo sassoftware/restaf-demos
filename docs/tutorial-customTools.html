@@ -135,35 +135,57 @@ let customTools: [
   {
     type: 'function',
     function: {
-      name: 'SASCatalog',
-      description: `Searches thru SAS Information Catalog for desired information`,
+      name: &quot;runSAS&quot;,
+      description: &quot;run the specified file. The file is a path to the sas program&quot;,
       parameters: {
-        properties:{
-          information: {
-            type: 'string',
-            description: `finds the specified information in
-                           SAS Catalog`
-          }
-        }
-        type: 'object',
-        required: ['information']
-      }
+        properties: {
+          file: {
+            type: &quot;string&quot;,
+            description: &quot;this is the file to run&quot;,
+          },
+        },
+        type: &quot;object&quot;,
+        required: [&quot;file&quot;],
+      },
     }
   }
 ];
 
-//handler for the custom tool SASCatalog
-async function SASCatalog(params, appEnv) {
-  let {information} =  params;
-  let r = {
-    name: 'SASCatalog',
-    params: params,
-    notes: 'Add code to do some real work'
+//handler for running sas code
+const runSASFunctionSpec = {
+  name: &quot;runSAS&quot;,
+  description: &quot;run the specified file. The file is a path to the sas program&quot;,
+  parameters: {
+    properties: {
+      file: {
+        type: &quot;string&quot;,
+        description: &quot;this is the file to run&quot;,
+      },
+    },
+    type: &quot;object&quot;,
+    required: [&quot;file&quot;],
+  },
+};
+
+async function runSAS(params, appEnv) {
+  let { file } = params;
+  let { store, session } = appEnv;
+  let src;
+  try {
+    src = await fss.readFile(file, &quot;utf8&quot;);
+  } catch (err) {
+    console.log(err);
+    return &quot;Error reading file &quot; + file;
   }
-  return JSON.stringify(r);
-}
-let functionList = {
-  SASCatalog: SASCatalog
+
+  if (appEnv.source === &quot;cas&quot;) {
+    let r = await caslRun(store, session, src, {}, true);
+    return JSON.stringify(r.results);
+  } else {
+    let computeSummary = await computeRun(store, session, src);
+    let log = await computeResults(store, computeSummary, &quot;log&quot;);
+    return logAsArray(log);
+  }
 }
 // setup configuration
 let config = {
@@ -180,6 +202,8 @@ let config = {
 
   
   domainTools: {tools: tools, functionList: functionList, instructions: '', replace: false},
+  code:  true,
+  retrievel: true
 
   viyaConfig: {
     logonPayload: {

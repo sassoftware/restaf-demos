@@ -71,7 +71,7 @@ async function setupAssistant(config) {
     client: client,
     run: null,
     assistantApi: apiMapper(client, config.provider),
-    retrievalFlag: config.retrieval // remove this when azureai supports retrieval
+    retrieval: config.retrieval // remove this when azureai supports retrieval
     //config: config save the config for runtime changes
   };
   

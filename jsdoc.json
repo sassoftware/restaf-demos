@@ -22,7 +22,7 @@
     "useLongnameInNav": true,
     "showInheritedInNav": true,
     "default": {
-      "outputSourceFiles": true,
+      "outputSourceFiles": false,
       "staticFiles": {
         "include": ["samples"]
 

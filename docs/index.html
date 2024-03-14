@@ -132,6 +132,59 @@
 <blockquote>
 <p>Works with openai Assistant api and azureai Assistant api</p>
 </blockquote>
+<h2>@sassoftware/viya-assistantjs</h2>
+<p>@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
+key features</p>
+<ol>
+<li>Write your first assistant in a few minutes.</li>
+<li>Supports both openai Assistant and azureai Assistant.</li>
+<li>Uses the azureai API pattern to support openai Assistant.
+This allows switching between the two with simple configuration changes.</li>
+<li>It comes with a builtin tools for integration with Viya
+<ul>
+<li>listing reports, librefs</li>
+<li>listing tables in a specified library</li>
+<li>retrieving data from a specified table</li>
+</ul>
+</li>
+<li>Append to/or replace the builtin tools with your own tools</li>
+<li>Run the library in nodejs or browser enviroment - usually a react application</li>
+<li>Comes with documentation to make the journey less painful</li>
+</ol>
+<h2>The main loop for your Assistant</h2>
+<blockquote>
+<p>Install dependencies
+setup the config object and call the chat function below</p>
+</blockquote>
+<pre class="prettyprint source lang-javascript"><code>async function chat(config) {
+  //Setup assistant
+  let gptControl = await setupAssistant(config);
+
+  // create readline interface and chat with user
+  const rl = readline.createInterface({ input, output });
+
+  // process user input in a loop
+  while (true) {
+    let prompt = await rl.question('>');
+    // exit session
+    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
+      rl.close();
+      break;
+    }
+    // let assistant process the prompt
+    let promptInstructions = ' ';
+    try {
+      // run prompt
+      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+
+
+</code></pre>
 <h2>What is the ASSISTANT?</h2>
 <p>The explanation is from
 <a href="https:%5C/%5C/platform.openai.com/docs/assistants/overview?context=with-streaming">https://platform.openai.com/docs/assistants/overview?context=with-streaming</a></p>
@@ -162,26 +215,7 @@ and attached to an instance of the assistant.
 I think of it as an easy way to create a RAG.</li>
 </ol>
 <p>a. Note: Unfortunately I have not been able to find a version on azureai
-that supports retrieval. Hopefully this will be resolved soon.</p>
-<h2>@sassoftware/viya-assistantjs</h2>
-<p>@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
-key features</p>
-<ol>
-<li>Write your first assistant in a few minutes.</li>
-<li>Supports both openai Assistant and azureai Assistant.</li>
-<li>Uses the azureai API pattern to support openai Assistant.
-This allows switching between the two with simple configuration changes.</li>
-<li>It comes with a builtin tools for integration with Viya
-<ul>
-<li>listing reports, librefs</li>
-<li>listing tables in a specified library</li>
-<li>retrieving data from a specified table</li>
-</ul>
-</li>
-<li>Append to/or replace the builtin tools with your own tools</li>
-<li>Run the library in nodejs or browser enviroment - usually a react application</li>
-<li>Comes with documentation to make the journey less painful</li>
-</ol>
+that supports retrieval. Hopefully this will be resolved soon.(https://github.com/Azure/azure-sdk-for-js/issues/28550)</p>
 <h2>Usage Notes</h2>
 <p>Please refer to the documentation and tutorials
 for details on using this library

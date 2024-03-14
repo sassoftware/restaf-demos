@@ -32,7 +32,7 @@ async function uploadFile(filename, fileHandle,content, purpose, gptControl) {
   // looks like it is possible to create a file with null file id
   currentFileIds = currentFileIds.filter((v) => v != null);
   /*
-  if (gptControl.retrievalFlag === false){
+  if (gptControl.retrieval === false){
     return currentFileIds;
   }
   */
@@ -49,6 +49,6 @@ async function uploadFile(filename, fileHandle,content, purpose, gptControl) {
       throw new Error(`Failed to update assistant with new file ${filename}`);
     }
 
-  return {notes: (gptControl.retrievalFlag)? "Retrieval enabled" : "Retrieval disabled"}, currentFileIds;
+  return {notes: (gptControl.retrieval)? "Retrieval enabled" : "Retrieval disabled"}, currentFileIds;
 }
 export default uploadFile;

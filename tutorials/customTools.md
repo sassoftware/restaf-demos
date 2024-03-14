@@ -32,35 +32,57 @@ let customTools: [
   {
     type: 'function',
     function: {
-      name: 'SASCatalog',
-      description: `Searches thru SAS Information Catalog for desired information`,
+      name: "runSAS",
+      description: "run the specified file. The file is a path to the sas program",
       parameters: {
-        properties:{
-          information: {
-            type: 'string',
-            description: `finds the specified information in
-                           SAS Catalog`
-          }
-        }
-        type: 'object',
-        required: ['information']
-      }
+        properties: {
+          file: {
+            type: "string",
+            description: "this is the file to run",
+          },
+        },
+        type: "object",
+        required: ["file"],
+      },
     }
   }
 ];
 
-//handler for the custom tool SASCatalog
-async function SASCatalog(params, appEnv) {
-  let {information} =  params;
-  let r = {
-    name: 'SASCatalog',
-    params: params,
-    notes: 'Add code to do some real work'
+//handler for running sas code
+const runSASFunctionSpec = {
+  name: "runSAS",
+  description: "run the specified file. The file is a path to the sas program",
+  parameters: {
+    properties: {
+      file: {
+        type: "string",
+        description: "this is the file to run",
+      },
+    },
+    type: "object",
+    required: ["file"],
+  },
+};
+
+async function runSAS(params, appEnv) {
+  let { file } = params;
+  let { store, session } = appEnv;
+  let src;
+  try {
+    src = await fss.readFile(file, "utf8");
+  } catch (err) {
+    console.log(err);
+    return "Error reading file " + file;
   }
-  return JSON.stringify(r);
-}
-let functionList = {
-  SASCatalog: SASCatalog
+
+  if (appEnv.source === "cas") {
+    let r = await caslRun(store, session, src, {}, true);
+    return JSON.stringify(r.results);
+  } else {
+    let computeSummary = await computeRun(store, session, src);
+    let log = await computeResults(store, computeSummary, "log");
+    return logAsArray(log);
+  }
 }
 // setup configuration
 let config = {
@@ -77,6 +99,8 @@ let config = {
 
   
   domainTools: {tools: tools, functionList: functionList, instructions: '', replace: false},
+  code:  true,
+  retrievel: true
 
   viyaConfig: {
     logonPayload: {

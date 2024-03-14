@@ -197,7 +197,7 @@
         
         <span class="code-name">
             
-                cancelRun<span class="signature">(gptControl)</span><span class="type-signature"></span>
+                cancelRun<span class="signature">(gptControl, threadid<span class="signature-attributes">opt</span>, runid<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -233,6 +233,8 @@
             <th>Type</th>
 
             
+            <th>Attributes</th>
+            
 
             
 
@@ -259,10 +261,88 @@
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
 
-  <td class="description last"><p>gpt  session control object
+  <td class="description last"><p>gpt  session control object</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>threadid</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">string</code>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>thread id</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>runid</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">string</code>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>run id
 returns {promise} - status (null if no run or thread or failed to cancel)</p></td>
 </tr>
 
@@ -308,13 +388,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     
-        <p class="tag-source">
-            <a href="src_cancelRun.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_cancelRun.js.html">src/cancelRun.js</a>, <a href="src_cancelRun.js.html#line5">line 5</a>
-            </span>
-        </p>
-    
 </dl>
 
 
@@ -359,7 +432,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                closeAssistant<span class="signature">(gptControl, assistantid)</span><span class="type-signature"> &rarr; {promise}</span>
+                closeAssistant<span class="signature">(gptControl, assistantid<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -395,6 +468,8 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             <th>Type</th>
 
             
+            <th>Attributes</th>
+            
 
             
 
@@ -414,12 +489,20 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
   <td class="type">
   
       
-<code class="param-type">object</code>
+<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
 
 
   
   </td>
 
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -445,6 +528,16 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
   
   </td>
 
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -493,13 +586,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="src_deleteAssistant.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_deleteAssistant.js.html">src/deleteAssistant.js</a>, <a href="src_deleteAssistant.js.html#line5">line 5</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -618,7 +704,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
   <td class="type">
   
       
-<code class="param-type">object</code>
+<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
 
 
   
@@ -697,13 +783,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="src_getLatestMessage.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_getLatestMessage.js.html">src/getLatestMessage.js</a>, <a href="src_getLatestMessage.js.html#line13">line 13</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -936,13 +1015,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     
-        <p class="tag-source">
-            <a href="src_runAssistant.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_runAssistant.js.html">src/runAssistant.js</a>, <a href="src_runAssistant.js.html#line10">line 10</a>
-            </span>
-        </p>
-    
 </dl>
 
 
@@ -1071,7 +1143,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
   <td class="type">
   
       
-<code class="param-type">config</code>
+<code class="param-type"><a href="global.html#config">config</a></code>
 
 
   
@@ -1125,13 +1197,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="src_setupAssistant.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_setupAssistant.js.html">src/setupAssistant.js</a>, <a href="src_setupAssistant.js.html#line15">line 15</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -1354,13 +1419,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="src_uploadFile.js.html" class="button">View Source</a>
-            <span>
-                <a href="src_uploadFile.js.html">src/uploadFile.js</a>, <a href="src_uploadFile.js.html#line14">line 14</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -1789,12 +1847,357 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line42">line 42</a>
-            </span>
-        </p>
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">object</code>
+
+
+    </span>
+
+<h4 class="name" id="config">
+    <a class="href-link" href="#config">#</a>
+    
+    <span class="code-name">
+        config
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>setup configurations</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>provider</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>provider name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>model</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>model name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>credentials</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#credentials">credentials</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>credentials object</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistantid</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>assistant id</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistantName</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>assistant name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>threadid</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>thread i</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>domainTools</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#toolspecs">toolspecs</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>domain tools</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>viyaConfig</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>viya config</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>logLevel</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>log level</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>code</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true enable code-interpreter</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>retrieval</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true enable retrieval</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
     
 </dl>
 
@@ -1940,13 +2343,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line10">line 10</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -2308,6 +2704,29 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 </tr>
 
         
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>retrievalFlag</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>retrieval flag</p></td>
+</tr>
+
+        
         </tbody>
     </table>
 </div>
@@ -2345,13 +2764,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line60">line 60</a>
-            </span>
-        </p>
     
 </dl>
 
@@ -2547,326 +2959,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line1">line 1</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-    <span class="method-parameter is-pulled-right">
-        <label>Type:</label>
-        
-<code class="param-type">object</code>
-
-
-    </span>
-
-<h4 class="name" id="setupConfig">
-    <a class="href-link" href="#setupConfig">#</a>
-    
-    <span class="code-name">
-        setupConfig
-    </span>
-    
-</h4>
-
-
-
-
-<div class="description">
-    <p>setup configurations</p>
-</div>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>provider</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>provider name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>model</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>model name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>credentials</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type"><a href="global.html#credentials">credentials</a></code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>credentials object</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>assistantid</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>assistant id</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>assistantName</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>assistant name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>threadid</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>thread i</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>domainTools</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type"><a href="global.html#toolspecs">toolspecs</a></code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>domain tools</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>viyaConfig</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>viya config</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>logLevel</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>log level</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line26">line 26</a>
-            </span>
-        </p>
-    
 </dl>
 
 
@@ -3057,13 +3149,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    
-        <p class="tag-source">
-            <a href="types.js.html" class="button">View Source</a>
-            <span>
-                <a href="types.js.html">types.js</a>, <a href="types.js.html#line17">line 17</a>
-            </span>
-        </p>
     
 </dl>
 

@@ -6,7 +6,7 @@
  * @async
  * @description - Delete assistant
  * @function closeAssistant
- * @param {object} gptControl - gpt session control object
+ * @param {gptControl} gptControl - gpt session control object
  * @param {object} [assistantid] - Assistant id
  * @returns {promise} - status string 
  */
