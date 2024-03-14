@@ -1,7 +1,9 @@
 
+import fss from 'fs/promises';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
+import restaflib from '@sassoftware/restaflib';
 
 // this import is to get token and host for Viya - created with sas-viya auth login|loginCode
 // replace the next two lines to suit your environment
@@ -16,47 +18,54 @@ let customTools = [
   {
     type: 'function',
     function: {
-      name: 'runSASLocalFile',
-      description:
-        'run the specified file. The file is a path to the sas program',
+      name: "runSASLocalFile",
+      description: "run the specified program", 
       parameters: {
         properties: {
-          file: {
-            type: 'string',
-            description: 'this is the file to run',
+          program: {
+            type: "string",
+            description: "the name of the program to run",
           },
         },
-        type: 'object',
-        required: ['file'],
-      }
+        type: "object",
+        required: ["program"],
+      },
     }
   }
 ];
 
 //handler running sas code from a local file
 async function runSASLocalFile(params, appEnv) {
-  let { file } = params;
+  let { program} = params;
   let { store, session } = appEnv;
   let src;
   try {
-    src = await fss.readFile(file, "utf8");
+    src = await fss.readFile(program, "utf8");
   } catch (err) {
     console.log(err);
-    return "Error reading file " + file;
+    return "Error reading program " + file;
   }
-
-  if (appEnv.source === "cas") {
-    let r = await caslRun(store, session, src, {}, true);
-    return JSON.stringify(r.results);
-  } else {
-    let computeSummary = await computeRun(store, session, src);
-    let log = await computeResults(store, computeSummary, "log");
-    return logAsArray(log);
+  console.log(src);
+  console.log(store)
+  debugger;
+  try {
+    if (appEnv.source === "cas") {
+      let r = await restaflib.caslRun(store, session, src, {}, true);
+      console.log(r);
+      return JSON.stringify(r.results);
+    } else {
+      let computeSummary = await computeRun(store, session, src);
+      let log = await restaflib.computeResults(store, computeSummary, "log");
+      return logAsArray(log);
+    }
+  } catch (err) {
+    console.log(err);
+    return "Error running program " + program;
   }
 }
 
 let functionList = {
-  runSASFile: runSASFile
+  runSASLocalFile: runSASLocalFile
 }
 
 let instructions = 
@@ -66,16 +75,18 @@ let instructions =
  
 // setup configuration
 let config = {
-  provider: 'openai', 
-  model: 'gpt-4-turbo-preview', 
+  provider: 'azureai', 
+  model: process.env.AZUREAI_MODEL,
   credentials: {
-    key: process.env.OPENAI_KEY, // for security get it from environment
-    endPoint: null
+    key: process.env.AZUREAI_KEY, // for security get it from environment
+    endPoint: process.env.AZUREAI_ENDPOINT
   },
-  assistantid: '0', //let system create a new assistant
+  assistantid: '0', //let system create a new assistant 
   assistantName: "SAS_ASSISTANT_EXTEND",
-  threadid: '0', // let system create a new thread
+  threadid: '-1', // let system create a new thread or use last thread used but the assistant
   domainTools: {tools: customTools, functionList: functionList, instructions: instructions, replace: false},
+  code: true,
+  retrieval: false,
 
   viyaConfig: {
     logonPayload: {
@@ -84,7 +95,7 @@ let config = {
       token: token,// viya token | null
       tokenType: 'bearer'// if token is specified
       },
-    source: 'none' 
+    source: 'cas' 
   }  
 }
 
