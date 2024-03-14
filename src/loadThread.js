@@ -7,7 +7,7 @@
  * @private
  * @function loadThread
  * @description   new thread or open existing thread
- * @param {object} gptControl - gptControl object
+ * @param {gptControl} gptControl - gptControl object
  * @returns {promise} - return thread object
  */
 async function loadThread(gptControl) {
@@ -35,7 +35,7 @@ async function loadThread(gptControl) {
     console.log(error); 
     throw new Error(`Error status ${error.status}. Failed to create thread. See console for details.`);
   }
-  debugger;
+  
 
   // local rules: save the thread id in the assistant metadata
   

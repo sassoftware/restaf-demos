@@ -32,7 +32,7 @@ function functionSpecs(provider) {
   specs.push(listFunctionsinAppSpec);
 
   // Create tools array  for use with Assistant API
-  let tools = [{ type: "retrieval" }];
+  let tools = [{ type: "code_interpreter" }];
   if (provider === "openai") {
     tools.push({ type: "retrieval" });
   }
@@ -185,7 +185,7 @@ const listSASDataLibFunctionSpec = {
 const listSASTablesFunctionSpec = {
   name: "listSASTables",
   description:
-    `for a given caslib or libref get the list available tables(ex: list tables ). ",
+    `for a given caslib or libref get the list available tables(ex: list tables ). `,
   parameters: {
     properties: {
       library: {

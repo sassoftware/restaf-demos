@@ -40,7 +40,7 @@ function functions() {
 async function _listSASObjects(params, appEnv) {
   let { resource, limit } = params;
   let store = appEnv.store;
-  debugger;
+  
   limit = limit == null ? 10 : limit;
   if (
     ["files", "folders", "reports"].includes(resource.toLowerCase()) === false
@@ -57,7 +57,7 @@ async function _listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList().toJS();
-  debugger;
+  
   return JSON.stringify(items);
 }
 async function _listSASDataLib(params, appEnv) {
@@ -68,11 +68,7 @@ async function _listSASDataLib(params, appEnv) {
       start: (start == null) ? 0 : start
     },
   };
-  console.log('payload', payload);
-  debugger;
   let r = await getLibraryList(appEnv, payload);
-  debugger;
-  console.log(r);
   return JSON.stringify(r);
 }
 async function _listSASTables(params, appEnv) {
@@ -89,14 +85,14 @@ async function _listSASTables(params, appEnv) {
 async function _listColumns(params, appEnv) {
   let { table } = params;
   let { source } = appEnv;
-  debugger;
+  
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
   }
 
   let r =  await getTableList(library, appEnv, p);
-  debugger;
+  
   return JSON.stringify(r);
 }
 async function _getData(params, appEnv) {
@@ -176,7 +172,6 @@ async function _idescribeTable(params, appEnv) {
   let { table, limit, format, where, csv } = params;
   let { source, sessionID } = appEnv;
   csv = csv == null ? false : csv;
-  console.log(params);
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
@@ -202,12 +197,12 @@ async function _idescribeTable(params, appEnv) {
     appControl,
     sessionID
   );
-  debugger;
+  
   let describe={};
   try {
     await restafedit.scrollTable("first", tappEnv);
     let tableSummary = await restafedit.getTableSummary(tappEnv);
-    debugger;
+    
     describe = {
       table: iTable,
       tableSummary: tableSummary,

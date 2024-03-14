@@ -10,7 +10,7 @@
  * @description - Poll run status since there is no streaming support
  * @function pollRun
  * @param {object} run - active run object 
- * @param {object} gptControl - gpt  session control object
+ * @param {gptControl} gptControl - gpt  session control object
  * @returns {object} - runStatus from client.beta.threads.runs.retrieve
  * @example - Will wait for completion(!(queued,in_progress, cancelling))
  */
@@ -23,14 +23,14 @@ async function pollRun(run, gptControl) {
   }
   // Since there is no streaming support, sleep and poll the status
   do {
-    debugger;
+    
 
    runStatus = await assistantApi.getRun(thread.id, run.id);
     
     console.log("-------------------", runStatus.status);
     if ( !(runStatus.status === "queued" ||runStatus.status === "in_progress" ||
           runStatus.status === "cancelling")) {
-      debugger;
+      
       done = runStatus.status;
     } else {
       await sleep(2000);

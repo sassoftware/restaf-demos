@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> src/required_action.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -101,94 +103,107 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>src/required_action.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>A nodejs starter library to help SAS users build ASSISTANTS</h1>
-<blockquote>
-<p>Works with openai Assistant api and azureai Assistant api</p>
-</blockquote>
-<h2>What is the ASSISTANT?</h2>
-<p>The explanation is from
-<a href="https:%5C/%5C/platform.openai.com/docs/assistants/overview?context=with-streaming">https://platform.openai.com/docs/assistants/overview?context=with-streaming</a></p>
-<p>The Assistants API allows you to build AI assistants within your own
-applications.</p>
-<p>An Assistant has instructions and can leverage models, tools,
-and knowledge to respond to user queries. The Assistants API currently supports
-three types of tools: Code Interpreter, Retrieval, and Function calling.</p>
-<p>You can explore the capabilities of the Assistants API using the
-Assistants playground or by building a step-by-step integration application</p>
-<p><em>Overview</em>
-A typical integration of the Assistants API has the following flow:</p>
-<p>Create an Assistant by defining its custom instructions and picking a model.
-If helpful, add files and enable tools like Code Interpreter, Retrieval, and
-Function calling.</p>
-<ol>
-<li>Create a Thread when a user starts a conversation.</li>
-<li>Add Messages to the Thread as the user asks questions.</li>
-<li>Run the Assistant on the Thread to generate a response by calling the model
-and the tools.</li>
-</ol>
-<h2>Why use Assistant API?</h2>
-<ol>
-<li>The conversation thread is maintained by the system.</li>
-<li>The code interpreter tool can generate and run python code</li>
-<li>The retrieval tool works with files that have been uploaded
-and attached to an instance of the assistant.
-I think of it as an easy way to create a RAG.</li>
-</ol>
-<p>a. Note: Unfortunately I have not been able to find a version on azureai
-that supports retrieval. Hopefully this will be resolved soon.</p>
-<h2>@sassoftware/viya-assistantjs</h2>
-<p>@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
-key features</p>
-<ol>
-<li>Write your first assistant in a few minutes.</li>
-<li>Supports both openai Assistant and azureai Assistant.</li>
-<li>Uses the azureai API pattern to support openai Assistant.
-This allows switching between the two with simple configuration changes.</li>
-<li>It comes with a builtin tools for integration with Viya
-<ul>
-<li>listing reports, librefs</li>
-<li>listing tables in a specified library</li>
-<li>retrieving data from a specified table</li>
-</ul>
-</li>
-<li>Append to/or replace the builtin tools with your own tools</li>
-<li>Run the library in nodejs or browser enviroment - usually a react application</li>
-<li>Comes with documentation to make the journey less painful</li>
-</ol>
-<h2>Usage Notes</h2>
-<p>Please refer to the documentation and tutorials
-for details on using this library
-See the gettingStarted tutorial to begin programming.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+/*
+ * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import pollRun from "./pollRun.js";
+
+/**
+ * @async
+ * @private
+ * @function required_action
+ * @description   Get the required action from the run status and execute the action
+ * @param {object} runStatus - run status object
+ * @param {gptControl} gptControl - gptControl object
+ * @returns {promise} - return the output status
+ *  
+ * @example
+ *  let outputStatus = await required_action(runStatus, gptControl);
+ */
+
+async function required_action(runStatus,gptControl) {
+  let{assistantApi,appEnv, domainTools, provider, thread, run} = gptControl;
+  let {functionList} = domainTools;
+  
+  // get the required actions from the run status
+
+  let requiredActions = (provider === 'openai') 
+                          ? runStatus.required_action.submit_tool_outputs.tool_calls
+                          : runStatus.requiredAction.submitToolOutputs.toolCalls;
+  
+  let toolsOutput = [];
+  for (let action of requiredActions) {
+    let functionName = action.function.name;
+
+    console.log('Requested function: ', functionName);
+    let params = JSON.parse(action.function.arguments);
+    
+    let target = functionList[functionName];
+    if (target == null){
+      let err = (`Function ${functionName} not found. 
+      Probable causes: 
+        Using thread that had outdated tool references.
+        Currrent specs point has mistmatch with function name
+        `);
+      toolsOutput.push(setError(action.id, err, provider)); 
+    } else {
+      try {
+        
+        let response = await functionList[functionName](params, appEnv, gptControl);
+        if (provider === 'openai') {
+          toolsOutput.push({
+            tool_call_id: action.id,
+            output: JSON.stringify(response),
+          });
+        } else {
+          toolsOutput.push({
+            toolCallId: action.id,
+            output: JSON.stringify(response),
+          });
+        }
+      }
+      catch(err){
+        toolsOutput.push(setError(action.id, err, provider));
+      }
+    }
+ }
+// submit the outputs to the thread
+ 
+ let newRun = (provider === 'openai') 
+            ? await assistantApi.submitToolOutputsToRun(
+                thread.id, run.id, { tool_outputs: toolsOutput })
+            : await assistantApi.submitToolOutputsToRun( 
+                thread.id, run.id, toolsOutput);
+
+// wait for output to appear in the thread messages
+ let outputStatus = await pollRun(newRun, gptControl);
+
+return outputStatus;
+}
+function setError(actionid, error, provider){
+  if (provider === 'openai') {
+    return {tool_call_id: actionid, output: JSON.stringify(error)};
+  } else {
+    return {toolCallId: actionid, output: JSON.stringify(error)};
+  }
+}
+
+export default required_action;</code></pre>
+        </article>
     </section>
-
-
 
 
 

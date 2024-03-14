@@ -60,8 +60,16 @@
                     <div class="dropdown-menu">
                         <div class="dropdown-content">
                         
+                            <a class="dropdown-item" href="tutorial-customTools.html">
+                                customTools
+                            </a>
+                        
                             <a class="dropdown-item" href="tutorial-gettingStarted.html">
                                 gettingStarted
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-Useful links.html">
+                                Useful links
                             </a>
                         
                         </div>
@@ -86,7 +94,7 @@
             
             <nav>
                 
-                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li></ul></div>
+                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
                 
             </nav>
         </div>
@@ -115,7 +123,7 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 
-// this import is to get token and host for Viya
+// this import is to get token and host for Viya - created with sas-viya auth login|loginCode
 // replace the next two lines to suit your environment
 // see this link for the getToken function
 import getToken from './getToken.js'; 
@@ -151,6 +159,7 @@ chat(config)
   .catch((err) => console.log(err));
 
 async function chat(config) {
+  //Setup assistant
   let gptControl = await setupAssistant(config);
 
   // create readline interface and chat with user
@@ -167,6 +176,7 @@ async function chat(config) {
     // let assistant process the prompt
     let promptInstructions = ' ';
     try {
+      // run prompt
       let response = await runAssistant(gptControl, prompt,promptInstructions);
       console.log(response);
     } catch (err) {
@@ -202,7 +212,7 @@ several Viya assets:</p>
 </li>
 </ul>
 <h2>Peak ahead</h2>
-<p>In the next example will discuss how to add your own tools.</p>
+<p>In the next example will discuss how to add your own tools,</p>
 </article>
 
 </section>

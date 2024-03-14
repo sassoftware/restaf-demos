@@ -9,8 +9,7 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import 'dotenv/config';
 import getToken from './lib/getToken.js';
-import catalogTools from './catalogTools.js';
-console.log(catalogTools());
+
 import {
   setupAssistant,
   runAssistant,
@@ -23,29 +22,13 @@ import {
 
 // setup configuration
 let config = setupConfig(process.env.OPENAI_PROVIDER);
-console.log('-------------------------------------------------');
-console.log('Configuration: ', config);
-console.log('-------------------------------------------------');
-config.domainTools = catalogTools();
 chat(config)
   .then((r) => console.log('done'))
   .catch((err) => console.log(err));
 
 async function chat(config) {
   let gptControl = await setupAssistant(config);
-  console.log('--------------------------------------');
-  console.log('Current session:');
-  console.log('Provider: ', gptControl.provider);
-  console.log('Model: ', gptControl.model);
-  console.log(
-    'Assistant: ',
-    gptControl.assistant.name,
-    'Assistant id',
-    gptControl.assistant.id
-  );
-  console.log('Threadid: ', gptControl.thread.id);
-  console.log('Viya Source:', gptControl.appEnv.source);
-  console.log('--------------------------------------');
+ 
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -57,7 +40,7 @@ async function chat(config) {
       break;
     }
     let cmda = prompt.toLocaleLowerCase().split(' ');
-    let cmd = cmda[0];
+    let cmd = cmda[0].trim();
     if (cmd === 'delete' && cmda[1] === 'assistant') {
       cmd = 'deleteAssistant'; // delete assistant
     }
@@ -66,11 +49,15 @@ async function chat(config) {
     }
     try {
       switch (cmd) {
-        case '<': {
+        case 'upload': {
           // upload file and attach to assistant
-          let f = prompt.substring(1).trim();
-          let fileHandle = fs.createReadStream(f);
-          let r = await uploadFile(fileHandle, 'assistants', gptControl);
+          let f = cmda[1].trim();
+          console.log(f);
+          debugger;
+          let fileHandle = fs.createReadStream(f); //for openai
+          debugger;
+          let content = fs.readFileSync(f); //for azureai
+          let r = await uploadFile(f,fileHandle, content, 'assistants', gptControl);
           console.log(r);
           break;
         }
@@ -122,6 +109,8 @@ function setupConfig(provider) {
       assistantid: process.env.OPENAI_ASSISTANTID,
       assistantName: process.env.OPENAI_ASSISTANTNAME,
       threadid: '-1', //process.env.OPENAI_THREADID,
+      code: true,
+      retrieval: true,
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -134,6 +123,8 @@ function setupConfig(provider) {
       assistantName: process.env.AZUREAI_ASSISTANTNAME,
       threadid: '-1', // process.env.AZUREAI_THREADID,
       logLevel: null,
+      code: true,
+      retrieval: false,
     },
   };
   let r = config[provider];
@@ -154,7 +145,7 @@ function setupConfig(provider) {
     };
     r.viyaConfig = {
       logonPayload: logonPayload,
-      source: 'cas', //process.env.APPENV_SOURCE,
+      source: 'none', //process.env.APPENV_SOURCE,
     };
   }
   return r;

@@ -19,7 +19,7 @@ import string2Table from "./lib/string2Table.js";
 import rows2csv from "./lib/rows2csv.js";
 const fss = fs.promises;
 const { caslRun, computeRun, computeResults } = restaflib;
-const { getLibraryList, getTableList, getTableColumns } = restafedit;
+//const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
 function functions(functionSpecs) {
   let flist = {
@@ -33,7 +33,7 @@ function functions(functionSpecs) {
         return { functionName: f.name, description: f.description };
       });
       */
-     let r = JSON.stringify
+
      console.log(r);
       return r;
     };
@@ -42,6 +42,27 @@ function functions(functionSpecs) {
 
   flist.activeFunctions = wrapper(functionSpecs);
   return flist;
+}
+
+async function runSAS(params, appEnv) {
+  let { file } = params;
+  let { store, session } = appEnv;
+  let src;
+  try {
+    src = await fss.readFile(file, "utf8");
+  } catch (err) {
+    console.log(err);
+    return "Error reading file " + file;
+  }
+
+  if (appEnv.source === "cas") {
+    let r = await caslRun(store, session, src, {}, true);
+    return JSON.stringify(r.results);
+  } else {
+    let computeSummary = await computeRun(store, session, src);
+    let log = await computeResults(store, computeSummary, "log");
+    return logAsArray(log);
+  }
 }
 
 async function keywords(params) {

@@ -35,7 +35,7 @@ async function required_action(runStatus,gptControl) {
 
     console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
-    debugger;
+    
     let target = functionList[functionName];
     if (target == null){
       let err = (`Function ${functionName} not found. 
@@ -46,7 +46,7 @@ async function required_action(runStatus,gptControl) {
       toolsOutput.push(setError(action.id, err, provider)); 
     } else {
       try {
-        debugger;
+        
         let response = await functionList[functionName](params, appEnv, gptControl);
         if (provider === 'openai') {
           toolsOutput.push({
@@ -66,7 +66,7 @@ async function required_action(runStatus,gptControl) {
     }
  }
 // submit the outputs to the thread
- debugger;
+ 
  let newRun = (provider === 'openai') 
             ? await assistantApi.submitToolOutputsToRun(
                 thread.id, run.id, { tool_outputs: toolsOutput })

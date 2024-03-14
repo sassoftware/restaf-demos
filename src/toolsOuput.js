@@ -16,7 +16,6 @@ import pollRun from "./pollRun.js";
 
 async function toolsOutput(gptControl, run, toolsOutput) {
   let {thread, assistantApi} = gptControl;
-  console.log('Adding output to messages');
   let newRun = await assistantApi.submitToolOutputs(
    thread.id, run.id, { tool_outputs: toolsOutput });
  

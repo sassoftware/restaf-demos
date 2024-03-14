@@ -12,7 +12,7 @@
  */
 async function getLatestMessage(gptControl, limit) {  
   let {thread, assistantApi} = gptControl;
-  debugger;
+  
   const messages = await assistantApi.listMessages(thread.id, {limit:limit});
  
   let output = [];

@@ -7,7 +7,7 @@
 The explanation is from
 <https://platform.openai.com/docs/assistants/overview?context=with-streaming>
 
-The Assistants API allows you to build AI assistants within your own 
+The Assistants API allows you to build AI assistants within your own
 applications.
 
 An Assistant has instructions and can leverage models, tools,
@@ -38,7 +38,7 @@ Function calling.
    I think of it as an easy way to create a RAG.
 
   a. Note: Unfortunately I have not been able to find a version on azureai
-  that supports retrieval. Hopefully this will be resolved soon.
+  that supports retrieval. Hopefully this will be resolved soon.(https://github.com/Azure/azure-sdk-for-js/issues/28550)
 
 ## @sassoftware/viya-assistantjs
 
@@ -53,7 +53,6 @@ This allows switching between the two with simple configuration changes.
     - listing reports, librefs
     - listing tables in a specified library
     - retrieving data from a specified table
-    - executing SAS code or casl code
 5. Append to/or replace the builtin tools with your own tools
 6. Run the library in nodejs or browser enviroment - usually a react application
 7. Comes with documentation to make the journey less painful

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> src/createAssistant.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -101,94 +103,80 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>src/createAssistant.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>A nodejs starter library to help SAS users build ASSISTANTS</h1>
-<blockquote>
-<p>Works with openai Assistant api and azureai Assistant api</p>
-</blockquote>
-<h2>What is the ASSISTANT?</h2>
-<p>The explanation is from
-<a href="https:%5C/%5C/platform.openai.com/docs/assistants/overview?context=with-streaming">https://platform.openai.com/docs/assistants/overview?context=with-streaming</a></p>
-<p>The Assistants API allows you to build AI assistants within your own
-applications.</p>
-<p>An Assistant has instructions and can leverage models, tools,
-and knowledge to respond to user queries. The Assistants API currently supports
-three types of tools: Code Interpreter, Retrieval, and Function calling.</p>
-<p>You can explore the capabilities of the Assistants API using the
-Assistants playground or by building a step-by-step integration application</p>
-<p><em>Overview</em>
-A typical integration of the Assistants API has the following flow:</p>
-<p>Create an Assistant by defining its custom instructions and picking a model.
-If helpful, add files and enable tools like Code Interpreter, Retrieval, and
-Function calling.</p>
-<ol>
-<li>Create a Thread when a user starts a conversation.</li>
-<li>Add Messages to the Thread as the user asks questions.</li>
-<li>Run the Assistant on the Thread to generate a response by calling the model
-and the tools.</li>
-</ol>
-<h2>Why use Assistant API?</h2>
-<ol>
-<li>The conversation thread is maintained by the system.</li>
-<li>The code interpreter tool can generate and run python code</li>
-<li>The retrieval tool works with files that have been uploaded
-and attached to an instance of the assistant.
-I think of it as an easy way to create a RAG.</li>
-</ol>
-<p>a. Note: Unfortunately I have not been able to find a version on azureai
-that supports retrieval. Hopefully this will be resolved soon.</p>
-<h2>@sassoftware/viya-assistantjs</h2>
-<p>@sassoftware/viya-assistantjs is a JavaScript library(esm) with the following
-key features</p>
-<ol>
-<li>Write your first assistant in a few minutes.</li>
-<li>Supports both openai Assistant and azureai Assistant.</li>
-<li>Uses the azureai API pattern to support openai Assistant.
-This allows switching between the two with simple configuration changes.</li>
-<li>It comes with a builtin tools for integration with Viya
-<ul>
-<li>listing reports, librefs</li>
-<li>listing tables in a specified library</li>
-<li>retrieving data from a specified table</li>
-</ul>
-</li>
-<li>Append to/or replace the builtin tools with your own tools</li>
-<li>Run the library in nodejs or browser enviroment - usually a react application</li>
-<li>Comes with documentation to make the journey less painful</li>
-</ol>
-<h2>Usage Notes</h2>
-<p>Please refer to the documentation and tutorials
-for details on using this library
-See the gettingStarted tutorial to begin programming.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @async
+ * @private
+ * @function createAssistant
+ * @description   Create a new assistant
+ * @param {string} client - client object
+ * @param {object} gptControl - gptControl object
+ * @returns {promise} - return assistant object
+ */
+
+
+async function createAssistant(gptControl) {
+  let { assistantName, model, assistantid, instructions, domainTools, assistantApi } = gptControl;
+ 
+  // create args for assistant create
+  let createArgs = {
+    name: assistantName,
+    instructions: instructions,
+    model: model, 
+    tools: domainTools.tools,
+  };
+  
+  let assistant = null;
+  let newAssistant = (assistantid === "0" || assistantid == null);
+  if (newAssistant == false){ 
+    assistant = await assistantApi.getAssistant(assistantid);
+    
+  } else if (assistantName != null) {
+    // local rules: avoid creating a new assistant if one exists
+    // use name to find the assistant
+    // wish there was a way to filter on names in the API call
+    
+    const myAssistants = await assistantApi.listAssistants({
+      order: "desc",
+      limit: "100", 
+    });
+    assistant = myAssistants.data.find((a) => {
+      if (a.name === assistantName) {
+        return a;
+      }
+    });
+    // if first time using this name, create the assistant
+    if (assistant == null) {
+      
+      console.log('Creating new assistant');
+      assistant = await assistantApi.createAssistant(createArgs);
+    }
+  }
+  
+  
+  gptControl.assistantid = assistant.id;
+  gptControl.assistant = assistant;
+
+  return assistant;
+}
+export default createAssistant;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

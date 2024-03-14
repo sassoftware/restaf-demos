@@ -98,7 +98,6 @@ async function setupViya(viyaConfig) {
       appEnv.sessionID = appEnv.compute.sessionID;
     }
   }
-  console.log(appEnv);
   return appEnv;
 }
 export default setupViya;

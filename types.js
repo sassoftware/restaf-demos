@@ -35,6 +35,8 @@
  * @property {toolspecs} domainTools - domain tools
  * @property {object} viyaConfig - viya config
  * @property {string} logLevel - log level
+ * @property {boolean} code - if true enable code-interpreter
+ * @property {boolean} retrieval - if true enable retrieval
  */
 
 

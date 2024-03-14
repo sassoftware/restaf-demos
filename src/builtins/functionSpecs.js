@@ -12,7 +12,7 @@ import instructions from './instructions.js';
  * 
  */
 
-function functionSpecs(provider) {
+function functionSpecs(provider, code, retrieval) {
   let specs = [
     _listSASObjectsFunctionSpec,
     _listSASDataLibFunctionSpec,
@@ -27,13 +27,14 @@ function functionSpecs(provider) {
 
 
   // Create tools array  for use with Assistant API
-  let tools = [
-    {type: 'code_interpreter'}
-  ];
-  if (provider === 'openai') {
-    tools.push({type: 'retrieval'});
+  let tools = [];
+  if (code) {
+    tools.push({ type: 'code_interpreter' });
   }
-  
+  if (retrieval) {
+    tools.push({ type: 'retrieval' });
+  }
+
   specs.forEach((f) => {
     let r = {
       type: "function",
@@ -42,8 +43,8 @@ function functionSpecs(provider) {
     tools.push(r);
   });
 
-  let functionList = functions(specs);
-  let ins = instructions();
+  let functionList = functions();
+
   return { specs: specs, tools: tools, functionList: functionList, instructions: instructions() };
 }
 

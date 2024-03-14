@@ -33,11 +33,17 @@ function apiMapper(client, provider) {
   }
   const createAssistant = (client) => (...args) =>{
     let [options] = args;
+
     return client.beta.assistants.create(options)
   }
 
   const updateAssistant = (client) => (...args) =>{
     let [id, options] = args;
+    if (options.fileIds) {
+      options.file_ids = options.fileIds;
+      delete options.fileIds;
+    }
+    console.log(options);
     return client.beta.assistants.update(id, options);
   }
 
@@ -100,6 +106,17 @@ function apiMapper(client, provider) {
     let [threadid, runid] = args;
     return client.beta.threads.runs.cancel(threadid, runid);
   }
+
+  const uploadFile = (client) => (...args) =>{
+    let [fileHandle, purpose] = args;
+    debugger;
+    let options = {
+      file: fileHandle,
+      purpose: purpose
+    }
+    debugger;
+    return client.files.create(options);
+  }
   let assistantApi = client;
   if (provider === 'openai') {
     assistantApi = {
@@ -116,6 +133,8 @@ function apiMapper(client, provider) {
       createMessage: createMessage(client),
       listMessages: listMessages(client),
      
+      uploadFile: uploadFile(client),
+      
       createRun: createRun(client),
       getRun: getRun(client),
       listRuns: listRuns(client),
