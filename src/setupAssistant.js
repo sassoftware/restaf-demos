@@ -18,6 +18,54 @@ import apiMapper from './apiMapper.js';
  * @description   Setup the assistant
  * @param {config} config - configuration object
  * @returns {promise} - return gptControl object}
+ * @example
+ *  Local rules:
+ *  To avoid creating lots of assistants and threads during
+ * development, you can use the same assistant and thread.
+ * 
+ * Assistant:
+ *   If assistantid is known set it as assistantid. else set it as '0'
+ *  If assistantid is '0' then the assistantName is used to find the assistant.
+ * If assistantName is not found, a new assistant is created using the same name
+ *   
+ * Threads:
+ *  When a thread is created for an Assistant, the threadid is stored in the assistant metadata.  
+ *  So on the next setupAssistant call - if either assistantid or assistantName is specified
+ *  the threadid is retrieved from the assistant metadata.
+ * 
+ * These local rules are probably not ideal, but helps during development.
+ * 
+ *  A sample configuration object is shown below
+ * let config = {
+    provider: 'azureai', // Depending on who your account is with
+    model: process.env.AZUREAI_MODEL,// model name
+    credentials: {
+      key: process.env.AZUREAI_KEY, // obtain from provider
+      endPoint: process.env.AZUREAI_ENDPOINT // obtain from provider
+    },
+    assistantid: '0', //Replace with valid assistant id or 0 for new assistant
+                 
+    assistantName: "SAS_ASSISTANT", //if assistantid is 0, then either an exting id with that name will be used or a new assistant will be created
+    threadid: '-1', // some valid threadid or 0 for new thread or-1 for existing thread stored in Assistant metadata
+    domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
+
+    // fill in the host and token to authenticate to Viya
+    // set the source to cas or compute. 
+    // if you want to run the AI assistant without Viya set source to none
+    viyaConfig: {
+      logonPayload: {
+        authType: 'server',
+        host: host,  // viya url - https://myviyaserver.acme.com
+        token: token,// viya token  - obtained from sas-viya auth login|loginCode
+        tokenType: 'bearer'  
+        },
+      source: 'cas' 
+    },
+    code: true,
+    retrieval: false
+}
+ * 
+ * 
  */
 
 async function setupAssistant(config) {
