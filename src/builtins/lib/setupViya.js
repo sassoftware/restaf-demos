@@ -83,19 +83,24 @@ async function setupViya(viyaConfig) {
   } 
 
   // compute service
-  if (source.indexOf('compute') > 0) {
+  if (source.indexOf('compute') >= 0) {
     appEnv.compute = {
       servers: null
     }
-    let session = await restaflib.computeSetup(store);
-    let ssid = await store.apiCall(appEnv.session.links('self'));
-    appEnv.compute.sessionID = ssid.items('id');
-    if (defaultSource === 'compute') {
-      appEnv.source = 'compute';
-      appEnv.session = session;
-      appEnv.servers = null;
-      appEnv.serverName = null;
-      appEnv.sessionID = appEnv.compute.sessionID;
+    try{ 
+      let session = await restaflib.computeSetup(store);
+      let ssid = await store.apiCall(appEnv.session.links('self'));
+      appEnv.compute.sessionID = ssid.items('id');
+      if (defaultSource === 'compute') {
+        appEnv.source = 'compute';
+        appEnv.session = session;
+        appEnv.servers = null;
+        appEnv.serverName = null;
+        appEnv.sessionID = appEnv.compute.sessionID;
+      }
+    }
+    catch (e) {
+      console.log(JSON.stringify(e, null, 4));
     }
   }
   return appEnv;

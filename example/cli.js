@@ -93,7 +93,7 @@ async function chat(config) {
         }
       }
     } catch (err) {
-      console.log(err);
+      console.log(JSON.stringify(err, null, 4));
     }
   }
 }
@@ -145,7 +145,7 @@ function setupConfig(provider) {
     };
     r.viyaConfig = {
       logonPayload: logonPayload,
-      source: 'none', //process.env.APPENV_SOURCE,
+      source: process.env.APPENV_SOURCE,
     };
   }
   return r;
