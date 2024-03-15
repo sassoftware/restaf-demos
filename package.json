@@ -10,6 +10,7 @@
   "scripts": {
     "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --no-warnings cli",
     "test": "cd example && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
+    "addsas": "cd example && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node clisas.js",
     "debug": "cd example && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --inspect-brk cli.js",
     "build": "rimraf dist && microbundle --name viyaAssistantjs",
     "esm": "webpack  --config webpack.config.mjs",

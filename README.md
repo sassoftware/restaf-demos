@@ -1,6 +1,6 @@
 # @sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya
 
-## Introduction to Assistant API
+## Introduction to azure and openai Assistant API
 
 There are many resources available. This site from Microsoft is a good place to start
 <a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/assistants?source=recommendations">Getting started with Azure OpenAI Assistants (Preview)</a>
@@ -20,6 +20,7 @@ Models I am using:
 
 ## @sassoftware/viya-assistantjs
 
+The document is available [here](https://sassoftware.github.io/restaf-demos/)
 @sassoftware/viya-assistantjs is a JavaScript library with the following
 key features
 
@@ -169,34 +170,34 @@ To do this we have to fill in the domainTools in the configuration.
 1. Give the tool a name. This will also be the name of the function
 that implements the tool.
 
-2. The description is key - This is what helps gpt decide
+2. The description is important - This is what helps gpt decide
  whether this tool can satisfy the request
 
-3. The parameters are what gpt will extract from the prompt
+3. The parameters are what system will extract from the prompt
 and send it to your function as a params object. In this example the
 value of the program will be extracted.
 
 ```javascript
-let customTools = [
+let tools = [
   {
     type: 'function',
     function: {
-      name: "runSASLocalProgram",
-      description: "run the specified program", 
+      name: "processSASProgram",
+      description: "process named SAS program. The program extension must be .sas or .casl",
       parameters: {
         properties: {
-          program: {
+          resource: {
             type: "string",
             description: "the name of the program to run",
           },
         },
         type: "object",
-        required: ["program"],
+        required: ["resource"],
       },
     }
   }
 ];
-
+```
 
 ### Step 2: Create the function to handle the request
 
@@ -204,97 +205,63 @@ let customTools = [
 // You need to add this import to the program
 // import fs from 'fs/promises';
 
-async function runSASLocalProgram(params, appEnv) {
-  let { program} = params;
+async function processSASProgram(params, appEnv) {
+  let { resource} = params;
   let { store, session } = appEnv;
   let src;
-  // Note: Need to replace fs with something else when used in a web app
   try {
-    src = await fs.readFile(program, 'utf8');
+    src = await fs.readFile(resource, "utf8");
   } catch (err) {
     console.log(err);
-    return "Error reading program " + program;
+    return "Error reading program " + resource;
   }
-
   try {
     if (appEnv.source === "cas") {
       let r = await restaflib.caslRun(store, session, src, {}, true);
-      console.log(r);
       return JSON.stringify(r.results);
-    } else {
+    } else if (appEnv) {
       let computeSummary = await computeRun(store, session, src);
-      let log = await restaflib.computeResults(store, computeSummary, 'log');
-      return logAsArray(log);
+      let log = await restaflib.computeResults(store, computeSummary, "log");
+      return  log;
     } else {
-      return 'Viya not setup';
+      return "Cannot run program without a session";
     }
   } catch (err) {
     console.log(err);
-    return 'Error running program ' + program;
+    return "Error running program " + program;
   }
 }
 
-
 ### Step 3: Create the domainTool object in configuration
-
 
 ```javascript
 config.domainTools = {
-  tools: customTools, 
-  functionList: [runSASLocalProgram],
-  instructions: "Use this for some cool stuff",
+  tools: tools, 
+  functionList: {processSASProgram: processSASProgram},
+  instructions: 'Additionally use this tool to run the specified .',
   replace: false // use true if you want to get rid of previous tool definition;
-}
+};
 
 
 ```
 
-### Step 4:
+### Step 4
 
-Run the program
+Run the program as you did befoee
 
-## What is the ASSISTANT?
+### Prompts
 
-The explanation is from
-<https://platform.openai.com/docs/assistants/overview?context=with-streaming>
+The sample program(datastep.casl) is a simple casl program
 
-The Assistants API allows you to build AI assistants within your own
-applications.
+```text
 
-An Assistant has instructions and can leverage models, tools,
-and knowledge to respond to user queries. The Assistants API currently supports
-three types of tools: Code Interpreter, Retrieval, and Function calling.
+action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';
+send_response({casResults={result=result}});
 
-You can explore the capabilities of the Assistants API using the
-Assistants playground or by building a step-by-step integration application
+```
 
-*Overview*
-A typical integration of the Assistants API has the following flow:
+> Here is a sample prompt
 
-Create an Assistant by defining its custom instructions and picking a model.
-If helpful, add files and enable tools like Code Interpreter, Retrieval, and
-Function calling.
+process datastep.casl
 
-1. Create a Thread when a user starts a conversation.
-2. Add Messages to the Thread as the user asks questions.
-3. Run the Assistant on the Thread to generate a response by calling the model
- and the tools.
-
-## Why use Assistant API?
-
-1. The conversation thread is maintained by the system.
-2. The code interpreter tool can generate and run python code
-3. The retrieval tool works with files that have been uploaded
-   and attached to an instance of the assistant.
-   I think of it as an easy way to create a RAG.
-
-  a. Note: Unfortunately I have not been able to find a version on azureai
-  that supports retrieval. Hopefully this will be resolved soon.(https://github.com/Azure/azure-sdk-for-js/issues/28550)
-
-
-
-## Usage Notes
-
-Please refer to the documentation and tutorials
-for details on using this library
-See the gettingStarted tutorial to begin programming.
+>If the run is successful you can query the table that was created.

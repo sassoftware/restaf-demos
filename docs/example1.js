@@ -6,8 +6,8 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 // this import is to get token and host for Viya - created with sas-viya auth login|loginCode
 // replace the next two lines to suit your environment
 // see this link for the getToken function
-import getToken from './getToken.js'; 
-let {host, token} = getToken();
+// import getToken from './getToken.js'; 
+//let {host, token} = getToken();
 
 // setup configuration
 let config = {
@@ -26,8 +26,8 @@ let config = {
     logonPayload: {
       authType: 'server',
       host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token | null
-      tokenType: 'bearer'// if token is specified
+      token: token,// viya token  - obtained from sas-viya auth login|loginCode
+      tokenType: 'bearer'//  
       },
     source: 'cas' 
   }  
