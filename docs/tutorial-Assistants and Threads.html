@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> gettingStarted</title>
+  <title> Assistants and Threads</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -106,118 +106,42 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>gettingStarted</h1>
+                    <h1>Assistants and Threads</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>A step-by-step to creating your first Assistant</h1>
-<blockquote>
-<p>Set type to &quot;module&quot; in your package.json</p>
-</blockquote>
-<h2>Step 1: Install the library into your application</h2>
-<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/viya-assistantjs
-</code></pre>
-<h2>Step 2: Create a simple nodejs application(assistant.js)</h2>
-<p>Here is the skeleton code
-This is a fully functional chat program</p>
-<pre class="prettyprint source lang-javascript"><code>
-import fs from 'fs';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-
-// this import is to get token and host for Viya - created with sas-viya auth login|loginCode
-// replace the next two lines to suit your environment
-// see this link for the getToken function
-import getToken from './getToken.js'; 
-let {host, token} = getToken();
-
-// setup configuration
-let config = {
-  provider: 'openai',// or 'azureai'
-  model: 'gpt-4-turbo-review', // or 'gpt-3-turbo-review'
-  credentials: {
-    key: process.env.OPENAI_KEY, // for safety get it from environment
-    endPoint: null
-  },
-  assistantid: '0', //let system create a new assistant
-  assistantName: &quot;SAS_ASSISTANT&quot;,
-
-  threadid: '0', // let system create a new thread
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
-  retrieval: true,
-  viyaConfig: {
-    logonPayload: {
-      authType: 'server',
-      host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token | null
-      tokenType: 'bearer'// if token is specified
-      },
-    source: 'cas' 
-  }  
-}
-
-// run a chat session
-chat(config)
-  .then((r) => console.log('done'))
-  .catch((err) => console.log(err));
-
-async function chat(config) {
-  //Setup assistant
-  let gptControl = await setupAssistant(config);
-
-  // create readline interface and chat with user
-  const rl = readline.createInterface({ input, output });
-
-  // process user input in a loop
-  while (true) {
-    let prompt = await rl.question('>');
-    // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
-      rl.close();
-      break;
-    }
-    // let assistant process the prompt
-    let promptInstructions = ' ';
-    try {
-      // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-</code></pre>
-<h2>Step 3: Run the sample app</h2>
-<pre class="prettyprint source lang-cmd"><code>node assistant
-</code></pre>
-<p>If source was set to 'cas' or 'compute' you can issue prompts that will use the
-builtin tools. (see the main doc for the default tools). By default you can ask for list of
-several Viya assets:</p>
+    <h1>Notes on Assistant and Threads- local rules</h1>
+<p>In the configuration object one can set values for assistant and threads
+so that they can be reused.</p>
+<h2>Assistant</h2>
+<p>Each instance of assistant has a unique id, However the names of the assistant
+are not unique.</p>
+<p>To avoid adding the overhead of persisting these id's the library
+has some local rules.</p>
+<ol>
+<li>If assistandid is specified, it then used.
+(suspect this would be a production scenario)</li>
+<li>If assistandid is '0' then the assistantName is used.
 <ul>
-<li>list of reports, libraries (caslib or librefs
-<ul>
-<li>list reports</li>
-<li>list libs</li>
+<li>if there is an assistant with that name existing, then that is used.</li>
+<li>else a new assistant with the same name is created.</li>
 </ul>
 </li>
-<li>for a given libref or caslib get list of tables
+</ol>
+<h2>Thread</h2>
+<p>To avoid adding the overhead of persisting these id's the library
+has some local rules.</p>
+<ol>
+<li>If threadid is specified, it then used.
+(suspect this would be a production scenario)</li>
+<li>If threadid is '-1', then the threadid saved with the assistant is used.</li>
+<li>If threadid is '0' then a new thread is created
 <ul>
-<li>list tables in public</li>
-<li>list tables in sashelp</li>
+<li>This thread's id saved in the current assistant's metadata.</li>
 </ul>
 </li>
-<li>fetch data from a specified lib and table
-<ul>
-<li>get data for public.cars. limit to 20</li>
-</ul>
-</li>
-</ul>
-<h2>Peak ahead</h2>
-<p>In the next example will discuss how to add your own tools,</p>
+</ol>
 </article>
 
 </section>
