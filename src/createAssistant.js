@@ -14,7 +14,7 @@
 
 
 async function createAssistant(gptControl) {
-  let { assistantName, model, assistantid, instructions, domainTools, assistantApi } = gptControl;
+  let { assistantName, model, assistantid, instructions, domainTools,  assistantApi } = gptControl;
  
   // create args for assistant create
   let createArgs = {

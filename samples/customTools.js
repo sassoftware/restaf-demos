@@ -18,7 +18,7 @@ let customTools = [
   {
     type: 'function',
     function: {
-      name: "runSASLocalFile",
+      name: "runSASLocalProgram",
       description: "run the specified program", 
       parameters: {
         properties: {

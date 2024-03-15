@@ -99,10 +99,10 @@ async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
   return JSON.stringify({table: r.table, data: r.data});
 }
-async function _runSAS(params, appEnv) {
-  let { src } = params;
+async function _runSAS(params, appEnv, gptControl) {
+  let { program } = params;
   let { store, session } = appEnv;
-  
+  let src = program;//place holder
   if (appEnv.source === "cas") {
     let r = await caslRun(store, session, src, {}, true);
     return JSON.stringify(r.results);
@@ -112,31 +112,7 @@ async function _runSAS(params, appEnv) {
     return logAsArray(log);
   }
 }
-/*
-async function _contextData(params, _appEnv, gptControl) {
-  let { file, action } = params;
-  let { openai, assistant } = gptControl;
 
-  if (action === 'upload') {
-    const fileid = await openai.files.create({
-      file: fs.createReadStream(file, 'utf8'),
-      purpose: "assistants",
-   });
-   console.log('.......................', fileid);
-    const assistantFileid = await openai.beta.assistants.files.create(
-      assistant.id, {file_id: fileid.id});
-    console.log(assistantFileid);
-    return `File ${file} added to assistant`;
-  }
-  try {
-    let src = await fss.readFile(file, "utf8");
-    return src;
-  } catch (err) {
-    console.log(err);
-    return "Error reading file " + file;
-  }
-}
-*/
 async function _keywords(params) {
   let { keywords, format } = params;
 console.log('keywords', keywords, format);
@@ -217,3 +193,29 @@ async function _idescribeTable(params, appEnv) {
 }
 
 export default functions;
+
+/*
+async function _contextData(params, _appEnv, gptControl) {
+  let { file, action } = params;
+  let { openai, assistant } = gptControl;
+
+  if (action === 'upload') {
+    const fileid = await openai.files.create({
+      file: fs.createReadStream(file, 'utf8'),
+      purpose: "assistants",
+   });
+   console.log('.......................', fileid);
+    const assistantFileid = await openai.beta.assistants.files.create(
+      assistant.id, {file_id: fileid.id});
+    console.log(assistantFileid);
+    return `File ${file} added to assistant`;
+  }
+  try {
+    let src = await fss.readFile(file, "utf8");
+    return src;
+  } catch (err) {
+    console.log(err);
+    return "Error reading file " + file;
+  }
+}
+*/

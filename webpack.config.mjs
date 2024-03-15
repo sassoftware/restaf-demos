@@ -26,7 +26,7 @@ export default {
             presets: ['@babel/preset-env'],
           },
         },
-      },
+      }
     ],
   },
   externals: [nodeExternals()],

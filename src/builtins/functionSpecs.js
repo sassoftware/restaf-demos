@@ -20,7 +20,7 @@ function functionSpecs(provider, code, retrieval) {
     _listColumnsFunctionSpec,
     _describeTableSpec,
     _getDataFunctionSpec,
-    _runSASFunctionSpec,
+   // _runSASFunctionSpec,
     _keywordsFunctionSpec,
    // _contextDataFunctionSpec,
   ];
@@ -188,7 +188,7 @@ const _describeTableSpec = {
 const _runSASFunctionSpec = {
   name: '_runSAS',
   description:
-    'run the specified file. The file is a path to the sas program',
+    'run the specified sas program',
   parameters: {
     properties: {
       file: {
@@ -197,29 +197,10 @@ const _runSASFunctionSpec = {
       },
     },
     type: 'object',
-    required: ['file'],
+    required: ['program']
   },
 };
-/*
-const _contextDataFunctionSpec = {
-  name: '_contextData',
-  description:
-    `This is quick way to add some asset to current contect
-     User issues a prompt like context <some string>
-     the string is usually some string.
-     `,
-  parameters: {
-    properties: {
-      asset: {
-        type: 'string',
-        description: 'the asset to add to the context',
-      },
-    },
-    type: 'object',
-    required: ['file'],
-  },
-};
-*/
+
 const _keywordsFunctionSpec = {
   name: '_keywords',
   description: 'format a comma-separated keywords like a,b,c into html, array, object',
@@ -242,3 +223,24 @@ const _keywordsFunctionSpec = {
 }
 
 export default functionSpecs;
+
+/*
+const _contextDataFunctionSpec = {
+  name: '_contextData',
+  description:
+    `This is quick way to add some asset to current contect
+     User issues a prompt like context <some string>
+     the string is usually some string.
+     `,
+  parameters: {
+    properties: {
+      asset: {
+        type: 'string',
+        description: 'the asset to add to the context',
+      },
+    },
+    type: 'object',
+    required: ['file'],
+  },
+};
+*/
