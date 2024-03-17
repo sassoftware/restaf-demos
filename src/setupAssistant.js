@@ -119,16 +119,18 @@ async function setupAssistant(config) {
     client: client,
     run: null,
     assistantApi: apiMapper(client, config.provider),
-    retrieval: config.retrieval // remove this when azureai supports retrieval
-    //config: config save the config for runtime changes
+    code: config.code, 
+    retrieval: config.retrieval, // remove this when azureai supports retrieval
+    userData: config.userData,
+    user: config.user
   };
   
   // setup Viya connections
-  
   gptControl.appEnv = await setupViya(config.viyaConfig);
+  gptControl.appEnv.userData = config.userData;
+  gptControl.appEnv.user = config.user;
   
   // create assistant and thread
-  
   gptControl.assistant = await createAssistant(gptControl);
   
   gptControl.thread = await loadThread(gptControl);

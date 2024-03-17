@@ -2,6 +2,9 @@
  * Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+
+import { debug } from "console";
+
 /**
  * @async
  * @private
@@ -15,22 +18,33 @@ async function loadThread(gptControl) {
   let thread = null;
   let threadid = gptControl.threadid;
 
+  // a little verbose so as not to get confused :-)
+
   try {
     // local rules: try to use the last used thread
+
+    // if threadid is specified, use it
+    debugger;
+    if (!(threadid === '0' || threadid === '-1')) {
+      console.log('Using threadid ', threadid);
+      thread = await assistantApi.getThread(threadid);
+      return thread;
+    }
+
     if (threadid === '-1' ){ 
       threadid = assistant.metadata.lastThread;
       if (threadid != null)  {
         console.log('Attempting to use previous ', threadid);
+        let thread = await assistantApi.getThread(threadid);
+        return thread;
       }
     }
-    if (threadid === '0' || threadid == null) {
-      console.log('Creating new thread');
-      thread = await assistantApi.createThread();
-      let newAssistant = await assistantApi.updateAssistant(assistant.id, {metadata: {lastThread: thread.id}});
-      gptControl.assistant = newAssistant;
-    } else {
-      thread = await assistantApi.getThread(threadid);
-    }
+  // fall thru  to create a new thread
+  console.log('Creating new thread');
+  thread = await assistantApi.createThread();
+  let newAssistant = await assistantApi.updateAssistant(assistant.id, {metadata: {lastThread: thread.id}});
+  gptControl.assistant = newAssistant;
+
   } catch (error) {
     console.log(error); 
     throw new Error(`Error status ${error.status}. Failed to create thread. See console for details.`);

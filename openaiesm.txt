@@ -1,4 +1,0 @@
-// index.js
-import { OpenAIAssistant } from '@azure/openai-assistants';
-
-export { OpenAIAssistant };

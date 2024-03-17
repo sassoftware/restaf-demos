@@ -27,8 +27,7 @@ async function setupViya(viyaConfig) {
   casServerName: null, 
   sessionID: null,
   compute: {},
-  cas: {},
-  userData: null
+  cas: {}
 }
 
   if (viyaConfig == null) {

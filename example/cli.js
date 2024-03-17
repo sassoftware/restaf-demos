@@ -106,7 +106,7 @@ function setupConfig(provider) {
       credentials: {
         key: process.env.OPENAI_KEY,
       },
-      assistantid: process.env.OPENAI_ASSISTANTID,
+      assistantid: '0',
       assistantName: process.env.OPENAI_ASSISTANTNAME,
       threadid: '-1', //process.env.OPENAI_THREADID,
       code: true,
@@ -119,7 +119,7 @@ function setupConfig(provider) {
         key: process.env.AZUREAI_KEY,
         endPoint: process.env.AZUREAI_ENDPOINT,
       },
-      assistantid: process.env.AZUREAI_ASSISTANTID,
+      assistantid: '-1',
       assistantName: process.env.AZUREAI_ASSISTANTNAME,
       threadid: '-1', // process.env.AZUREAI_THREADID,
       logLevel: null,

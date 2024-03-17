@@ -43,7 +43,6 @@ function apiMapper(client, provider) {
       options.file_ids = options.fileIds;
       delete options.fileIds;
     }
-    console.log(options);
     return client.beta.assistants.update(id, options);
   }
 

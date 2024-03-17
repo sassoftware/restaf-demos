@@ -11,11 +11,14 @@ are not unique.
 To avoid adding the overhead of persisting these id's the library 
 has some local rules.
 
-1. If assistandid is specified, it then used.
+1. If assistandid is specified, it then used to retrieve the session.
 (suspect this would be a production scenario)
-2. If assistandid is '0' then the assistantName is used.
-   - if there is an assistant with that name existing, then that is used.
-   - else a new assistant with the same name is created.
+2. If assistandid is '-1' then search for an assistant with the assistname.
+   - If not found drop down to option 3 below and create a new assistant
+3. If assistantid is '0' then create a new assistant with the sessionName
+   - This might result in mulitple assistants with the same name
+
+During development recommend setting assistantid to -1.
 
 ## Thread
 
