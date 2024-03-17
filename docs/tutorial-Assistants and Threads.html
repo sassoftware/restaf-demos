@@ -72,6 +72,14 @@
                                 gettingStarted
                             </a>
                         
+                            <a class="dropdown-item" href="tutorial-setupConfiguration.html">
+                                setupConfiguration
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-Tools and Functions.html">
+                                Tools and Functions
+                            </a>
+                        
                             <a class="dropdown-item" href="tutorial-Useful links.html">
                                 Useful links
                             </a>
@@ -98,7 +106,7 @@
             
             <nav>
                 
-                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Assistants and Threads.html">Assistants and Threads</a></li><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
+                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Assistants and Threads.html">Assistants and Threads</a></li><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-setupConfiguration.html">setupConfiguration</a></li><li><a href="tutorial-Tools and Functions.html">Tools and Functions</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
                 
             </nav>
         </div>
@@ -120,15 +128,20 @@ are not unique.</p>
 <p>To avoid adding the overhead of persisting these id's the library
 has some local rules.</p>
 <ol>
-<li>If assistandid is specified, it then used.
+<li>If assistandid is specified, it then used to retrieve the session.
 (suspect this would be a production scenario)</li>
-<li>If assistandid is '0' then the assistantName is used.
+<li>If assistandid is '-1' then search for an assistant with the assistname.
 <ul>
-<li>if there is an assistant with that name existing, then that is used.</li>
-<li>else a new assistant with the same name is created.</li>
+<li>If not found drop down to option 3 below and create a new assistant</li>
+</ul>
+</li>
+<li>If assistantid is '0' then create a new assistant with the sessionName
+<ul>
+<li>This might result in mulitple assistants with the same name</li>
 </ul>
 </li>
 </ol>
+<p>During development recommend setting assistantid to -1.</p>
 <h2>Thread</h2>
 <p>To avoid adding the overhead of persisting these id's the library
 has some local rules.</p>
@@ -142,6 +155,7 @@ has some local rules.</p>
 </ul>
 </li>
 </ol>
+<p>See the tutorial on Tools and Functions</p>
 </article>
 
 </section>

@@ -8,7 +8,7 @@ so that they can be reused.
 Each instance of assistant has a unique id, However the names of the assistant
 are not unique.
 
-To avoid adding the overhead of persisting these id's the library 
+To avoid adding the overhead of persisting these id's the library
 has some local rules.
 
 1. If assistandid is specified, it then used to retrieve the session.
@@ -30,3 +30,5 @@ has some local rules.
 2. If threadid is '-1', then the threadid saved with the assistant is used.
 3. If threadid is '0' then a new thread is created
    - This thread's id saved in the current assistant's metadata.
+
+See the tutorial on Tools and Functions

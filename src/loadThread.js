@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { debug } from "console";
-
 /**
  * @async
  * @private
@@ -22,9 +20,9 @@ async function loadThread(gptControl) {
 
   try {
     // local rules: try to use the last used thread
-
+    
     // if threadid is specified, use it
-    debugger;
+
     if (!(threadid === '0' || threadid === '-1')) {
       console.log('Using threadid ', threadid);
       thread = await assistantApi.getThread(threadid);

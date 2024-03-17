@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> customTools</title>
+  <title> setupConfiguration</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -114,180 +114,87 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>customTools</h1>
+                    <h1>setupConfiguration</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>Add custom tool to extend the Assistant</h1>
-<blockquote>
-<p>Set type to &quot;module&quot; in your package.json</p>
-</blockquote>
-<h2>Step 1: Install the library into your application</h2>
-<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/viya-assistantjs
-</code></pre>
-<h2>Step 2: Create a simple nodejs application(assistant.js)</h2>
-<p>Here is the skeleton code
-This is a fully functional chat program</p>
-<pre class="prettyprint source lang-javascript"><code>
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-
-// this import is to get token and host for Viya - created with sas-viya auth login|loginCode
-// replace the next two lines to suit your environment
-// see this link for the getToken function
-import getToken from './getToken.js'; 
-let {host, token} = getToken();
-
-// Add another tool 
-
-// Tool specification
-let customTools: [
-  {
-    type: 'function',
-    function: {
-      name: &quot;runSAS&quot;,
-      description: &quot;run the specified file. The file is a path to the sas program&quot;,
-      parameters: {
-        properties: {
-          file: {
-            type: &quot;string&quot;,
-            description: &quot;this is the file to run&quot;,
-          },
-        },
-        type: &quot;object&quot;,
-        required: [&quot;file&quot;],
-      },
-    }
-  }
-];
-
-//handler for running sas code
-const runSASFunctionSpec = {
-  name: &quot;runSAS&quot;,
-  description: &quot;run the specified file. The file is a path to the sas program&quot;,
-  parameters: {
-    properties: {
-      file: {
-        type: &quot;string&quot;,
-        description: &quot;this is the file to run&quot;,
-      },
+    <h1>setupAssistant Configuration</h1>
+<h2>Schema</h2>
+<pre class="prettyprint source lang-javascript"><code>let config = {
+    provider: 'azureai',// or 'openai'
+    model: gpt model, //For azure it is the model created on Azure Portal
+    credentials: {
+      key: &lt;key for openai or azureai> //from openai or azureai
+      endPoint: &lt;url of AzureAI resource> // From azureai portal
     },
-    type: &quot;object&quot;,
-    required: [&quot;file&quot;],
-  },
-};
-
-async function runSAS(params, appEnv) {
-  let { file } = params;
-  let { store, session } = appEnv;
-  let src;
-  try {
-    src = await fss.readFile(file, &quot;utf8&quot;);
-  } catch (err) {
-    console.log(err);
-    return &quot;Error reading file &quot; + file;
-  }
-
-  if (appEnv.source === &quot;cas&quot;) {
-    let r = await caslRun(store, session, src, {}, true);
-    return JSON.stringify(r.results);
-  } else {
-    let computeSummary = await computeRun(store, session, src);
-    let log = await computeResults(store, computeSummary, &quot;log&quot;);
-    return logAsArray(log);
-  }
-}
-// setup configuration
-let config = {
-  provider: 'openai', 
-  model: 'gpt-4-turbo-review', 
-  credentials: {
-    key: process.env.OPENAI_KEY, // for security get it from environment
-    endPoint: null
-  },
-  assistantid: '0', //let system create a new assistant
-  assistantName: &quot;SAS_ASSISTANT&quot;,
-
-  threadid: '0', // let system create a new thread
-
-  
-  domainTools: {tools: tools, functionList: functionList, instructions: '', replace: false},
-  code:  true,
-  retrievel: true
-
-  viyaConfig: {
-    logonPayload: {
-      authType: 'server',
-      host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token | null
-      tokenType: 'bearer'// if token is specified
-      },
-    source: 'cas' 
-  }  
-}
-
-// run a chat session
-chat(config)
-  .then((r) => console.log('done'))
-  .catch((err) => console.log(err));
-
-async function chat(config) {
-  //Setup assistant
-  let gptControl = await setupAssistant(config);
-
-  // create readline interface and chat with user
-  const rl = readline.createInterface({ input, output });
-
-  // process user input in a loop
-  while (true) {
-    let prompt = await rl.question('>');
-    // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
-      rl.close();
-      break;
-    }
-    // let assistant process the prompt
-    let promptInstructions = ' ';
-    try {
-      // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+    assistantid: '-1'| '0'| valid assistantid 
+    assistantName: &lt;name of the assistant>,
+    threadid: '-1'|'0'|valid threadid, 
+    code: true, 
+    retrieval: true,
+    userData: &lt;some object set by developer>
 }
 
 </code></pre>
-<h2>Step 3: Run the sample app</h2>
-<pre class="prettyprint source lang-cmd"><code>node assistant
-</code></pre>
-<p>If source was set to 'cas' or 'compute' you can issue prompts that will use the
-builtin tools. (see the main doc for the default tools). By default you can ask for list of
-several Viya assets:</p>
+<h2>provider</h2>
+<p>This is either 'openai' or 'azureai&quot; depending on who your provider is.</p>
+<h2>model and credentials</h2>
 <ul>
-<li>list of reports, libraries (caslib or librefs
-<ul>
-<li>list reports</li>
-<li>list libs</li>
-</ul>
+<li>
+<p>openai: A model that supports assistant api
+<a href="https://platform.openai.com/api-keys">Openai keys </a></p>
 </li>
-<li>for a given libref or caslib get list of tables
-<ul>
-<li>list tables in public</li>
-<li>list tables in sashelp</li>
-</ul>
-</li>
-<li>fetch data from a specified lib and table
-<ul>
-<li>get data for public.cars. limit to 20</li>
-</ul>
+<li>
+<p>azureai: This is the deployment you create with Azure AI studio.
+Visit <a href="https://oai.azure.com/portal">Azure AI portal </a></p>
 </li>
 </ul>
-<h2>Peak ahead</h2>
-<p>In the next example will discuss how to add your own tools.</p>
+<h2>Assistantid and AssistantName</h2>
+<p>Each instance of assistant has a unique id, However the names of the assistants
+are not unique.</p>
+<p>To avoid adding the overhead of persisting these ids during develop
+the library has local rules.</p>
+<ol>
+<li>If assistandid is specified, it then used to retrieve the session.
+(suspect this would be a production scenario)</li>
+<li>If assistandid is '-1' then search for an assistant with the assistName.
+<ul>
+<li>If not found drop down to option 3 below and create a new assistant</li>
+</ul>
+</li>
+<li>If assistantid is '0' then create a new assistant with the sessionName
+<ul>
+<li>This might result in multiple assistants with the same name. Visit the
+playground to manage these assistants</li>
+</ul>
+</li>
+</ol>
+<p>During development recommend setting assistantid to -1.</p>
+<h2>Threadid</h2>
+<p>Thread is used to manage the conversation thread.
+Unlike the assistant, there is no exposed api to get a list of threads.
+Unless the calling application keeps track of the threads, one could have a lot
+of &quot;orphaned&quot; threads.</p>
+<p>To avoid this situation the library enforces a &quot;local rule&quot;.</p>
+<ol>
+<li>If threadid is specified, it then re-used.
+(suspect this would be a production scenario)</li>
+<li>If threadid is '-1', then the threadid saved
+with the assistant is used(see 3 below).
+If this thread is not found, then this is same as option 3.</li>
+<li>If threadid is '0' then a new thread is created
+<ul>
+<li>This thread's id saved in the current assistant's metadata. So
+when the threadid is '-1' on a subsequent call,
+the same thread is used</li>
+</ul>
+</li>
+</ol>
+<h2>userData</h2>
+<p>You can set this to some object. This is passed along to the
+handlers for the custom tools. Some potential uses are
+to pass your application specific information to the custom tools.</p>
 </article>
 
 </section>

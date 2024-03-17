@@ -11,7 +11,9 @@
  */
  
 import restaf from '@sassoftware/restaf';
-import restaflib from '@sassoftware/restaflib';;
+import restaflib from '@sassoftware/restaflib';
+import restafedit from '@sassoftware/restafedit';
+
 
 async function setupViya(viyaConfig) {
 
@@ -27,7 +29,11 @@ async function setupViya(viyaConfig) {
   casServerName: null, 
   sessionID: null,
   compute: {},
-  cas: {}
+  cas: {},
+  restaf: restaf,
+  restaflib: restaflib,
+  restafedit: restafedit
+
 }
 
   if (viyaConfig == null) {

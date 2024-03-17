@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> customTools</title>
+  <title> Tools and Functions</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -114,180 +114,54 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>customTools</h1>
+                    <h1>Tools and Functions</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>Add custom tool to extend the Assistant</h1>
+    <h1>Notes on Tools and Functions</h1>
+<p>Visit the provider site for information on functions and tools.</p>
+<h2>Local rules</h2>
+<p>The library sends a modified arguments to the functions
+associated with the tools.</p>
+<p>In a standard implementation the implementation for a function
+will look like this:</p>
+<pre class="prettyprint source lang-javascript"><code>async someFunction(params) {
+  The parms has keys based on the function specification.
+}
+</code></pre>
+<p>In @sassoftware/viya-appenvjs the function should look like this.</p>
+<pre class="prettyprint source lang-javascript"><code>async someFunction(params, appEnv) {
+}
+</code></pre>
+<p>appEnv is an object with the following keys(among others).</p>
+<p>Depending on what was set in the configuration object
+when calling setupAssistant there are keys in appEnv that
+will be of interest to the function writer.</p>
+<h3>General</h3>
+<pre class="prettyprint source lang-text"><code>let appEnv=  {
+  host: &lt;Viya url>
+  logonPayload: passed in to setupConfig,
+  source: passed in to setupConfig> 
+  userData: passed in to the setupConfig
+
+  /* for restaf users - non-null if source is cas|compute*/
+  store: restaf object for restaf users 
+  session: viya session(cas or compute) object
+  servers: viya server object(cas - null for compute)
+  serverName: cas servername or compute context 
+  restaf: restaf,
+  restaflib: restaflib,
+  restafedit: restafedit, 
+  /* end of restaf section */
+  sessionID: sessionID associated with the session(see note below)
+}
+</code></pre>
 <blockquote>
-<p>Set type to &quot;module&quot; in your package.json</p>
+<p>Note on sessionID: If sessionID is non-null, you
+can use it to make api calls to compute or
+cas servers using your own techiques(sorry to hear you are not using restaf)</p>
 </blockquote>
-<h2>Step 1: Install the library into your application</h2>
-<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/viya-assistantjs
-</code></pre>
-<h2>Step 2: Create a simple nodejs application(assistant.js)</h2>
-<p>Here is the skeleton code
-This is a fully functional chat program</p>
-<pre class="prettyprint source lang-javascript"><code>
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-
-// this import is to get token and host for Viya - created with sas-viya auth login|loginCode
-// replace the next two lines to suit your environment
-// see this link for the getToken function
-import getToken from './getToken.js'; 
-let {host, token} = getToken();
-
-// Add another tool 
-
-// Tool specification
-let customTools: [
-  {
-    type: 'function',
-    function: {
-      name: &quot;runSAS&quot;,
-      description: &quot;run the specified file. The file is a path to the sas program&quot;,
-      parameters: {
-        properties: {
-          file: {
-            type: &quot;string&quot;,
-            description: &quot;this is the file to run&quot;,
-          },
-        },
-        type: &quot;object&quot;,
-        required: [&quot;file&quot;],
-      },
-    }
-  }
-];
-
-//handler for running sas code
-const runSASFunctionSpec = {
-  name: &quot;runSAS&quot;,
-  description: &quot;run the specified file. The file is a path to the sas program&quot;,
-  parameters: {
-    properties: {
-      file: {
-        type: &quot;string&quot;,
-        description: &quot;this is the file to run&quot;,
-      },
-    },
-    type: &quot;object&quot;,
-    required: [&quot;file&quot;],
-  },
-};
-
-async function runSAS(params, appEnv) {
-  let { file } = params;
-  let { store, session } = appEnv;
-  let src;
-  try {
-    src = await fss.readFile(file, &quot;utf8&quot;);
-  } catch (err) {
-    console.log(err);
-    return &quot;Error reading file &quot; + file;
-  }
-
-  if (appEnv.source === &quot;cas&quot;) {
-    let r = await caslRun(store, session, src, {}, true);
-    return JSON.stringify(r.results);
-  } else {
-    let computeSummary = await computeRun(store, session, src);
-    let log = await computeResults(store, computeSummary, &quot;log&quot;);
-    return logAsArray(log);
-  }
-}
-// setup configuration
-let config = {
-  provider: 'openai', 
-  model: 'gpt-4-turbo-review', 
-  credentials: {
-    key: process.env.OPENAI_KEY, // for security get it from environment
-    endPoint: null
-  },
-  assistantid: '0', //let system create a new assistant
-  assistantName: &quot;SAS_ASSISTANT&quot;,
-
-  threadid: '0', // let system create a new thread
-
-  
-  domainTools: {tools: tools, functionList: functionList, instructions: '', replace: false},
-  code:  true,
-  retrievel: true
-
-  viyaConfig: {
-    logonPayload: {
-      authType: 'server',
-      host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token | null
-      tokenType: 'bearer'// if token is specified
-      },
-    source: 'cas' 
-  }  
-}
-
-// run a chat session
-chat(config)
-  .then((r) => console.log('done'))
-  .catch((err) => console.log(err));
-
-async function chat(config) {
-  //Setup assistant
-  let gptControl = await setupAssistant(config);
-
-  // create readline interface and chat with user
-  const rl = readline.createInterface({ input, output });
-
-  // process user input in a loop
-  while (true) {
-    let prompt = await rl.question('>');
-    // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
-      rl.close();
-      break;
-    }
-    // let assistant process the prompt
-    let promptInstructions = ' ';
-    try {
-      // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-</code></pre>
-<h2>Step 3: Run the sample app</h2>
-<pre class="prettyprint source lang-cmd"><code>node assistant
-</code></pre>
-<p>If source was set to 'cas' or 'compute' you can issue prompts that will use the
-builtin tools. (see the main doc for the default tools). By default you can ask for list of
-several Viya assets:</p>
-<ul>
-<li>list of reports, libraries (caslib or librefs
-<ul>
-<li>list reports</li>
-<li>list libs</li>
-</ul>
-</li>
-<li>for a given libref or caslib get list of tables
-<ul>
-<li>list tables in public</li>
-<li>list tables in sashelp</li>
-</ul>
-</li>
-<li>fetch data from a specified lib and table
-<ul>
-<li>get data for public.cars. limit to 20</li>
-</ul>
-</li>
-</ul>
-<h2>Peak ahead</h2>
-<p>In the next example will discuss how to add your own tools.</p>
 </article>
 
 </section>

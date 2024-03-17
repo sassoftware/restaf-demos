@@ -2,8 +2,8 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import restafedit from "@sassoftware/restafedit";
-import restaflib from "@sassoftware/restaflib"
+//import restafedit from "@sassoftware/restafedit";
+//import restaflib from "@sassoftware/restaflib"
 
 import logAsArray from "./lib/logAsArray.js";
 import string2Table from "./lib/string2Table.js";
@@ -19,8 +19,8 @@ import rows2csv from "./lib/rows2csv.js";
 
 
 //const fss = fs.promises;
-const { caslRun, computeRun, computeResults } = restaflib;
-const { getLibraryList, getTableList, getTableColumns } = restafedit;
+// const { caslRun, computeRun, computeResults } = restaflib;
+// const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
 function functions() {
   let flist = {
@@ -68,7 +68,7 @@ async function _listSASDataLib(params, appEnv) {
       start: (start == null) ? 0 : start
     },
   };
-  let r = await getLibraryList(appEnv, payload);
+  let r = await appEnv.restafedit.getLibraryList(appEnv, payload);
   return JSON.stringify(r);
 }
 async function _listSASTables(params, appEnv) {
@@ -79,7 +79,7 @@ async function _listSASTables(params, appEnv) {
       start: 0,
     },
   };
-  let r = await getTableList(library, appEnv, p);
+  let r = await appEnv.restafedit.getTableList(library, appEnv, p);
   return JSON.stringify(r);
 }
 async function _listColumns(params, appEnv) {
@@ -91,7 +91,7 @@ async function _listColumns(params, appEnv) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
   }
 
-  let r =  await getTableList(library, appEnv, p);
+  let r =  await appEnv.restafedit.getTableList(library, appEnv, p);
   
   return JSON.stringify(r);
 }
@@ -102,6 +102,7 @@ async function _getData(params, appEnv) {
 async function _runSAS(params, appEnv, gptControl) {
   let { program } = params;
   let { store, session } = appEnv;
+  let {caslRun, computeRun, computeResults} = appEnv.restaflib;
   let src = program;//place holder
   if (appEnv.source === "cas") {
     let r = await caslRun(store, session, src, {}, true);
@@ -146,7 +147,7 @@ async function _describeTable(params, appEnv) {
 async function _idescribeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
   let { table, limit, format, where, csv } = params;
-  let { source, sessionID } = appEnv;
+  let { source, sessionID, restafedit } = appEnv;
   csv = csv == null ? false : csv;
   let iTable = string2Table(table, source);
   if (iTable === null) {

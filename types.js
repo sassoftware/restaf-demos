@@ -1,6 +1,6 @@
 /**
  * Code logon payload
- * @typedef {object} logonPayloadCode
+ * @typedef {object} logonPayload
  * @property {"code"|"server"} authType
  * @property {URL} host
  * @property {string} token optional
@@ -83,3 +83,17 @@
  */
   
 
+/**
+ * appEnv object
+ * @property {string} host - url to viya server
+ * @property {logonPayload} - logonPayload
+ * @property {string} source - cas|compute|none
+ * @property {object} userData - user data object
+ * @property {object} session - session object(for restaf users) if source is cas or compute
+ * @property {object} servers - servers object(for restaf users) if source is cas or compute
+ * @property {string} sessionID - session id if source is cas or compute
+ * @property {object} restaf - restaf object if source is cas or compute
+ * @property {object} restaflib - restaflib object if source is cas or compute
+ * @property {object} restafedit - restafedit object if source is cas or compute
+ * @property {object} serverName - compute context or cas server name
+*/
