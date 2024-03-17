@@ -84,7 +84,7 @@ function apiMapper(client, provider) {
    // options.thread = threadid;
     let newOptions = {
       assistant_id: options.assistantId,
-      instructions: options.instructions,
+      additional_instructions: options.instructions
     }
     return client.beta.threads.runs.create(threadid, newOptions);
   }

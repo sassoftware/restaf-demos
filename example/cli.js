@@ -82,7 +82,7 @@ async function chat(config) {
         default: {
           //Note process.env is passed to runAssistant
           // run assistant will pass both gtpControl and process.env to tools functions
-          let promptInstructions = ' ';
+          let promptInstructions = 'Format the message as html';
           let response = await runAssistant(
             gptControl,
             prompt,
