@@ -25,11 +25,9 @@ async function createAssistant(gptControl) {
   // get assistant by assistantid
   debugger;
   try {
-    if (!(assistantid === "0" || assistantid === "-1")) {
+    if (!(assistantid === "NEW" || assistantid === "REUSE")) {
       console.log("Using assistantid ", assistantid);
       let assistant = await assistantApi.getAssistant(assistantid);
-      gptControl.assistant = assistant;
-      gptControl.assistantid = assistant.id;
       return assistant;
     }
 
@@ -41,34 +39,35 @@ async function createAssistant(gptControl) {
       tools: domainTools.tools,
     };
 
-    //New local rules
-    // if assistantid is -1, try to find the assistant by name.
-    //    then create a new assistant with the same name
-    // if assistantid is 0, create a new assistant with the name
-
-    if (assistantid === "-1") {
-      console.log("Attempting to find assistant by name ", assistantName);
-      const myAssistants = await assistantApi.listAssistants({
-        order: "desc",
-        limit: "100",
-      });
-      let assistant = myAssistants.data.find((a) => {
-        if (a.name === assistantName) {
-          return a;
-        }
-      });
-      if (assistant != null) {
-        console.log("Found assistant ", assistantName, assistant.id)
-        return assistant;
+    
+    // see if there is an assistant with the same name
+    console.log("Attempting to find assistant by name ", assistantName);
+    let assistant = null;
+    const myAssistants = await assistantApi.listAssistants({
+      order: "desc",
+      limit: "100",
+    });
+    assistant = myAssistants.data.find((a) => {
+      if (a.name === assistantName) {
+        return a;
       }
-    }
+    });
 
+    // if we found an assistant with the same name, use it
+    // since assistantid is -1
+    if (assistant != null  && assistantid === 'REUSE') {
+      console.log("Found assistant ", assistantName, assistant.id)
+      return assistant;
+    }
+    
+    // assistantid=0 means create a new assistant
+    if (assistant != null) {
+      console.log("Deleting old assistant ", assistantName, assistant.id);
+      await assistantApi.deleteAssistant(assistant.id);
+    }
     // fall thru to create a new assistant
     console.log("Creating new assistant");
-    let assistant = await assistantApi.createAssistant(createArgs);
-    gptControl.assistantid = assistant.id;
-    gptControl.assistant = assistant;
-
+    assistant = await assistantApi.createAssistant(createArgs);
     return assistant;
   } catch (error) {
     console.log(error);

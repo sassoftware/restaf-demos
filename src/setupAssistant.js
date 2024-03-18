@@ -130,10 +130,14 @@ async function setupAssistant(config) {
   gptControl.appEnv.userData = config.userData;
   gptControl.appEnv.user = config.user;
   
-  // create assistant and thread
+  // create assistant or reuse existing one
+  
   gptControl.assistant = await createAssistant(gptControl);
   
+  // load thread or reuse existing one
   gptControl.thread = await loadThread(gptControl);
+  let newAssistant = await gptControl.assistantApi.updateAssistant(gptControl.assistant.id, {metadata: {lastThread: gptControl.thread.id}});
+  gptControl.assistant = newAssistant;
   
   gptControl.threadid = gptControl.thread.id;// just for convenience
   console.log('--------------------------------------');

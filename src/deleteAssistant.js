@@ -32,6 +32,8 @@ async function deleteAssistant(gptControl, assistantid) {
       console.log('Thread ${assistant.metadata.lastThread} deleted', status);
       status = await assistantApi.deleteAssistant(assistant.id);
       console.log(`Assistant ${assistant.name} deleted`, status);
+      gptControl.assistant = null;
+      gptControl.assistantid = '0';
       return `Assistant ${assistant.name} deleted`;
 
     }

@@ -15,33 +15,42 @@ async function loadThread(gptControl) {
   let {assistant, assistantApi} = gptControl;
   let thread = null;
   let threadid = gptControl.threadid;
+  let lastThread = assistant.metadata.lastThread;
 
   // a little verbose so as not to get confused :-)
-
+  console.log('loadThread', threadid, lastThread);
+  debugger;
   try {
-    // local rules: try to use the last used thread
-    
-    // if threadid is specified, use it
 
-    if (!(threadid === '0' || threadid === '-1')) {
+    // user has supplied a threadid, use it
+    if (!(threadid === 'REUSE' || threadid === 'NEW')) { 
       console.log('Using threadid ', threadid);
-      thread = await assistantApi.getThread(threadid);
+      let thread = await assistantApi.getThread(threadid);
+      return thread;
+      //Q: should we recover on a 404 and create a new thread?
+    }
+   
+
+    // local rules: try to use the last used thread if the
+    // assistant has lastThread in the metadata  
+    if (threadid === 'REUSE' && lastThread != null) {
+      console.log('Attempting to use previous ', lastThread);
+      let thread = await assistantApi.getThread(lastThread);
       return thread;
     }
 
-    if (threadid === '-1' ){ 
-      threadid = assistant.metadata.lastThread;
-      if (threadid != null)  {
-        console.log('Attempting to use previous ', threadid);
-        let thread = await assistantApi.getThread(threadid);
-        return thread;
-      }
-    }
   // fall thru  to create a new thread
+
+  // more local rules: if lastThread is not null delete it
+  if (lastThread != null) {
+    console.log('Deleting last thread', lastThread);
+    await assistantApi.deleteThread(lastThread);
+  }
+
+  // create a new thread with no history
   console.log('Creating new thread');
   thread = await assistantApi.createThread();
-  let newAssistant = await assistantApi.updateAssistant(assistant.id, {metadata: {lastThread: thread.id}});
-  gptControl.assistant = newAssistant;
+  return thread;
 
   } catch (error) {
     console.log(error); 
