@@ -158,9 +158,10 @@ fetch data from cars. Limit the rows to 10
 > A fun prompt - try it
 Fetch data from cars where origin='Japan'
 
-## Extend Assistant to support running SAS Code]<a name="extend"></a>
+## Extend Assistant with custom tools]<a name="extend"></a>
 
-We will extend the Assistant from the last section to run SAS programs.
+In this section we will extend the tools with a custom tool.
+This tool maintains a list of courses.
 
 To do this we have to fill in the domainTools in the configuration.
 
