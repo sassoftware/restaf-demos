@@ -106,7 +106,7 @@ async function setupAssistant(config) {
     provider: config.provider,
     model: config.model,
     domainTools: specs,
-    instructions: specs.userInstructions,
+    instructions: specs.instructions,
 
     assistantName: config.assistantName,
     assistant: null,
