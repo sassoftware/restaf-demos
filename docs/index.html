@@ -180,7 +180,7 @@ key features</p>
 </ol>
 <h2>Getting Started</h2>
 <ul>
-<li><a href="#default">AI Assistant with defaulst</a></li>
+<li><a href="#default">AI Assistant with defaults</a></li>
 <li><a href="#extend">Extend Assistant to support running SAS Code</a></li>
 </ul>
 <h2>Creating a AI Assistant with defaults<a name="default"></a></h2>
@@ -190,7 +190,7 @@ key features</p>
 <li>@sassoftware/viya-assistantjs</li>
 </ul>
 <p>Recommend that your set type to module in your package.json</p>
-<h3>Create your program</h3>
+<h3>Create your program and custom tool</h3>
 <blockquote>
 <p>In your index.js add the following imports:</p>
 </blockquote>
@@ -209,9 +209,9 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
     endPoint: &lt;set this to our aureai resource url if provider is azureai>
   },
   // leave the next 4 items as is - explained in the document
-  assistantid: '0', //leave it as is for now
+  assistantid: 'NEW', //leave it as is for now
   assistantName: &quot;SAS_ASSISTANT&quot;,
-  threadid: '-1', // Ignore this for now
+  threadid: 'NEW', // Ignore this for now
   domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
 
   // fill in the host and token to authenticate to Viya
@@ -229,11 +229,11 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
   code: true,
   retrieval: &lt;Must be false for azureai>
 }
-
-> Add a function to handle the prompts 
-
-```javascript
-
+</code></pre>
+<blockquote>
+<p>Add a function to handle the prompts</p>
+</blockquote>
+<pre class="prettyprint source lang-javascript"><code>
 chat(config)
   .then (() => console.log('bye'))
   .catch(err => console.log(err));
@@ -309,81 +309,55 @@ value of the program will be extracted.</p>
   {
     type: 'function',
     function: {
-      name: &quot;processSASProgram&quot;,
-      description: &quot;process named SAS program. The program extension must be .sas or .casl&quot;,
+      name: 'myuniversity',
+      description: 'verify the specified course is available',
       parameters: {
         properties: {
-          resource: {
-            type: &quot;string&quot;,
-            description: &quot;the name of the program to run&quot;,
+          course: {
+              type: 'string',
+              description: 'the name of the course',
+            },
           },
+          type: 'object',
+          required: ['course'],
         },
-        type: &quot;object&quot;,
-        required: [&quot;resource&quot;],
       },
-    }
-  }
+  },
 ];
 </code></pre>
 <h3>Step 2: Create the function to handle the request</h3>
 <pre class="prettyprint source lang-javascript"><code>// You need to add this import to the program
 // import fs from 'fs/promises';
 
-async function processSASProgram(params, appEnv) {
-  let { resource} = params;
-  let { store, session } = appEnv;
-  let src;
-  try {
-    src = await fs.readFile(resource, &quot;utf8&quot;);
-  } catch (err) {
-    console.log(err);
-    return &quot;Error reading program &quot; + resource;
-  }
-  try {
-    if (appEnv.source === &quot;cas&quot;) {
-      let r = await restaflib.caslRun(store, session, src, {}, true);
-      return JSON.stringify(r.results);
-    } else if (appEnv) {
-      let computeSummary = await computeRun(store, session, src);
-      let log = await restaflib.computeResults(store, computeSummary, &quot;log&quot;);
-      return  log;
-    } else {
-      return &quot;Cannot run program without a session&quot;;
-    }
-  } catch (err) {
-    console.log(err);
-    return &quot;Error running program &quot; + program;
+async function myuniversity(params, appEnv) {
+  let { course } = params;
+  const courseList = ['math', 'science', 'english', 'history', 'art'];
+  if (courseList.includes(course)) {
+    return `${course} is available`;
+  } else {
+    return `${course} is not available`;
   }
 }
-
-### Step 3: Create the domainTool object in configuration
-
-```javascript
+</code></pre>
+<h3>Step 3: Create the domainTool object in configuration</h3>
+<pre class="prettyprint source lang-javascript"><code>// add the definitions to te config
 config.domainTools = {
-  tools: tools, 
-  functionList: {processSASProgram: processSASProgram},
-  instructions: 'Additionally use this tool to run the specified .',
-  replace: false // use true if you want to get rid of previous tool definition;
+  tools: tools,
+  functionList: { myuniversity: myuniversity },
+  instructions: instructions,
+  replace: false,
 };
-
-
 </code></pre>
 <h3>Step 4</h3>
 <p>Run the program as you did befoee</p>
 <h3>Prompts</h3>
-<p>The sample program(datastep.casl) is a simple casl program</p>
-<pre class="prettyprint source lang-text"><code>
-action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';
-send_response({casResults={result=result}});
-
-</code></pre>
 <blockquote>
 <p>Here is a sample prompt</p>
 </blockquote>
-<p>process datastep.casl</p>
-<blockquote>
-<p>If the run is successful you can query the table that was created.</p>
-</blockquote></article>
+<pre class="prettyprint source lang-text"><code>can I take a math course?
+
+can I take a course on Dune?
+</code></pre></article>
     </section>
 
 

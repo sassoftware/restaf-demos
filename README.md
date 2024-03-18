@@ -37,7 +37,7 @@ key features
 
 ## Getting Started
 
-- [AI Assistant with defaulst](#default)
+- [AI Assistant with defaults](#default)
 - [Extend Assistant to support running SAS Code](#extend)
 
 ## Creating a AI Assistant with defaults<a name="default"></a>
@@ -50,7 +50,7 @@ A version of this is [here](https://github.com/sassoftware/restaf-demos/blob/viy
 
 Recommend that your set type to module in your package.json
 
-### Create your program
+### Create your program and custom tool
 
 > In your index.js add the following imports:
 
@@ -71,9 +71,9 @@ let config = {
     endPoint: <set this to our aureai resource url if provider is azureai>
   },
   // leave the next 4 items as is - explained in the document
-  assistantid: '0', //leave it as is for now
+  assistantid: 'NEW', //leave it as is for now
   assistantName: "SAS_ASSISTANT",
-  threadid: '-1', // Ignore this for now
+  threadid: 'NEW', // Ignore this for now
   domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
 
   // fill in the host and token to authenticate to Viya
@@ -91,8 +91,9 @@ let config = {
   code: true,
   retrieval: <Must be false for azureai>
 }
+```
 
-> Add a function to handle the prompts 
+> Add a function to handle the prompts
 
 ```javascript
 
@@ -182,20 +183,20 @@ let tools = [
   {
     type: 'function',
     function: {
-      name: "processSASProgram",
-      description: "process named SAS program. The program extension must be .sas or .casl",
+      name: 'myuniversity',
+      description: 'verify the specified course is available',
       parameters: {
         properties: {
-          resource: {
-            type: "string",
-            description: "the name of the program to run",
+          course: {
+              type: 'string',
+              description: 'the name of the course',
+            },
           },
+          type: 'object',
+          required: ['course'],
         },
-        type: "object",
-        required: ["resource"],
       },
-    }
-  }
+  },
 ];
 ```
 
@@ -205,44 +206,27 @@ let tools = [
 // You need to add this import to the program
 // import fs from 'fs/promises';
 
-async function processSASProgram(params, appEnv) {
-  let { resource} = params;
-  let { store, session } = appEnv;
-  let src;
-  try {
-    src = await fs.readFile(resource, "utf8");
-  } catch (err) {
-    console.log(err);
-    return "Error reading program " + resource;
-  }
-  try {
-    if (appEnv.source === "cas") {
-      let r = await restaflib.caslRun(store, session, src, {}, true);
-      return JSON.stringify(r.results);
-    } else if (appEnv) {
-      let computeSummary = await computeRun(store, session, src);
-      let log = await restaflib.computeResults(store, computeSummary, "log");
-      return  log;
-    } else {
-      return "Cannot run program without a session";
-    }
-  } catch (err) {
-    console.log(err);
-    return "Error running program " + program;
+async function myuniversity(params, appEnv) {
+  let { course } = params;
+  const courseList = ['math', 'science', 'english', 'history', 'art'];
+  if (courseList.includes(course)) {
+    return `${course} is available`;
+  } else {
+    return `${course} is not available`;
   }
 }
+```
 
 ### Step 3: Create the domainTool object in configuration
 
 ```javascript
+// add the definitions to te config
 config.domainTools = {
-  tools: tools, 
-  functionList: {processSASProgram: processSASProgram},
-  instructions: 'Additionally use this tool to run the specified .',
-  replace: false // use true if you want to get rid of previous tool definition;
+  tools: tools,
+  functionList: { myuniversity: myuniversity },
+  instructions: instructions,
+  replace: false,
 };
-
-
 ```
 
 ### Step 4
@@ -251,17 +235,11 @@ Run the program as you did befoee
 
 ### Prompts
 
-The sample program(datastep.casl) is a simple casl program
-
-```text
-
-action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';
-send_response({casResults={result=result}});
-
-```
 
 > Here is a sample prompt
 
-process datastep.casl
+```text
+can I take a math course?
 
->If the run is successful you can query the table that was created.
+can I take a course on Dune?
+```
