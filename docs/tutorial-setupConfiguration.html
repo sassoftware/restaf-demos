@@ -128,9 +128,9 @@
       key: &lt;key for openai or azureai> //from openai or azureai
       endPoint: &lt;url of AzureAI resource> // From azureai portal
     },
-    assistantid: '-1'| '0'| valid assistantid 
+    assistantid: NEW|REUSE| valid assistantid 
     assistantName: &lt;name of the assistant>,
-    threadid: '-1'|'0'|valid threadid, 
+    threadid: NEW|REUSE|valid threadid, 
     code: true, 
     retrieval: true,
     userData: &lt;some object set by developer>
@@ -150,44 +150,39 @@
 Visit <a href="https://oai.azure.com/portal">Azure AI portal </a></p>
 </li>
 </ul>
-<h2>Assistantid and AssistantName</h2>
-<p>Each instance of assistant has a unique id, However the names of the assistants
+<h2>Assistant</h2>
+<p>Each instance of assistant has a unique id, However the names of the assistant
 are not unique.</p>
-<p>To avoid adding the overhead of persisting these ids during develop
-the library has local rules.</p>
+<p>To avoid adding the overhead of persisting these id's the library
+has some local rules.</p>
 <ol>
 <li>If assistandid is specified, it then used to retrieve the session.
 (suspect this would be a production scenario)</li>
-<li>If assistandid is '-1' then search for an assistant with the assistName.
+<li>If assistandid is 'REUSE' then search for an assistant with the assistname.
 <ul>
 <li>If not found drop down to option 3 below and create a new assistant</li>
 </ul>
 </li>
-<li>If assistantid is '0' then create a new assistant with the sessionName
+<li>If assistantid is 'NEW' then create a new assistant with the sessionName
 <ul>
-<li>This might result in multiple assistants with the same name. Visit the
-playground to manage these assistants</li>
+<li>If the assistant with the name exists, it will be deleted</li>
+<li>This might result in mulitple assistants with the same name</li>
 </ul>
 </li>
 </ol>
-<p>During development recommend setting assistantid to -1.</p>
-<h2>Threadid</h2>
-<p>Thread is used to manage the conversation thread.
-Unlike the assistant, there is no exposed api to get a list of threads.
-Unless the calling application keeps track of the threads, one could have a lot
-of &quot;orphaned&quot; threads.</p>
-<p>To avoid this situation the library enforces a &quot;local rule&quot;.</p>
+<p>During development recommend setting assistantid to NEW</p>
+<h2>Thread</h2>
+<p>To avoid adding the overhead of persisting these id's the library
+has some local rules.</p>
 <ol>
-<li>If threadid is specified, it then re-used.
+<li>If threadid is specified, it then used.
 (suspect this would be a production scenario)</li>
-<li>If threadid is '-1', then the threadid saved
-with the assistant is used(see 3 below).
-If this thread is not found, then this is same as option 3.</li>
-<li>If threadid is '0' then a new thread is created
+<li>If threadid is 'REUSE', then the threadid saved with in
+the assistant's metadata will be used.</li>
+<li>If threadid is 'NEW' then a new thread is created
 <ul>
-<li>This thread's id saved in the current assistant's metadata. So
-when the threadid is '-1' on a subsequent call,
-the same thread is used</li>
+<li>If a there was a threadid saved with the assistant it will be deleted.</li>
+<li>This new threadid will be saved in the current assistant's metadata.</li>
 </ul>
 </li>
 </ol>

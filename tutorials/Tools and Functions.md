@@ -4,7 +4,7 @@ Visit the provider site for information on functions and tools.
 
 ## Local rules
 
-The library sends a modified arguments to the functions 
+The library sends a modified arguments to the functions
 associated with the tools.
 
 In a standard implementation the implementation for a function

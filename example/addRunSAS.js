@@ -1,5 +1,4 @@
 //Define New Tool and add it to the assistant
-import restaflib from '@sassoftware/restaflib';
 import fs from 'fs/promises';
 function addRunSAS() {
   let tools = [
@@ -24,7 +23,7 @@ function addRunSAS() {
   // function to run the program
   async function processSASProgram(params, appEnv) {
     let { resource} = params;
-    let { store, session } = appEnv;
+    let { store, session, restaflib} = appEnv;
     let src;
     try {
       src = await fs.readFile(resource, "utf8");
