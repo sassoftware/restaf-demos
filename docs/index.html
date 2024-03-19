@@ -142,9 +142,15 @@
     <section>
         <article><h1>@sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya</h1>
 <h2>Introduction to azure and openai Assistant API</h2>
-<h2>There are many resources available. This site from Microsoft is a good place to start
-<a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/assistants?source=recommendations">Getting started with Azure OpenAI Assistants (Preview)</a></h2>
-<h2>gpt models</h2>
+<p>The Assistant API is a new API that was announced late in 2003 by openai.
+A clear explanation of what it is at
+<a href="https://platform.openai.com/docs/assistants/how-it-works">How Assistants works</a></p>
+<p>With this api one can build a &quot;RAG&quot; with SAS Viya capabilities.</p>
+<p>The Assistant API is supported by both openai and azureai. However their apis are different.
+Also azureai does not support the retrieval tool yet.</p>
+<p>The Assistant API is in beta/preview. So it is not ready for prime
+time but good enough to develop non-production Assistants.</p>
+<h3>gpt models</h3>
 <p>The information here is a moving target. Check with the provider
 for the proper model and zone to use for Assistant API.</p>
 <p>Models I am using:</p>
@@ -153,36 +159,40 @@ for the proper model and zone to use for Assistant API.</p>
 <li>azureai: gpt-4 1106 preview in zone East US 2</li>
 </ul>
 <hr>
-<h2>@sassoftware/viya-assistantjs</h2>
-<p>The document is available <a href="https://sassoftware.github.io/restaf-demos/">here</a>
-@sassoftware/viya-assistantjs is a JavaScript library with the following
-key features</p>
+<blockquote>
+<p>The goal of @sassoftware/viya-assistantjs library is to simplify the development
+of AI Assistants for Viya using either the openai or azureai implementation.</p>
+</blockquote>
+<ul>
+<li><a href="https://https://sassoftware.github.io/restaf-demos">Documentation </a></li>
+<li><a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a></li>
+</ul>
+<p>The library comes with a set of builtin tools to get a list of libraries, tables
+and run SAS code.</p>
+<hr>
+<h2>Basic steps</h2>
 <ol>
-<li>
-<p>Write your first assistant in a few minutes</p>
-</li>
-<li>
-<p>The tools supported OOB are:</p>
+<li>As a developer, you can add to  the builtin Viya tools or replace them.
 <ul>
-<li>code interpreter -- from the providers openai and azureai</li>
-<li>retrieval - Only openai supports this the time of this writing</li>
-<li>SAS Viya related custom tools
-<ul>
-<li>List available reports and libraries</li>
-<li>Fetch data from Viya with filters</li>
+<li>create tool specifications and functions to implement these tools</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>
-<p>Extend or replace the tools with your own</p>
-</li>
+<li>Call the <em>setupAssistant</em> method with this information
+along with other configuration information.</li>
+<li>Submit user prompt using the <em>runAssistant</em> method which will return the final
+answer. This answer might have been created by gpt or by one of your tools/functions.</li>
+<li>Process this response and repeat step 3.</li>
+<li>Additionally you can use the uploadFile method
+to upload information to the Assistant for use with the retrieval or
+code_interpreter tool</li>
 </ol>
+<p>The library handles all the calls to the Assistant API.</p>
 <h2>Getting Started</h2>
 <ul>
 <li><a href="#default">AI Assistant with defaults</a></li>
 <li><a href="#extend">Extend Assistant to support running SAS Code</a></li>
 </ul>
+<p>If you are developing a react app the call sequence is the same.</p>
 <h2>Creating a AI Assistant with defaults<a name="default"></a></h2>
 <p>A version of this is <a href="https://github.com/sassoftware/restaf-demos/blob/viya-assistantjs/samples/example1.js">here</a></p>
 <h3>Step 0 - Create a nodejs project and install the following:</h3>
@@ -285,8 +295,9 @@ total response time from azure or openai might be much longer.</p>
 <p>A fun prompt - try it
 Fetch data from cars where origin='Japan'</p>
 </blockquote>
-<h2>Extend Assistant to support running SAS Code]<a name="extend"></a></h2>
-<p>We will extend the Assistant from the last section to run SAS programs.</p>
+<h2>Extend Assistant with custom tools<a name="extend"></a></h2>
+<p>In this section we will extend the tools with a custom tool.
+This tool maintains a list of courses.</p>
 <p>To do this we have to fill in the domainTools in the configuration.</p>
 <h3>Step 1: Define the customTool</h3>
 <p><strong>Key points</strong></p>
@@ -327,7 +338,6 @@ value of the program will be extracted.</p>
 </code></pre>
 <h3>Step 2: Create the function to handle the request</h3>
 <pre class="prettyprint source lang-javascript"><code>// You need to add this import to the program
-// import fs from 'fs/promises';
 
 async function myuniversity(params, appEnv) {
   let { course } = params;
