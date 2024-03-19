@@ -44,8 +44,10 @@ function functionSpecs(provider, code, retrieval) {
   });
 
   let functionList = functions();
-
-  return { specs: specs, tools: tools, functionList: functionList, instructions: instructions() };
+  debugger;
+  let instruction = instructions();
+  debugger;
+  return { specs: specs, tools: tools, functionList: functionList, instructions: instruction };
 }
 
 const _getDataFunctionSpec = {

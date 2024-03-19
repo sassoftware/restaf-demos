@@ -74,6 +74,10 @@ async function chat(config) {
           console.log(r);
           break;
         }
+        case 'in': {
+          console.log(gptControl.assistant.instructions);
+          break;
+        }
         case 'createAssistant': {
           //cancel current run
           gptControl = await setupAssistant(config);
