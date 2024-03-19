@@ -20,7 +20,7 @@ function functionSpecs(provider, code, retrieval) {
     _listColumnsFunctionSpec,
     _describeTableSpec,
     _getDataFunctionSpec,
-   // _runSASFunctionSpec,
+    _runSASFunctionSpec,
     _keywordsFunctionSpec,
    // _contextDataFunctionSpec,
   ];
@@ -191,9 +191,9 @@ const _runSASFunctionSpec = {
     'run the specified sas program',
   parameters: {
     properties: {
-      file: {
+      program: {
         type: 'string',
-        description: 'this is the file to run',
+        description: 'this is the program to run',
       },
     },
     type: 'object',

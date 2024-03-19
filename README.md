@@ -32,7 +32,7 @@ of AI Assistants for Viya using either the openai or azureai implementation.
 - <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a>
 
 The library comes with a set of builtin tools to get a list of libraries, tables
-and run SAS code.
+and run SAS code. .
 
 ---
 
@@ -40,13 +40,18 @@ and run SAS code.
 
 1. As a developer, you can add to  the builtin Viya tools or replace them.
     - create tool specifications and functions to implement these tools
+    - The  builtin tool to run SAS code is very basic since it is unclear
+where the code will come from(and whether it even makes sense in this scenario).
+Recommend developer override the implementation
+ via the configuration object for setupAssistant by creating a _runSAS tool.
+
 2. Call the *setupAssistant* method with this information
 along with other configuration information.
 3. Submit user prompt using the *runAssistant* method which will return the final
  answer. This answer might have been created by gpt or by one of your tools/functions.
 4. Process this response and repeat step 3.
 5. Additionally you can use the uploadFile method
-to upload information to the Assistant for use with the retrieval or 
+to upload information to the Assistant for use with the retrieval or
 code_interpreter tool
 
 The library handles all the calls to the Assistant API.

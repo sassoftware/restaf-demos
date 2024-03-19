@@ -90,7 +90,8 @@ async function setupAssistant(config) {
     specs = config.domainTools;
   } else {
     let userTools = config.domainTools.tools.concat(builtinTools.tools);
-    let userFunctions = Object.assign(config.domainTools.functionList, builtinTools.functionList);
+    // let userFunctions = Object.assign(config.domainTools.functionList, builtinTools.functionList);
+    let userFunctions = Object.assign(builtinTools.functionList, config.domainTools.functionList);
     let userInstructions = (config.instructions)  ? config.instructions + builtinTools.instructions : builtinTools.instructions;
     specs = {tools: userTools, functionList: userFunctions, instructions: userInstructions};
   }

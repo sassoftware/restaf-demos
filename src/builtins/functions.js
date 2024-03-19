@@ -8,6 +8,7 @@
 import logAsArray from "./lib/logAsArray.js";
 import string2Table from "./lib/string2Table.js";
 import rows2csv from "./lib/rows2csv.js";
+
 /**
  * @description Function for the assistant
  * @private
@@ -100,19 +101,46 @@ async function _getData(params, appEnv) {
   return JSON.stringify({table: r.table, data: r.data});
 }
 async function _runSAS(params, appEnv, gptControl) {
-  let { program } = params;
-  let { store, session } = appEnv;
-  let {caslRun, computeRun, computeResults} = appEnv.restaflib;
-  let src = program;//place holder
-  if (appEnv.source === "cas") {
-    let r = await caslRun(store, session, src, {}, true);
-    return JSON.stringify(r.results);
-  } else {
-    let computeSummary = await computeRun(store, session, src);
-    let log = await computeResults(store, computeSummary, "log");
-    return logAsArray(log);
+   let { program} = params;
+    let { store, session, restaflib} = appEnv;
+    let src = `send_response({casResults={result="${src}"}})`;
+    console.log('src', src);
+    /*
+    
+    try {
+      src = await fs.readFile(program, "utf8");
+    } catch (err) {
+      console.log(err);
+      return "Error reading program " + program;
+    } 
+    */
+   /*
+   try {
+    let reader = newFileReader(program);
+    reader.onload = function(event) {
+      // The file's contents are now available in the event.target.result property.
+      var contents = event.target.result;
+    };
+    reader.readAsText("my_file.txt");
+   }
+   */
+    try {
+      if (appEnv.source === "cas") {
+        let r = await restaflib.caslRun(store, session, src, {}, true);
+        console.log(JSON.stringify(r.results));
+        return JSON.stringify(r.results);
+      } else if (appEnv) {
+        let computeSummary = await computeRun(store, session, src);
+        let log = await restaflib.computeResults(store, computeSummary, "log");
+        return logAsArray(log);
+      } else {
+        return "Cannot run program without a session";
+      }
+    } catch (err) {
+      console.log(err);
+      return "Error running program " + program;
+    }
   }
-}
 
 async function _keywords(params) {
   let { keywords, format } = params;
