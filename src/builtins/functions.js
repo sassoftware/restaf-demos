@@ -103,8 +103,8 @@ async function _getData(params, appEnv) {
 async function _runSAS(params, appEnv, gptControl) {
    let { program} = params;
     let { store, session, restaflib} = appEnv;
-    let src = `send_response({casResults={result="${src}"}})`;
-    console.log('src', src);
+  
+    return "Please provide your own implementation of _runSAS function. This is a placeholder function."
     /*
     
     try {
@@ -123,7 +123,7 @@ async function _runSAS(params, appEnv, gptControl) {
     };
     reader.readAsText("my_file.txt");
    }
-   */
+   
     try {
       if (appEnv.source === "cas") {
         let r = await restaflib.caslRun(store, session, src, {}, true);
@@ -140,6 +140,7 @@ async function _runSAS(params, appEnv, gptControl) {
       console.log(err);
       return "Error running program " + program;
     }
+    */
   }
 
 async function _keywords(params) {

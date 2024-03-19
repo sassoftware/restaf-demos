@@ -85,12 +85,27 @@ async function setupAssistant(config) {
   // In pass 1 the user list is prepended to the default list
 
   let builtinTools = functionSpecs(config.provider, false,false);
-  let specs={};
+  let dtools = [];
+  let incoming = config.domainTools.tools
+  if (incoming.length > 0) {
+    dtools = builtinTools.tools.filter((t) => {
+      console.log(t);
+      console.log('t.function.name', t.function.name);
+      let f = incoming.findIndex((fe,i) => fe.function.name === t.function.name)
+      console.log(f);
+      return (f === -1) ? true : false;
+    })
+  } else {
+    dtools = builtinTools.tools;
+  }
+  console.log('dtools', dtools);
+  let specs;
   if (config.domainTools.replace === true) {
     specs = config.domainTools;
   } else {
-    let userTools = config.domainTools.tools.concat(builtinTools.tools);
-    // let userFunctions = Object.assign(config.domainTools.functionList, builtinTools.functionList);
+   //  let userTools = config.domainTools.tools.concat(builtinTools.tools);
+    let userTools = dtools.concat(incoming);
+    console.log('userTools', userTools);
     let userFunctions = Object.assign(builtinTools.functionList, config.domainTools.functionList);
     let userInstructions = (config.instructions)  ? config.instructions + builtinTools.instructions : builtinTools.instructions;
     specs = {tools: userTools, functionList: userFunctions, instructions: userInstructions};

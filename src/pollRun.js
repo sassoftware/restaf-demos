@@ -23,8 +23,6 @@ async function pollRun(run, gptControl) {
   }
   // Since there is no streaming support, sleep and poll the status
   do {
-    
-
    runStatus = await assistantApi.getRun(thread.id, run.id);
     
     console.log("-------------------", runStatus.status);

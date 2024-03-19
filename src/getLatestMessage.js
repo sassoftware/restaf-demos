@@ -16,10 +16,12 @@ async function getLatestMessage(gptControl, limit) {
   const messages = await assistantApi.listMessages(thread.id, {limit:limit});
  
   let output = [];
+  let annotations = [];
   let data = messages.data;
   for (let i = 0; i < messages.data.length; i++){
     let content = data[i].content[0];
     if (data[i].role === 'assistant') {
+      console.log('annotations', content[content.type].annotations);
       output.push({id: data[i].id, role: data[i].role, type: content.type, content: content[content.type].value});
     } else {
       break;

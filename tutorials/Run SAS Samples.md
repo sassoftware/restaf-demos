@@ -1,7 +1,10 @@
-//Define New Tool and add it to the assistant
+# Running SAS from a tool
+
+## Sample for running on nodejs
+
+```javascript
 import fs from 'fs/promises';
-function addRunSAS() {
-  let tools = [
+let tools = [
     {
       type: 'function',
       function: {
@@ -49,11 +52,4 @@ function addRunSAS() {
     }
   }
 
-  return {
-    tools: tools, 
-    functionList: {_runSAS: _runSAS},
-    instructions: 'Additionally use this tool to run the specified .',
-    replace: false // use true if you want to get rid of previous tool definition;
-  };
-}
-export default addRunSAS;
+```
