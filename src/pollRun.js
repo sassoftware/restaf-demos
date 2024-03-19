@@ -33,8 +33,8 @@ async function pollRun(run, gptControl) {
       
       done = runStatus.status;
     } else {
-      await sleep(2000);
-      console.log("waited 2000 ms");
+      await sleep(500);
+      console.log("waited 500 ms");
     }
   } while (done === null);
 

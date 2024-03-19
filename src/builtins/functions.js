@@ -177,6 +177,7 @@ async function _idescribeTable(params, appEnv) {
   let { table, limit, format, where, csv } = params;
   let { source, sessionID, restafedit } = appEnv;
   csv = csv == null ? false : csv;
+  console.log(params);
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
