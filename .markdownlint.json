@@ -27,7 +27,7 @@
     "style": "---"
   },
   "line-length": {
-    "strict": true,
+    "strict": false,
     "code_blocks": false
   },
   "link-image-style": {

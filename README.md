@@ -2,11 +2,19 @@
 
 ## Introduction to azure and openai Assistant API
 
-There are many resources available. This site from Microsoft is a good place to start
-<a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/assistants?source=recommendations">Getting started with Azure OpenAI Assistants (Preview)</a>
----
+The Assistant API is a new API that was announced late in 2003 by openai.
+A clear explanation of what it is at
+<a href="https://platform.openai.com/docs/assistants/how-it-works">How Assistants works</a>
 
-## gpt models
+With this api one can build a "RAG" with SAS Viya capabilities.
+
+The Assistant API is supported by both openai and azureai. However their apis are different.
+Also azureai does not support the retrieval tool yet.
+
+The Assistant API is in beta/preview. So it is not ready for prime
+ time but good enough to develop non-production Assistants.
+
+### gpt models
 
 The information here is a moving target. Check with the provider
 for the proper model and zone to use for Assistant API.
@@ -17,28 +25,38 @@ Models I am using:
 - azureai: gpt-4 1106 preview in zone East US 2
 
 ---
+> The goal of @sassoftware/viya-assistantjs library is to simplify the development
+of AI Assistants for Viya using either the openai or azureai implementation.
 
-## @sassoftware/viya-assistantjs
+- <a href="https://https://sassoftware.github.io/restaf-demos">Documentation </a>
+- <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a>
 
-The document is available [here](https://sassoftware.github.io/restaf-demos/)
-@sassoftware/viya-assistantjs is a JavaScript library with the following
-key features
+The library comes with a set of builtin tools to get a list of libraries, tables
+and run SAS code.
 
-1. Write your first assistant in a few minutes
+---
 
-2. The tools supported OOB are:
-   - code interpreter -- from the providers openai and azureai
-   - retrieval - Only openai supports this the time of this writing
-   - SAS Viya related custom tools
-      - List available reports and libraries
-      - Fetch data from Viya with filters
+## Basic steps
 
-3. Extend or replace the tools with your own
+1. As a developer, you can add to  the builtin Viya tools or replace them.
+    - create tool specifications and functions to implement these tools
+2. Call the *setupAssistant* method with this information
+along with other configuration information.
+3. Submit user prompt using the *runAssistant* method which will return the final
+ answer. This answer might have been created by gpt or by one of your tools/functions.
+4. Process this response and repeat step 3.
+5. Additionally you can use the uploadFile method
+to upload information to the Assistant for use with the retrieval or 
+code_interpreter tool
+
+The library handles all the calls to the Assistant API.
 
 ## Getting Started
 
 - [AI Assistant with defaults](#default)
 - [Extend Assistant to support running SAS Code](#extend)
+
+If you are developing a react app the call sequence is the same.
 
 ## Creating a AI Assistant with defaults<a name="default"></a>
 
@@ -158,7 +176,7 @@ fetch data from cars. Limit the rows to 10
 > A fun prompt - try it
 Fetch data from cars where origin='Japan'
 
-## Extend Assistant with custom tools]<a name="extend"></a>
+## Extend Assistant with custom tools<a name="extend"></a>
 
 In this section we will extend the tools with a custom tool.
 This tool maintains a list of courses.
@@ -205,7 +223,6 @@ let tools = [
 
 ```javascript
 // You need to add this import to the program
-// import fs from 'fs/promises';
 
 async function myuniversity(params, appEnv) {
   let { course } = params;
@@ -235,7 +252,6 @@ config.domainTools = {
 Run the program as you did befoee
 
 ### Prompts
-
 
 > Here is a sample prompt
 
