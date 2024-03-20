@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Run SAS Samples</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-Assistants and Threads.html">
+                                Assistants and Threads
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-customTools.html">
+                                customTools
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-gettingStarted.html">
+                                gettingStarted
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-Run SAS Samples.html">
+                                Run SAS Samples
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-setupConfiguration.html">
+                                setupConfiguration
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-Tools and Functions.html">
+                                Tools and Functions
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-Useful links.html">
+                                Useful links
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar tutorials"
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Assistants and Threads.html">Assistants and Threads</a></li><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-Run SAS Samples.html">Run SAS Samples</a></li><li><a href="tutorial-setupConfiguration.html">setupConfiguration</a></li><li><a href="tutorial-Tools and Functions.html">Tools and Functions</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Tutorial</p>
+                    <h1>Run SAS Samples</h1>
+                </header>
+                <section>
+
+<article>
+    <h1>Running SAS from a tool</h1>
+<h2>Sample for running on nodejs</h2>
+<pre class="prettyprint source lang-javascript"><code>import fs from 'fs/promises';
+let tools = [
+    {
+      type: 'function',
+      function: {
+        name: &quot;_runSAS&quot;,
+        description: &quot;process named SAS program. The program extension must be .sas or .casl&quot;,
+        parameters: {
+          properties: {
+            resource: {
+              type: &quot;string&quot;,
+              description: &quot;the name of the program to run&quot;,
+            },
+          },
+          type: &quot;object&quot;,
+          required: [&quot;resource&quot;],
+        },
+      }
+    }
+  ];
+  // function to run the program
+  async function _runSAS(params, appEnv) {
+    let { resource} = params;
+    let { store, session, restaflib} = appEnv;
+    let src;
+    try {
+      src = await fs.readFile(resource, &quot;utf8&quot;);
+    } catch (err) {
+      console.log(err);
+      return &quot;Error reading program &quot; + resource;
+    }
+    try {
+      if (appEnv.source === &quot;cas&quot;) {
+        let r = await restaflib.caslRun(store, session, src, {}, true);
+        console.log(JSON.stringify(r.results));
+        return JSON.stringify(r.results);
+      } else if (appEnv.source === &quot;compute&quot;) {
+        let computeSummary = await restaflib.computeRun(store, session, src);
+        let log = await restaflib.computeResults(store, computeSummary, &quot;log&quot;);
+        return logAsArray(log);
+      } else {
+        return &quot;Cannot run program without a session&quot;;
+      }
+    } catch (err) {
+      console.log(err);
+      return &quot;Error running program &quot; + program;
+    }
+  }
+
+</code></pre>
+</article>
+
+</section>
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+
+</body>
+</html>
