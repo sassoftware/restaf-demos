@@ -39,6 +39,7 @@ async function chat(config) {
       rl.close();
       break;
     }
+    prompt = prompt.replace( /\r?\n/g, '' );
     let cmda = prompt.toLocaleLowerCase().split(' ');
     let cmd = cmda[0].trim();
     if (cmd === 'delete' && cmda[1] === 'assistant') {
