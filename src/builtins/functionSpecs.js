@@ -108,7 +108,9 @@ const _listSASObjectsFunctionSpec = {
 const _listSASDataLibFunctionSpec = {
   name: '_listSASDataLib',
   description:
-    `list available SAS libs, calibs, librefs.
+    `list available SAS libs, calibs, librefs or libraries.
+     This tool is the only one that can answer questions like this.
+
      A example would be list libs. 
      If limit is not is specified, then the function 
      will return the first 10 libs.
@@ -131,7 +133,7 @@ const _listSASDataLibFunctionSpec = {
 const _listSASTablesFunctionSpec = {
   name: '_listSASTables',
   description:
-    `for a given library, lib or caslibs get the list of available tables
+    `for a given SAS library, lib, caslibs or libref get the list of available tables.
     (ex: list tables for Samples)
     Optionally let user specify the source as cas or compute.`,
   parameters: {
@@ -157,7 +159,7 @@ const _listSASTablesFunctionSpec = {
 };
 const _listColumnsFunctionSpec = {
   name: '_listColumns',
-  description: 'Get schema or columns for specified table. Table is of the form sashelp.cars',
+  description: 'Get schema or columns for specified SAS  table. Table is of the form sashelp.cars',
   parameters: {
     properties: {
       table: {
@@ -171,7 +173,7 @@ const _listColumnsFunctionSpec = {
 };
 const _describeTableSpec = {
   name: '_describeTable',
-  description: 'Describe the table like sashelp.cars . return information on the table like columns, types, keys. Optionally format the data',
+  description: 'Describe the SAS table like sashelp.cars . return information on the table like columns, types, keys. Optionally format the data',
   parameters: {
     properties: {
       table: {

@@ -1,2 +1,1 @@
-action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';
-send_response({casResults={result=result}});
+action datastep.runcode r= result/ single='YES' code = 'data casuser.a; x=1; run;';send_response({casResults={result=result}});

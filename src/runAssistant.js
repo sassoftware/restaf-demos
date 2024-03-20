@@ -50,7 +50,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
   let { assistantApi, assistant, thread } = gptControl;
   let runArgs = {
     assistantId: assistant.id,
-    instructions: instructions != null ? instructions : null,
+    instructions: instructions != null ? instructions : null
   };
   // Run the assistant with the prompt and poll for completion
   
@@ -64,6 +64,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
     message = await getLatestMessage(gptControl, 5);
   } else if (runStatus.status === 'requires_action') {
     // make sure that required_action closes the thread run
+    
     let r = await required_action(runStatus, gptControl, appEnv);
     console.log('getting latest message ')
     message = await getLatestMessage(gptControl, 5);

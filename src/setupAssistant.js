@@ -87,25 +87,24 @@ async function setupAssistant(config) {
   let builtinTools = functionSpecs(config.provider, false,false);
   let dtools = [];
   let incoming = config.domainTools.tools
+  // allow users to override the default tool by naming their tool the same as the default tool
   if (incoming.length > 0) {
     dtools = builtinTools.tools.filter((t) => {
-      console.log(t);
-      console.log('t.function.name', t.function.name);
       let f = incoming.findIndex((fe,i) => fe.function.name === t.function.name)
-      console.log(f);
+      if (f !== -1) {
+        console.log('overriding', t.function.name);
+      }
       return (f === -1) ? true : false;
     })
   } else {
     dtools = builtinTools.tools;
   }
-  console.log('dtools', dtools);
   let specs;
   if (config.domainTools.replace === true) {
     specs = config.domainTools;
   } else {
    //  let userTools = config.domainTools.tools.concat(builtinTools.tools);
     let userTools = dtools.concat(incoming);
-    console.log('userTools', userTools);
     let userFunctions = Object.assign(builtinTools.functionList, config.domainTools.functionList);
     let userInstructions = (config.instructions)  ? config.instructions + builtinTools.instructions : builtinTools.instructions;
     specs = {tools: userTools, functionList: userFunctions, instructions: userInstructions};
