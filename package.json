@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/viya-assistantjs",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A starter library to build chats for SAS Viya uing OpenAI or AzureAI  Assistant API",
   "engines": {
     "node": ">=18.0.0",
