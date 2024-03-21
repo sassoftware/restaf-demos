@@ -30,7 +30,7 @@ async function uploadFile(filename, fileHandle,content, purpose, gptControl) {
     let assistantFile = await assistantApi.createAssistantFile(assistant.id,file.id);
     console.log(' returned assistantfile: ', assistantFile);
     console.log('assistant after createAssistantfile:'  ,assistant);
-    return assistantFile;
+    return {fileName: filename, fileId: file.id};
     
   } catch (e) {
     console.log(e);
