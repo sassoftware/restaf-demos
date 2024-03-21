@@ -115,6 +115,16 @@ function apiMapper(client, provider) {
     }
     debugger;
     return client.files.create(options);
+
+  }
+  const createAssistantFile = (client) => (...args) =>{
+    let [assistantId, fileId] = args;
+    let newOptions = {
+      file_id: fileId
+    }
+    console.log(newOptions);
+    console.log(assistantId);
+    return client.beta.assistants.files.create(assistantId, newOptions);
   }
   let assistantApi = client;
   if (provider === 'openai') {
@@ -133,6 +143,7 @@ function apiMapper(client, provider) {
       listMessages: listMessages(client),
      
       uploadFile: uploadFile(client),
+      createAssistantFile: createAssistantFile(client),
       
       createRun: createRun(client),
       getRun: getRun(client),

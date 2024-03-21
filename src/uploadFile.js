@@ -19,36 +19,49 @@ async function uploadFile(filename, fileHandle,content, purpose, gptControl) {
  
   // really strange args for azure - not sure why they(both) coded it like this
   debugger;
-  let fileId = (provider === 'openai') 
-              ? await assistantApi.uploadFile(fileHandle,purpose)
-              : await assistantApi.uploadFile(content, purpose, {filename: filename});
-  
-  
-    // update the array of file ids in the assistant
+  let file= null;
+  try {
+    file = (provider === 'openai') 
+                ? await assistantApi.uploadFile(fileHandle,purpose)
+                : await assistantApi.uploadFile(content, purpose, {filename: filename});
+    
+    // now add to the assistant
+    console.log('uploaded file:', file);
+    let assistantFile = await assistantApi.createAssistantFile(assistant.id,file.id);
+    console.log(' returned assistantfile: ', assistantFile);
+    console.log('assistant after createAssistantfile:'  ,assistant);
+    return assistantFile;
+    
+  } catch (e) {
+    console.log(e);
+    throw new Error(`Failed to upload file ${filename}`);
+  }
+}
+
+export default uploadFile;
+/*
+// update the array of file ids in the assistant
+    /*
   let currentFileIds = [].concat(assistant.file_ids);
   currentFileIds.push(fileId.id);
   console.log('currentFiles ', currentFileIds);
   
+  
   // looks like it is possible to create a file with null file id
   currentFileIds = currentFileIds.filter((v) => v != null);
-  /*
-  if (gptControl.retrieval === false){
-    return currentFileIds;
-  }
-  */
+
     // update assistant with the new array of  the fileids
     try {
-      debugger;
       let opts = {
         fileIds: currentFileIds
       };
       let newAssistant = await assistantApi.updateAssistant(assistant.id, opts);
       gptControl.assistant = newAssistant;
+      console.log(gptControl.assistant);
+
     } catch (e) {
       console.log(e);
       throw new Error(`Failed to update assistant with new file ${filename}`);
     }
 
-  return {notes: (gptControl.retrieval)? "Retrieval enabled" : "Retrieval disabled"}, currentFileIds;
-}
-export default uploadFile;
+*/

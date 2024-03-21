@@ -55,11 +55,16 @@ async function chat(config) {
           let f = cmda[1].trim();
           console.log(f);
           debugger;
-          let fileHandle = fs.createReadStream(f); //for openai
-          debugger;
-          let content = fs.readFileSync(f); //for azureai
-          let r = await uploadFile(f,fileHandle, content, 'assistants', gptControl);
-          console.log(r);
+          try {
+            let fileHandle = fs.createReadStream(f); //for openai
+            debugger;
+            let content = fs.readFileSync(f); //for azureai
+            let r = await uploadFile(f,fileHandle, content, 'assistants', gptControl);
+            console.log(r);
+          }
+          catch (e) {
+            console.log(e);
+          } 
           break;
         }
         case 'cancel': {
@@ -77,6 +82,10 @@ async function chat(config) {
         }
         case 'in': {
           console.log(gptControl.assistant.instructions);
+          break;
+        }
+        case 'showast': {
+          console.log(gptControl.assistant);
           break;
         }
         case 'createAssistant': {
