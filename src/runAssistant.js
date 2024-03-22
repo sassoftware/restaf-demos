@@ -56,7 +56,8 @@ async function runPrompt(gptControl, appEnv, instructions) {
   let { assistantApi, assistant, thread } = gptControl;
   let runArgs = {
     assistantId: assistant.id,
-    instructions: instructions != null ? instructions : null
+    instructions: instructions != null ? instructions : null,
+    tools: assistant.tools
   };
   // Run the assistant with the prompt and poll for completion
   
