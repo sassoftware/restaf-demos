@@ -30,9 +30,15 @@ async function runAssistant(gptControl,prompt, instructions) {
 
   //add the user request to thread
   try {
-    let _newMessage = await assistantApi.createMessage(thread.id,'user',prompt);
+    // this seems to improve retrieval using files.
+    let opts = {};
+    if (gptControl.provider === 'openai') {
+      opts.file_ids = gptControl.assistant.file_ids;
+    } else {
+      opts.fileIds = gptControl.assistant.fileIds;
+    }
+    let _newMessage = await assistantApi.createMessage(thread.id,'user',prompt, opts);
   } catch (error) {
-    
     console.log(error.status);
     console.log(error.error);
      throw new Error(`

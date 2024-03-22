@@ -53,13 +53,16 @@ function apiMapper(client, provider) {
   }
 
   const createMessage = (client) => (...args) =>{
-    let [threadid, role, content] = args;
-    let options = {
+    let [threadid, role, content, options] = args;
+    let newOptions = {
       role: role,
       content: content
     }
+    if (options != null) {
+      newOptions = Object.assign(newOptions, options);
+    }
 
-    return client.beta.threads.messages.create(threadid, options);
+    return client.beta.threads.messages.create(threadid, newOptions);
   }
 
   const createThread = (client) => (...args) =>{
