@@ -1,7 +1,24 @@
 This is the current resume of Joe Dune.
-Joe Dune was born in Jellico,TN 
-Joe Dune got his undergraduate degree from UT in Knoxville, TN
-Joe Dune got his masters and PhD in statistics from NC State Univ, NC.
-Joe Dunne  claims his current skill set as programming in JavaScript and SAS. His lost knowledge includes
-C programming, Java programming, IBM Assembly Language.
-Joe Dune currently currrently resides lives Black Mountain, NC.
+
+Address: 100, Happy Lane, Black Mountain, NC
+
+Date of Birth: Dec 25th, 1960
+Place of Birth: Jellico, TN
+
+Education:
+
+- Undergraduate Degree:  Bachelors in Statistics from UT, TN
+- Higher Education: PhD in Statistics from NC State, Raleight, NC
+
+Programming skills:
+
+ - SAS
+ - JavaScript
+ - Python
+ 
+Forgotten Programing Languages:
+
+- C
+- IBM Assembler
+
+
