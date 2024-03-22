@@ -18,7 +18,14 @@ function instructionsWeb() {
   Always include annotation when information is found in a file
   Here are some tips for formatting the response from the tools.
   For example,
-  If the response from a tool is of the form [{a:1,b:2},{a:1,b:3},...] format the table as a html table element like this
+
+  Format the response as a html table if the content of the response is one of the following formats:
+
+  - a comma-delimited format 
+  - or of this format [{a:1,b:2},{a:1,b:3},...]
+
+  The html table should have a light blue background for the column headers.Below is a sample html table format.
+  Use a border width of 1px and solid style for the table.
   '<table>
      <tr>
        <th>a</th> 
@@ -33,7 +40,7 @@ function instructionsWeb() {
    <td>3</td>
    </tr>
    </table>' 
-  Use a style of your choice to make the table look good with solid borders and a background color of lightblue for the column headers.
+ 
   if the response from a tool is of the form  like ['a','b','c', ...] or [1,11,8, ...] then return the data as a html unordered list to the user
   like this:
   '<ul>

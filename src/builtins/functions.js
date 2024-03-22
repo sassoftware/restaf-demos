@@ -210,7 +210,7 @@ async function _idescribeTable(params, appEnv) {
       table: iTable,
       tableSummary: tableSummary,
       columns: tappEnv.state.columns,
-      data: (csv === false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
+      data: (csv !== false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
     };
   } catch (err) {
     console.log(err);
