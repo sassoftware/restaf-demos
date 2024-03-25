@@ -57,7 +57,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
   console.log(instructions);
   let runArgs = {
     assistantId: assistant.id,
-    instructions: formatInstructions(instructions),
+    additionalInstructions: formatInstructions(instructions),
     tools: assistant.tools
   };
   // Run the assistant with the prompt and poll for completion
@@ -83,41 +83,91 @@ async function runPrompt(gptControl, appEnv, instructions) {
 }
 function formatInstructions(instructions) {
   let inst = `
-  Here are some tips for formatting the response from the tools.
-  For example,
-
-  Format the response as a html table if the content of the response is one of the following formats:
+  
+  Format the response as a html table if the content of the response is one of the following schema:
 
   - a comma-delimited format 
-  - or of this format [{a:1,b:2},{a:1,b:3},...]
+  - this schema{a: {a1:10, bx:20, c: {cx:3, az: 4}} }, {d: {d1:10, d2:20},...}
+  - this schema [{a1:1,b1:1}, {a1:1, b1:2}. ...}]
+  
 
- The suggested styling for the html table is as follows:
-    The html table should have a light blue background for the column headers.
-    Use a border width of 1px and solid style for the table.
+  Below is an example of a  html table format with nested table
 
-  Below is a sample html table format.
-  '<table>
-     <tr>
-       <th>a</th> 
-      <th>b</th>
-     </tr>
-    <tr>
-    <td>1</td>
-    <td>2</td>
-    </tr>
-    <tr>
-   <td>2</td>
-   <td>3</td>
-   </tr>
-   </table>' 
- 
-  if the response from a tool is of the form  like ['a','b','c', ...] or [1,11,8, ...] then format it as  html unordered list element
-  Below is a sample html unordered list format.
+      '<table>     
+         <tr>     
+           <th>Name</th>     
+           <th>Value</th>     
+         </tr>     
+         <tr>     
+           <td>a</td>     
+           <td>     
+             <table>     
+               <tr>     
+                 <th>Name</th>     
+                 <th>Value</th>     
+               </tr>     
+               <tr>     
+                 <td>a1</td>     
+                 <td>10</td>     
+               </tr>     
+               <tr>     
+                 <td>bx</td>     
+                 <td>20</td>     
+               </tr>     
+               <tr>     
+                 <td>c</td>     
+                 <td>     
+                   <table>     
+                     <tr>     
+                       <th>Name</th>     
+                       <th>Value</th>     
+                     </tr>     
+                     <tr>     
+                       <td>cx</td>     
+                       <td>3</td>     
+                     </tr>     
+                     <tr>     
+                       <td>az</td>     
+                       <td>4</td>     
+                     </tr>     
+                   </table>     
+                 </td>     
+               </tr>     
+             </table>     
+           </td>     
+         </tr>     
+         <tr>     
+           <td>d</td>     
+           <td>     
+             <table>     
+               <tr>     
+                 <th>Name</th>     
+                 <th>Value</th>     
+               </tr>     
+               <tr>     
+                 <td>d1</td>     
+                 <td>10</td>     
+               </tr>     
+               <tr>     
+                 <td>d2</td>     
+                 <td>20</td>     
+               </tr>     
+             </table>     
+           </td>     
+         </tr>     
+       </table>     
+     '
+
+  if the response from a tool is of the form  like ['a','b','c', ...] or [1,11,8, ...] or
+  ['- a','- b','- c', ...] or ['1. xxx', '2. yyy', '3. zzz']
+  then format it as  html ordered or unordered list element
+  Below is a sample html list format.
   '<ul>
     <li>a</li>
     <li>b</li>
     <li>3</li>
   </ul>'
+
 
   if the response from a tool is of the form {a:1,b:2} then format it as  html table with a single column.
   '<table>
@@ -136,54 +186,10 @@ function formatInstructions(instructions) {
 
   </table>'
 
- if the response from a tool is of the form 
- {a: {a1:10, bx:20, c: {cx:3, az: 4}} } then format the message as nested html table. Here is an example:
+  The suggested styling for the html table is as follows:
+    The html table should have a light blue background for the column headers.
+    Use a border width of 1px and solid style for the table.
 
-  '<table>
-  <tr>
-  <th>Name</th>
-  <th>Value</th>
-  </tr>
-  <tr>
-  <td>a</td>
-  <td>
-  <table>
-  <tr>
-  <th>Name</th>
-  <th>Value</th>
-  </tr>
-  <tr>
-  <td>a1</td>
-  <td>10</td>
-  </tr>
-  <tr>
-  <td>bx</td>
-  <td>20</td>
-  </tr>
-  <tr>
-  <td>c</td>
-  <td>
-  <table>
-  <tr>
-  <th>Name</th>
-  <th>Value</th>
-  </tr>
-  <tr>
-  <td>cx</td>
-  <td>3</td>
-  </tr>
-  <tr>
-  <td>az</td>
-  <td>4</td>
-  </tr>
-  </table>
-  </td>
-  </tr>
-  </table>
-  </td>
-  </tr>
-
-  </table>'
   
   `;
 
