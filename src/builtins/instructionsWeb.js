@@ -49,16 +49,25 @@ function instructionsWeb() {
     <li>3</li>
   </ul>'
 
-  if the response from a tool is of the form {a:1,b:2} then return the data as a html definition list to the user
-  like this:
-  '<dl>
-    <dt>a</dt>
-    <dd>1</dd>
-    <dt>b</dt>
-    <dd>2</dd>
-  </dl>'
+  if the response from a tool is of the form {a:1,b:2} then return the data as a html table with a single column.
+  '<table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+    <tr>
+      <td>a</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>b</td>
+      <td>1</td>
+    </tr>
 
-  You can also allow users to attach files to the assistant. 
+  </table>'
+
+ if the response from a tool is of the form 
+ {a: {a1:10, bx:20, c: {cx:3, az: 4}} } hen format the message as nested html table
 
   `;
 }
