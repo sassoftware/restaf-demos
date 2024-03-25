@@ -67,8 +67,55 @@ function instructionsWeb() {
   </table>'
 
  if the response from a tool is of the form 
- {a: {a1:10, bx:20, c: {cx:3, az: 4}} } hen format the message as nested html table
+ {a: {a1:10, bx:20, c: {cx:3, az: 4}} } then format the message as nested html table. Here is an example:
 
+  '<table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>a</td>
+  <td>
+  <table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>a1</td>
+  <td>10</td>
+  </tr>
+  <tr>
+  <td>bx</td>
+  <td>20</td>
+  </tr>
+  <tr>
+  <td>c</td>
+  <td>
+  <table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>cx</td>
+  <td>3</td>
+  </tr>
+  <tr>
+  <td>az</td>
+  <td>4</td>
+  </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+  </td>
+  </tr>
+
+  </table>'
+  
+ 
   `;
 }
 export default instructionsWeb;
