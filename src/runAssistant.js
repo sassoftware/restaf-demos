@@ -57,11 +57,11 @@ async function runPrompt(gptControl, appEnv, instructions) {
   console.log(instructions);
   let runArgs = {
     assistantId: assistant.id,
-    additionalInstructions: formatInstructions(instructions),
+    instructions: formatInstructions(instructions),
     tools: assistant.tools
   };
   // Run the assistant with the prompt and poll for completion
-  
+  debugger;
   let run = await assistantApi.createRun(thread.id, runArgs);
   gptControl.run = run;
   let runStatus = await pollRun(run, gptControl);
