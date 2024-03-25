@@ -57,8 +57,8 @@ async function _catalogSearch(params, appEnv, gptControl) {
     };
     console.log(payload);
     let r = await store.apiCall(catalog.links("search"), payload);
-    console.log(r.items().toJS());
-    return JSON.stringify(r.items().toJS());
+    console.log(JSON.stringify(r.items(), null,4));
+    return JSON.stringify(r.items(), null,4);
   } catch (err) {
     console.log(JSON.stringify(err));
     return "Error searching catalog";
@@ -84,9 +84,9 @@ async function _listSASObjects(params, appEnv) {
     },
   };
   let results = await store.apiCall(s.links(resource), payload);
-  let items = results.itemsList().toJS();
+  let items = results.itemsList();
 
-  return JSON.stringify(items);
+  return JSON.stringify(items, null,4);
 }
 async function _listSASDataLib(params, appEnv) {
   let { limit, source, start } = params;
@@ -97,7 +97,7 @@ async function _listSASDataLib(params, appEnv) {
     },
   };
   let r = await appEnv.restafedit.getLibraryList(appEnv, payload);
-  return JSON.stringify(r);
+  return JSON.stringify(r, null,4);
 }
 async function _listSASTables(params, appEnv) {
   let { library, limit } = params;
@@ -108,7 +108,7 @@ async function _listSASTables(params, appEnv) {
     },
   };
   let r = await appEnv.restafedit.getTableList(library, appEnv, p);
-  return JSON.stringify(r);
+  return JSON.stringify(r, null,4);
 }
 async function _listColumns(params, appEnv) {
   let { table } = params;
@@ -121,11 +121,11 @@ async function _listColumns(params, appEnv) {
 
   let r = await appEnv.restafedit.getTableList(library, appEnv, p);
 
-  return JSON.stringify(r);
+  return JSON.stringify(r, null,4);
 }
 async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
-  return JSON.stringify({ table: r.table, data: r.data });
+  return JSON.stringify({ table: r.table, data: r.data }, null,4);
 }
 async function _runSAS(params, appEnv, gptControl) {
   let { program } = params;
@@ -151,7 +151,7 @@ async function _runSAS(params, appEnv, gptControl) {
   try {
     if (appEnv.source === "cas") {
       let r = await restaflib.caslRun(store, session, program, {}, true);
-      return JSON.stringify(r.results);
+      return JSON.stringify(r.results, null,4);
     } else if (appEnv) {
       let computeSummary = await computeRun(store, session, src);
       let log = await restaflib.computeResults(store, computeSummary, "log");
@@ -192,7 +192,7 @@ async function _keywords(params) {
 }
 async function _describeTable(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
-  return JSON.stringify(r);
+  return JSON.stringify(r, null,4);
 }
 async function _idescribeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
