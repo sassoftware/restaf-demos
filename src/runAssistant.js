@@ -83,24 +83,108 @@ async function runPrompt(gptControl, appEnv, instructions) {
 }
 function formatInstructions(instructions) {
   let inst = `
- Here are some tips for formatting.
+  Here are some tips for formatting the response from the tools.
+  For example,
 
-  Use either unordered lists, tables or nested tables based.
   Format the response as a html table if the content of the response is one of the following formats:
 
-  Format as table if the response is one of these forms
   - a comma-delimited format 
-  - An array like this [{a:1,b:2},{a:1,b:3},...]
+  - or of this format [{a:1,b:2},{a:1,b:3},...]
 
-  The table should have a light blue background for the column headers. 
-  Use a border width of 1px and solid style for the table.
+ The suggested styling for the html table is as follows:
+    The html table should have a light blue background for the column headers.
+    Use a border width of 1px and solid style for the table.
 
-  if the response from a tool is of the form  like ['a','b','c', ...] or [1,11,8, ...] use an unordered list
+  Below is a sample html table format.
+  '<table>
+     <tr>
+       <th>a</th> 
+      <th>b</th>
+     </tr>
+    <tr>
+    <td>1</td>
+    <td>2</td>
+    </tr>
+    <tr>
+   <td>2</td>
+   <td>3</td>
+   </tr>
+   </table>' 
+ 
+  if the response from a tool is of the form  like ['a','b','c', ...] or [1,11,8, ...] then format it as  html unordered list element
+  Below is a sample html unordered list format.
+  '<ul>
+    <li>a</li>
+    <li>b</li>
+    <li>3</li>
+  </ul>'
 
+  if the response from a tool is of the form {a:1,b:2} then format it as  html table with a single column.
+  '<table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+    <tr>
+      <td>a</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+
+  </table>'
 
  if the response from a tool is of the form 
- {a: {a1:10, bx:20, c: {cx:3, az: 4}} } then format the message as nested html table. 
+ {a: {a1:10, bx:20, c: {cx:3, az: 4}} } then format the message as nested html table. Here is an example:
 
+  '<table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>a</td>
+  <td>
+  <table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>a1</td>
+  <td>10</td>
+  </tr>
+  <tr>
+  <td>bx</td>
+  <td>20</td>
+  </tr>
+  <tr>
+  <td>c</td>
+  <td>
+  <table>
+  <tr>
+  <th>Name</th>
+  <th>Value</th>
+  </tr>
+  <tr>
+  <td>cx</td>
+  <td>3</td>
+  </tr>
+  <tr>
+  <td>az</td>
+  <td>4</td>
+  </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+  </td>
+  </tr>
+
+  </table>'
+  
   `;
 
   if (instructions != null) {
