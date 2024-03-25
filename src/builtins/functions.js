@@ -13,11 +13,10 @@ import rows2csv from "./lib/rows2csv.js";
  * @description Function for the assistant
  * @private
  * @function functionSpecs
- * @returns {object} - object containing function specs 
+ * @returns {object} - object containing function specs
  * @returns {object} - a functions object({f1: function1, f2: function2, ...})
- * 
+ *
  */
-
 
 //const fss = fs.promises;
 // const { caslRun, computeRun, computeResults } = restaflib;
@@ -33,15 +32,42 @@ function functions() {
     _runSAS,
     _keywords,
     _describeTable,
-   // _contextData
+    _catalogSearch
+    // _contextData
   };
   return flist;
+}
+
+async function _catalogSearch(params, appEnv, gptControl) {
+  let { metadata } = params;
+  let { store } = appEnv;
+  
+  console.log('metadata', metadata) 
+  let q = metadata.replace(/,/g, ' ');
+  console.log(metadata) 
+  //tbd:  need to implement a q collector from the metadata string to allow
+  // for free form queries to the catalog en
+
+  try {
+    debugger;
+    let {catalog} = await store.addServices("catalog");
+    debugger;
+    let payload = {
+      qs: {q: q}
+    };
+    console.log(payload);
+    let r = await store.apiCall(catalog.links("search"), payload);
+    return JSON.stringify(r.items().toJS());
+  } catch (err) {
+    console.log(JSON.stringify(err));
+    return "Error searching catalog";
+  }
 }
 
 async function _listSASObjects(params, appEnv) {
   let { resource, limit } = params;
   let store = appEnv.store;
-  
+
   limit = limit == null ? 10 : limit;
   if (
     ["files", "folders", "reports"].includes(resource.toLowerCase()) === false
@@ -58,15 +84,15 @@ async function _listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList().toJS();
-  
+
   return JSON.stringify(items);
 }
 async function _listSASDataLib(params, appEnv) {
-  let { limit, source, start} = params;
+  let { limit, source, start } = params;
   let payload = {
     qs: {
-      limit: (limit == null) ? 10 : limit,
-      start: (start == null) ? 0 : start
+      limit: limit == null ? 10 : limit,
+      start: start == null ? 0 : start,
     },
   };
   let r = await appEnv.restafedit.getLibraryList(appEnv, payload);
@@ -86,24 +112,24 @@ async function _listSASTables(params, appEnv) {
 async function _listColumns(params, appEnv) {
   let { table } = params;
   let { source } = appEnv;
-  
+
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return "Table must be specified in the form casuser.cars or sashelp.cars";
   }
 
-  let r =  await appEnv.restafedit.getTableList(library, appEnv, p);
-  
+  let r = await appEnv.restafedit.getTableList(library, appEnv, p);
+
   return JSON.stringify(r);
 }
 async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
-  return JSON.stringify({table: r.table, data: r.data});
+  return JSON.stringify({ table: r.table, data: r.data });
 }
 async function _runSAS(params, appEnv, gptControl) {
-   let { program} = params;
-    let { store, session, restaflib} = appEnv;
-    /*
+  let { program } = params;
+  let { store, session, restaflib } = appEnv;
+  /*
     
     try {
       src = await fs.readFile(program, "utf8");
@@ -120,28 +146,27 @@ async function _runSAS(params, appEnv, gptControl) {
     reader.readAsText("my_file.txt");
    }
    */
-    
-    try {
-      if (appEnv.source === "cas") {
-        let r = await restaflib.caslRun(store, session, program, {}, true);
-        return JSON.stringify(r.results);
-      } else if (appEnv) {
-        let computeSummary = await computeRun(store, session, src);
-        let log = await restaflib.computeResults(store, computeSummary, "log");
-        return logAsArray(log);
-      } else {
-        return "Cannot run program without a session";
-      }
-    } catch (err) {
-      console.log(err);
-      return "Error running program " + program;
+
+  try {
+    if (appEnv.source === "cas") {
+      let r = await restaflib.caslRun(store, session, program, {}, true);
+      return JSON.stringify(r.results);
+    } else if (appEnv) {
+      let computeSummary = await computeRun(store, session, src);
+      let log = await restaflib.computeResults(store, computeSummary, "log");
+      return logAsArray(log);
+    } else {
+      return "Cannot run program without a session";
     }
-    
+  } catch (err) {
+    console.log(err);
+    return "Error running program " + program;
   }
+}
 
 async function _keywords(params) {
   let { keywords, format } = params;
-console.log('keywords', keywords, format);
+  console.log("keywords", keywords, format);
   switch (format) {
     case "html": {
       let t = "<ul>";
@@ -165,9 +190,8 @@ console.log('keywords', keywords, format);
   }
 }
 async function _describeTable(params, appEnv) {
- let r = await _idescribeTable(params, appEnv);
- return JSON.stringify(r);
-
+  let r = await _idescribeTable(params, appEnv);
+  return JSON.stringify(r);
 }
 async function _idescribeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
@@ -200,21 +224,21 @@ async function _idescribeTable(params, appEnv) {
     appControl,
     sessionID
   );
-  
-  let describe={};
+
+  let describe = {};
   try {
     await restafedit.scrollTable("first", tappEnv);
     let tableSummary = await restafedit.getTableSummary(tappEnv);
-    
+
     describe = {
       table: iTable,
       tableSummary: tableSummary,
       columns: tappEnv.state.columns,
-      data: (csv !== false ) ? tappEnv.state.data : rows2csv(tappEnv.state.data)
+      data: csv !== false ? tappEnv.state.data : rows2csv(tappEnv.state.data),
     };
   } catch (err) {
     console.log(err);
-    describe = {error: err};
+    describe = { error: err };
   }
   return describe;
 }

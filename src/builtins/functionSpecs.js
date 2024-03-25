@@ -19,6 +19,7 @@ function functionSpecs(provider, code, retrieval) {
     _listSASTablesFunctionSpec,
     _listColumnsFunctionSpec,
     _describeTableSpec,
+    _catalogFunctionSpec,
     _getDataFunctionSpec,
     _runSASFunctionSpec,
     _keywordsFunctionSpec,
@@ -49,6 +50,25 @@ function functionSpecs(provider, code, retrieval) {
   debugger;
   return { specs: specs, tools: tools, functionList: functionList, instructions: instruction };
 }
+const _catalogFunctionSpec = {
+  name: '_catalogSearch',
+  description: `Search for the specified metadata in SAS Viya.
+      the search is specified as a comma delimited string like libname:casuser,Columns:Make,name:abc
+      Convert string to a query string using these patterns:
+      libname xxx to libname:xxx
+      Column xxx to Column.name:xxx
+      `,
+  parameters: {
+    properties: {
+      metadata: {
+        type: 'string',
+        description: 'The metadata to return',
+      },
+    },
+    type: 'object',
+    required: ['metadata'],
+  }
+};
 
 const _getDataFunctionSpec = {
   name: '_getData',
@@ -114,7 +134,7 @@ const _listSASDataLibFunctionSpec = {
      A example would be list libs. 
      If limit is not is specified, then the function 
      will return the first 10 libs.
-     Optionally allow user to specify the source as cas or compute.`,
+    `,
   parameters: {
     properties: {
       limit: {
