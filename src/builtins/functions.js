@@ -57,7 +57,6 @@ async function _catalogSearch(params, appEnv, gptControl) {
     };
     console.log(payload);
     let r = await store.apiCall(catalog.links("search"), payload);
-    console.log(JSON.stringify(r.items(), null,4));
     return JSON.stringify(r.items(), null,4);
   } catch (err) {
     console.log(JSON.stringify(err));
