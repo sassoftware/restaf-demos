@@ -83,9 +83,6 @@ async function _listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList();
-  console.log(JSON.stringify(results.items(), null,4));
-
-
   return JSON.stringify(items, null,4);
 }
 async function _listSASDataLib(params, appEnv) {
