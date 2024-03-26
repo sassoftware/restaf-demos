@@ -39,16 +39,20 @@ function functions() {
 }
 
 async function _catalogSearch(params, appEnv, gptControl) {
-  let { metadata } = params;
+  let { metadata, act } = params;
   let { store } = appEnv;
   // https://go.documentation.sas.com/doc/en/infocatcdc/v_034/infocatug/n09x2n3z9t2izln1vtx68oho8t8x.htm?requestorId=84052456-0342-4389-a344-5cc71cbec5cc
   console.log('metadata', metadata);
+  let q = metadata.replace('where:', ' ')
+  console.log(q);
+
 
   try {
     let {catalog} = await store.addServices('catalog');
     let payload = {
-      qs: {q: metadata}
+      qs: {q: q}
     };
+    console.log('payload: ', payload);
     let r = await store.apiCall(catalog.links('search'), payload);
     return JSON.stringify(r.items(), null,4);
   } catch (err) {
@@ -191,7 +195,6 @@ async function _idescribeTable(params, appEnv) {
   let { table, limit, format, where, csv } = params;
   let { source, sessionID, restafedit } = appEnv;
   csv = csv == null ? false : csv;
-  console.log(params);
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return 'Table must be specified in the form casuser.cars or sashelp.cars';

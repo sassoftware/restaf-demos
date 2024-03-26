@@ -35,6 +35,7 @@ async function required_action(runStatus,gptControl) {
 
     console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
+    console.log('Parameters: ', params);
     
     let target = functionList[functionName];
     if (target == null){
@@ -46,9 +47,9 @@ async function required_action(runStatus,gptControl) {
       toolsOutput.push(setError(action.id, err, provider)); 
     } else {
       try {
-        console.log('>> Calling function: ', functionName);
+;
         let response = await functionList[functionName](params, appEnv, gptControl);
-        console.log('>> Function call completed');
+        console.log(`>> Function call ${functionName} completed`);
         if (provider === 'openai') {
           toolsOutput.push({
             tool_call_id: action.id,

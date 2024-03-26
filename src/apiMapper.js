@@ -126,8 +126,6 @@ function apiMapper(client, provider) {
     let newOptions = {
       file_id: fileId
     }
-    console.log(newOptions);
-    console.log(assistantId);
     return client.beta.assistants.files.create(assistantId, newOptions);
   }
   let assistantApi = client;

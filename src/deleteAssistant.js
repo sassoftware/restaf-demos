@@ -12,7 +12,7 @@
  */
 async function deleteAssistant(gptControl, assistantid) {
   let { assistantApi, assistant } = gptControl;
-  console.log('in closeAssistant');
+
   if (assistantid != null) {
     try {
       if (assistantid != null) {

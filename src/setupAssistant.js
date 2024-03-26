@@ -117,7 +117,7 @@ async function setupAssistant(config) {
   if (config.retrieval) {
     specs.tools.push({ type: 'retrieval' });
   }
-  console.log(specs.instructions);
+ 
   let gptControl = {
     provider: config.provider,
     model: config.model,

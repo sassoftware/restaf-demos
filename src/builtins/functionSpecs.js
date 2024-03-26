@@ -52,12 +52,13 @@ function functionSpecs(provider, code, retrieval) {
 }
 const _catalogFunctionSpec = {
   name: '_catalogSearch',
-  description: `Search for the specified metadata in SAS Viya.
+  description: `Search for the specified metadata in SAS Viya. 
       the search is specified as a comma delimited string like libname:casuser,Columns:Make,name:abc
       Convert string to a query string using these patterns:
+      name xxx to name:xxx
       libname xxx to libname:xxx
       Column xxx to Column.name:xxx
-      
+      where xxx to where:xxx
       `,
   parameters: {
     properties: {

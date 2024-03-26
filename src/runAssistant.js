@@ -54,7 +54,7 @@ async function runAssistant(gptControl,prompt, instructions) {
 }
 async function runPrompt(gptControl, appEnv, instructions) {
   let { assistantApi, assistant, thread } = gptControl;
-  console.log(instructions);
+
   let runArgs = {
     assistantId: assistant.id,
     instructions: instructions,

@@ -18,8 +18,7 @@ async function loadThread(gptControl) {
   let lastThread = assistant.metadata.lastThread;
 
   // a little verbose so as not to get confused :-)
-  console.log('loadThread', threadid, lastThread);
-  debugger;
+
   try {
 
     // user has supplied a threadid, use it
