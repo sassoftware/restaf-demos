@@ -54,7 +54,9 @@ async function _catalogSearch(params, appEnv, gptControl) {
     };
     console.log('payload: ', payload);
     let r = await store.apiCall(catalog.links('search'), payload);
-    return JSON.stringify(r.items(), null,4);
+    console.log(JSON.stringify(r.itemsList(), null,4));
+    let rx = itemsData(r);
+    return rx;
   } catch (err) {
     console.log(JSON.stringify(err));
     return 'Error searching catalog';
@@ -81,6 +83,8 @@ async function _listSASObjects(params, appEnv) {
   };
   let results = await store.apiCall(s.links(resource), payload);
   let items = results.itemsList();
+  console.log(JSON.stringify(results.items(), null,4));
+
 
   return JSON.stringify(items, null,4);
 }
@@ -238,7 +242,19 @@ async function _idescribeTable(params, appEnv) {
   }
   return describe;
 }
-
+// extract just the data and ignore links etc...
+function itemsData(r) {
+  let rx={};
+  debugger;
+  if (r.itemsList().size > 0) {
+    r.itemsList().toJS().map(item => {
+      rx[item] = r.items(item, 'data').toJS();
+    });
+  } else {
+    rx = (r.items('data') != null) ? r.items('data').toJS() : {warning: 'No data returned'};
+  }
+  return JSON.stringify(rx, null,4);
+}
 export default functions;
 
 /*
