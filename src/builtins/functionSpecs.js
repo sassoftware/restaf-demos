@@ -53,14 +53,20 @@ function functionSpecs(provider, code, retrieval) {
 const _catalogFunctionSpec = {
   name: '_catalogSearch',
   description: `Search for the specified metadata in SAS Viya. 
-      the search is specified as a comma delimited string like libname:casuser,Columns:Make,name:abc
-      if there are no patterns like this in the string , then make the search string the where clause
-      like where: string. example 'search sales' will be converted to where:sales
-      Convert string to a query string using these patterns:
-      name xxx to name:xxx
-      libname xxx to libname:xxx
-      Column xxx to Column.name:xxx
-      where xxx to where:xxx
+      The metdata string is created from the user input using these rules:
+      parse the string from left to right and concatenate resulting search term into the metadata string
+      Use blanks to separate the search terms.
+      a. if the string has no ':' at the end of the string, then use it as a  search term 
+      b. if the string of the format  keystring:string or keystring: string treat it as another search term.
+      c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
+      d. The string OR is treated as a logical OR and a search term when it appears between two search terms.
+      e. if the string is of the format keystring: {string1, string2} then treat it as another search term.
+
+    Examples:
+    1. search sales  becomes sales
+    2. search name: xxx becomes name: xxx
+    3. search sales name: xxx becomes for: sales name: xxx
+    4. search name: {xxx, yyy} becomes name: {xxx, yyy}
       
       `,
   parameters: {

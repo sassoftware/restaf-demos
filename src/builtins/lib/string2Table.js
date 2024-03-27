@@ -11,10 +11,12 @@
 function string2Table(table, source) {
   let iTable = {};
   let lib = (source === 'cas') ? 'caslib' : 'libref';
-  let parts = table.split('.');  
-  if (parts.length === 2) {
-    iTable[lib] = parts[0];
-    iTable.name = parts[1];
+  table = table.toLocaleLowerCase().replace('.sashdat','');
+
+  let parts = table.split('.');
+  if (parts.length >= 2) {
+    iTable[lib] = parts[0].trim();
+    iTable.name = parts[1].trim();
     return iTable;
   } else {
     return null;

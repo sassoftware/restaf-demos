@@ -43,14 +43,13 @@ async function _catalogSearch(params, appEnv, gptControl) {
   let { store } = appEnv;
   // https://go.documentation.sas.com/doc/en/infocatcdc/v_034/infocatug/n09x2n3z9t2izln1vtx68oho8t8x.htm?requestorId=84052456-0342-4389-a344-5cc71cbec5cc
   console.log('metadata', metadata);
-  let q = metadata.replace('where:', ' ')
-  console.log(q);
+  console.log(metadata)
 
 
   try {
     let {catalog} = await store.addServices('catalog');
     let payload = {
-      qs: {q: q}
+      qs: {q: metadata}
     };
     console.log('payload: ', payload);
     let r = await store.apiCall(catalog.links('search'), payload);
@@ -61,6 +60,8 @@ async function _catalogSearch(params, appEnv, gptControl) {
     console.log(JSON.stringify(err));
     return 'Error searching catalog';
   }
+
+
 }
 
 async function _listSASObjects(params, appEnv) {
@@ -241,11 +242,15 @@ async function _idescribeTable(params, appEnv) {
 }
 // extract just the data and ignore links etc...
 function itemsData(r) {
-  let rx={};
+ 
   debugger;
+  let rx = {};
   if (r.itemsList().size > 0) {
     r.itemsList().toJS().map(item => {
-      rx[item] = r.items(item, 'data').toJS();
+      let rt = r.items(item, 'data').toJS();
+      rx[item] = rt;
+      return rt;
+
     });
   } else {
     rx = (r.items('data') != null) ? r.items('data').toJS() : {warning: 'No data returned'};
