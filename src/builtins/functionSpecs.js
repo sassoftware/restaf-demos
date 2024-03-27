@@ -18,8 +18,9 @@ function functionSpecs(provider, code, retrieval) {
     _listSASDataLibFunctionSpec,
     _listSASTablesFunctionSpec,
     _listColumnsFunctionSpec,
-    _describeTableSpec,
+    // _describeTableSpec,
     _catalogFunctionSpec,
+    _catalogInstanceFunctionSpec,
     _getDataFunctionSpec,
     _runSASFunctionSpec,
     _keywordsFunctionSpec,
@@ -50,9 +51,45 @@ function functionSpecs(provider, code, retrieval) {
   debugger;
   return { specs: specs, tools: tools, functionList: functionList, instructions: instruction };
 }
+const _catalogInstanceFunctionSpec = {
+  name: '_catalogSearchInstance',
+  description: `'Describe the SAS table like sashelp.cars . return information on the table like columns, types, keys', 
+       User can alias details with the following:
+       1. contents
+
+      The metadata string is created from the user input using these rules:
+      parse the string from left to right and concatenate resulting search term into the metadata string
+      Use blanks to separate the search terms.
+      a. if the string has no ':' or '=' at the end of the string, then use it as a  search term 
+      b. if the string of the format  keystring:string or keystring: string treat it as another search term.
+      c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
+      d. The string OR is treated as a logical OR and a search term when it appears between two search terms.
+      e. if the string is of the format keystring: {string1, string2} then treat it as another search term.
+
+    Examples:
+    1. describe name: xxx becomes name: xxx
+    2. describe for sales becomes sales
+    3. describe name: xxx becomes name: xxx
+    4. describe name= xxx becomes name: xxx
+    5. describe sales name: xxx becomes sales name: xxx
+    6. describe sales name: xxx becomes sales name: xxx
+    7. variales name: {xxx, yyy} becomes name: {xxx, yyy}
+      
+      `,
+  parameters: {
+    properties: {
+      metadata: {
+        type: 'string',
+        description: 'The metadata to return',
+      },
+    },
+    type: 'object',
+    required: ['metadata'],
+  }
+};
 const _catalogFunctionSpec = {
   name: '_catalogSearch',
-  description: `Search for information in SAS Viya using search terms. Users ca alias search with the following terms:
+  description: `Search for information in SAS Viya using search terms. Users can alias search with the following terms:
        1. find
        2. look for
        3. search for
@@ -73,7 +110,7 @@ const _catalogFunctionSpec = {
     3. search name: xxx becomes name: xxx
     4. search name= xxx becomes name: xxx
     5. search sales name: xxx becomes sales name: xxx
-    6. search sales name: xxx becomes for: sales name: xxx
+    6. search sales name: xxx becomes sales name: xxx
     7. search name: {xxx, yyy} becomes name: {xxx, yyy}
       
       `,

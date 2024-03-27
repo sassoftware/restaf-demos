@@ -44,9 +44,9 @@
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@sassoftware/restafedit": "^2.4.7",
-    "@azure/openai-assistants": "^1.0.0-beta.5",
     "@azure/openai": "^1.0.0-beta.11",
+    "@azure/openai-assistants": "^1.0.0-beta.5",
+    "@sassoftware/restafedit": "^2.4.8",
     "openai": "^4.26.0"
   },
   "devDependencies": {

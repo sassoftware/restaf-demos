@@ -11,10 +11,11 @@
  * @function pollRun
  * @param {object} run - active run object 
  * @param {gptControl} gptControl - gpt  session control object
+ * @returns {string} - tag for the run
  * @returns {object} - runStatus from client.beta.threads.runs.retrieve
  * @example - Will wait for completion(!(queued,in_progress, cancelling))
  */
-async function pollRun(run, gptControl) {
+async function pollRun(run, gptControl, tag) {
   let {assistantApi, thread} = gptControl;
   let done = null;
   let runStatus = null;
@@ -22,17 +23,19 @@ async function pollRun(run, gptControl) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   // Since there is no streaming support, sleep and poll the status
+  tag = (tag == null) ? 'prompt' : tag;
   do {
    runStatus = await assistantApi.getRun(thread.id, run.id);
     
-    console.log("-------------------", runStatus.status);
+    tag = (tag == null) ? 'prompt' : tag;
+    console.log("-------------------", tag, runStatus.status);
     if ( !(runStatus.status === "queued" ||runStatus.status === "in_progress" ||
           runStatus.status === "cancelling")) {
       
       done = runStatus.status;
     } else {
       await sleep(500);
-      console.log("waited 2000 ms");
+      console.log("waited 500 ms");
     }
   } while (done === null);
 

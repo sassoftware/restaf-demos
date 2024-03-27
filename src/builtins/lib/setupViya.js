@@ -16,7 +16,6 @@ import restafedit from '@sassoftware/restafedit';
 
 
 async function setupViya(viyaConfig) {
-
  let appEnv=  {
   host: null,
   logonPayload: null,
@@ -35,14 +34,16 @@ async function setupViya(viyaConfig) {
   restafedit: restafedit
 
 }
-
+  
   if (viyaConfig == null) {
     return appEnv;
   }
+  
   if (viyaConfig.source == 'none') {
     appEnv.userData = viyaConfig.userData;
     appEnv.logonPayload = viyaConfig.logonPayload;
     appEnv.currentSource = 'none';
+
     return appEnv;
   }
 
@@ -94,7 +95,7 @@ async function setupViya(viyaConfig) {
     }
     try{ 
       let session = await restaflib.computeSetup(store);
-      let ssid = await store.apiCall(appEnv.session.links('self'));
+      let ssid = await store.apiCall(session.links('self'));
       appEnv.compute.sessionID = ssid.items('id');
       if (defaultSource === 'compute') {
         appEnv.source = 'compute';

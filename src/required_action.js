@@ -76,7 +76,7 @@ async function required_action(runStatus,gptControl) {
                 thread.id, run.id, toolsOutput);
 
 // wait for output to appear in the thread messages
- let outputStatus = await pollRun(newRun, gptControl);
+ let outputStatus = await pollRun(newRun, gptControl, 'output');
 
 return outputStatus;
 }

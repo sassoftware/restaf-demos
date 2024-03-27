@@ -142,6 +142,7 @@ async function setupAssistant(config) {
   };
   
   // setup Viya connections
+  debugger;
   gptControl.appEnv = await setupViya(config.viyaConfig);
   gptControl.appEnv.userData = config.userData;
   gptControl.appEnv.user = config.user;

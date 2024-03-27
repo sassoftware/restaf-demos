@@ -19,8 +19,6 @@ import rows2csv from './lib/rows2csv.js';
  */
 
 //const fss = fs.promises;
-// const { caslRun, computeRun, computeResults } = restaflib;
-// const { getLibraryList, getTableList, getTableColumns } = restafedit;
 
 function functions() {
   let flist = {
@@ -32,19 +30,27 @@ function functions() {
     _runSAS,
     _keywords,
     _describeTable,
-    _catalogSearch
+    _catalogSearch,
+    _catalogSearchInstance
     // _contextData
   };
   return flist;
 }
+async function _catalogSearchInstance(params,appEnv,gptControl){
+  params.ref ='instances';
+  return _catalogSearch(params,appEnv,gptControl);
+}
+
 
 async function _catalogSearch(params, appEnv, gptControl) {
-  let { metadata, act } = params;
+  let { metadata, ref } = params;
+  if (ref == null) {
+    ref = 'search';
+  }
   let { store } = appEnv;
   // https://go.documentation.sas.com/doc/en/infocatcdc/v_034/infocatug/n09x2n3z9t2izln1vtx68oho8t8x.htm?requestorId=84052456-0342-4389-a344-5cc71cbec5cc
   console.log('metadata', metadata);
   console.log(metadata)
-
 
   try {
     let {catalog} = await store.addServices('catalog');
@@ -52,7 +58,7 @@ async function _catalogSearch(params, appEnv, gptControl) {
       qs: {q: metadata}
     };
     console.log('payload: ', payload);
-    let r = await store.apiCall(catalog.links('search'), payload);
+    let r = await store.apiCall(catalog.links(ref), payload);
     console.log(JSON.stringify(r.itemsList(), null,4));
     let rx = itemsData(r);
     return rx;
@@ -88,17 +94,19 @@ async function _listSASObjects(params, appEnv) {
 }
 async function _listSASDataLib(params, appEnv) {
   let { limit, source, start } = params;
+  let {restafedit} = appEnv;   
   let payload = {
     qs: {
       limit: limit == null ? 10 : limit,
-      start: start == null ? 0 : start,
+      start: start == null ? 0 : start, 
     },
   };
-  let r = await appEnv.restafedit.getLibraryList(appEnv, payload);
+  let r = await restafedit.getLibraryList(appEnv, payload);
   return JSON.stringify(r, null,4);
 }
 async function _listSASTables(params, appEnv) {
   let { library, limit } = params;
+  let {restafedit} = appEnv;
   let p = {
     qs: {
       limit: limit == null ? 10 : limit,
@@ -110,17 +118,23 @@ async function _listSASTables(params, appEnv) {
 }
 async function _listColumns(params, appEnv) {
   let { table } = params;
-  let { source } = appEnv;
+  let { source, restafedit } = appEnv;
 
   let iTable = string2Table(table, source);
   if (iTable === null) {
     return 'Table must be specified in the form casuser.cars or sashelp.cars';
   }
-
-  let r = await appEnv.restafedit.getTableList(library, appEnv, p);
-
-  return JSON.stringify(r, null,4);
+  try {
+    console.log('source', source, iTable, appEnv);
+    console.log(restafedit.getTableColumns);
+    let r = await restafedit.getTableColumns(source, iTable, appEnv);
+    return JSON.stringify(r, null,4);
+  } catch (err) {
+    console.log(JSON.stringify(err));
+    return 'Error getting columns for table ' + table;
+  }
 }
+
 async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
   return JSON.stringify({ table: r.table, data: r.data }, null,4);
@@ -150,8 +164,8 @@ async function _runSAS(params, appEnv, gptControl) {
     if (appEnv.source === 'cas') {
       let r = await restaflib.caslRun(store, session, program, {}, true);
       return JSON.stringify(r.results, null,4);
-    } else if (appEnv) {
-      let computeSummary = await computeRun(store, session, src);
+    } else if (appEnv.source === 'compute') {
+      let computeSummary = await restaflib.computeRun(store, session, src);
       let log = await restaflib.computeResults(store, computeSummary, 'log');
       return logAsArray(log);
     } else {
@@ -202,6 +216,7 @@ async function _idescribeTable(params, appEnv) {
     return 'Table must be specified in the form casuser.cars or sashelp.cars';
   }
   // setup call to restafedit.setup
+  debugger;
   let appControl = {
     source: source,
     table: iTable,
