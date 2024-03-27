@@ -52,11 +52,16 @@ function functionSpecs(provider, code, retrieval) {
 }
 const _catalogFunctionSpec = {
   name: '_catalogSearch',
-  description: `Search for the specified metadata in SAS Viya. 
+  description: `Search for information in SAS Viya using search terms. Users ca alias search with the following terms:
+       1. find
+       2. look for
+       3. search for
+       4. where
+
       The metdata string is created from the user input using these rules:
       parse the string from left to right and concatenate resulting search term into the metadata string
       Use blanks to separate the search terms.
-      a. if the string has no ':' at the end of the string, then use it as a  search term 
+      a. if the string has no ':' or '=' at the end of the string, then use it as a  search term 
       b. if the string of the format  keystring:string or keystring: string treat it as another search term.
       c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
       d. The string OR is treated as a logical OR and a search term when it appears between two search terms.
@@ -64,9 +69,12 @@ const _catalogFunctionSpec = {
 
     Examples:
     1. search sales  becomes sales
-    2. search name: xxx becomes name: xxx
-    3. search sales name: xxx becomes for: sales name: xxx
-    4. search name: {xxx, yyy} becomes name: {xxx, yyy}
+    2. search for sales becomes sales
+    3. search name: xxx becomes name: xxx
+    4. search name= xxx becomes name: xxx
+    5. search sales name: xxx becomes sales name: xxx
+    6. search sales name: xxx becomes for: sales name: xxx
+    7. search name: {xxx, yyy} becomes name: {xxx, yyy}
       
       `,
   parameters: {
