@@ -12,7 +12,7 @@ import instructions from './instructions.js';
  * 
  */
 
-function functionSpecs(provider, code, retrieval) {
+function functionSpecs(env, code, retrieval) {
   let specs = [
     _listSASObjectsFunctionSpec,
     _listSASDataLibFunctionSpec,
@@ -47,7 +47,7 @@ function functionSpecs(provider, code, retrieval) {
 
   let functionList = functions();
   debugger;
-  let instruction = instructions();
+  let instruction = instructions(env);
   debugger;
   return { specs: specs, tools: tools, functionList: functionList, instructions: instruction };
 }

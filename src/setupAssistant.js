@@ -84,7 +84,7 @@ async function setupAssistant(config) {
   // now add user specs and functions.
   // In pass 1 the user list is prepended to the default list
 
-  let builtinTools = functionSpecs(config.provider, false,false);
+  let builtinTools = functionSpecs(config.env, false,false);
   let dtools = [];
   let incoming = config.domainTools.tools
   // allow users to override the default tool by naming their tool the same as the default tool

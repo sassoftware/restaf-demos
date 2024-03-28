@@ -126,6 +126,7 @@ function setupConfig(provider) {
       threadid: 'NEW', //process.env.OPENAI_THREADID,
       code: true,
       retrieval: true,
+      env: 'web'
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -140,6 +141,7 @@ function setupConfig(provider) {
       logLevel: null,
       code: true,
       retrieval: false,
+      env: 'web'
     },
   };
   let r = config[provider];
