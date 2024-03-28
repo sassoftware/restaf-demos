@@ -259,19 +259,19 @@ async function _idescribeTable(params, appEnv) {
 function itemsData(r) {
  
   debugger;
-  let rx = {};
+  let rx = []
   if (r.itemsList().size > 0) {
-    r.itemsList().toJS().map(item => {
+    rx = r.itemsList().toJS().map(item => {
       let rt = r.items(item, 'data').toJS();
-      rx[item] = rt;
-      return rt;
-
+      let row = {};
+      row[item] = rt;
+      return row;
     });
   } else {
-    rx = (r.items('data') != null) ? r.items('data').toJS() : {warning: 'No data returned'};
+    rx = (r.items('data') != null) ? [r.items('data').toJS()] : {warning: 'No data returned'};
   }
-  console.log('rx', JSON.stringify([rx], null,4) );
-  return JSON.stringify([rx], null,4);
+  console.log('rx', JSON.stringify(rx, null,4) );
+  return JSON.stringify(rx, null,4)
 }
 export default functions;
 
