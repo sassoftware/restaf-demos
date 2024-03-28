@@ -270,6 +270,7 @@ function itemsData(r) {
   } else {
     rx = (r.items('data') != null) ? r.items('data').toJS() : {warning: 'No data returned'};
   }
+  console.log('rx', JSON.stringify([rx], null,4) );
   return JSON.stringify([rx], null,4);
 }
 export default functions;

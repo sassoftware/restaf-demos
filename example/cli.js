@@ -9,7 +9,7 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import 'dotenv/config';
 import getToken from './lib/getToken.js';
-import formatInstructions from './lib/formatInstructions.js';
+import formatInstructions from './formatInstructions.js';
 
 import {
   setupAssistant,
@@ -101,7 +101,7 @@ async function chat(config) {
           let response = await runAssistant(
             gptControl,
             prompt,
-            promptInstructions
+            formatInstructions(' ')
           );
           console.log(response);
           break;
