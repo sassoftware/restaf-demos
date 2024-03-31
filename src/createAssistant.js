@@ -37,6 +37,7 @@ async function createAssistant(gptControl) {
       instructions: instructions,
       model: model,
       tools: domainTools.tools,
+      metadata: {results:' ', lastThread: ''},
     };
 
     

@@ -153,7 +153,9 @@ async function setupAssistant(config) {
   
   // load thread or reuse existing one
   gptControl.thread = await loadThread(gptControl);
-  let newAssistant = await gptControl.assistantApi.updateAssistant(gptControl.assistant.id, {metadata: {lastThread: gptControl.thread.id}});
+  let metadata = gptControl.assistant.metadata;
+  metadata.lastThread = gptControl.thread.id;
+  let newAssistant = await gptControl.assistantApi.updateAssistant(gptControl.assistant.id, {metadata: metadata});
   gptControl.assistant = newAssistant;
   
   gptControl.threadid = gptControl.thread.id;// just for convenience

@@ -5,6 +5,7 @@
  */
 
 import pollRun from "./pollRun.js";
+import makeFileObject from "./makeFileObject.js";
 
 /**
  * @async
@@ -30,8 +31,10 @@ async function required_action(runStatus,gptControl) {
                           : runStatus.requiredAction.submitToolOutputs.toolCalls;
   
   let toolsOutput = [];
+  let lastToolCallId = null;
   for (let action of requiredActions) {
     let functionName = action.function.name;
+    lastToolCallId = action.id;
 
     console.log('Requested function: ', functionName);
     let params = JSON.parse(action.function.arguments);
@@ -44,48 +47,52 @@ async function required_action(runStatus,gptControl) {
         Using thread that had outdated tool references.
         Currrent specs point has mistmatch with function name
         `);
-      toolsOutput.push(setError(action.id, err, provider)); 
+      let o = {
+        toolCallId: action.id,
+        output: JSON.stringify(err)
+      };
+      toolsOutput.push(o);
     } else {
       try {
-;
         let response = await functionList[functionName](params, appEnv, gptControl);
         console.log(`>> Function call ${functionName} completed`);
-        if (provider === 'openai') {
-          toolsOutput.push({
-            tool_call_id: action.id,
-            output: JSON.stringify(response),
-          });
-        } else {
           toolsOutput.push({
             toolCallId: action.id,
-            output: JSON.stringify(response),
+            output: response
           });
-        }
       }
       catch(err){
-        toolsOutput.push(setError(action.id, err, provider));
+        let o = {
+          toolCallId: action.id,
+          output: JSON.stringify(err)
+        };
+        toolsOutput.push(o);
       }
     }
  }
 // submit the outputs to the thread
  
- let newRun = (provider === 'openai') 
-            ? await assistantApi.submitToolOutputsToRun(
-                thread.id, run.id, { tool_outputs: toolsOutput })
-            : await assistantApi.submitToolOutputsToRun( 
-                thread.id, run.id, toolsOutput);
+ let fullResponse = '';
+ toolsOutput.forEach((t) => {
+   fullResponse += t.output;
+ });
+ let mimeType = 'text/plain';
+ let newFile = await makeFileObject('runResults' + '_' + gptControl.assistant.name, fullResponse, mimeType, gptControl);
+ console.log('uploading file', newFile);
+ toolsOutput = [{
+    toolCallId: lastToolCallId,
+    output: 'analyze file ' + newFile.fileName + 'with the file id ' + newFile.fileId 
+  }
+  ];
+  console.log(toolsOutput);
+  console.log('submitting output to the thread');
+ let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsOutput );
+
 
 // wait for output to appear in the thread messages
  let outputStatus = await pollRun(newRun, gptControl, 'output');
 
 return outputStatus;
-}
-function setError(actionid, error, provider){
-  if (provider === 'openai') {
-    return {tool_call_id: actionid, output: JSON.stringify(error)};
-  } else {
-    return {toolCallId: actionid, output: JSON.stringify(error)};
-  }
 }
 
 export default required_action;

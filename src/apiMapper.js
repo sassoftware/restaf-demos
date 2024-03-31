@@ -72,14 +72,18 @@ function apiMapper(client, provider) {
     }
     return client.beta.threads.create(metadata)
   }
+  const deleteThread = (client) => (...args) =>{
+    let [id] = args;
+    return client.beta.threads.del(id)
+  }
   const getThread = (client) => (...args) =>{
     let [id] = args;
     return client.beta.threads.retrieve(id)
   }
 
-  const deleteThread = (client) => (...args) =>{
-    let [id] = args;
-    return client.beta.threads.del(id)
+  const listThreads = (client) => (...args) =>{
+    let [deploymentName] = args;
+    return client.getCompletions(deploymentName)
   }
 
   const createRun = (client) => (...args) =>{
@@ -99,7 +103,17 @@ function apiMapper(client, provider) {
 
   const submitToolOutputsToRun = (client) => (...args) =>{
     let [ threadid, runid, options] = args;
-    return client.beta.threads.runs.submitToolOutputs(threadid, runid, options  );
+    let toolsOutput = options.map(ot => {
+      let newOt = {};
+      newOt.tool_call_id = ot.toolCallId;
+      newOt.output = ot.output;
+      return newOt;
+    })
+    let finalOutput = {
+      tool_outputs: toolsOutput
+    }
+
+    return client.beta.threads.runs.submitToolOutputs(threadid, runid, finalOutput  );
   }
   const listRuns= (client) => (...args) =>{
     let [id] = args;
@@ -128,6 +142,10 @@ function apiMapper(client, provider) {
     }
     return client.beta.assistants.files.create(assistantId, newOptions);
   }
+  const deleteFile = (client) => (...args) =>{
+    let [id] = args;
+    return client.files.del(id);
+  }
   let assistantApi = client;
   if (provider === 'openai') {
     assistantApi = {
@@ -140,12 +158,14 @@ function apiMapper(client, provider) {
       createThread: createThread(client),
       getThread: getThread(client),
       deleteThread: deleteThread(client),
+      listThreads: listThreads(client),
 
       createMessage: createMessage(client),
       listMessages: listMessages(client),
      
       uploadFile: uploadFile(client),
       createAssistantFile: createAssistantFile(client),
+      deleteFile: deleteFile(client),
       
       createRun: createRun(client),
       getRun: getRun(client),

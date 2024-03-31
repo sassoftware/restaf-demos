@@ -59,7 +59,6 @@ async function loadThread(gptControl) {
 
   // local rules: save the thread id in the assistant metadata
   
- 
-  return thread;
+
 }
 export default loadThread;

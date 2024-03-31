@@ -216,11 +216,6 @@ const _listSASDataLibFunctionSpec = {
       limit: {
         type: 'integer',
         description: 'Return only this many libs. If not specified, then return 10 libs.',
-      },
-      source: {
-        type: 'string',
-        description: 'The source of the data. cas or compute',
-        enum: ['cas', 'compute'],
       }
     },
   type: 'object',

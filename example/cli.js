@@ -17,6 +17,7 @@ import {
   cancelRun,
   deleteAssistant,
   uploadFile,
+  makeFileObject,
 } from '../src/index.js';
 
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
@@ -68,10 +69,24 @@ async function chat(config) {
           } 
           break;
         }
+        case 'makefile': {
+          let filename = cmda[1].trim();
+          let content = cmda[2].trim();
+          let mimeType = 'text/plain';
+          let r = await makeFileObject(filename, content, mimeType, gptControl);
+          console.log(r);
+          break;
+        }
+
         case 'cancel': {
           //cancel current run
           let a = prompt.split(' ');
           let r = await cancelRun(gptControl, a[1], a[2]);
+          console.log(r);
+          break;
+        }
+        case 'tlist':{
+          let r = await gptControl.assistantApi.listThreads();
           console.log(r);
           break;
         }
@@ -101,7 +116,7 @@ async function chat(config) {
           let response = await runAssistant(
             gptControl,
             prompt,
-            formatInstructions(' ')
+            ' '
           );
           console.log(response);
           break;
@@ -126,7 +141,7 @@ function setupConfig(provider) {
       threadid: 'NEW', //process.env.OPENAI_THREADID,
       code: true,
       retrieval: true,
-      env: 'web'
+      env: null
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -141,7 +156,7 @@ function setupConfig(provider) {
       logLevel: null,
       code: true,
       retrieval: false,
-      env: 'web'
+      env: null
     },
   };
   let r = config[provider];

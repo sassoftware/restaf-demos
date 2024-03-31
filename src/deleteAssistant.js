@@ -27,9 +27,17 @@ async function deleteAssistant(gptControl, assistantid) {
   }
 
   try {
-    if (assistant.metadata.lastThread != null) {
+    if (assistant.metadata.lastThread != null && assistant.metadata.lastThread.length > 0) {
       let status = await assistantApi.deleteThread(assistant.metadata.lastThread);
       console.log('Thread ${assistant.metadata.lastThread} deleted', status);
+      let files = assistant.metadata.files
+      console.log(files);
+      for (let i = 0; i <files.length; i++) {
+        console.log('file:', files[i])
+        if(files[i] === '') continue;
+        let r = await assistantApi.deleteFile(files[i]);
+      };
+
       status = await assistantApi.deleteAssistant(assistant.id);
       console.log(`Assistant ${assistant.name} deleted`, status);
       gptControl.assistant = null;

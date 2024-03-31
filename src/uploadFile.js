@@ -47,10 +47,12 @@ async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
     currentFileIds.push(file.id);
     // looks like it is possible to create a file with null file id
     currentFileIds = currentFileIds.filter((v) => v != null);
+    let metadata = assistant.metadata;
     try {
-      let opts = {
-        fileIds: currentFileIds,
-      };
+      let opts = {...metadata, fileIds: currentFileIds};
+      if (filename.findIndex("results") > -1) {
+        opts.results  = assistant.metadata.results + ',' + file.id;
+      }
       let newAssistant = await assistantApi.updateAssistant(assistant.id, opts);
       gptControl.assistant = newAssistant;
     } catch (e) {

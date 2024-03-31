@@ -15,7 +15,6 @@ function instructionsNode() {
   data that has been returned from previous queries. Most times the user will be focused on these areas.
  
   Always include annotation when information is found in a file.
-  Always use the tool formatResponseSpec to answer questions after you have found the information.
   `;
 }
 export default instructionsNode;
