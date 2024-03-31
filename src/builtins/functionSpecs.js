@@ -24,6 +24,7 @@ function functionSpecs(env, code, retrieval) {
     _getDataFunctionSpec,
     _runSASFunctionSpec,
     _keywordsFunctionSpec,
+    _formatResponseSpec,
    // _contextDataFunctionSpec,
   ];
 
@@ -126,6 +127,25 @@ const _catalogFunctionSpec = {
   }
 };
 
+const _formatResponseSpec = {
+  name: '_formatResponse',
+  description: `When you have all the information you need, use this function to format the response.`,
+  parameters: {
+    properties: {
+      reponse: {
+        type: 'string',
+        description:
+          'The text you want to answer with',
+      },
+      limit: {
+        type: 'integer',
+        description: 'Fetch only the specified number of rows'
+      },
+    },
+    type: 'object',
+    required: ['response'],
+  },
+};
 const _getDataFunctionSpec = {
   name: '_getData',
   description: `Fetch data from a  table like casuser.cars.
