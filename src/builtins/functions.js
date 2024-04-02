@@ -31,8 +31,8 @@ function functions() {
     _keywords,
     _describeTable,
     _catalogSearch,
-    _catalogSearchInstance
-    // _contextData
+    _catalogSearchInstance,
+    _contextData
   };
   return flist;
 }
@@ -95,14 +95,16 @@ async function _listSASObjects(params, appEnv) {
 async function _listSASDataLib(params, appEnv) {
   let { limit, source, start } = params;
   let {restafedit} = appEnv;   
+  debugger;
   let payload = {
     qs: {
       limit: limit == null ? 10 : limit,
       start: start == null ? 0 : start, 
     },
   };
+  console.log('payload', payload);
   let r = await restafedit.getLibraryList(appEnv, payload);
-  return JSON.stringify(r, null,4);
+  return JSON.stringify(r);
 }
 async function _listSASTables(params, appEnv) {
   let { library, limit } = params;
@@ -114,7 +116,7 @@ async function _listSASTables(params, appEnv) {
     },
   };
   let r = await appEnv.restafedit.getTableList(library, appEnv, p);
-  return JSON.stringify(r, null,4);
+  return JSON.stringify(r);
 }
 async function _listColumns(params, appEnv) {
   let { table } = params;
@@ -128,7 +130,7 @@ async function _listColumns(params, appEnv) {
     console.log('source', source, iTable, appEnv);
     console.log(restafedit.getTableColumns);
     let r = await restafedit.getTableColumns(source, iTable, appEnv);
-    return JSON.stringify(r, null,4);
+    return JSON.stringify(r);
   } catch (err) {
     console.log(JSON.stringify(err));
     return 'Error getting columns for table ' + table;
@@ -137,7 +139,7 @@ async function _listColumns(params, appEnv) {
 
 async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
-  return JSON.stringify({ table: r.table, data: r.data }, null,4);
+  return JSON.stringify({ table: r.table, data: r.data });
 }
 async function _runSAS(params, appEnv, gptControl) {
   let { program } = params;
@@ -180,6 +182,7 @@ async function _runSAS(params, appEnv, gptControl) {
 async function _keywords(params) {
   let { keywords, format } = params;
   console.log('keywords', keywords, format);
+  let rx = '';
   switch (format) {
     case 'html': {
       let t = '<ul>';
@@ -187,24 +190,31 @@ async function _keywords(params) {
         t += `<li>${k}</li>`;
       });
       t += '</ul>';
-      return t;
+      rx = t;
+      break;
     }
-    case 'array':
-      return keywords.split(',');
+    case 'array': {
+      let r = keywords.split(',');
+      rx = JSON.stringify(r, null,4);
+      break;
+    }
     case 'object': {
       let r = {};
       keywords.split(',').forEach((k, i) => {
         r[`key${i}`] = k;
       });
-      return r;
+      rx = JSON.stringify(r);
+      break;
     }
     default:
-      return params;
+      rx =JSON.stringify(params);
   }
+  console.log('rx', rx);
+  return rx;
 }
 async function _describeTable(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
-  return JSON.stringify(r, null,4);
+  return JSON.stringify(r);
 }
 async function _idescribeTable(params, appEnv) {
   //TBD: need to move most of this code to restafedit
@@ -247,7 +257,7 @@ async function _idescribeTable(params, appEnv) {
       table: iTable,
       tableSummary: tableSummary,
       columns: tappEnv.state.columns,
-      data: csv !== false ? tappEnv.state.data : rows2csv(tappEnv.state.data),
+      data: csv === false ? tappEnv.state.data : rows2csv(tappEnv.state.data),
     };
   } catch (err) {
     console.log(err);
@@ -270,33 +280,15 @@ function itemsData(r) {
   } else {
     rx = (r.items('data') != null) ? [r.items('data').toJS()] : {warning: 'No data returned'};
   }
-  console.log('rx', JSON.stringify(rx, null,4) );
-  return JSON.stringify(rx, null,4)
+
+  return JSON.stringify(rx);
 }
 export default functions;
 
-/*
-async function _contextData(params, _appEnv, gptControl) {
-  let { file, action } = params;
-  let { openai, assistant } = gptControl;
 
-  if (action === 'upload') {
-    const fileid = await openai.files.create({
-      file: fs.createReadStream(file, 'utf8'),
-      purpose: 'assistants',
-   });
-   console.log('.......................', fileid);
-    const assistantFileid = await openai.beta.assistants.files.create(
-      assistant.id, {file_id: fileid.id});
-    console.log(assistantFileid);
-    return `File ${file} added to assistant`;
+async function _contextData(params, _appEnv, gptControl) {
+  let { action, asset } = params;
+
+  return asset;
   }
-  try {
-    let src = await fss.readFile(file, 'utf8');
-    return src;
-  } catch (err) {
-    console.log(err);
-    return 'Error reading file ' + file;
-  }
-}
-*/
+

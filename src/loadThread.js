@@ -12,7 +12,7 @@
  * @returns {promise} - return thread object
  */
 async function loadThread(gptControl) {
-  let {assistant, assistantApi} = gptControl;
+  let {assistantApi, assistant} = gptControl;
   let thread = null;
   let threadid = gptControl.threadid;
   let lastThread = assistant.metadata.lastThread;
@@ -41,7 +41,7 @@ async function loadThread(gptControl) {
   // fall thru  to create a new thread
 
   // more local rules: if lastThread is not null delete it
-  if (lastThread != null) {
+  if (lastThread != null && lastThread.trim().length > 0) {
     console.log('Deleting last thread', lastThread);
     await assistantApi.deleteThread(lastThread);
   }

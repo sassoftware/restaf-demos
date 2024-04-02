@@ -2,6 +2,7 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+
 /**
  *
  * Upload a file and attach it to the assistant
@@ -46,14 +47,16 @@ async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
       provider === "openai" ? assistant.file_ids : assistant.fileIds;
     currentFileIds.push(file.id);
     // looks like it is possible to create a file with null file id
-    currentFileIds = currentFileIds.filter((v) => v != null);
+    currentFileIds = currentFileIds.filter((v) => v != null)
+    let options = {
+      fileIds: currentFileIds,
+    };
+
     let metadata = assistant.metadata;
     try {
-      let opts = {...metadata, fileIds: currentFileIds};
-      if (filename.findIndex("results") > -1) {
-        opts.results  = assistant.metadata.results + ',' + file.id;
-      }
-      let newAssistant = await assistantApi.updateAssistant(assistant.id, opts);
+      metadata.files  = metadata.files + ' ' + file.id;
+      options.metadata = metadata;
+      let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
       gptControl.assistant = newAssistant;
     } catch (e) {
       console.log(e);

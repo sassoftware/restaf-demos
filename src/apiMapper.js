@@ -52,19 +52,22 @@ function apiMapper(client, provider) {
     return client.beta.threads.messages.list(threadid, options)
   }
 
+  
   const createMessage = (client) => (...args) =>{
     let [threadid, role, content, options] = args;
     let newOptions = {
       role: role,
       content: content
     }
-    if (options != null) {
-      newOptions = Object.assign(newOptions, options);
+    let o = {...options};
+    if (o.fileIds) {
+      o.file_ids = options.fileIds;
+      delete o.fileIds; 
     }
+    newOptions = Object.assign(newOptions, o);
 
     return client.beta.threads.messages.create(threadid, newOptions);
   }
-
   const createThread = (client) => (...args) =>{
     let [metadata] = args;
     if (metadata == null) {
@@ -83,6 +86,8 @@ function apiMapper(client, provider) {
 
   const listThreads = (client) => (...args) =>{
     let [deploymentName] = args;
+    console.log('deploymentName', deploymentName);
+    console.log(client.GetCompletions);
     return client.getCompletions(deploymentName)
   }
 

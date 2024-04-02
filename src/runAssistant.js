@@ -25,17 +25,28 @@ import pollRun from "./pollRun.js";
  */
 
 async function runAssistant(gptControl, prompt, instructions) {
+  gptControl.resultFile = null;
+  let start = Date.now();
+  let r = await irunAssistant(gptControl, prompt, instructions);
+  debugger;
+  console.log('>>>>>>', gptControl.resultFile)
+  if (gptControl.resultFile != null) {
+    let newPrompt = `Analyse the file ${gptControl.resultFile.fileId} to get the final response`;
+    r = await irunAssistant(gptControl, newPrompt, instructions);
+  }
+  let elapsed = Math.round(Date.now() - start) / 1000
+  console.log('Time taken to run assistant: ', elapsed, ' seconds');
+  return r;
+}
+async function irunAssistant(gptControl, prompt, instructions) {
   let { thread, assistantApi, appEnv } = gptControl;
 
   //add the user request to thread
   try {
     // this seems to improve retrieval using files.
     let opts = {};
-    if (gptControl.provider === "openai") {
-      opts.file_ids = gptControl.assistant.file_ids;
-    } else {
-      opts.fileIds = gptControl.assistant.fileIds;
-    }
+    opts.fileIds = gptControl.assistant.fileIds;
+    
     let _newMessage = await assistantApi.createMessage(
       thread.id,
       "user",
@@ -85,7 +96,10 @@ async function runPrompt(gptControl, appEnv, instructions) {
 
   let done = null;
   do {
+    let elapsed = Date.now();
     runStatus = await required_action(runStatus, gptControl, appEnv);
+    elapsed = Math.round(Date.now() - elapsed) / 1000;
+    console.log("Time taken to required action: ", elapsed, " seconds");
     if (runStatus.status === "requires_action") {
       console.log("runStatus wants to run another requires_action");
     } else {

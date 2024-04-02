@@ -138,7 +138,8 @@ async function setupAssistant(config) {
     code: config.code, 
     retrieval: config.retrieval, // remove this when azureai supports retrieval
     userData: config.userData,
-    user: config.user
+    user: config.user,
+    useResultFile: config.useResultFile
   };
   
   // setup Viya connections
@@ -152,6 +153,7 @@ async function setupAssistant(config) {
   gptControl.assistant = await createAssistant(gptControl);
   
   // load thread or reuse existing one
+  /*
   gptControl.thread = await loadThread(gptControl);
   let metadata = gptControl.assistant.metadata;
   metadata.lastThread = gptControl.thread.id;
@@ -159,6 +161,7 @@ async function setupAssistant(config) {
   gptControl.assistant = newAssistant;
   
   gptControl.threadid = gptControl.thread.id;// just for convenience
+  */
   console.log('--------------------------------------');
   console.log('Current session:');
   console.log('Provider: ', gptControl.provider);

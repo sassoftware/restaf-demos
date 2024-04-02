@@ -24,8 +24,8 @@ function functionSpecs(env, code, retrieval) {
     _getDataFunctionSpec,
     _runSASFunctionSpec,
     _keywordsFunctionSpec,
-    _formatResponseSpec,
-   // _contextDataFunctionSpec,
+    //_formatResponseSpec,
+    _contextDataFunctionSpec,
   ];
 
 
@@ -136,11 +136,7 @@ const _formatResponseSpec = {
         type: 'string',
         description:
           'The text you want to answer with',
-      },
-      limit: {
-        type: 'integer',
-        description: 'Fetch only the specified number of rows'
-      },
+      }
     },
     type: 'object',
     required: ['response'],
@@ -317,25 +313,28 @@ const _keywordsFunctionSpec = {
   },
 }
 
-export default functionSpecs;
-
-/*
 const _contextDataFunctionSpec = {
   name: '_contextData',
   description:
-    `This is quick way to add some asset to current contect
-     User issues a prompt like context <some string>
-     the string is usually some string.
+    `This function process the user input and returns the context data.
+     User issues a prompt like context action <some string>
+     action can be 
      `,
   parameters: {
     properties: {
+      action: {
+        type: 'string',
+        description: 'the action to add to the context',
+        enum: ['echo', 'read']
+      },
       asset: {
         type: 'string',
         description: 'the asset to add to the context',
       },
     },
     type: 'object',
-    required: ['file'],
+    required: ['action', 'asset'],
   },
 };
-*/
+
+export default functionSpecs;

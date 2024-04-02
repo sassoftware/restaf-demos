@@ -32,8 +32,9 @@ async function required_action(runStatus,gptControl) {
   
   let toolsOutput = [];
   let lastToolCallId = null;
+  let functionName = null;
   for (let action of requiredActions) {
-    let functionName = action.function.name;
+    functionName = action.function.name;
     lastToolCallId = action.id;
 
     console.log('Requested function: ', functionName);
@@ -54,7 +55,10 @@ async function required_action(runStatus,gptControl) {
       toolsOutput.push(o);
     } else {
       try {
+        let elapsedTime = Date.now();
         let response = await functionList[functionName](params, appEnv, gptControl);
+        elapsedTime = Math.round((Date.now() - elapsedTime) / 1000);
+        console.log(`>> Function call ${functionName} completed in ${elapsedTime} seconds`);
         console.log(`>> Function call ${functionName} completed`);
           toolsOutput.push({
             toolCallId: action.id,
@@ -72,21 +76,25 @@ async function required_action(runStatus,gptControl) {
  }
 // submit the outputs to the thread
  
- let fullResponse = '';
- toolsOutput.forEach((t) => {
-   fullResponse += t.output;
- });
- let mimeType = 'text/plain';
- let newFile = await makeFileObject('runResults' + '_' + gptControl.assistant.name, fullResponse, mimeType, gptControl);
- console.log('uploading file', newFile);
- toolsOutput = [{
-    toolCallId: lastToolCallId,
-    output: 'analyze file ' + newFile.fileName + 'with the file id ' + newFile.fileId 
+if (gptControl.useResultFile === true){
+  let fullResponse = '';
+  toolsOutput.forEach((t) => {
+    fullResponse += t.output;
+  });
+  let mimeType = 'text/plain';
+  let newFile = await makeFileObject(functionName+'.text', fullResponse, mimeType, gptControl);
+  gptControl.resultFile = newFile;
+  console.log('uploading file', newFile);
+  toolsOutput = [{
+      toolCallId: lastToolCallId,
+      output: 'analyze file ' + newFile.fileName + ' with the file id ' + newFile.fileId 
+    }
+    ];
   }
-  ];
-  console.log(toolsOutput);
+  
+
   console.log('submitting output to the thread');
- let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsOutput );
+  let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsOutput );
 
 
 // wait for output to appear in the thread messages

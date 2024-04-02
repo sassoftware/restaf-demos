@@ -18,6 +18,7 @@ import {
   deleteAssistant,
   uploadFile,
   makeFileObject,
+
 } from '../src/index.js';
 
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
@@ -86,8 +87,21 @@ async function chat(config) {
           break;
         }
         case 'tlist':{
-          let r = await gptControl.assistantApi.listThreads();
+          /*
+          let {store} = gptControl;
+          let payload = {
+            url: 'https://api.openai.com/v1/conversations',
+            headers: {
+              Authorization: 'Bearer ' + config.credentials.key,
+            }
+          }
+          console.log(payload)
+          console.log(store.request);
+          let r = await store.request(payload);
           console.log(r);
+          */
+         let r = await gptControl.assistantApi.listThreads(config.model);
+         console.log(r);
           break;
         }
         case 'deleteAssistant': {
@@ -141,7 +155,8 @@ function setupConfig(provider) {
       threadid: 'NEW', //process.env.OPENAI_THREADID,
       code: true,
       retrieval: true,
-      env: null
+      env: null,
+      useResultFile: true
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -156,7 +171,8 @@ function setupConfig(provider) {
       logLevel: null,
       code: true,
       retrieval: false,
-      env: null
+      env: null,
+      useResultFile: false
     },
   };
   let r = config[provider];
