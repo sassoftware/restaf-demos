@@ -9,7 +9,9 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import 'dotenv/config';
 import getToken from './lib/getToken.js';
-import addRunSAS from './addRunSAS.js';
+// import addRunSAS from './addRunSAS.js';
+import functionSpecs from './sasic/functionSpecs.js';
+
 
 import {
   setupAssistant,
@@ -23,7 +25,8 @@ import {
 
 // setup configuration
 let config = setupConfig(process.env.OPENAI_PROVIDER);
-config.domainTools = addRunSAS();
+config.domainTools = functionSpecs('node', config.code,config.retrieval);
+config.domainTools.replace=true;
 chat(config)
   .then((r) => console.log('done'))
   .catch((err) => console.log(err));
@@ -135,7 +138,8 @@ function setupConfig(provider) {
     functionList: {},
     instructions: '',
     replace: false,
-  };
+  }
+  
   r.viyaConfig = null;
   if (process.env.APPENV_SOURCE != null) {
     let { token, host } = getToken();

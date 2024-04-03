@@ -13,6 +13,7 @@ import getMessages from './getMessages.js';
 import uploadFile from './uploadFile.js';
 import cancelRun from './cancelRun.js';
 import makeFileObject from './makeFileObject.js';
+import builtinTools from './builtins/tools/index.js';
 export  {
   setupAssistant,
   runAssistant,
@@ -22,4 +23,5 @@ export  {
   uploadFile,
   cancelRun,
   makeFileObject,
+  builtinTools
 };

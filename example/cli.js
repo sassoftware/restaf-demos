@@ -195,6 +195,7 @@ function setupConfig(provider) {
       logonPayload: logonPayload,
       source: process.env.APPENV_SOURCE,
     };
+    r.toolSet = 'sasic'
   }
   return r;
 }

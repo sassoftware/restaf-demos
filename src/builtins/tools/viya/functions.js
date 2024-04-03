@@ -5,9 +5,9 @@
 //import restafedit from '@sassoftware/restafedit';
 //import restaflib from '@sassoftware/restaflib'
 
-import logAsArray from './lib/logAsArray.js';
-import string2Table from './lib/string2Table.js';
-import rows2csv from './lib/rows2csv.js';
+import logAsArray from '../lib/logAsArray.js';
+import string2Table from '../lib/string2Table.js';
+import rows2csv from '../lib/rows2csv.js';
 
 /**
  * @description Function for the assistant

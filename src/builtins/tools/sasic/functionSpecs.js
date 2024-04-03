@@ -1,0 +1,333 @@
+/*
+ * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+import functions from './functions.js';
+import instructions from './instructions.js';
+/**
+ * @description Function specs for the assistant
+ * @private
+ * @function functionSpecs
+ * @returns {object} - object containing specs, tools, functionList
+ * 
+ */
+
+function functionSpecs(env, code, retrieval) {
+  let specs = [
+    _catalogInstanceFunctionSpec,
+    _catalogFunctionSpec,
+   // _getDataFunctionSpec,
+  // _runSASFunctionSpec,
+    _keywordsFunctionSpec
+  ];
+
+
+  // Create tools array  for use with Assistant API
+  let tools = [];
+  if (code) {
+    tools.push({ type: 'code_interpreter' });
+  }
+  if (retrieval) {
+    tools.push({ type: 'retrieval' });
+  }
+
+  specs.forEach((f) => {
+    let r = {
+      type: "function",
+      function: Object.assign({}, f),
+    };
+    tools.push(r);
+  });
+
+  let functionList = functions();
+  debugger;
+  let instruction = instructions(env);
+  debugger;
+  return { specs: specs, tools: tools, functionList: functionList, instructions: instruction };
+}
+const _catalogInstanceFunctionSpec = {
+  name: '_catalogSearchInstance',
+  description: `Describe a particular asset. Examples are sashelp.cars, library, table, report, folder, file, etc.
+       User can alias details with the following:
+       1. contents
+
+      The metadata string is created from the user input using these rules:
+      parse the string from left to right and concatenate resulting search term into the metadata string
+      Use blanks to separate the search terms.
+      a. if the string has no ':' or '=' at the end of the string, then use it as a  search term 
+      b. if the string of the format  keystring:string or keystring: string treat it as another search term.
+      c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
+      d. The string OR is treated as a logical OR and a search term when it appears between two search terms.
+      e. if the string is of the format keystring: {string1, string2} then treat it as another search term.
+
+    Examples:
+    1. describe name: xxx becomes name: xxx
+    2. describe for sales becomes sales
+    3. describe name: xxx becomes name: xxx
+    4. describe name= xxx becomes name: xxx
+    5. describe sales name: xxx becomes sales name: xxx
+    6. describe sales name: xxx becomes sales name: xxx
+    7. variales name: {xxx, yyy} becomes name: {xxx, yyy}
+      
+      `,
+  parameters: {
+    properties: {
+      metadata: {
+        type: 'string',
+        description: 'The metadata to return',
+      },
+    },
+    type: 'object',
+    required: ['metadata'],
+  }
+};
+const _catalogFunctionSpec = {
+  name: '_catalogSearch',
+  description: `Search for information in SAS Viya using search terms. Users can alias search with the following terms:
+       1. find
+       2. look for
+       3. search for
+       4. where
+
+      The metdata string is created from the user input using these rules:
+      parse the string from left to right and concatenate resulting search term into the metadata string
+      Use blanks to separate the search terms.
+      a. if the string has no ':' or '=' at the end of the string, then use it as a  search term 
+      b. if the string of the format  keystring:string or keystring: string treat it as another search term.
+      c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
+      d. The string OR is treated as a logical OR and a search term when it appears between two search terms.
+      e. if the string is of the format keystring: {string1, string2} then treat it as another search term.
+
+    Examples:
+    1. search sales  becomes sales
+    2. search for sales becomes sales
+    3. search name: xxx becomes name: xxx
+    4. search name= xxx becomes name: xxx
+    5. search sales name: xxx becomes sales name: xxx
+    6. search sales name: xxx becomes sales name: xxx
+    7. search name: {xxx, yyy} becomes name: {xxx, yyy}
+      
+      `,
+  parameters: {
+    properties: {
+      metadata: {
+        type: 'string',
+        description: 'The metadata to return',
+      },
+    },
+    type: 'object',
+    required: ['metadata'],
+  }
+};
+
+const _formatResponseSpec = {
+  name: '_formatResponse',
+  description: `When you have all the information you need, use this function to format the response.`,
+  parameters: {
+    properties: {
+      reponse: {
+        type: 'string',
+        description:
+          'The text you want to answer with',
+      }
+    },
+    type: 'object',
+    required: ['response'],
+  },
+};
+const _getDataFunctionSpec = {
+  name: '_getData',
+  description: `Fetch data from a  table like casuser.cars.
+                To limit the number of rows, specify the limit parameter.
+                If format is true, then the data will be formatted.
+                Use standard where clause to filter the data.
+                To return data in csv format, specify csv = true. Default is false.`,
+  parameters: {
+    properties: {
+      table: {
+        type: 'string',
+        description:
+          'The table to setup. The form of the table is casuser.cars',
+      },
+      limit: {
+        type: 'integer',
+        description: 'Fetch only the specified number of rows'
+      },
+      'format': {
+        type: 'boolean',
+        description: 'Format the string - true or false'
+      },  
+      where: {
+        type: 'string',
+        description: 'A where clause like Make eq "Audi"'
+      },
+      csv: {
+        type: 'boolean',
+        description: 'Return data in csv format - true or false'
+      }
+    },
+    type: 'object',
+    required: ['table'],
+  },
+};
+const _listSASObjectsFunctionSpec = {
+  name: '_listSASObjects',
+  description:
+    'list SAS resources like reports, files, folders. Specify the limit parameter to limit the number of items returned',
+  parameters: {
+    properties: {
+      resource: {
+        type: 'string',
+        description:
+          'The objecttable to setup. The form of the table is casuser.cars',
+      },
+      limit: {
+        type: 'integer',
+        description: 'Get this many items',
+      },
+    },
+    type: 'object',
+    required: ['resource', 'limit'],
+  },
+};
+const _listSASDataLibFunctionSpec = {
+  name: '_listSASDataLib',
+  description:
+    `list available SAS libs, calibs, librefs or libraries.
+     This tool is the only one that can answer questions like this.
+
+     A example would be list libs. 
+     If limit is not is specified, then the function 
+     will return the first 10 libs.
+    `,
+  parameters: {
+    properties: {
+      limit: {
+        type: 'integer',
+        description: 'Return only this many libs. If not specified, then return 10 libs.',
+      }
+    },
+  type: 'object',
+  }
+};
+const _listSASTablesFunctionSpec = {
+  name: '_listSASTables',
+  description:
+    `for a given SAS library, lib, caslibs or libref get the list of available tables.
+    (ex: list tables for Samples)
+    Optionally let user specify the source as cas or compute.`,
+  parameters: {
+    properties: {
+      library: {
+        type: 'string',
+        description: 'A SAS library like casuser, sashelp, samples',
+      },
+      limit: {
+        type: 'integer',
+        description:
+          'Return only this many tables. If not specified, then return 10 tables.',
+      },
+      source: {
+        type: 'string',
+        description: 'The source of the data. cas or compute',
+        enum: ['cas', 'compute'],
+      }
+    },
+    type: 'object',
+    required: ['library'], 
+  },
+};
+const _listColumnsFunctionSpec = {
+  name: '_listColumns',
+  description: 'Get schema or columns for specified SAS  table. Table is of the form sashelp.cars',
+  parameters: {
+    properties: {
+      table: {
+        type: 'string',
+        description: 'A table like sashelp.cars',
+      },
+    },
+    type: 'object',
+    required: ['table'],
+  },
+};
+const _describeTableSpec = {
+  name: '_describeTable',
+  description: 'Describe the SAS table like sashelp.cars . return information on the table like columns, types, keys. Optionally format the data',
+  parameters: {
+    properties: {
+      table: {
+        type: 'string',
+        description: 'A table like sashelp.cars',
+      },
+      format: {
+        type: 'boolean',
+        description: 'If true then format the data'
+      },
+    },
+    type: 'object',
+    required: ['table'],
+  },
+};
+const _runSASFunctionSpec = {
+  name: '_runSAS',
+  description:
+    'run the specified sas program',
+  parameters: {
+    properties: {
+      program: {
+        type: 'string',
+        description: 'this is the program to run',
+      },
+    },
+    type: 'object',
+    required: ['program']
+  },
+};
+
+const _keywordsFunctionSpec = {
+  name: '_keywords',
+  description: 'format a comma-separated keywords like a,b,c into html, array, object',
+  parameters: {
+   
+    properties: {
+      keywords: {
+        type: 'string',
+        description: 'A comma-separated list of keywords like a,b,c',
+      },
+      format: {
+        type: 'string',
+        enum: ['html', 'array', 'object'],
+        description: 'Format the string'
+      },
+    },
+    type: 'object',
+    required: ['keywords', 'format']
+  },
+}
+
+const _contextDataFunctionSpec = {
+  name: '_contextData',
+  description:
+    `This function process the user input and returns the context data.
+     User issues a prompt like context action <some string>
+     action can be 
+     `,
+  parameters: {
+    properties: {
+      action: {
+        type: 'string',
+        description: 'the action to add to the context',
+        enum: ['echo', 'read']
+      },
+      asset: {
+        type: 'string',
+        description: 'the asset to add to the context',
+      },
+    },
+    type: 'object',
+    required: ['action', 'asset'],
+  },
+};
+
+export default functionSpecs;
