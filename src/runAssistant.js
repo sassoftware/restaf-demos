@@ -29,11 +29,8 @@ async function runAssistant(gptControl, prompt, instructions) {
   let start = Date.now();
   let r = await irunAssistant(gptControl, prompt, instructions);
   debugger;
-  console.log('>>>>>>', gptControl.resultFile)
-  if (gptControl.resultFile != null) {
-    let newPrompt = `Analyse the file ${gptControl.resultFile.fileId} to get the final response`;
-    r = await irunAssistant(gptControl, newPrompt, instructions);
-  }
+  console.log('>>>>>>', gptControl.resultFile);
+
   let elapsed = Math.round(Date.now() - start) / 1000
   console.log('Time taken to run assistant: ', elapsed, ' seconds');
   return r;
@@ -45,7 +42,7 @@ async function irunAssistant(gptControl, prompt, instructions) {
   try {
     // this seems to improve retrieval using files.
     let opts = {};
-    opts.fileIds = gptControl.assistant.fileIds;
+    opts.fileIds = (gptControl.provider === 'azureai') ? gptControl.assistant.fileIds : gptControl.assistant.file_ids;
     
     let _newMessage = await assistantApi.createMessage(
       thread.id,
@@ -68,12 +65,13 @@ async function irunAssistant(gptControl, prompt, instructions) {
   return r;
 }
 async function runPrompt(gptControl, appEnv, instructions) {
-  let { assistantApi, assistant, thread } = gptControl;
+  let { assistantApi, thread } = gptControl;
 
   let runArgs = {
-    assistantId: assistant.id,
+    assistantId: gptControl.assistant.id,
     instructions: instructions,
-    tools: assistant.tools,
+    tools: gptControl.assistant.tools,
+    temperature: gptControl.temperature
   };
   // Run the assistant with the prompt and poll for completion
   debugger;

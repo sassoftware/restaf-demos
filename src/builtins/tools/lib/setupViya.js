@@ -3,16 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * Setup the Viya environment
- * @param {string} source - cas or compute
- * @returns {object} - appEnv
- * @async
- */
- 
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
 import restafedit from '@sassoftware/restafedit';
+import viyaOnDemand from './viyaOnDemand.js';
+import createFile from '../../../createFile.js';  
+
+/**
+ * @description setup Viya access
+ * @async
+ * @private
+ * @function setupViya
+ * @param {object} viyaConfig  
+ * @returns {promise}  - appEnv
+ */
+ 
 
 
 async function setupViya(viyaConfig) {
@@ -31,7 +36,9 @@ async function setupViya(viyaConfig) {
   cas: {},
   restaf: restaf,
   restaflib: restaflib,
-  restafedit: restafedit
+  restafedit: restafedit,
+  viyaOnDemand: viyaOnDemand,
+  createFile: createFile
 
 }
   

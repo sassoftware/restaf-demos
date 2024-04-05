@@ -37,16 +37,14 @@ function functions() {
   return flist;
 }
 async function _catalogSearchInstance(params,appEnv,gptControl){
-  params.ref ='instances';
+  params.ref ='facets';
   return _catalogSearch(params,appEnv,gptControl);
 }
 
 
 async function _catalogSearch(params, appEnv, gptControl) {
   let { metadata, ref } = params;
-  if (ref == null) {
-    ref = 'search';
-  }
+  ref = (ref == null) ? 'search' : ref;
   let { store } = appEnv;
   // https://go.documentation.sas.com/doc/en/infocatcdc/v_034/infocatug/n09x2n3z9t2izln1vtx68oho8t8x.htm?requestorId=84052456-0342-4389-a344-5cc71cbec5cc
   console.log('metadata', metadata);
@@ -66,9 +64,10 @@ async function _catalogSearch(params, appEnv, gptControl) {
     console.log(JSON.stringify(err));
     return 'Error searching catalog';
   }
-
-
 }
+    
+    
+
 
 async function _listSASObjects(params, appEnv) {
   let { resource, limit } = params;

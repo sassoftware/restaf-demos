@@ -6,14 +6,11 @@
 import OpenAI from 'openai';
 
 import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
-import loadThread from './loadThread.js';
+
 import createAssistant from './createAssistant.js';
-//import functionSpecs from './builtins/tools/functionSpecs.js';
 import setupViya from './builtins/tools/lib/setupViya.js';
+import uploadFile from './uploadFile.js';
 import apiMapper from './apiMapper.js';
-//import functionSpecs from "./functionSpecs.js";
-//import functions from "./functions.js";
-//import instructions from "./instructions.js";
 import defaultTools from "./builtins/tools/index.js";
 
 /**
@@ -81,6 +78,7 @@ async function setupAssistant(config) {
     model: config.model,
     domainTools: specs,
     instructions: specs.instructions,
+    temperature: (config.temperature) ? config.temperature : 0.5,
 
     assistantName: config.assistantName,
     assistant: null,
@@ -95,7 +93,7 @@ async function setupAssistant(config) {
     assistantApi: apiMapper(client, config.provider),
     toolset: config.toolset,
     code: config.code, 
-    retrieval: config.retrieval, // remove this when azureai supports retrieval
+    retrieval: config.retrieval, 
     userData: config.userData,
     user: config.user,
     useResultFile: config.useResultFile
@@ -111,16 +109,6 @@ async function setupAssistant(config) {
   
   gptControl.assistant = await createAssistant(gptControl);
   
-  // load thread or reuse existing one
-  /*
-  gptControl.thread = await loadThread(gptControl);
-  let metadata = gptControl.assistant.metadata;
-  metadata.lastThread = gptControl.thread.id;
-  let newAssistant = await gptControl.assistantApi.updateAssistant(gptControl.assistant.id, {metadata: metadata});
-  gptControl.assistant = newAssistant;
-  
-  gptControl.threadid = gptControl.thread.id;// just for convenience
-  */
   console.log('--------------------------------------');
   console.log('Current session:');
   console.log('Provider: ', gptControl.provider);

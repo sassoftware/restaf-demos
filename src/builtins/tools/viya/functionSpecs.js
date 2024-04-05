@@ -31,13 +31,14 @@ function functionSpecs(env, code, retrieval) {
 
   // Create tools array  for use with Assistant API
   let tools = [];
+  /*
   if (code) {
     tools.push({ type: 'code_interpreter' });
   }
   if (retrieval) {
     tools.push({ type: 'retrieval' });
   }
-
+*/
   specs.forEach((f) => {
     let r = {
       type: "function",

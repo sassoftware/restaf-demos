@@ -8,6 +8,7 @@
 import logAsArray from '../lib/logAsArray.js';
 import string2Table from '../lib/string2Table.js';
 import rows2csv from '../lib/rows2csv.js';
+import itemsData from '../lib/itemsData.js';
 
 /**
  * @description Function for the assistant
@@ -27,20 +28,21 @@ function functions() {
 
     _catalogSearch,
     _catalogSearchInstance,
-  //  _contextData
+   // _contextData
   };
   return flist;
 }
 async function _catalogSearchInstance(params,appEnv,gptControl){
-  params.ref ='instances';
+  params.rel ='instances';
   return _catalogSearch(params,appEnv,gptControl);
 }
 
 
 async function _catalogSearch(params, appEnv, gptControl) {
-  let { metadata, ref } = params;
-  if (ref == null) {
-    ref = 'search';
+  let { metadata,start, limit, rel } = params;
+  debugger;
+  if (rel == null) {
+    rel = 'search';
   }
   let { store } = appEnv;
   // https://go.documentation.sas.com/doc/en/infocatcdc/v_034/infocatug/n09x2n3z9t2izln1vtx68oho8t8x.htm?requestorId=84052456-0342-4389-a344-5cc71cbec5cc
@@ -53,16 +55,17 @@ async function _catalogSearch(params, appEnv, gptControl) {
       qs: {q: metadata}
     };
     console.log('payload: ', payload);
-    let r = await store.apiCall(catalog.links(ref), payload);
-    console.log(JSON.stringify(r.itemsList(), null,4));
-    let rx = itemsData(r);
+    let r = await store.apiCall(catalog.links(rel), payload);
+    console.log('r=', JSON.stringify(r.itemsList(), null,4));
+ 
+    let rx = itemsData(r, rel); 
+    console.log('rx', rx);
+    
     return rx;
   } catch (err) {
     console.log(JSON.stringify(err));
     return 'Error searching catalog';
   }
-
-
 }
 
 async function _listSASObjects(params, appEnv) {
@@ -199,7 +202,7 @@ async function _keywords(params) {
       keywords.split(',').forEach((k, i) => {
         r[`key${i}`] = k;
       });
-      rx = JSON.stringify(r);
+      rx = JSON.stringify(r, null,4);
       break;
     }
     default:
@@ -262,27 +265,7 @@ async function _idescribeTable(params, appEnv) {
   return describe;
 }
 // extract just the data and ignore links etc...
-function itemsData(r) {
- 
-  debugger;
-  let rx = [];
-  let content = ' ';
-  if (r.itemsList().size > 0) {
-    content += 'The list of items returned are: ' + JSON.stringify(r.itemsList().toJS())
-    rx = r.itemsList().toJS().map(item => {
-      let rt = r.items(item, 'data').toJS();
-      let row = {};
-      row[item] = rt;
-      return row;
-    });
-  content += 'The available on these items are: ' + JSON.stringify(rx);
-  } else {
-    content += 'The available information is: ' + JSON.stringify(r.items('data').toJS());
-    // rx = (r.items('data') != null) ? [r.items('data').toJS()] : {warning: 'No data returned'};
-  }
 
-  return content;
-}
 export default functions;
 
 

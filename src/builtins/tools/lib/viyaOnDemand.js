@@ -4,10 +4,11 @@
  */
 /**
  * @description - Allow functions to create a Viya session on demand(if not already created)
- * @function apiMapper
+ * @async
+ * @function viyaOnDemand
  * @param {gptControl} gptControl  - gpt control object
  * @param {string} source  - cas|compute
- * returns {promise} - appEnv - return appEnv
+ * @returns {promise} - appEnv - return appEnv
  * @example - Allow functions to create a Viya session on demand(if not already created)
  */
 
@@ -17,21 +18,31 @@ import restaflib from "@sassoftware/restaflib";
 async function viyaOnDemand(gptConfig, source) {
   let { appEnv } = gptConfig;
 
-  if (appEnv.currentSource === "none") {
-    return null;
-  }
+ 
   let store = appEnv.store;
   // if it is already created, return it
+  let tappEnv=  {
+    host: appEnv.host,
+    logonPayload: appEnv.logonPayload,
+    store:  appEnv.store,
+    source: source,
+    session: null,
+    servers: null,
+    serverName: null,
+    casServerName: null,
+    sessionID: null,
+    restaf: restaf,
+    restaflib: restaflib,
+    restafedit: restafedit,
+    viyaOnDemand: appEnv.viyaOnDemand
+  }
+
+  if (appEnv.source === "none") {
+    return tappEnv;
+  }
+
   if (appEnv[source].sessionID !== null) {
-    let lapp = appEnv[source];
-    appEnv.currentSource = source;
-    appEnv.session = lapp.session;
-    appEnv.servers = lapp.servers;
-    appEnv.serverName = lapp.casServerName;
-    appEnv.casServerName = lapp.casServerName;
-    appEnv.sessionID = lapp.sessionID;
-    appEnv.currentSource = source;
-    return appEnv;
+    return setupAppEnv(appEnv, tappEnv, source);
   }
 
   // source = cas
@@ -45,13 +56,8 @@ async function viyaOnDemand(gptConfig, source) {
     };
     let ssid = await store.apiCall(session.links("self"));
     appEnv.cas.sessionID = ssid.items("id");
-    appEnv.currentSource = source;
-    appEnv.session = session;
-    appEnv.servers = servers;
-    appEnv.serverName = casServerName;
-    appEnv.casServerName = casServerName;
-    appEnv.sessionID = appEnv.cas.sessionID;
-    return appEnv;
+    tappEnv = setupAppEnv(appEnv, tappEnv, source);
+    return tappEnv;
   }
 
   // source = compute
@@ -63,14 +69,20 @@ async function viyaOnDemand(gptConfig, source) {
       servers: servers,
       serverName: serverName,
     };
-    let ssid = await store.apiCall(session.links("self"));
-    appEnv.compute.sessionID = ssid.items("id");
-    appEnv.currentSource = source;
-    appEnv.session = session;
-    appEnv.servers = servers;
-    appEnv.serverName = serverName;
-    appEnv.sessionID = appEnv.compute.sessionID;
-    return appEnv;
+    let sid = await store.apiCall(session.links("self"));
+    appEnv.compute.sessionID = sid.items("id");
+    tappEnv = setupAppEnv(appEnv, tappEnv, source);
+    return tappEnv;
+  }
+  function setupAppEnv(appEnv, tappEnv, source) {
+      let lapp = appEnv[source];
+      tappEnv.source = source;
+      tappEnv.session = lapp.session;
+      tappEnv.servers = lapp.servers;
+      tappEnv.serverName = lapp.serverName;
+      tappEnv.casServerName = lapp.casServerName;
+      tappEnv.sessionID = lapp.sessionID;
+    return tappEnv;
   }
 }
 export default viyaOnDemand;

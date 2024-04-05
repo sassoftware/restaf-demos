@@ -5,7 +5,7 @@
  */
 
 import pollRun from "./pollRun.js";
-import makeFileObject from "./makeFileObject.js";
+import createFile from "./createFile.js";
 
 /**
  * @async
@@ -33,6 +33,7 @@ async function required_action(runStatus,gptControl) {
   let toolsOutput = [];
   let lastToolCallId = null;
   let functionName = null;
+  let fileList = [];
   for (let action of requiredActions) {
     functionName = action.function.name;
     lastToolCallId = action.id;
@@ -56,7 +57,12 @@ async function required_action(runStatus,gptControl) {
     } else {
       try {
         let elapsedTime = Date.now();
-        let response = await functionList[functionName](params, appEnv, gptControl);
+        let iresponse = await functionList[functionName](params, appEnv, gptControl);
+        let response = (iresponse._message != null) ? iresponse._message : iresponse;
+        if (iresponse._file != null) {
+          fileList.push({functionName: functionName, file: iresponse._file});
+        }
+
         elapsedTime = Math.round((Date.now() - elapsedTime) / 1000);
         console.log(`>> Function call ${functionName} completed in ${elapsedTime} seconds`);
         console.log(`>> Function call ${functionName} completed`);
@@ -73,28 +79,18 @@ async function required_action(runStatus,gptControl) {
         toolsOutput.push(o);
       }
     }
- }
+ }  
 // submit the outputs to the thread
  
-if (gptControl.useResultFile === true){
-  let fullResponse = '';
-  toolsOutput.forEach((t) => {
-    fullResponse += t.output;
+if (fileList.length > 0){
+  fileList.forEach(async (f) => {
+    let newFile = await createFile(f.functionName + '.txt', f.file, 'text/plain', gptControl);
+    console.log('uploading file', newFile);
   });
-  let mimeType = 'text/plain';
-  let newFile = await makeFileObject(functionName+'.text', fullResponse, mimeType, gptControl);
-  gptControl.resultFile = newFile;
-  console.log('uploading file', newFile);
-  toolsOutput = [{
-      toolCallId: lastToolCallId,
-      output: 'analyze file ' + newFile.fileName + ' with the file id ' + newFile.fileId 
-    }
-    ];
-  }
-  
+}
 
-  console.log('submitting output to the thread');
-  let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsOutput );
+console.log('submitting output to the thread');
+let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsOutput );
 
 
 // wait for output to appear in the thread messages

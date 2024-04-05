@@ -17,7 +17,7 @@ import {
   cancelRun,
   deleteAssistant,
   uploadFile,
-  makeFileObject,
+  createFile,
 
 } from '../src/index.js';
 
@@ -74,7 +74,7 @@ async function chat(config) {
           let filename = cmda[1].trim();
           let content = cmda[2].trim();
           let mimeType = 'text/plain';
-          let r = await makeFileObject(filename, content, mimeType, gptControl);
+          let r = await createFile(filename, content, mimeType, gptControl);
           console.log(r);
           break;
         }
@@ -156,7 +156,7 @@ function setupConfig(provider) {
       code: true,
       retrieval: true,
       env: null,
-      useResultFile: true
+      useResultFile: (process.env.USERESULTFILE === 'true' ? true : false)
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -172,7 +172,7 @@ function setupConfig(provider) {
       code: true,
       retrieval: false,
       env: null,
-      useResultFile: false
+      useResultFile: (process.env.USERESULTFILE === 'true' ? true : false)
     },
   };
   let r = config[provider];

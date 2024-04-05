@@ -16,7 +16,7 @@ function functionSpecs(env, code, retrieval) {
   let specs = [
     _catalogInstanceFunctionSpec,
     _catalogFunctionSpec,
-   // _getDataFunctionSpec,
+  //  _getDataFunctionSpec,
   // _runSASFunctionSpec,
     _keywordsFunctionSpec
   ];
@@ -24,13 +24,14 @@ function functionSpecs(env, code, retrieval) {
 
   // Create tools array  for use with Assistant API
   let tools = [];
+  /*
   if (code) {
     tools.push({ type: 'code_interpreter' });
   }
   if (retrieval) {
     tools.push({ type: 'retrieval' });
   }
-
+  */
   specs.forEach((f) => {
     let r = {
       type: "function",
@@ -47,10 +48,10 @@ function functionSpecs(env, code, retrieval) {
 }
 const _catalogInstanceFunctionSpec = {
   name: '_catalogSearchInstance',
-  description: `Describe a particular asset. Examples are sashelp.cars, library, table, report, folder, file, etc.
-       User can alias details with the following:
-       1. contents
-
+  description: `find an  metadata of a  specific type. 
+  User can specify start and limit to limit the number of items returned.
+    If type is not specified default to datasets.
+    The metatdata value cannot be empty.
       The metadata string is created from the user input using these rules:
       parse the string from left to right and concatenate resulting search term into the metadata string
       Use blanks to separate the search terms.
@@ -61,26 +62,54 @@ const _catalogInstanceFunctionSpec = {
       e. if the string is of the format keystring: {string1, string2} then treat it as another search term.
 
     Examples:
-    1. describe name: xxx becomes name: xxx
-    2. describe for sales becomes sales
-    3. describe name: xxx becomes name: xxx
-    4. describe name= xxx becomes name: xxx
-    5. describe sales name: xxx becomes sales name: xxx
-    6. describe sales name: xxx becomes sales name: xxx
-    7. variales name: {xxx, yyy} becomes name: {xxx, yyy}
+    1. find name: xxx becomes name: xxx
+    2. find sales becomes name: sales
+
+    3. find name= xxx becomes name: xxx
+    4. find sales name: xxx becomes type: sales name: xxx
+
+    5. find name: {xxx, yyy} becomes name: {xxx, yyy}
       
       `,
   parameters: {
     properties: {
       metadata: {
         type: 'string',
-        description: 'The metadata to return',
+        description: 'The metadata to find',
+      },
+      start: {
+        type: 'integer',
+        description: 'Start at this item',
+      },
+      limit: {
+        type: 'integer',
+        description: 'Return only this many items',
+      },
+      
+      type: {
+        type: 'string',
+        description: 'The type of asset to search for',
+        enum: ["dataflows",
+        "datasets",
+        "dataplans",
+        "models",
+        "modelprojects",
+        "modelstudioprojects",
+        "reports",
+        "rulesets",
+        "referencedatadomains",
+        "codefiles",
+        "decisions",
+        "riskdataprojects",
+        "riskmodels"
+        ]
       },
     },
     type: 'object',
-    required: ['metadata'],
+    required: ['asset'],
   }
 };
+
 const _catalogFunctionSpec = {
   name: '_catalogSearch',
   description: `Search for information in SAS Viya using search terms. Users can alias search with the following terms:
@@ -89,6 +118,7 @@ const _catalogFunctionSpec = {
        3. search for
        4. where
 
+       User can specify start and limit to limit the number of items returned.
       The metdata string is created from the user input using these rules:
       parse the string from left to right and concatenate resulting search term into the metadata string
       Use blanks to separate the search terms.
@@ -114,27 +144,21 @@ const _catalogFunctionSpec = {
         type: 'string',
         description: 'The metadata to return',
       },
+      start: {
+        type: 'integer',
+        description: 'Start at this item',
+      },
+      limit: {
+        type: 'integer',
+        description: 'Return only this many items',
+      },
     },
     type: 'object',
     required: ['metadata'],
   }
 };
 
-const _formatResponseSpec = {
-  name: '_formatResponse',
-  description: `When you have all the information you need, use this function to format the response.`,
-  parameters: {
-    properties: {
-      reponse: {
-        type: 'string',
-        description:
-          'The text you want to answer with',
-      }
-    },
-    type: 'object',
-    required: ['response'],
-  },
-};
+
 const _getDataFunctionSpec = {
   name: '_getData',
   description: `Fetch data from a  table like casuser.cars.
@@ -147,7 +171,7 @@ const _getDataFunctionSpec = {
       table: {
         type: 'string',
         description:
-          'The table to setup. The form of the table is casuser.cars',
+          'The table to read. The form of the table is casuser.cars',
       },
       limit: {
         type: 'integer',
@@ -164,11 +188,15 @@ const _getDataFunctionSpec = {
       csv: {
         type: 'boolean',
         description: 'Return data in csv format - true or false'
-      }
+      },
+      source: {
+        type: 'string',
+        description: 'The source of the data. cas or compute',
     },
     type: 'object',
     required: ['table'],
-  },
+  }
+}
 };
 const _listSASObjectsFunctionSpec = {
   name: '_listSASObjects',

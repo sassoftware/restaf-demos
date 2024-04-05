@@ -12,7 +12,7 @@ import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
 import uploadFile from './uploadFile.js';
 import cancelRun from './cancelRun.js';
-import makeFileObject from './makeFileObject.js';
+import createFile from './createFile.js';
 import builtinTools from './builtins/tools/index.js';
 export  {
   setupAssistant,
@@ -22,6 +22,6 @@ export  {
   deleteAssistant,
   uploadFile,
   cancelRun,
-  makeFileObject,
+  createFile,
   builtinTools
 };
