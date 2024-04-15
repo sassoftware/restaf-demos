@@ -25,7 +25,6 @@ function functions() {
   let flist = {
     _getData,
     _keywords,
-
     _catalogSearch,
     _catalogSearchInstance,
    // _contextData
@@ -40,6 +39,8 @@ async function _catalogSearchInstance(params,appEnv,gptControl){
 
 async function _catalogSearch(params, appEnv, gptControl) {
   let { metadata,start, limit, rel } = params;
+  limit =(limit) ? limit : 10;
+  start =(start) ? start : 0;
   debugger;
   if (rel == null) {
     rel = 'search';
@@ -52,7 +53,7 @@ async function _catalogSearch(params, appEnv, gptControl) {
   try {
     let {catalog} = await store.addServices('catalog');
     let payload = {
-      qs: {q: metadata}
+      qs: {q: metadata, limit: limit, start: start},
     };
     console.log('payload: ', payload);
     let r = await store.apiCall(catalog.links(rel), payload);

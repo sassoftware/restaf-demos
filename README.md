@@ -1,9 +1,12 @@
-# @sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya
+# @sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya.
 
-@sassoftware/viya-assistantjs is a light weight JavaScript library to help SAS
-users build AI Assistants with minimal coding. It uses the Assistant from openai and
-azureai(based on configuration).
+The goal of @sassoftware/viya-assistantjs library is to simplify the development
+of AI Assistants for Viya using either the openai or azureai implementation.
 
+- <a href="https://https://sassoftware.github.io/restaf-demos">Documentation </a>
+- <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a>
+
+The library comes with a set of builtin tools to get a list of libraries, tables
 See
 <a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-work</a>
 for clear explanation of openai Assistant.
@@ -16,17 +19,19 @@ for clear explanation of openai Assistant.
    - data from specific table
    - run SAS code (prompt must include the code to execute)
 
-2. As a developer, you can add your own tools or replace the builtins with your tools
+2. As a developer, you can replace the default tools with your own custom tools.
+
 3. Call the *setupAssistant* method with this information
 along with other configuration information.
 4. Submit user prompt using the *runAssistant* method
    - The prompt might be resolved by gpt(ex: Who is CEO of SAS Institute)
    - The prompt might request viya-assistantjs to call one of the tools to
-   satisfy the request. This is where the rest api call to SAS will happen.
+   satisfy the request. This is where the rest api calls to SAS(or other sources)
+    will happen.
 5. Process this response and repeat step 4.
 6. Additionally you can use the *uploadFile* method
 to upload information to the Assistant for use with the retrieval or
-code_interpreter tool
+code_interpreter tool.
 
 See [these starter examples](#started) below.
 
@@ -38,15 +43,13 @@ to get the details.
 
 With this api one can build a "RAG" with SAS Viya capabilities.
 
-The Assistant API is supported by both openai and azureai. However their apis are different.
-Also azureai does not support the retrieval tool yet.
+The Assistant API is supported by both openai and azureai. However their apis
+ are different. Also azureai does not support the retrieval tool yet.
 
-The Assistant API is in beta/preview. It seems to be evolving. So it is not ready for prime
- time but good enough to develop non-production Assistants.
+The Assistant API is in beta/preview. It seems to be evolving. So use with the standard
+warning for usinf beta releases.
 
-### Key features and drawbacks of Assistant
-
-**Advantages**
+## Key features and drawbacks of Assistant
 
 1. The Assistant manages the conversation thru the *thread*
 2. The threads are persistent. So one can use the thread in subsequent sessions.
@@ -60,48 +63,14 @@ tool has to be enabled(not available in azureai at the time of this writing).
 5.Assistant comes with a tool called 'code_interpreter' than can generate and
 execute python code
 
-**Drawbacks**
-
-I will list these, but one must give openai some leeway since the Assistant is
-still in beta
-
-1. The time to process a prompt is long and unpredictable.
-2. The time to process the response from the functions is long and unpredictable.
-3. The api is different between openai and azureai.
-
-There has been no indication from openai when the performance issue will
- be addressed.
-Maybe the streaming capabilities announced recently might help address this issue
-
-**Opinion:**
-
-The concepts behind the Assistant Api is a very good one and can help users develop
-AI Assistants with minimal effort.
-
-At this point one should start prototyping the AI Assistant in the hope that the
-performance issues will be resolved.
-
-### gpt models
+## gpt models
 
 The information here is a moving target. Check with the provider
 for the proper model and zone to use for Assistant API.
 
-Models I am using:
-
 - openai: gpt-4-turbo-preview
 - azureai: gpt-4 1106 preview in zone East US 2
 
----
-> The goal of @sassoftware/viya-assistantjs library is to simplify the development
-of AI Assistants for Viya using either the openai or azureai implementation.
-
-- <a href="https://https://sassoftware.github.io/restaf-demos">Documentation </a>
-- <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a>
-
-The library comes with a set of builtin tools to get a list of libraries, tables
-and run SAS code. .
-
----
 
 ## Getting Started<a id="started"></a>
 
@@ -138,28 +107,29 @@ let config = {
   model: 'gpt-4-turbo-review'| for azureai the model you created in the portal
   credentials: {
     key: <your key> // obtain from provider
-    endPoint: <set this to our aureai resource url if provider is azureai>
+    endPoint: <set this to your azureai resource url if provider is azureai>
   },
+  temperature: 0.5,
   // leave the next 4 items as is - explained in the document
   assistantid: 'NEW', //leave it as is for now
   assistantName: "SAS_ASSISTANT",
   threadid: 'NEW', // Ignore this for now
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
+  domainTools: {tools: [], functionList: {}, instructions: ''},
+  code: true, //for code intrepreter
+  retrieval: true  // must be false for azureai
 
   // fill in the host and token to authenticate to Viya
-  // set the source to cas or compute. 
-  // if you want to run the AI assistant without Viya set source to none
   viyaConfig: {
     logonPayload: {
       authType: 'server',
       host: host,  // viya url - https://myviyaserver.acme.com
       token: token,// viya token  - obtained from sas-viya auth login|loginCode
-      tokenType: 'bearer'//  
+      tokenType: 'bearer'
       },
-    source: 'cas' 
+    source: 'cas' // 'cas', 'compute', 'none'
   },
-  code: true,
-  retrieval: <Must be false for azureai>
+  userData: {}, // user data -passthru to tools
+  
 }
 ```
 

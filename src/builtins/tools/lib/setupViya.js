@@ -7,7 +7,7 @@ import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
 import restafedit from '@sassoftware/restafedit';
 import viyaOnDemand from './viyaOnDemand.js';
-import createFile from '../../../createFile.js';  
+//import createFile from '../../../createFile.js';  
 
 /**
  * @description setup Viya access
@@ -17,13 +17,12 @@ import createFile from '../../../createFile.js';
  * @param {object} viyaConfig  
  * @returns {promise}  - appEnv
  */
- 
 
 
 async function setupViya(viyaConfig) {
  let appEnv=  {
   host: null,
-  logonPayload: null,
+  logonPayload: viyaConfig.logonPayload,
   store: null,
   source: 'none',
   currentSource: 'none',
@@ -32,21 +31,38 @@ async function setupViya(viyaConfig) {
   serverName: null,
   casServerName: null, 
   sessionID: null,
-  compute: {},
-  cas: {},
+  compute: {
+    sessionID: null,
+  },
+  cas: {
+    sessionID: null
+  },
   restaf: restaf,
   restaflib: restaflib,
   restafedit: restafedit,
   viyaOnDemand: viyaOnDemand,
-  createFile: createFile
+  userData: viyaConfig.userData
 
 }
+if (viyaConfig.logonPayload !== null) {
+  let logonPayload = viyaConfig.logonPayload;
+  let store = restaf.initStore({casProxy: true});
+  await store.logon(logonPayload);
+  appEnv.host = logonPayload.host;
+  appEnv.logonPayload = logonPayload;
+  appEnv.store = store;
+}
   
-  if (viyaConfig == null) {
+return appEnv;
+}
+
+export default setupViya;
+/*
+if (viyaConfig == null) {
     return appEnv;
   }
   
-  if (viyaConfig.source == 'none') {
+  if (viyaConfig.source === 'none') {
     appEnv.userData = viyaConfig.userData;
     appEnv.logonPayload = viyaConfig.logonPayload;
     appEnv.currentSource = 'none';
@@ -117,5 +133,4 @@ async function setupViya(viyaConfig) {
     }
   }
   return appEnv;
-}
-export default setupViya;
+  */

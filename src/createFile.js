@@ -16,9 +16,7 @@
 import uploadFile from "./uploadFile.js";
 async function createFile(filename, content, mimeType, gptControl) {
   const blob = new Blob([content], { type: mimeType });
-  console.log("blob", blob);
   const file = new File([blob], filename, { type: mimeType });
-  console.log("file", file);
   try {
 
     let r = await uploadFile(filename, file, content, "assistants", gptControl);

@@ -38,6 +38,7 @@
  * @property {boolean} code - if true enable code-interpreter
  * @property {boolean} retrieval - if true enable retrieval
  * @property {object} userData - user data
+ * @property {string} toolSet - which builtin toolset to use.
  */
 
 
@@ -45,19 +46,24 @@
 /**
  * api object
  * @typedef {object} assistantApi
- * @property {function} getAssistant - get assistant 
  * @property {function} listAssistants - list assistants 
+ * @property {function} getAssistant - get assistant  
  * @property {function} createAssistant - create assistant 
+ * @property {function} deleteAssistant - delete assistant
+ * @property {function} updateAssistant - update assistant
  * @property {function} listMessages - list messages 
  * @property {function} createMessage - create message 
  * @property {function} createThread - create thread 
- * @property {function} getThread - get thread 
+ * @property {function} getThread - get thread
+ * @property {function} deleteThread - delete thread 
  * @property {function} createRun - create run
  * @property {function} getRun - get run 
  * @property {function} cancelRun - cancel run 
  * @property {function} listRuns - list runs 
  * @property {function} submitToolOutputsToRun - submit tool outputs to run 
- * 
+ * @property {function} uploadFile - upload file
+ * @property {function} createAssistantFile - create assistant file
+ * @property {function} deleteFile - delete file
  */
 
 /**
@@ -78,8 +84,11 @@
  * @property {object} appEnv - Viya session control object|null
  * @property {object} client - client object for openai|azureai
  * @property {object} run  - active run object|null
- * @property {assistantApi} api - commong api object for openai and azureai. Follows azuereai api
- * @property {boolean} retrievalFlag - retrieval flag
+ * @property {assistantApi} api - maps openai api to azureai api(most of them)
+ * @property {object} code - if true, enable code interpreter
+ * @property {boolean} retrievalFlag - if true enable retrieval
+ * @property {object} userData - user data object
+ * @property {function} viyaOnDemand - viyaOnDemand function 
  */
   
 

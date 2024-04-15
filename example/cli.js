@@ -18,12 +18,14 @@ import {
   deleteAssistant,
   uploadFile,
   createFile,
+  builtinTools
 
 } from '../src/index.js';
 
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
 // setup configuration
+console.log('-------------------------' ,builtinTools);
 let config = setupConfig(process.env.OPENAI_PROVIDER);
 chat(config)
   .then((r) => console.log('done'))
@@ -155,8 +157,7 @@ function setupConfig(provider) {
       threadid: 'NEW', //process.env.OPENAI_THREADID,
       code: true,
       retrieval: true,
-      env: null,
-      useResultFile: (process.env.USERESULTFILE === 'true' ? true : false)
+      env: null
     },
     azureai: {
       provider: process.env.OPENAI_PROVIDER,
@@ -172,7 +173,6 @@ function setupConfig(provider) {
       code: true,
       retrieval: false,
       env: null,
-      useResultFile: (process.env.USERESULTFILE === 'true' ? true : false)
     },
   };
   let r = config[provider];
@@ -195,7 +195,9 @@ function setupConfig(provider) {
       logonPayload: logonPayload,
       source: process.env.APPENV_SOURCE,
     };
-    r.toolSet = 'sasic'
+    // r.toolSet = 'viya'
+    let toolset = (process.env.APPENV_TOOOLSET) ? process.env.APPENV_TOOOLSET : 'viya';
+    r.domainTools = builtinTools[toolset];
   }
   return r;
 }

@@ -6,43 +6,44 @@
  * @description - Allow functions to create a Viya session on demand(if not already created)
  * @async
  * @function viyaOnDemand
- * @param {gptControl} gptControl  - gpt control object
+ * @param {gptControl} gptControl - gptControl object
  * @param {string} source  - cas|compute
  * @returns {promise} - appEnv - return appEnv
  * @example - Allow functions to create a Viya session on demand(if not already created)
  */
 
-import restaf from "@sassoftware/restaf";
-import restaflib from "@sassoftware/restaflib";
-
-async function viyaOnDemand(gptConfig, source) {
-  let { appEnv } = gptConfig;
-
- 
+async function viyaOnDemand(gptControl, source) {
+  let appEnv = gptControl.appEnv;
+  let {restaflib} = appEnv;
   let store = appEnv.store;
   // if it is already created, return it
   let tappEnv=  {
     host: appEnv.host,
     logonPayload: appEnv.logonPayload,
     store:  appEnv.store,
-    source: source,
+    source: (source === 'sas') ? 'compute': source,
     session: null,
     servers: null,
     serverName: null,
     casServerName: null,
     sessionID: null,
-    restaf: restaf,
-    restaflib: restaflib,
-    restafedit: restafedit,
+    restaf: appEnv.restaf,
+    restaflib: appEnv.restaflib,
+    restafedit: appEnv.restafedit,
     viyaOnDemand: appEnv.viyaOnDemand
   }
+ debugger;
+  source = source.toLowerCase();
+  if (source === 'sas') {source = 'compute'};
+ 
 
-  if (appEnv.source === "none") {
+  if (['cas','compute'].includes(source) === false) {
     return tappEnv;
   }
-
-  if (appEnv[source].sessionID !== null) {
-    return setupAppEnv(appEnv, tappEnv, source);
+  debugger;
+  if (appEnv[source].sessionID != null) {
+    tappEnv = setupAppEnv(appEnv, tappEnv, source);
+    return tappEnv;
   }
 
   // source = cas
@@ -53,24 +54,26 @@ async function viyaOnDemand(gptConfig, source) {
       session: session,
       servers: servers,
       casServerName: casServerName,
+      serverName: casServerName
     };
     let ssid = await store.apiCall(session.links("self"));
     appEnv.cas.sessionID = ssid.items("id");
+
     tappEnv = setupAppEnv(appEnv, tappEnv, source);
+
     return tappEnv;
   }
 
-  // source = compute
-  if (source === "compute") {
-    let { session, servers } = await restaflib.computeSetup(store, null);
-    let serverName = session.links("execute", "link", "server");
+  // source = sas
+  if (source === 'compute') {
+    let session = await restaflib.computeSetup(store, null);
+    let sid = await store.apiCall(session.links("self"));
     appEnv.compute = {
       session: session,
-      servers: servers,
-      serverName: serverName,
+      servers: null,
+      serverName: null,
+      sessionID: sid.items("id")
     };
-    let sid = await store.apiCall(session.links("self"));
-    appEnv.compute.sessionID = sid.items("id");
     tappEnv = setupAppEnv(appEnv, tappEnv, source);
     return tappEnv;
   }

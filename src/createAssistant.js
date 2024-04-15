@@ -38,6 +38,7 @@ async function createAssistant(gptControl) {
     }
 
     // create args for assistant create
+    debugger;
     let createArgs = {
       name: assistantName,
       instructions: instructions,
@@ -76,7 +77,6 @@ async function createAssistant(gptControl) {
     // assistantid=0 means create a new assistant and new thread
     if (assistant != null) {
       //first delete the thread
-      console.log(assistant.metadata);
       if (assistant.metadata.lastThread != null && assistant.metadata.lastThread.trim().length > 0) {
         console.log('deleting thread ', assistant.metadata.lastThread);
         await assistantApi.deleteThread(assistant.metadata.lastThread);
@@ -94,6 +94,7 @@ async function createAssistant(gptControl) {
     }
     // fall thru to create a new assistant
     console.log("Creating new assistant");
+    debugger;
     assistant = await assistantApi.createAssistant(createArgs);
     console.log("Created assistant ", assistant.id, assistant.name);
     // now create a new thread
@@ -101,7 +102,6 @@ async function createAssistant(gptControl) {
     gptControl.assistantid = assistant.id;
     gptControl.threadid = 'NEW';
     let thread = await loadThread(gptControl);
-    console.log(thread);
     gptControl.thread = thread;
     let metadata = assistant.metadata;
     metadata.lastThread = thread.id;

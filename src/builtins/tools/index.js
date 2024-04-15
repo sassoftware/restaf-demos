@@ -1,3 +1,3 @@
-import viya from './viya/functionSpecs.js';
-import sasic from './sasic/functionSpecs.js';
+import viya from './viya.js';
+import sasic from './sasic.js';
 export default {viya, sasic};

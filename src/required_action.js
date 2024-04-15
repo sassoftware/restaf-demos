@@ -34,6 +34,7 @@ async function required_action(runStatus,gptControl) {
   let lastToolCallId = null;
   let functionName = null;
   let fileList = [];
+
   for (let action of requiredActions) {
     functionName = action.function.name;
     lastToolCallId = action.id;
@@ -57,7 +58,7 @@ async function required_action(runStatus,gptControl) {
     } else {
       try {
         let elapsedTime = Date.now();
-        let iresponse = await functionList[functionName](params, appEnv, gptControl);
+        let iresponse = await functionList[functionName](params, gptControl.userData, gptControl);
         let response = (iresponse._message != null) ? iresponse._message : iresponse;
         if (iresponse._file != null) {
           fileList.push({functionName: functionName, file: iresponse._file});
