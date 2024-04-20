@@ -39,7 +39,6 @@ async function _listTables(params, userData, gptControl) {
       start: 0,
     },
   };
-  console.log('++++', appEnv.restafedit.getTableList);
   let r = await appEnv.restafedit.getTableList(library, appEnv, p);
   console.log(r);
   return JSON.stringify(r, null,4);

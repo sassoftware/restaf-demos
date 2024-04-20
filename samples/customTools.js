@@ -3,7 +3,6 @@ import fss from 'fs/promises';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-import restaflib from '@sassoftware/restaflib';
 
 // this import is to get token and host for Viya - created with sas-viya auth login|loginCode
 // replace the next two lines to suit your environment
@@ -45,9 +44,9 @@ async function runSASLocalFile(params, appEnv) {
     console.log(err);
     return "Error reading program " + file;
   }
-  console.log(src);
-  console.log(store)
-  debugger;
+  // adjust based on extension
+  let source = (program.endsWith('.sas')) ? 'sas' : program.endsWith('.casl') ? 'cas' :  source;
+
   try {
     if (appEnv.source === "cas") {
       let r = await restaflib.caslRun(store, session, src, {}, true);
@@ -55,8 +54,8 @@ async function runSASLocalFile(params, appEnv) {
       return JSON.stringify(r.results);
     } else {
       let computeSummary = await computeRun(store, session, src);
-      let log = await restaflib.computeResults(store, computeSummary, "log");
-      return logAsArray(log);
+      let ods = await restaflib.computeResults(store, computeSummary, "ods");
+      return ods;
     }
   } catch (err) {
     console.log(err);

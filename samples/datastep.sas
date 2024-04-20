@@ -1,7 +1,3 @@
-data a;
-  do i = 1 to 5;
-  x=i*10;
-  output;
-  end;
-run;
-proc print; run;
+ods html style=htmlblue;
+proc print data=sashelp.cars(obs=20);
+ods html close;
