@@ -23,6 +23,7 @@ function itemsData(r,rel) {
     rx = (r.items('data') != null) ? [r.items('data').toJS()] : {warning: 'No data returned'};
     details = rx;
   }
-  return {_message: JSON.stringify(rx), _file: JSON.stringify(details)};
+  let _file = {mime: 'plain.text', name: rel, content: JSON.stringify(details)};
+  return {_message: JSON.stringify(rx), _file: _file, _details: details};
 }
 export default itemsData;

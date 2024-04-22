@@ -4,14 +4,20 @@
  */
 
 /**
- *
- * Upload a file and attach it to the assistant
+
+ * @async
+ * @private
+ * @function addFileToAssistant
+ * @description upload a file and add it to the assistant file list
+ * @param {string} filename - name of the file
  * @param {object} fileHandle - from host file system
- * @param {string}  purpose - assistants|Fine-turning
+ * @param {string} content - content of the file
+ * @param {string} purpose - assistants|Fine-turning
  * @param {gptControl} gptControl - gptControl object
- * @returns {promise} - return the final file ids from the assistant
+
+ * @returns {promise} - return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
  */
-async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
+async function addFileToAssistant(filename, fileHandle, content, purpose, gptControl) {
   let { assistantApi, assistant, provider } = gptControl;
 
   // get fileid
@@ -20,6 +26,11 @@ async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
   debugger;
   let file = null;
   try {
+    debugger;
+    console.log(assistantApi.uploadFile);
+    console.log(purpose);
+    console.log(filename);
+    console.log(provider);
     file =
       provider === "openai"
         ? await assistantApi.uploadFile(fileHandle, purpose)
@@ -29,6 +40,11 @@ async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
 
     // now add to the assistant
     console.log("uploaded file:", file.id);
+
+    /* do not attach to assistant  if purpose is null*/
+    if (purpose === null) {
+      return { fileName: filename, fileId: file.id, assistantFileId: null};
+    }
     let assistantFile = await assistantApi.createAssistantFile(
       assistant.id,
       file.id
@@ -66,4 +82,4 @@ async function uploadFile(filename, fileHandle, content, purpose, gptControl) {
     }
   }
 }
-export default uploadFile;
+export default addFileToAssistant;

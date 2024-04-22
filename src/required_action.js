@@ -34,6 +34,7 @@ async function required_action(runStatus,gptControl) {
   let lastToolCallId = null;
   let functionName = null;
   let fileList = [];
+  let raw = [];
 
   for (let action of requiredActions) {
     functionName = action.function.name;
@@ -59,9 +60,19 @@ async function required_action(runStatus,gptControl) {
       try {
         let elapsedTime = Date.now();
         let iresponse = await functionList[functionName](params, gptControl.userData, gptControl);
-        let response = (iresponse._message != null) ? iresponse._message : iresponse;
-        if (iresponse._file != null) {
-          fileList.push({functionName: functionName, file: iresponse._file});
+        // let response =  (iresponse._message != null) ? iresponse._message : iresponse;
+        let response = '';
+        if (iresponse._message == null) {
+          response = iresponse;
+          raw.push(response);
+        } else {
+          response = iresponse._message;
+          if (iresponse._details != null) {
+            raw.push(iresponse._details);
+          }
+          if (iresponse._file != null) {
+            fileList.push(iresponse._file);
+          }
         }
 
         elapsedTime = Math.round((Date.now() - elapsedTime) / 1000);
@@ -82,10 +93,13 @@ async function required_action(runStatus,gptControl) {
     }
  }  
 // submit the outputs to the thread
- 
+let fileids = [];
 if (fileList.length > 0){
   fileList.forEach(async (f) => {
-    let newFile = await createFile(f.functionName + '.txt', f.file, 'text/plain', gptControl);
+    let mime = (f.mime) ? f.mime : 'text/plain';
+    // future: f.vector information
+    let newFile = await createFile(f.name, f.content, mime,'assistants', gptControl);
+    fileids.push(newFile);
     console.log('uploading file', newFile);
   });
 }
@@ -96,8 +110,10 @@ let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsO
 
 // wait for output to appear in the thread messages
  let outputStatus = await pollRun(newRun, gptControl, 'output');
-
-return outputStatus;
+if (raw.length > 0){
+  gptControl.lastRun.push({details: raw, fileids: fileids});
+}
+return outputStatus; 
 }
 
 export default required_action;

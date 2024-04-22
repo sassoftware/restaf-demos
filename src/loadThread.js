@@ -7,58 +7,51 @@
  * @async
  * @private
  * @function loadThread
- * @description   new thread or open existing thread
+ * @description   reuse a thread or create a new thread
  * @param {gptControl} gptControl - gptControl object
  * @returns {promise} - return thread object
  */
 async function loadThread(gptControl) {
-  let {assistantApi, assistant} = gptControl;
-  let thread = null;
-  let threadid = gptControl.threadid;
-  let lastThread = assistant.metadata.lastThread;
-
-  // a little verbose so as not to get confused :-)
+  let { assistantApi, assistant, threadid } = gptControl;
 
   try {
-
-    // user has supplied a threadid, use it
-    if (!(threadid === 'REUSE' || threadid === 'NEW')) { 
-      console.log('Using threadid ', threadid);
+    // if threadid is provided, use it
+    if (threadid != null && threadid.trim().length > 0) {
       let thread = await assistantApi.getThread(threadid);
-      return thread;
-      //Q: should we recover on a 404 and create a new thread?
-    }
-   
-
-    // local rules: try to use the last used thread if the
-    // assistant has lastThread in the metadata  
-    if (threadid === 'REUSE' && lastThread != null) {
-      console.log('Attempting to use previous ', lastThread);
-      let thread = await assistantApi.getThread(lastThread);
+      await modifyAssistant(gptControl, thread);
       return thread;
     }
 
-  // fall thru  to create a new thread
+    // if lastThread is available use it
+    if ( assistant.metadata.lastThread != null &&
+      assistant.metadata.lastThread.trim().length > 0) {
+      let thread = await assistantApi.getThread(assistant.metadata.lastThread);
+      await modifyAssistant(gptControl, thread);
+      return thread;
+    }
 
-  // more local rules: if lastThread is not null delete it
-  if (lastThread != null && lastThread.trim().length > 0) {
-    console.log('Deleting last thread', lastThread);
-    await assistantApi.deleteThread(lastThread);
-  }
-
-  // create a new thread with no history
-  console.log('Creating new thread');
-  thread = await assistantApi.createThread();
-  return thread;
-
+    // if no threadid or lastThread, create a new thread
+    let thread = await assistantApi.createThread();
+    await modifyAssistant(gptControl, thread);
+    return thread;
   } catch (error) {
-    console.log(error); 
-    throw new Error(`Error status ${error.status}. Failed to create thread. See console for details.`);
+    console.log(error);
+    throw new Error(`Failed to load thread ${error}`);
   }
-  
-
-  // local rules: save the thread id in the assistant metadata
-  
-
 }
+
+async function modifyAssistant(gptControl, thread) {
+  let { assistantApi, assistant } = gptControl;
+  // persist information on thread in assistant metadata
+  let metadata = assistant.metadata;
+  metadata.lastThread = thread.id;
+  let options = {
+    metadata: metadata,
+  };
+  let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
+  gptControl.assistant = newAssistant;
+  gptControl.assistantid = newAssistant.id;
+  return newAssistant;
+}
+
 export default loadThread;

@@ -146,9 +146,10 @@ async function _catalogSearch(params, userData, gptControl) {
     };
     let r = await store.apiCall(catalog.links(rel), payload);
     console.log('r=', JSON.stringify(r.itemsList(), null,4));
-    let rx = itemsData(r, rel); 
+    let rx = itemsData(r, '_catalogSearch.txt'); 
     console.log('rx', rx);
     return rx;
+    // return rx;
   } catch (err) {
     console.log(JSON.stringify(err));
     return 'Error searching catalog';

@@ -10,9 +10,8 @@ import runAssistant from './runAssistant.js';
 import deleteAssistant from './deleteAssistant.js';
 import getLatestMessage from './getLatestMessage.js';
 import getMessages from './getMessages.js';
-import uploadFile from './uploadFile.js';
-import cancelRun from './cancelRun.js';
 import createFile from './createFile.js';
+import cancelRun from './cancelRun.js';
 import builtinTools from './builtins/tools/index.js';
 export  {
   setupAssistant,
@@ -20,8 +19,7 @@ export  {
   getLatestMessage,
   getMessages,
   deleteAssistant,
-  uploadFile,
-  cancelRun,
   createFile,
+  cancelRun,
   builtinTools
 };

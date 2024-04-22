@@ -1,5 +1,6 @@
 
 const _listLibrarySpecs = {
+  type: 'function',
   function: {
     name: '_listLibrary',
     description: 'for a source list the libraries. source can be cas or sas',

@@ -16,11 +16,11 @@ import {
   runAssistant,
   cancelRun,
   deleteAssistant,
-  uploadFile,
   createFile,
   builtinTools
 
 } from '../src/index.js';
+import tools from '../src/builtins/tools/index.js';
 
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
@@ -61,10 +61,11 @@ async function chat(config) {
           console.log(f);
           debugger;
           try {
-            let fileHandle = fs.createReadStream(f); //for openai
+            //let fileHandle = fs.createReadStream(f); //for openai
             debugger;
-            let content = fs.readFileSync(f); //for azureai
-            let r = await uploadFile(f,fileHandle, content, 'assistants', gptControl);
+            let content = fs.readFileSync(f);  
+            console.log(content);
+            let r = await createFile(f,content, 'text/plain', 'assistants', gptControl);
             console.log(r);
           }
           catch (e) {
@@ -104,6 +105,8 @@ async function chat(config) {
           */
          let r = await gptControl.assistantApi.listThreads(config.model);
          console.log(r);
+        
+    
           break;
         }
         case 'deleteAssistant': {
@@ -135,6 +138,7 @@ async function chat(config) {
             ' '
           );
           console.log(response);
+          console.log(gptControl.lastRun);
           break;
         }
       }
@@ -152,9 +156,10 @@ function setupConfig(provider) {
       credentials: {
         key: process.env.OPENAI_KEY,
       },
-      assistantid: 'NEW',
+      devMode: true,  
+      assistantid: process.env.OPENAI_ASSISTANTID,
       assistantName: process.env.OPENAI_ASSISTANTNAME,
-      threadid: 'NEW', //process.env.OPENAI_THREADID,
+      threadid: null,
       code: true,
       retrieval: true,
       env: null
@@ -166,12 +171,13 @@ function setupConfig(provider) {
         key: process.env.AZUREAI_KEY,
         endPoint: process.env.AZUREAI_ENDPOINT,
       },
-      assistantid: 'NEW',
+      devMode: true,
       assistantName: process.env.AZUREAI_ASSISTANTNAME,
-      threadid: 'NEW', // process.env.AZUREAI_THREADID,
+      assistantid: process.env.AZUREAI_ASSISTANTID,
+      threadid: process.env.AZUREAI_THREADID,
       logLevel: null,
       code: true,
-      retrieval: false,
+      retrieval: true,
       env: null,
     },
   };
@@ -196,7 +202,8 @@ function setupConfig(provider) {
       source: process.env.APPENV_SOURCE,
     };
     // r.toolSet = 'viya'
-    let toolset = (process.env.APPENV_TOOOLSET) ? process.env.APPENV_TOOOLSET : 'viya';
+    let toolset = (process.env.APPENV_TOOLSET) ? process.env.APPENV_TOOLSET : 'viya';
+    console.log(toolset);
     r.domainTools = builtinTools[toolset];
   }
   return r;

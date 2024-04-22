@@ -45,10 +45,10 @@
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@azure/openai": "^1.0.0-beta.11",
-    "@azure/openai-assistants": "^1.0.0-beta.5",
+    "@azure/openai": "^1.0.0-alpha.20240419.1",
+    "@azure/openai-assistants": "^1.0.0-alpha.20240419.1",
     "@sassoftware/restafedit": "^2.4.8",
-    "openai": "^4.26.0"
+    "openai": "^4.38.3"
   },
   "devDependencies": {
     "babel-loader": "^9.1.3",

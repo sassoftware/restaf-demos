@@ -1,10 +1,21 @@
+
 /**
- * Code logon payload
- * @typedef {object} logonPayload
- * @property {"code"|"server"} authType
- * @property {URL} host
- * @property {string} token optional
- * @property {"Bearer"} bearer optional
+ * assistantjs setup configuration
+ * @typedef {object} config
+ * @property {string} provider - provider name
+ * @property {string} model - GPT model name
+ * @property {credentials} credentials - credentials object
+ * @property {string} devMode - true|false(default false)
+ * @property {string} assistantid - assistant id(used if non-null)
+ * @property {string} assistantName - assistant name(used if assistantid is null)
+ * @property {string} threadid - thread id|null (used if non-null and devMode is false)
+
+ * @property {toolspecs} domainTools - domain tools
+ * @property {object} viyaConfig - viya config
+ * @property {string} logLevel - log level
+ * @property {boolean} code - if true enable code-interpreter
+ * @property {boolean} retrieval - if true enable retrieval
+ * @property {object} userData - user data object
  */
 
 /**
@@ -15,34 +26,35 @@
  */
 
 /**
- * tool specification
- * @typedef {object} toolspecs
- * @property {array} tools - array of tool definitions
- * @property {object} functionList - object of tool functions{a: function, b: function, ...}
- * @property {string} instructions - instructions string
- * @property {boolean} replace - replace flag(false) - append user tools to builtins
+ * logonPayload object for SAS Viya
+ * @typedef {object} logonPayload
+ * @property {string} authType - code|token
+ * @property {URL} host - host url
+ * @property {string} token - token (if authType is token)
+ * @property {string} tokenType - bearer(if authType is token)
+ * @property {string} bearer - bearer(if authType is token)
+ * 
  */
 
 /**
- * setup configurations
- * @typedef {object} config
- * @property {string} provider - provider name
- * @property {string} model - model name
- * @property {credentials} credentials - credentials object
- * @property {string} assistantid - assistant id
- * @property {string} assistantName - assistant name
- * @property {string} threadid - thread i
- * @property {toolspecs} domainTools - domain tools
- * @property {object} viyaConfig - viya config
- * @property {string} logLevel - log level
- * @property {boolean} code - if true enable code-interpreter
- * @property {boolean} retrieval - if true enable retrieval
- * @property {object} userData - user data
- * @property {string} toolSet - which builtin toolset to use.
+ * tool specification
+ * @typedef {object} toolspecs
+ * @property {array} tools - array of tool definitions
+ * @property {object} functionList - object of tool functions{a: functionA, b: functionb, ...}
+ * @property {string} instructions - instructions string
  */
 
 
- 
+
+/**
+ * viyaConfig object
+ * @typedef {object} viyaConfig
+ * @property {logonPayload} logonPayload - logon payload
+ * @property {object} additional options for restaf
+ */
+
+
+
 /**
  * api object
  * @typedef {object} assistantApi
@@ -101,7 +113,7 @@
  * @property {object} session - session object(for restaf users) if source is cas or compute
  * @property {object} servers - servers object(for restaf users) if source is cas or compute
  * @property {string} sessionID - session id if source is cas or compute
- * @property {object} restaf - restaf object if source is cas or compute
+ * @property {object} store - restaf store object
  * @property {object} restaflib - restaflib object if source is cas or compute
  * @property {object} restafedit - restafedit object if source is cas or compute
  * @property {object} serverName - compute context or cas server name

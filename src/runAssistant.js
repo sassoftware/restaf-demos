@@ -25,11 +25,11 @@ import pollRun from "./pollRun.js";
  */
 
 async function runAssistant(gptControl, prompt, instructions) {
-  gptControl.resultFile = null;
+  gptControl.lastRun = [];
   let start = Date.now();
   let r = await irunAssistant(gptControl, prompt, instructions);
   debugger;
-  console.log('>>>>>>', gptControl.resultFile);
+
 
   let elapsed = Math.round(Date.now() - start) / 1000
   console.log('Time taken to run assistant: ', elapsed, ' seconds');
@@ -95,7 +95,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
   let done = null;
   do {
     let elapsed = Date.now();
-    runStatus = await required_action(runStatus, gptControl, appEnv);
+    runStatus= await required_action(runStatus, gptControl,appEnv);
     elapsed = Math.round(Date.now() - elapsed) / 1000;
     console.log("Time taken to required action: ", elapsed, " seconds");
     if (runStatus.status === "requires_action") {

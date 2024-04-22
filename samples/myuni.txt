@@ -1,0 +1,14 @@
+Myuniverity is dedicated to providing free education to everyone
+At the current time the university provides the following courses:
+
+- math
+- science
+- astronomy
+- astrology
+- physics
+
+The following are planned:
+
+- golf
+- frisbee
+- swimming

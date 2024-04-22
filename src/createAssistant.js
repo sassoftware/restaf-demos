@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import loadThread from "./loadThread.js";
+import loadThread from './loadThread.js';
+import deleteAssistant from './deleteAssistant.js';
 
 /**
  * @async
@@ -17,43 +18,44 @@ import loadThread from "./loadThread.js";
 async function createAssistant(gptControl) {
   let {
     assistantName,
-    model,
     assistantid,
-    instructions,
-    domainTools,
+    devMode,
     assistantApi,
   } = gptControl;
 
   // get assistant by assistantid
   debugger;
-  try {
-    if (!(assistantid === "NEW" || assistantid === "REUSE")) {
-      console.log("Using assistantid ", assistantid);
-      let assistant = await assistantApi.getAssistant(assistantid);
-      gptControl.assistant = assistant;
-      gptControl.assistantid = assistant.id;
-      // gptControl.thread = assistant.metadata.lastThread;
-      gptControl.threadid  = assistant.metadata.lastThread;
-      return assistant;
-    }
 
-    // create args for assistant create
-    debugger;
-    let createArgs = {
-      name: assistantName,
-      instructions: instructions,
-      model: model,
-      tools: domainTools.tools,
-      metadata: {files:' ', lastThread: ''},
-    };
+  // use this when developing the assistant 
+  // reduces clutter on your gpt provider
+  console.log('devMode is ', devMode  );
+  if (devMode === true) {
+    gptControl.threadid = null;
+    await deleteAssistant(gptControl, null);
+    let assistant = await newAssistant(gptControl);
+    return assistant;
+  }
 
-    
-    // see if there is an assistant with the same name
-    console.log("Attempting to find assistant by name ", assistantName);
-    let assistant = null;
+  // if assistantid is provided, use it
+  if (assistantid != null) {
+    console.log('Using assistantid ', assistantid);
+    let assistant = await assistantApi.getAssistant(assistantid);
+    gptControl.assistant = assistant;
+    gptControl.assistantid = assistant.id;
+    await loadThread(gptControl);
+    return gptControl.assistant;
+  }
+  
+  // if assistantName is provided and assistantid is null
+  // find assistant by name and use it
+  // if not found, create a new assistant with that name
+
+  let assistant = null;
+  if (assistantName != null) {
+    console.log('Attempting to find assistant by name ', assistantName);
     const myAssistants = await assistantApi.listAssistants({
-      order: "desc",
-      limit: "100",
+      order: 'desc',
+      limit: '100',
     });
     assistant = myAssistants.data.find((a) => {
       if (a.name === assistantName) {
@@ -61,61 +63,50 @@ async function createAssistant(gptControl) {
       }
     });
     debugger;
-    console.log("Found assistant ", assistant);
-
-    // if we found an assistant with the same name, use it
-    // This means the thread will be resued as well
-    if (assistant != null  && assistantid === 'REUSE') {
-      console.log("Found assistant ", assistantName, assistant.id);
+    if (assistant != null) {
       gptControl.assistant = assistant;
       gptControl.assistantid = assistant.id;
-      gptControl.thread    = assistant.metadata.lastThread;
-      gptControl.threadid  = assistant.metadata.lastThread;
-      return assistant;
+      console.log('Found assistant ', assistantName, assistant.id);
+      await loadThread(gptControl);
+    } else {
+      // create a new assistant as a last resort
+      assistant = await newAssistant(gptControl);
+      gptControl.assistant = assistant;
+      gptControl.assistantid = assistant.id;
+      await loadThread(gptControl);
+      console.log('Created new assistant ', gptControl.assistant.id, gptControl.assistant.name);
     }
-    
-    // assistantid=0 means create a new assistant and new thread
-    if (assistant != null) {
-      //first delete the thread
-      if (assistant.metadata.lastThread != null && assistant.metadata.lastThread.trim().length > 0) {
-        console.log('deleting thread ', assistant.metadata.lastThread);
-        await assistantApi.deleteThread(assistant.metadata.lastThread);
-      }
-      // now delete the files associated with the assistant
-      // the metadata has the list of files that were loaded explicitly for this assistant
-      let files = (assistant.metadata.files != null) ?assistant.metadata.files.split(' ') :[];
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].trim().length === 0) continue;
-        console.log("Deleting Assistant file ", files[i])
-        let r = await assistantApi.deleteFile(files[i]);
-      }
-      console.log("Deleting old assistant ", assistantName, assistant.id);
-      await assistantApi.deleteAssistant(assistant.id);
-    }
-    // fall thru to create a new assistant
-    console.log("Creating new assistant");
-    debugger;
-    assistant = await assistantApi.createAssistant(createArgs);
-    console.log("Created assistant ", assistant.id, assistant.name);
-    // now create a new thread
-    gptControl.assistant = assistant;
-    gptControl.assistantid = assistant.id;
-    gptControl.threadid = 'NEW';
-    let thread = await loadThread(gptControl);
-    gptControl.thread = thread;
-    let metadata = assistant.metadata;
-    metadata.lastThread = thread.id;
-    let options = {
-      metadata: metadata,
-    };
-    let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
-    gptControl.assistant = newAssistant;
-    return assistant;
-  } catch (error) {
-    console.log(error);
-    throw new Error(
-      `Error status ${error.status}. Failed to create assistant. See console for details.`
-    );
+    return gptControl.assistant;
   }
+  
+}
+
+async function newAssistant(gptControl) {
+  let { assistantName, domainTools, model, assistantApi } = gptControl;
+  let createArgs = {
+    name: assistantName,
+    instructions: domainTools.instructions,
+    model: model,
+    temperature: gptControl.temperature,
+    tools: domainTools.tools,
+    metadata: {files:' ', lastThread: ''},
+  };
+    //first delete the thread
+  let assistant = await assistantApi.createAssistant(createArgs);
+  console.log('Created assistant ', assistant.id, assistant.name);
+
+  // now create a new thread
+  gptControl.assistant = assistant;
+  gptControl.assistantid = assistant.id;
+  let thread = await loadThread(gptControl);
+  gptControl.thread = thread;
+  let metadata = assistant.metadata;
+  metadata.lastThread = thread.id;
+  let options = {
+    metadata: metadata,
+  };
+  let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
+  gptControl.assistant = newAssistant;
+  return assistant;
 }
 export default createAssistant;

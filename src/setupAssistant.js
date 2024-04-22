@@ -43,13 +43,19 @@ async function setupAssistant(config) {
   if (config.domainTools.tools.length > 0) {
     toolSet = config.domainTools;
     console.log('Using user supplied tool');
+    if (config.code) {
+      toolSet.tools.push({ type: 'code_interpreter' });
+    }
+    if (config.retrieval) {
+      toolSet.tools.push({ type: 'file_search' });
+    }
   } else {
     let specs = [];
     if (config.code) {
       specs.push({ type: 'code_interpreter' });
     }
     if (config.retrieval) {
-      specs.push({ type: 'retrieval' });
+      specs.push({ type: 'file_search' });
     }
     specs = specs.concat(builtinToolSets[useTool].tools);
     toolSet = { tools: specs, functionList: builtinToolSets[useTool].functionList, instructions: builtinToolSets[useTool].instructions };
@@ -66,7 +72,7 @@ async function setupAssistant(config) {
 
   //moved this here to handle user override of all builtin tools
 
-
+  
   debugger;
   let gptControl = {
     provider: config.provider,
@@ -74,13 +80,12 @@ async function setupAssistant(config) {
     domainTools: toolSet,
     instructions: toolSet.instructions,
     temperature: (config.temperature) ? config.temperature : 0.5,
-
+    devMode: config.devMode,
     assistantName: config.assistantName,
+    assistantid: (config.assistantid == null || config.assistantid === '') ? null : config.assistantid,
     assistant: null,
-    assistantid: config.assistantid,
-
     thread: null,
-    threadid: config.threadid,
+    threadid: (config.threadid == null || config.threadid === '') ? null : config.threadid,
 
     appEnv: null,
     client: client,
