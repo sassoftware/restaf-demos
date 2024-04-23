@@ -110,7 +110,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#closeAssistant">closeAssistant</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li><li><a href="global.html#uploadFile">uploadFile</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#clearStores">clearStores</a></li><li><a href="global.html#closeAssistant">closeAssistant</a></li><li><a href="global.html#createFile">createFile</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li></ul></div>
                 
             </nav>
         </div>
@@ -151,162 +151,95 @@ azureai(based on configuration).</p>
 <p>See
 <a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-work</a>
 for clear explanation of openai Assistant.</p>
+<h2>gpt models</h2>
+<p>Models used in the development of this library</p>
+<ul>
+<li>openai: gpt-4-turbo-preview</li>
+<li>azureai: gpt-4 1106 preview in zone East US 2</li>
+</ul>
 <h2>Basic flow</h2>
 <ol>
-<li>
-<p>The library comes with capabilities to query Viya for</p>
-<ul>
-<li>libraries</li>
-<li>tables</li>
-<li>data from specific table</li>
-<li>run SAS code (prompt must include the code to execute)</li>
-</ul>
-</li>
-<li>
-<p>As a developer, you can add your own tools or replace the builtins with your tools</p>
-</li>
-<li>
-<p>Call the <em>setupAssistant</em> method with this information
-along with other configuration information.</p>
-</li>
-<li>
-<p>Submit user prompt using the <em>runAssistant</em> method</p>
+<li>Setup configuration object with information about the provider, model, credentials</li>
+<li>Create tools or use the builtin tools to satisfy user requests</li>
+<li>Call the <em>setupAssistant</em> method with this information
+along with other configuration information.</li>
+<li>Submit user prompt using the <em>runAssistant</em> method
 <ul>
 <li>The prompt might be resolved by gpt(ex: Who is CEO of SAS Institute)</li>
 <li>The prompt might request viya-assistantjs to call one of the tools to
 satisfy the request. This is where the rest api call to SAS will happen.</li>
 </ul>
 </li>
-<li>
-<p>Process this response and repeat step 4.</p>
-</li>
-<li>
-<p>Additionally you can use the <em>uploadFile</em> method
+<li>Process this response and repeat step 4.</li>
+<li>Additionally you can use the <em>uploadFile</em> method
 to upload information to the Assistant for use with the retrieval or
-code_interpreter tool</p>
-</li>
+code_interpreter tool</li>
 </ol>
-<p>See <a href="#started">these starter examples</a> below.</p>
-<h2>Introduction to azure and openai Assistant API</h2>
-<p>The Assistant API is a new API that was announced late in 2003 by openai.Visit
-<a href="https://platform.openai.com/docs/assistants/how-it-works">openai Assistants works</a>
-to get the details.</p>
-<p>With this api one can build a &quot;RAG&quot; with SAS Viya capabilities.</p>
-<p>The Assistant API is supported by both openai and azureai. However their apis are different.
-Also azureai does not support the retrieval tool yet.</p>
-<p>The Assistant API is in beta/preview. It seems to be evolving. So it is not ready for prime
-time but good enough to develop non-production Assistants.</p>
-<h3>Key features and drawbacks of Assistant</h3>
-<p><strong>Advantages</strong></p>
-<ol>
-<li>The Assistant manages the conversation thru the <em>thread</em></li>
-<li>The threads are persistent. So one can use the thread in subsequent sessions.</li>
-<li>Users can extend the Assistant with <em>custom tools</em>. The tools allow the
-Assistant to use these tools to satisfy a prompt. The custom tools can access
-information only known to the user. For Viys users this mean they can use SAS
-Viya capabilities to satisfy user queries.</li>
-<li>One can upload and attach files to the assistant. Assistant will search thru
-the files to see if a prompt can be answered by the content of these files.The &quot;retrieval&quot;
-tool has to be enabled(not available in azureai at the time of this writing).
-5.Assistant comes with a tool called 'code_interpreter' than can generate and
-execute python code</li>
-</ol>
-<p><strong>Drawbacks</strong></p>
-<p>I will list these, but one must give openai some leeway since the Assistant is
-still in beta</p>
-<ol>
-<li>The time to process a prompt is long and unpredictable.</li>
-<li>The time to process the response from the functions is long and unpredictable.</li>
-<li>The api is different between openai and azureai.</li>
-</ol>
-<p>There has been no indication from openai when the performance issue will
-be addressed.
-Maybe the streaming capabilities announced recently might help address this issue</p>
-<p><strong>Opinion:</strong></p>
-<p>The concepts behind the Assistant Api is a very good one and can help users develop
-AI Assistants with minimal effort.</p>
-<p>At this point one should start prototyping the AI Assistant in the hope that the
-performance issues will be resolved.</p>
-<h3>gpt models</h3>
-<p>The information here is a moving target. Check with the provider
-for the proper model and zone to use for Assistant API.</p>
-<p>Models I am using:</p>
-<ul>
-<li>openai: gpt-4-turbo-preview</li>
-<li>azureai: gpt-4 1106 preview in zone East US 2</li>
-</ul>
-<hr>
-<blockquote>
-<p>The goal of @sassoftware/viya-assistantjs library is to simplify the development
-of AI Assistants for Viya using either the openai or azureai implementation.</p>
-</blockquote>
-<ul>
-<li><a href="https://https://sassoftware.github.io/restaf-demos">Documentation </a></li>
-<li><a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs">Repository</a></li>
-</ul>
-<p>The library comes with a set of builtin tools to get a list of libraries, tables
-and run SAS code. .</p>
-<hr>
-<h2>Getting Started<a id="started"></a></h2>
-<ul>
-<li><a href="#default">AI Assistant with defaults</a></li>
-<li><a href="#extend">Extend Assistant to support custom tool</a></li>
-</ul>
-<p>If you are developing a react app the call sequence is the same.</p>
-<h2>Creating a AI Assistant with defaults<a name="default"></a></h2>
-<p>A version of this is <a href="https://github.com/sassoftware/restaf-demos/blob/viya-assistantjs/samples/example1.js">here</a></p>
-<h3>Step 0 - Create a nodejs project and install the following:</h3>
-<ul>
-<li>@sassoftware/viya-assistantjs</li>
-</ul>
-<p>Recommend that your set type to module in your package.json</p>
-<h3>Create your program and custom tool</h3>
-<blockquote>
-<p>In your index.js add the following imports:</p>
-</blockquote>
-<pre class="prettyprint source lang-javascript"><code>import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-</code></pre>
-<blockquote>
-<p>Create the configuration object as shown below. Substitute your own values</p>
-</blockquote>
-<pre class="prettyprint source lang-javascript"><code>let config = {
-  provider: 'openai'|'azureai', // Depending on who your account is with
-  model: 'gpt-4-turbo-review'| for azureai the model you created in the portal
-  credentials: {
-    key: &lt;your key> // obtain from provider
-    endPoint: &lt;set this to our aureai resource url if provider is azureai>
-  },
-  // leave the next 4 items as is - explained in the document
-  assistantid: 'NEW', //leave it as is for now
-  assistantName: &quot;SAS_ASSISTANT&quot;,
-  threadid: 'NEW', // Ignore this for now
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
-
-  // fill in the host and token to authenticate to Viya
-  // set the source to cas or compute. 
-  // if you want to run the AI assistant without Viya set source to none
-  viyaConfig: {
-    logonPayload: {
-      authType: 'server',
-      host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token  - obtained from sas-viya auth login|loginCode
-      tokenType: 'bearer'//  
-      },
-    source: 'cas' 
-  },
-  code: true,
-  retrieval: &lt;Must be false for azureai>
-}
-</code></pre>
-<blockquote>
-<p>Add a function to handle the prompts</p>
-</blockquote>
+<h2>Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a></h2>
+<p>See notes in the program below</p>
 <pre class="prettyprint source lang-javascript"><code>
+// Step 1: Import the necessary modules
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+import getToken from './getToken.js';
+import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
+let {host, token} = getToken();
+//getToken is defined at the end of the program below
+
+//Step 2: Define the custom tools
+
+let tools = [
+  {
+    type: 'function',
+    function: {
+      name: 'myuniversity',
+      description: 'verify the specified course is available',
+      parameters: {
+        properties: {
+          course: {
+              type: 'string',
+              description: 'the name of the course',
+            },
+          },
+          type: 'object',
+          required: ['course'],
+        },
+      },
+  },
+];
+
+async function myuniversity(params, appEnv) {
+  let { course } = params;
+  const courseList = ['math', 'science', 'english', 'history', 'art'];
+  if (courseList.includes(course)) {
+    return `${course} is available`;
+  } else {
+    return `${course} is not available`;
+  }
+}
+
+// Step 2: setup configuration, Use the tools defined above
+let config = {
+  provider: 'openai',// or 'azureai'
+  model: process.env.OPENAI_MODEL, 
+  credentials: {
+    key: process.env.OPENAI_KEY, // obtain from provider
+  },
+  assistantid: 'NEW', //create a new assistant
+  assistantName: &quot;SAS_ASSISTANT&quot;,
+
+  threadid: 'NEW',
+  domainTools:  {tools: tools, functionList: {myuniversity}, instructions: 'Assistant for myUniverity'},
+  viyaConfig: {
+    logonPayload: null
+  },
+  userData: {}
+}
+
+// run a chat session
 chat(config)
-  .then (() => console.log('bye'))
-  .catch(err => console.log(err));
+  .then((r) => console.log('done'))
+  .catch((err) => console.log(err));
 
 async function chat(config) {
   //Setup assistant
@@ -328,106 +261,189 @@ async function chat(config) {
     try {
       // run prompt
       let response = await runAssistant(gptControl, prompt,promptInstructions);
-      console.log(response);
+      console.log(response[0].content);
     } catch (err) {
       console.log(err);
     }
   }
 }
-</code></pre>
-<h2>Run the program</h2>
-<pre class="prettyprint source lang-cmd"><code>node index.js
+
+## Run the program
+
+```cmd
+node index.js
 </code></pre>
 <p>If everthing was setup properly, your should get a prompt(&gt;). Enter your prompts
 and get results.</p>
-<h3>A note on prompts</h3>
-<p>Here are some prompts to try:(enter exit to stop the chat)</p>
-<p>add 1 + 1</p>
-<p>who is the CEO of SAS Institute?</p>
-<blockquote>
-<p>Warning: The actual api calls to Viya is quick, but the<br>
-total response time from azure or openai might be much longer.</p>
-</blockquote>
-<p>list lib</p>
-<p>list the tables in public</p>
-<p>fetch data from cars. Limit the rows to 10</p>
-<blockquote>
-<p>A fun prompt - try it
-Fetch data from cars where origin='Japan'</p>
-</blockquote>
-<h2>Extend Assistant with custom tools<a name="extend"></a></h2>
-<p>In this section we will extend the tools with a custom tool.
-This tool maintains a list of courses.</p>
-<p>To do this we have to fill in the domainTools in the configuration.</p>
-<h3>Step 1: Define the customTool</h3>
-<p><strong>Key points</strong></p>
-<ol>
-<li>
-<p>Give the tool a name. This will also be the name of the function
-that implements the tool.</p>
-</li>
-<li>
-<p>The description is important - This is what helps gpt decide
-whether this tool can satisfy the request</p>
-</li>
-<li>
-<p>The parameters are what system will extract from the prompt
-and send it to your function as a params object. In this example the
-value of the program will be extracted.</p>
-</li>
-</ol>
-<pre class="prettyprint source lang-javascript"><code>let tools = [
+<h3>Sample prompts for Example1</h3>
+<p>Prompt: can I take a math course?
+Response: Yes, you can take the Math course at myUniversity as it is available.</p>
+<p>Prompt: can I take courses on Dune?
+Response: The course in &quot;Dune&quot; is not available at the university.</p>
+<p>Prompt: can I take course in math, physics and chemistry?
+Response: Here are the availability statuses for the courses you inquired about:</p>
+<ul>
+<li>Math: Available</li>
+<li>Physics: Not available</li>
+<li>Chemistry: Not available</li>
+</ul>
+<hr>
+<h2>Creating a AI Assistant with a Viya-based tool<a name="extend"></a></h2>
+<p>This example has a tool to list tables in a given caslib or libref. Clearly one
+would not use AI Assistant for this purpose. However this example demonstrates how to
+include &quot;corporate&quot; or &quot;private&quot; information to resolve the prompt.</p>
+<p>This example uses @sassoftware/restafedit to make the API calls. You can
+use other ways to call Viya and get responses.</p>
+<pre class="prettyprint source lang-javascript"><code>// Step 1: Import the necessary modules
+import * as readline from &quot;node:readline/promises&quot;;
+import { stdin as input, stdout as output } from &quot;node:process&quot;;
+import getToken from &quot;./getToken.js&quot;;
+import { setupAssistant, runAssistant } from &quot;@sassoftware/viya-assistantjs&quot;;
+let { host, token } = getToken();
+
+//Step 2: Define the custom tools
+
+const tools = [
   {
-    type: 'function',
+    type: &quot;function&quot;,
     function: {
-      name: 'myuniversity',
-      description: 'verify the specified course is available',
+      name: &quot;listTables&quot;,
+      description: `for a given library for  either sas or cas source, get the list of available tables.
+      (ex: list tables in cas library samples, list tables in sas library sashelp)
+      Optionally let user specify the source as cas or compute.`,
       parameters: {
         properties: {
-          course: {
-              type: 'string',
-              description: 'the name of the course',
-            },
+          library: {
+            type: &quot;string&quot;,
+            description: &quot;A SAS library like casuser, sashelp, samples&quot;,
           },
-          type: 'object',
-          required: ['course'],
+          start: {
+            type: &quot;integer&quot;,
+            description: &quot;Start at lookup at this index. Default is 0.&quot;,
+          },
+          limit: {
+            type: &quot;integer&quot;,
+            description:
+              &quot;Return only this many tables. If not specified, then return 10 tables.&quot;,
+          },
+          source: {
+            type: &quot;string&quot;,
+            description: &quot;The source of the data. cas or compute&quot;,
+            enum: [&quot;cas&quot;, &quot;compute&quot;],
+          },
         },
+        type: &quot;object&quot;,
+        required: [&quot;library&quot;],
       },
+    },
   },
 ];
-</code></pre>
-<h3>Step 2: Create the function to handle the request</h3>
-<pre class="prettyprint source lang-javascript"><code>// You need to add this import to the program
+async function listTables(params, userData, gptControl) {
+  let { library, source, start, limit } = params;
+  // get session information
+  let appEnv = await gptControl.viyaOnDemand(gptControl, source);
+  let p = {
+    qs: {
+      limit: limit == null ? 10 : limit,
+      start: start == null ? 0 : start,
+    },
+  };
 
-async function myuniversity(params, appEnv) {
-  let { course } = params;
-  const courseList = ['math', 'science', 'english', 'history', 'art'];
-  if (courseList.includes(course)) {
-    return `${course} is available`;
-  } else {
-    return `${course} is not available`;
+  // get the list of libs for the selected source
+  let r = await appEnv.restafedit.getTableList(library, appEnv, p);
+  return JSON.stringify(r);
+}
+// Step 2: setup configuration
+let config = {
+  provider: &quot;openai&quot;, // or 'azureai'
+  model: process.env.OPENAI_MODEL,
+  credentials: {
+    key: process.env.OPENAI_KEY, // obtain from provider
+  },
+  assistantid: &quot;NEW&quot;, //create a new assistant
+  assistantName: &quot;SAS_ASSISTANT&quot;,
+
+  threadid: &quot;NEW&quot;, //create a new thread
+  domainTools: {
+    tools: tools,
+    functionList: { listTables },
+    instructions: &quot;Assistant for myUniverity&quot;,
+  },
+  viyaConfig: {
+    logonPayload: {
+      authType: &quot;server&quot;,
+      host: host,
+      token: token,
+      tokenType: &quot;bearer&quot;,
+    },
+  },
+  userData: {},
+};
+
+// run a chat session
+chat(config)
+  .then((r) => console.log(&quot;done&quot;))
+  .catch((err) => console.log(err));
+
+async function chat(config) {
+  //Setup assistant
+  let gptControl = await setupAssistant(config);
+
+  // create readline interface and chat with user
+  const rl = readline.createInterface({ input, output });
+
+  // process user input in a loop
+  while (true) {
+    let prompt = await rl.question(&quot;>&quot;);
+    // exit session
+    if (prompt.toLowerCase() === &quot;exit&quot; || prompt.toLowerCase() === &quot;quit&quot;) {
+      rl.close();
+      break;
+    }
+    // let assistant process the prompt
+    let promptInstructions = &quot; &quot;;
+    try {
+      // run prompt
+      let response = await runAssistant(gptControl, prompt, promptInstructions);
+      console.log(response[0].content);
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
+  
 </code></pre>
-<h3>Step 3: Create the domainTool object in configuration</h3>
-<pre class="prettyprint source lang-javascript"><code>// add the definitions to te config
-config.domainTools = {
-  tools: tools,
-  functionList: { myuniversity: myuniversity },
-  instructions: instructions,
-  replace: false,
-};
-</code></pre>
-<h3>Step 4</h3>
-<p>Run the program as you did befoee</p>
-<h3>Prompts</h3>
-<blockquote>
-<p>Here is a sample prompt</p>
-</blockquote>
-<pre class="prettyprint source lang-text"><code>can I take a math course?
-
-can I take a course on Dune?
-</code></pre></article>
+<h2>Sample prompts and responses</h2>
+<p>Prompt: list sas tables in sashelp
+Response: Here are the tables available in the SAS library named &quot;sashelp&quot;:</p>
+<ol>
+<li><code>AACOMP</code></li>
+<li><code>AARFM</code></li>
+<li><code>ADSMSG</code></li>
+<li><code>AFMSG</code></li>
+<li><code>AIR</code></li>
+<li><code>AIRLINE</code></li>
+<li><code>AIRSHIFT</code></li>
+<li><code>AMLMSG</code></li>
+<li><code>APPLIANC</code></li>
+<li><code>ARSTOP</code></li>
+</ol>
+<p>Please let me know if you need details on any of these tables or if there's anything else I can assist you with.</p>
+<p>Prompt: list tables in cas library Public
+Response:Here are the tables available in the CAS library named &quot;Public&quot;:</p>
+<ol>
+<li><code>CARS</code></li>
+<li><code>STUDENTS_TRAIN</code></li>
+<li><code>HEART_DISEASE</code></li>
+<li><code>BREASTSDG</code></li>
+<li><code>ADULT_TRAIN</code></li>
+<li><code>ADULT_TEST</code></li>
+<li><code>CMS_OPIOID_SDOH</code></li>
+<li><code>BANKING</code></li>
+<li><code>STUDENTS_TEST</code></li>
+<li><code>BIKE_SHARING_DEMAND</code></li>
+</ol>
+<p>Please let me know if you need information on any of these tables or if there's anything else I can assist you with.</p></article>
     </section>
 
 

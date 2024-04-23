@@ -20,7 +20,6 @@ import builtinToolSets from "./builtins/tools/index.js";
  * @description   Setup the assistant
  * @param {config} config - configuration object
  * @returns {promise} - return gptControl object}
- * @example
  *
  */
 
