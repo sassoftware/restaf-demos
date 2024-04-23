@@ -13,6 +13,7 @@ import getMessages from './getMessages.js';
 import createFile from './createFile.js';
 import cancelRun from './cancelRun.js';
 import builtinTools from './builtins/tools/index.js';
+import clearStores from './clearStores.js';
 export  {
   setupAssistant,
   runAssistant,
@@ -21,5 +22,6 @@ export  {
   deleteAssistant,
   createFile,
   cancelRun,
+  clearStores,
   builtinTools
 };

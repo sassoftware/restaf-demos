@@ -28,7 +28,7 @@ async function runAssistant(gptControl, prompt, instructions) {
   gptControl.lastRun = [];
   let start = Date.now();
   let r = await irunAssistant(gptControl, prompt, instructions);
-  debugger;
+  
 
 
   let elapsed = Math.round(Date.now() - start) / 1000
@@ -74,11 +74,11 @@ async function runPrompt(gptControl, appEnv, instructions) {
     temperature: gptControl.temperature
   };
   // Run the assistant with the prompt and poll for completion
-  debugger;
+  
   let run = await assistantApi.createRun(thread.id, runArgs);
   gptControl.run = run;
   let runStatus = await pollRun(run, gptControl);
-  debugger;
+  
   //check for completion status
   let message;
   if (runStatus.status === "completed") {

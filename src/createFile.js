@@ -18,10 +18,10 @@ import addFileToAssistant from "./addFileToAssistant.js";
 async function createFile(filename, content, mimeType,purpose, gptControl) {
   const blob = new Blob([content], { type: mimeType });
   const file = new File([blob], filename, { type: mimeType });
-  debugger;
+  
   console.log(blob);
   try {
-    debugger;
+    
     let r = await addFileToAssistant(filename, file, content, purpose, gptControl);
     return r;
   } catch (err) {

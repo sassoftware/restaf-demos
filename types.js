@@ -5,16 +5,17 @@
  * @property {string} provider - provider name
  * @property {string} model - GPT model name
  * @property {credentials} credentials - credentials object
+ * @property {string} temperature - temperature for GPT model
  * @property {string} devMode - true|false(default false)
  * @property {string} assistantid - assistant id(used if non-null)
  * @property {string} assistantName - assistant name(used if assistantid is null)
  * @property {string} threadid - thread id|null (used if non-null and devMode is false)
-
+ * @property {string} vectorStoreId - vector store id|null
  * @property {toolspecs} domainTools - domain tools
  * @property {object} viyaConfig - viya config
  * @property {string} logLevel - log level
  * @property {boolean} code - if true enable code-interpreter
- * @property {boolean} retrieval - if true enable retrieval
+ * @property {boolean} retrieval - if true enable retrieval(now called file_search)
  * @property {object} userData - user data object
  */
 
@@ -49,7 +50,7 @@
 /**
  * viyaConfig object
  * @typedef {object} viyaConfig
- * @property {logonPayload} logonPayload - logon payload
+ * @property {logonPayload} logonPayload - logon payload |null if not using Viya
  * @property {object} additional options for restaf
  */
 
@@ -89,6 +90,7 @@
  * @property {string} assistantName - assistant name
  * @property {object} assistant - current assistant object|null
  * @property {string} assistantid - assistant id|'0'|null
+ * @property {string} vectorStoreId - vector store id|null
  
  * @property {object} thread - thread object|null
  * @property {string} threadid - thread id|'0'|null
@@ -98,9 +100,10 @@
  * @property {object} run  - active run object|null
  * @property {assistantApi} api - maps openai api to azureai api(most of them)
  * @property {object} code - if true, enable code interpreter
- * @property {boolean} retrievalFlag - if true enable retrieval
+ * @property {boolean} retrieval - if true enable retrieval(now called file_search in openai)
  * @property {object} userData - user data object
  * @property {function} viyaOnDemand - viyaOnDemand function 
+ * @property {function} uploadFile - uploadFile function(in openai writes to vector store)
  */
   
 

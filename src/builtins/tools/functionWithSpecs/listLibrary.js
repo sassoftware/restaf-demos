@@ -29,7 +29,7 @@ const _listLibrarySpecs = {
 async function _listLibrary(params, userData, gptControl) {
   let { limit, source, start } = params;
   
-  debugger;
+  
   let payload = {
     qs: {
       limit: limit == null ? 10 : limit,
@@ -40,13 +40,14 @@ async function _listLibrary(params, userData, gptControl) {
     source = 'sas';
   }
   let s = source.toLowerCase();
-  let tAppEnv = await gptControl.viyaOnDemand(gptControl, s); 
+  let tAppEnv = await gptControl.viyaOnDemand(gptControl, s);
+  console.log('tAppEnv', tAppEnv.sessionID); 
   if (tAppEnv === null) {
     let list = [];
     return JSON.stringify(list);
   }
   console.log('tAppEnv', tAppEnv.sessionID);
-  debugger;
+  
   let r = await tAppEnv.restafedit.getLibraryList(tAppEnv, payload);
   console.log(r);
   let items = {cas: r};

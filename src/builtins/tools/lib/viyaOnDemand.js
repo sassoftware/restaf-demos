@@ -32,7 +32,7 @@ async function viyaOnDemand(gptControl, source) {
     restafedit: appEnv.restafedit,
     viyaOnDemand: appEnv.viyaOnDemand
   }
- debugger;
+ 
   source = source.toLowerCase();
   if (source === 'sas') {source = 'compute'};
  
@@ -40,7 +40,7 @@ async function viyaOnDemand(gptControl, source) {
   if (['cas','compute'].includes(source) === false) {
     return tappEnv;
   }
-  debugger;
+  
   if (appEnv[source].sessionID != null) {
     tappEnv = setupAppEnv(appEnv, tappEnv, source);
     return tappEnv;

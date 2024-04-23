@@ -101,6 +101,7 @@ function apiMapper(client, provider) {
     }
     return client.beta.threads.runs.create(threadid, newOptions);
   }
+  
   const getRun = (client) => (...args) =>{
    let [threadid, runid] = args;
     return client.beta.threads.runs.retrieve(threadid, runid)
@@ -131,12 +132,12 @@ function apiMapper(client, provider) {
 
   const uploadFile = (client) => (...args) =>{
     let [fileHandle, purpose] = args;
-    debugger;
+    
     let options = {
       file: fileHandle,
       purpose: purpose
     }
-    debugger;
+    
     return client.files.create(options);
 
   }
@@ -151,6 +152,29 @@ function apiMapper(client, provider) {
     let [id] = args;
     return client.files.del(id);
   }
+  
+  const createVectorStores = (client) => async (...args) =>{
+    let [name] = args;
+    console.log(name);
+    let r = await client.beta.vectorStores.create(name);
+    return r;
+  }
+  
+  const createVectorStoresFiles =(client) => async (...args) =>{
+    let [vsid,fileid] = args;
+    console.log(vsid, fileid);
+    let r = await client.beta.vectorStores.files.create(vsid, fileid);
+    return r;
+  }
+  const deleteVectorStore= (client) => async (...args) =>{
+    let [id] = args;
+    return client.beta.vectorStores.del(id);
+  }
+  const listVectorStores = (client) => (...args) =>{
+    let [options] = args;
+    return client.beta.vectorStores.list(options)
+  }
+
   let assistantApi = client;
   if (provider === 'openai') {
     assistantApi = {
@@ -168,9 +192,14 @@ function apiMapper(client, provider) {
       createMessage: createMessage(client),
       listMessages: listMessages(client),
      
+      createVectorStores: createVectorStores(client),
+      createVectorStoresFiles: createVectorStoresFiles(client),
+      deleteVectorStore: deleteVectorStore(client),
+
       uploadFile: uploadFile(client),
       createAssistantFile: createAssistantFile(client),
       deleteFile: deleteFile(client),
+      listVectorStores: listVectorStores(client),
       
       createRun: createRun(client),
       getRun: getRun(client),

@@ -24,40 +24,14 @@ const _readSASTableFunctionSpec = {
   }
 }
 
-const _readCASTableFunctionSpec = {
-  type: 'function',
-  function: {
-    name: '_readCASTables',
-    description: 'Read the specified CAS Table. table is specified as library.name',
-    parameters: {
-      properties: {
-        table: {
-          type: 'string',
-          description: 'A comma-separated list of keywords like a,b,c',
-        }
-      },
-      type: 'object',
-      required: ['table']
-    }
-  }
-}
-
 async function _readSASTable(params, userData, gptControl) {
   let tappEnv = await gptControl.viyaOnDemand(gptControl, params.source);
-  console.log('tappEnv', tappEnv.sessionID);
   params.source = tappEnv.source;
   let r = await _idescribeTable(params, tappEnv, gptControl);
-  console.log(r.data);
-  return r.data;
-}
-async function _readCASTable(params, userData, gptControl) {
-  params.source = 'compute';
-  let tappEnv = await gptControl.viyaOnDemand(gptControl, 'cas');
-  let r = _idescribeTable(params, tappEnv, gptControl);
   return r.data;
 }
 
-async function _idescribeTable(params, appEnv) {
+async function _idescribeTable(params, appEnv, gptControl) {
   //TBD: need to move most of this code to restafedit
   let { table, limit, format, source, where, csv } = params;
   let { sessionID, restafedit } = appEnv;
@@ -68,7 +42,7 @@ async function _idescribeTable(params, appEnv) {
     return 'Table must be specified in the form casuser.cars or sashelp.cars';
   }
   // setup call to restafedit.setup
-  debugger;
+  
   let appControl = {
     source: source,
     table: iTable,
@@ -94,12 +68,13 @@ async function _idescribeTable(params, appEnv) {
   try {
     await restafedit.scrollTable('first', tappEnv);
     let tableSummary = await restafedit.getTableSummary(tappEnv);
-
+    //let dataAsCsv = rows2csv(tappEnv.state.data);
+    let f = await gptControl.uploadFile(`${table}.json`,JSON.stringify(tappEnv.state.data), 'text/json', 'assistants');
     describe = {
       table: iTable,
       tableSummary: tableSummary,
       columns: tappEnv.state.columns,
-      data: csv === false ? JSON.stringify(tappEnv.state.data) : rows2csv(tappEnv.state.data),
+      data: csv === false ? JSON.stringify(tappEnv.state.data) : dataAsCsv,
     };
   } catch (err) {
     console.log(err);

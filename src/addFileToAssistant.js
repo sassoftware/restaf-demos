@@ -23,14 +23,10 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
   // get fileid
 
   // really strange args for azure - not sure why they(both) coded it like this
-  debugger;
+  
   let file = null;
   try {
-    debugger;
-    console.log(assistantApi.uploadFile);
-    console.log(purpose);
-    console.log(filename);
-    console.log(provider);
+    
     file =
       provider === "openai"
         ? await assistantApi.uploadFile(fileHandle, purpose)
@@ -45,27 +41,43 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
     if (purpose === null) {
       return { fileName: filename, fileId: file.id, assistantFileId: null};
     }
-    let assistantFile = await assistantApi.createAssistantFile(
-      assistant.id,
-      file.id
-    );
-    console.log("Assistant File ", assistantFile.id);
-    await setFileIds(gptControl, assistantFile);
-    return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
+    let assistantFile = null;
+    if (provider === "azureai") {
+      assistantFile = await assistantApi.createAssistantFile(
+        assistant.id,
+        file.id
+      );
+      console.log("Assistant File ", assistantFile.id);
+      await setFileIds(gptControl, assistantFile);
+      return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
+
+    } else {
+      let vsFile = await assistantApi.createVectorStoresFiles(
+        gptControl.vectorStoreId,
+        {file_id: file.id}
+      );
+      console.log("VectorStore File ", vsFile.id);
+      return { fileName: filename, fileId: file.id, vectorStoreFileId: vsFile.id};
+
+      }
+  
   } catch (e) {
     console.log(e);
     throw new Error(`Failed to upload file ${filename}`);
   }
   async function setFileIds(gptControl, file) {
-    debugger;
+    
     let { assistantApi, assistant, provider } = gptControl;
     let currentFileIds =
       provider === "openai" ? assistant.file_ids : assistant.fileIds;
-    currentFileIds.push(file.id);
     // looks like it is possible to create a file with null file id
-    currentFileIds = currentFileIds.filter((v) => v != null)
+    if (currentFileIds != null) {
+      currentFileIds = currentFileIds.filter((v) => v != null)
+    } else {
+      currentFileIds = '';
+    }
     let options = {
-      fileIds: currentFileIds,
+      currentFileIds: currentFileIds,
     };
 
     let metadata = assistant.metadata;

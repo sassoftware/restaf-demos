@@ -41,7 +41,7 @@ async function _catalogSearch(params, appEnv, gptControl) {
   let { metadata,start, limit, rel } = params;
   limit =(limit) ? limit : 10;
   start =(start) ? start : 0;
-  debugger;
+  
   if (rel == null) {
     rel = 'search';
   }
@@ -95,7 +95,7 @@ async function _listSASObjects(params, appEnv) {
 async function _listSASDataLib(params, appEnv) {
   let { limit, source, start } = params;
   let {restafedit} = appEnv;   
-  debugger;
+  
   let payload = {
     qs: {
       limit: limit == null ? 10 : limit,
@@ -226,7 +226,7 @@ async function _idescribeTable(params, appEnv) {
     return 'Table must be specified in the form casuser.cars or sashelp.cars';
   }
   // setup call to restafedit.setup
-  debugger;
+  
   let appControl = {
     source: source,
     table: iTable,

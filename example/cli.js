@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import fs from 'fs';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import 'dotenv/config';
-import getToken from './lib/getToken.js';
-import formatInstructions from './formatInstructions.js';
+import fs from "fs";
+import * as readline from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
+// import 'dotenv/config';
+import getToken from "./lib/getToken.js";
+import formatInstructions from "./formatInstructions.js";
 
 import {
   setupAssistant,
@@ -17,45 +17,46 @@ import {
   cancelRun,
   deleteAssistant,
   createFile,
-  builtinTools
+  builtinTools,
+  clearStores,
+} from "../src/index.js";
 
-} from '../src/index.js';
-import tools from '../src/builtins/tools/index.js';
 
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
 // setup configuration
-console.log('-------------------------' ,builtinTools);
 let config = setupConfig(process.env.OPENAI_PROVIDER);
 chat(config)
-  .then((r) => console.log('done'))
+  .then((r) => console.log("done"))
   .catch((err) => console.log(err));
 
 async function chat(config) {
   let gptControl = await setupAssistant(config);
- 
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
   while (true) {
-    let prompt = await rl.question('>');
+    let prompt = await rl.question(">");
     // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
+    if (prompt.toLowerCase() === "exit" || prompt.toLowerCase() === "quit") {
       rl.close();
       break;
     }
-    prompt = prompt.replace( /\r?\n/g, '' );
-    let cmda = prompt.toLocaleLowerCase().split(' ');
+    prompt = prompt.replace(/\r?\n/g, "");
+    let cmda = prompt.toLocaleLowerCase().split(" ");
     let cmd = cmda[0].trim();
-    if (cmd === 'delete' && cmda[1] === 'assistant') {
-      cmd = 'deleteAssistant'; // delete assistant
+    if (cmd === "delete" && cmda[1] === "assistant") {
+      cmd = "deleteAssistant"; // delete assistant
     }
-    if (cmd === 'create' && cmda[1] === 'assistant') {
-      cmd = 'createAssistant'; // create assistant
+    if (cmd === "create" && cmda[1] === "assistant") {
+      cmd = "createAssistant"; // create assistant
+    }
+    if (cmd === "clear" && cmda[1] === "stores") {
+      cmd = "clearStores"; // clear stores
     }
     try {
       switch (cmd) {
-        case 'upload': {
+        case "upload": {
           // upload file and attach to assistant
           let f = cmda[1].trim();
           console.log(f);
@@ -63,33 +64,38 @@ async function chat(config) {
           try {
             //let fileHandle = fs.createReadStream(f); //for openai
             debugger;
-            let content = fs.readFileSync(f);  
+            let content = fs.readFileSync(f);
             console.log(content);
-            let r = await createFile(f,content, 'text/plain', 'assistants', gptControl);
+            let r = await createFile(
+              f,
+              content,
+              "text/plain",
+              "assistants",
+              gptControl
+            );
             console.log(r);
-          }
-          catch (e) {
+          } catch (e) {
             console.log(e);
-          } 
+          }
           break;
         }
-        case 'makefile': {
+        case "makefile": {
           let filename = cmda[1].trim();
           let content = cmda[2].trim();
-          let mimeType = 'text/plain';
+          let mimeType = "text/plain";
           let r = await createFile(filename, content, mimeType, gptControl);
           console.log(r);
           break;
         }
 
-        case 'cancel': {
+        case "cancel": {
           //cancel current run
-          let a = prompt.split(' ');
+          let a = prompt.split(" ");
           let r = await cancelRun(gptControl, a[1], a[2]);
           console.log(r);
           break;
         }
-        case 'tlist':{
+        case "tlist": {
           /*
           let {store} = gptControl;
           let payload = {
@@ -103,42 +109,42 @@ async function chat(config) {
           let r = await store.request(payload);
           console.log(r);
           */
-         let r = await gptControl.assistantApi.listThreads(config.model);
-         console.log(r);
-        
-    
+          let r = await gptControl.assistantApi.listThreads(config.model);
+          console.log(r);
+
           break;
         }
-        case 'deleteAssistant': {
+        case "deleteAssistant": {
           //cancel current run
           let r = await deleteAssistant(gptControl, null);
           console.log(r);
           break;
         }
-        case 'in': {
+        case "clearStores": {
+          let r = await clearStores(gptControl);
+          console.log(r);
+          break;
+        }
+        case "in": {
           console.log(gptControl.assistant.instructions);
           break;
         }
-        case 'showast': {
+        case "showast": {
           console.log(gptControl.assistant);
           break;
         }
-        case 'createAssistant': {
+        case "createAssistant": {
           //cancel current run
           gptControl = await setupAssistant(config);
           break;
         }
         default: {
           //Note process.env is passed to runAssistant
-          // run assistant will pass both gtpControl and process.env to tools functions
-          let promptInstructions =' '; // 'some instructions
-          let response = await runAssistant(
-            gptControl,
-            prompt,
-            ' '
-          );
-          console.log(response);
-          console.log(gptControl.lastRun);
+          // run assistant will pass both gptControl and process.env to tools functions
+          let promptInstructions = " "; // 'some instructions
+          let response = await runAssistant(gptControl, prompt, " ");
+          console.log(response[0].content);
+      
           break;
         }
       }
@@ -148,63 +154,57 @@ async function chat(config) {
   }
 }
 
-function setupConfig(provider) {
+function setupConfig() {
   let config = {
-    openai: {
-      provider: process.env.OPENAI_PROVIDER,
-      model: process.env.OPENAI_MODEL,
-      credentials: {
-        key: process.env.OPENAI_KEY,
-      },
-      devMode: true,  
-      assistantid: process.env.OPENAI_ASSISTANTID,
-      assistantName: process.env.OPENAI_ASSISTANTNAME,
-      threadid: null,
-      code: true,
-      retrieval: true,
-      env: null
+    provider: process.env.APPENV_PROVIDER,
+    model: process.env.APPENV_MODEL,
+    credentials: {
+      key: process.env.APPENV_KEY,
+      endPoint: process.env.APPENV_ENDPOINT,
     },
-    azureai: {
-      provider: process.env.OPENAI_PROVIDER,
-      model: process.env.AZUREAI_MODEL,
-      credentials: {
-        key: process.env.AZUREAI_KEY,
-        endPoint: process.env.AZUREAI_ENDPOINT,
-      },
-      devMode: true,
-      assistantName: process.env.AZUREAI_ASSISTANTNAME,
-      assistantid: process.env.AZUREAI_ASSISTANTID,
-      threadid: process.env.AZUREAI_THREADID,
-      logLevel: null,
-      code: true,
-      retrieval: true,
-      env: null,
-    },
+    devMode: process.env.APPENV_DEVMODE === "TRUE",
+    assistantid:
+      process.env.APPENV_ASSISTANTID.trim().length === 0
+        ? null
+        : process.env.APPENV_ASSISTANTID,
+    assistantName: process.env.APPENV_ASSISTANTNAME,
+    threadid:
+      process.env.APPENV_THREADID.trim().length === 0
+        ? null
+        : process.env.APPENV_THREADID,
+    code: process.env.APPENV_CODE === "TRUE" ? true : false,
+    retrieval: process.env.APPENV_RETRIEVAL === "TRUE" ? true : false,
+    userData: {},
   };
-  let r = config[provider];
-  r.domainTools = {
+  console.log(config);
+  config.domainTools = {
     tools: [],
     functionList: {},
-    instructions: '',
+    instructions: "",
     replace: false,
   };
-  r.viyaConfig = null;
-  if (process.env.APPENV_SOURCE != null) {
+  config.viyaConfig = {};
+  let logonPayload = null;
+
+  if (process.env.APPENV_VIYA === "TRUE") {
     let { token, host } = getToken();
-    let logonPayload = {
-      authType: 'server',
+    logonPayload = {
+      authType: "server",
       host: host,
       token: token,
-      tokenType: 'bearer',
+      tokenType: "bearer",
     };
-    r.viyaConfig = {
-      logonPayload: logonPayload,
-      source: process.env.APPENV_SOURCE,
-    };
-    // r.toolSet = 'viya'
-    let toolset = (process.env.APPENV_TOOLSET) ? process.env.APPENV_TOOLSET : 'viya';
-    console.log(toolset);
-    r.domainTools = builtinTools[toolset];
   }
-  return r;
+  config.viyaConfig = {
+    logonPayload: logonPayload,
+    options: {},
+  };
+
+  // r.toolSet = 'viya'
+  let toolset = process.env.APPENV_TOOLSET
+    ? process.env.APPENV_TOOLSET
+    : "viya";
+  console.log(toolset);
+  config.domainTools = builtinTools[toolset];
+  return config;
 }
