@@ -68,7 +68,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
   let { assistantApi, thread } = gptControl;
 
   let runArgs = {
-    assistantId: gptControl.assistant.id,
+    assistantid: gptControl.assistant.id,
     instructions: instructions,
     tools: gptControl.assistant.tools,
     temperature: gptControl.temperature

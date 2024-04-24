@@ -146,8 +146,8 @@
     <section>
         <article><h1>@sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya</h1>
 <p>@sassoftware/viya-assistantjs is a light weight JavaScript library to help SAS
-users build AI Assistants with minimal coding. It uses the Assistant from openai and
-azureai(based on configuration).</p>
+users build AI Assistants with minimal coding. It supports the Assistant
+from openai and Azure</p>
 <p>See
 <a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-work</a>
 for clear explanation of openai Assistant.</p>
@@ -173,7 +173,11 @@ satisfy the request. This is where the rest api call to SAS will happen.</li>
 <li>Process this response and repeat step 4.</li>
 <li>Additionally you can use the <em>uploadFile</em> method
 to upload information to the Assistant for use with the retrieval or
-code_interpreter tool</li>
+code_interpreter tool.
+<ul>
+<li>The file uploaded in openai will be added to a vector store</li>
+</ul>
+</li>
 </ol>
 <h2>Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a></h2>
 <p>See notes in the program below</p>
@@ -186,7 +190,8 @@ import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 let {host, token} = getToken();
 //getToken is defined at the end of the program below
 
-//Step 2: Define the custom tools
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>//Step 2: Define the custom tools
 
 let tools = [
   {
@@ -217,18 +222,19 @@ async function myuniversity(params, appEnv) {
     return `${course} is not available`;
   }
 }
-
-// Step 2: setup configuration, Use the tools defined above
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>// Step 3: setup configuration, Use the tools defined above
 let config = {
-  provider: 'openai',// or 'azureai'
+  devMode: true,
+  provider: 'openai',
   model: process.env.OPENAI_MODEL, 
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider
   },
-  assistantid: 'NEW', //create a new assistant
+  assistantid: null //create a new assistant
   assistantName: &quot;SAS_ASSISTANT&quot;,
-
-  threadid: 'NEW',
+  threadid: null,
+  vectorStoreid: null,
   domainTools:  {tools: tools, functionList: {myuniversity}, instructions: 'Assistant for myUniverity'},
   viyaConfig: {
     logonPayload: null
@@ -290,18 +296,25 @@ Response: Here are the availability statuses for the courses you inquired about:
 <hr>
 <h2>Creating a AI Assistant with a Viya-based tool<a name="extend"></a></h2>
 <p>This example has a tool to list tables in a given caslib or libref. Clearly one
-would not use AI Assistant for this purpose. However this example demonstrates how to
-include &quot;corporate&quot; or &quot;private&quot; information to resolve the prompt.</p>
+would not use AI Assistant for this purpose. However this example demonstrates
+how to call Viya to respond to a user query.</p>
 <p>This example uses @sassoftware/restafedit to make the API calls. You can
 use other ways to call Viya and get responses.</p>
+<p>Some key points:</p>
+<ol>
+<li>The viyaConfig object is used to pass the host and token information to the
+assistant. This is used to logon to Viya.</li>
+<li>The getViyaSession method is used to get the session information for the
+assistant to call Viya.</li>
+</ol>
 <pre class="prettyprint source lang-javascript"><code>// Step 1: Import the necessary modules
 import * as readline from &quot;node:readline/promises&quot;;
 import { stdin as input, stdout as output } from &quot;node:process&quot;;
 import getToken from &quot;./getToken.js&quot;;
 import { setupAssistant, runAssistant } from &quot;@sassoftware/viya-assistantjs&quot;;
 let { host, token } = getToken();
-
-//Step 2: Define the custom tools
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>//Step 2: Define the custom tools
 
 const tools = [
   {
@@ -340,8 +353,10 @@ const tools = [
 ];
 async function listTables(params, userData, gptControl) {
   let { library, source, start, limit } = params;
-  // get session information
-  let appEnv = await gptControl.viyaOnDemand(gptControl, source);
+  // get session information (source is either cas or sas|compute)
+  let appEnv = await gptControl.getViyaSession(gptControl, source);
+
+  // limit the number of tables to return
   let p = {
     qs: {
       limit: limit == null ? 10 : limit,
@@ -350,24 +365,28 @@ async function listTables(params, userData, gptControl) {
   };
 
   // get the list of libs for the selected source
+  // see https://sassoftwares.github.io/restaf for information on restafedit
   let r = await appEnv.restafedit.getTableList(library, appEnv, p);
   return JSON.stringify(r);
 }
-// Step 2: setup configuration
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>// Step 3: setup configuration
 let config = {
+  devMode: true,
   provider: &quot;openai&quot;, // or 'azureai'
   model: process.env.OPENAI_MODEL,
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider
   },
-  assistantid: &quot;NEW&quot;, //create a new assistant
+  assistantid: null, //create a new assistant
   assistantName: &quot;SAS_ASSISTANT&quot;,
 
-  threadid: &quot;NEW&quot;, //create a new thread
+  threadid: null, //create a new thread
+  vectorStoreid: null, //create a new vector store
   domainTools: {
     tools: tools,
     functionList: { listTables },
-    instructions: &quot;Assistant for myUniverity&quot;,
+    instructions: &quot;Assistant to list the tables in a sas or cas library&quot;,
   },
   viyaConfig: {
     logonPayload: {
@@ -379,8 +398,8 @@ let config = {
   },
   userData: {},
 };
-
-// run a chat session
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>// run a chat session
 chat(config)
   .then((r) => console.log(&quot;done&quot;))
   .catch((err) => console.log(err));
@@ -428,7 +447,8 @@ Response: Here are the tables available in the SAS library named &quot;sashelp&q
 <li><code>APPLIANC</code></li>
 <li><code>ARSTOP</code></li>
 </ol>
-<p>Please let me know if you need details on any of these tables or if there's anything else I can assist you with.</p>
+<p>Please let me know if you need details on any of these tables or if there's
+anything else I can assist you with.</p>
 <p>Prompt: list tables in cas library Public
 Response:Here are the tables available in the CAS library named &quot;Public&quot;:</p>
 <ol>
@@ -443,7 +463,8 @@ Response:Here are the tables available in the CAS library named &quot;Public&quo
 <li><code>STUDENTS_TEST</code></li>
 <li><code>BIKE_SHARING_DEMAND</code></li>
 </ol>
-<p>Please let me know if you need information on any of these tables or if there's anything else I can assist you with.</p></article>
+<p>Please let me know if you need information on any of these tables or if there's
+anything else I can assist you with.</p></article>
     </section>
 
 

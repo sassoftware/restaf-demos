@@ -5,14 +5,14 @@
 /**
  * @description - Allow functions to create a Viya session on demand(if not already created)
  * @async
- * @function viyaOnDemand
+ * @function getViyaSession
  * @param {gptControl} gptControl - gptControl object
  * @param {string} source  - cas|compute
  * @returns {promise} - appEnv - return appEnv
- * @example - Allow functions to create a Viya session on demand(if not already created)
+ * @example - Delays session creation until needed
  */
 
-async function viyaOnDemand(gptControl, source) {
+async function getViyaSession(gptControl, source) {
   let appEnv = gptControl.appEnv;
   let {restaflib} = appEnv;
   let store = appEnv.store;
@@ -30,7 +30,7 @@ async function viyaOnDemand(gptControl, source) {
     restaf: appEnv.restaf,
     restaflib: appEnv.restaflib,
     restafedit: appEnv.restafedit,
-    viyaOnDemand: appEnv.viyaOnDemand
+    getViyaSession: appEnv.getViyaSession
   }
  
   source = source.toLowerCase();
@@ -88,4 +88,4 @@ async function viyaOnDemand(gptControl, source) {
     return tappEnv;
   }
 }
-export default viyaOnDemand;
+export default getViyaSession;

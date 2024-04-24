@@ -7,9 +7,7 @@
 import fs from "fs";
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-// import 'dotenv/config';
 import getToken from "./lib/getToken.js";
-import formatInstructions from "./formatInstructions.js";
 
 import {
   setupAssistant,
@@ -31,7 +29,7 @@ chat(config)
   .catch((err) => console.log(err));
 
 async function chat(config) {
-  let gptControl = await setupAssistant(config);
+    let gptControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -66,6 +64,7 @@ async function chat(config) {
             debugger;
             let content = fs.readFileSync(f);
             console.log(content);
+            /*
             let r = await createFile(
               f,
               content,
@@ -73,6 +72,8 @@ async function chat(config) {
               "assistants",
               gptControl
             );
+            */
+            let r = await gptControl.uploadFile(f, content, "text/plain", "assistants");
             console.log(r);
           } catch (e) {
             console.log(e);
@@ -168,6 +169,7 @@ function setupConfig() {
         ? null
         : process.env.APPENV_ASSISTANTID,
     assistantName: process.env.APPENV_ASSISTANTNAME,
+    vectorStoreid: process.env.APPENV_VECTORSTOREID,
     threadid:
       process.env.APPENV_THREADID.trim().length === 0
         ? null
@@ -185,7 +187,9 @@ function setupConfig() {
   };
   config.viyaConfig = {};
   let logonPayload = null;
-
+  if (config.devMode === true) {
+    config.assistantName= config.assistantName + "_DEV";
+  }
   if (process.env.APPENV_VIYA === "TRUE") {
     let { token, host } = getToken();
     logonPayload = {

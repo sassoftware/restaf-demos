@@ -40,7 +40,7 @@ async function _listLibrary(params, userData, gptControl) {
     source = 'sas';
   }
   let s = source.toLowerCase();
-  let tAppEnv = await gptControl.viyaOnDemand(gptControl, s);
+  let tAppEnv = await gptControl.getViyaSession(gptControl, s);
   console.log('tAppEnv', tAppEnv.sessionID); 
   if (tAppEnv === null) {
     let list = [];

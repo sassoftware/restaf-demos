@@ -170,7 +170,7 @@ let customTools: [
 //handler for running sas code
 const runSASFunctionSpec = {
   name: &quot;runSAS&quot;,
-  description: &quot;run the specified file. The file is a path to the sas program&quot;,
+  description: &quot;run the specified file. The file is a path to the sas program. The p&quot;,
   parameters: {
     properties: {
       file: {
@@ -183,8 +183,9 @@ const runSASFunctionSpec = {
   },
 };
 
-async function runSAS(params, appEnv) {
+async function runSAS(params, userData, gptControl) {
   let { file } = params;
+  let appEnv = gptControl.getViyaSession(gptControl,)
   let { store, session } = appEnv;
   let src;
   try {

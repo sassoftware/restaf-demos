@@ -66,7 +66,7 @@ const runSASFunctionSpec = {
 
 async function runSAS(params, userData, gptControl) {
   let { file } = params;
-  let appEnv = gptControl.viyaOnDemand(gptControl,)
+  let appEnv = gptControl.getViyaSession(gptControl,)
   let { store, session } = appEnv;
   let src;
   try {

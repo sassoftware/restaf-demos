@@ -32,7 +32,7 @@ const _listTablesFunctionSpec = {
 
 async function _listTables(params, userData, gptControl) {
   let { library, source, limit } = params;
-  let appEnv = await gptControl.viyaOnDemand(gptControl, source);
+  let appEnv = await gptControl.getViyaSession(gptControl, source);
   let p = {
     qs: {
       limit: limit == null ? 10 : limit,

@@ -8,7 +8,7 @@ import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
 
 import createAssistant from "./createAssistant.js";
 import setupViya from "./builtins/tools/lib/setupViya.js";
-import viyaOnDemand from "./builtins/tools/lib/viyaOnDemand.js";
+import getViyaSession from "./builtins/tools/lib/getViyaSession.js";
 import createFile from "./createFile.js";
 
 import apiMapper from "./apiMapper.js";
@@ -62,12 +62,14 @@ async function setupAssistant(config) {
 
   let summmary = toolSet.tools.map((i) => {
     if (i.type === "function") {
+      console.log(i.function.name,':', i.function.description)
       return { toolName: i.function.name, description: i.function.description };
     } else {
+      console.log(i.type);
       return { toolName: i.type };
     }
   });
-  console.table(summmary);
+  
   console.log('-------------------------------------------------------------'); 
 
 
@@ -97,10 +99,10 @@ async function setupAssistant(config) {
       config.threadid == null || config.threadid === ""
         ? null
         : config.threadid,
-    vectorStoreId:
-      config.vectorStoreId == null || config.vectorStoreId === ""
+    vectorStoreid:
+      config.vectorStoreid == null || config.vectorStoreid === ""
         ? null
-        : config.vectorStoreId,
+        : config.vectorStoreid,
     appEnv: null,
     client: client,
     run: null,
@@ -108,24 +110,28 @@ async function setupAssistant(config) {
     code: config.code,
     retrieval: config.retrieval,
     userData: config.userData,
-    viyaOnDemand: viyaOnDemand,
+    getViyaSession: getViyaSession,
     uploadFile: null
   };
 
   // setup Viya connections
-  
   gptControl.appEnv = await setupViya(config.viyaConfig);
-  gptControl.appEnv.viyaOnDemand = viyaOnDemand;
+  gptControl.appEnv.getViyaSession = getViyaSession;
   gptControl.appEnv.userData = config.userData;
   gptControl.appEnv.user = config.user;
 
   // create assistant or reuse existing one
-  
-  gptControl.assistant = await createAssistant(gptControl);
+  try {
+    gptControl.assistant = await createAssistant(gptControl);
+  } catch (error) {
+    console.log(error);
+    throw new Error(`Failed to create assistant ${error}`);
+  }
   gptControl.uploadFile = uploadFile(gptControl);
 
   console.log("--------------------------------------");
   console.log("Current session:");
+  console.log("devMode: ", gptControl.devMode);
   console.log("Provider: ", gptControl.provider);
   console.log("Model: ", gptControl.model);
   console.log(
@@ -135,7 +141,7 @@ async function setupAssistant(config) {
     gptControl.assistant.id
   );
   console.log("Threadid: ", gptControl.thread.id);
-  console.log("VectorStoreId: ", gptControl.vectorStoreId);
+  console.log("VectorStoreId: ", gptControl.vectorStoreid);
   console.log("Using Viya:", (config.viyaConfig.logonPayload != null) ? true: false);
   console.log("--------------------------------------");
   return gptControl;

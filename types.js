@@ -77,6 +77,11 @@
  * @property {function} uploadFile - upload file
  * @property {function} createAssistantFile - create assistant file
  * @property {function} deleteFile - delete file
+ * @property {function} createVectorStores - create vector stores
+ * @property {function} getVectorStore - get vector store
+ * @property {function} createVectorStoresFiles - create vector stores files  
+ * @property {function} deleteVectorStore - delete vector store
+ * @property {function} listVectorStores - list vector stores
  */
 
 /**

@@ -1,12 +1,19 @@
 # Notes on Assistant and Threads- local rules
 
-In the configuration object one can set values for assistant and threads
-so that they can be reused.
+In the configuration object one can set values for assistant name, assistant id,
+threadid and vector store id..
 
-These local rules are to help manage resources($).
+In production one expects the assistantid, threadid and vectorStoreidand threadid
+to be savbed externally.
 
-In production one expects the assistantid and threadid to be managed
-externally and provided in the configuration.
+The library follows the following rules - mainly to simplify the development process.
+
+## Basic setup
+
+The following information is saved in the session metadata
+
+- the id of the current thread
+- the id of the current vector store
 
 ## Assistant
 
@@ -14,29 +21,38 @@ Each instance of assistant has a unique id, However the names of the assistant
 are not unique.
 
 To avoid adding the overhead of persisting these id's the library
+has some local rules during development.
+
+> During development recommend setting devMode to true.
+This way a fresh environment is available for each development
+session.
+
+## devMode=true
+
+- If a assistant with the specified assistName exists, it will be deleted.
+Its thread and vector store are also be deleted.
+- A new assistant, with a new thread and vector store will be created.
+
+## devMode=false
+
+### Assistant
+
+1. If assistantid is specified, it will be reused.
+If this assistant is not found, an exception will be thrown.
+2. If assistantid is null, then the following will happen:
+   - search for assistant with that name
+   - if not found, an exception will be thrown
+
+### Thread
+
+To avoid the overhead of persisting the threadid the library
 has some local rules.
 
-1. If assistandid is specified, it then used to retrieve the session.
-(suspect this would be a production scenario)
-2. If assistandid is 'REUSE' then search for an assistant with the assistname.
-   - If not found drop down to option 3 below and create a new assistant
-3. If assistantid is 'NEW' then create a new assistant with the sessionName
-   - If the assistant with the name exists, it will be deleted
-   - This might result in mulitple assistants with the same name
+1. If threadid is specified, it will be used
+2. Else if using an existing assistant, then the previous thread will be used.
+3. As a last resort, a new thread will be created.
 
-During development recommend setting assistantid to NEW
+### Vector Store
 
-## Thread
-
-To avoid adding the overhead of persisting these id's the library
-has some local rules.
-
-1. If threadid is specified, it then used.
-(suspect this would be a production scenario)
-2. If threadid is 'REUSE', then the threadid saved with in
-    the assistant's metadata will be used.
-3. If threadid is 'NEW' then a new thread is created
-   - If a there was a threadid saved with the assistant it will be deleted.
-   - This new threadid will be saved in the current assistant's metadata.
-
-See the tutorial on Tools and Functions
+1. If vectorStoreid is specified, it will be used.
+2. Else If using an existing assistant, then the previous vector store will be used.

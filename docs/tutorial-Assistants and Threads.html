@@ -124,48 +124,58 @@
 
 <article>
     <h1>Notes on Assistant and Threads- local rules</h1>
-<p>In the configuration object one can set values for assistant and threads
-so that they can be reused.</p>
-<p>These local rules are to help manage resources($).</p>
-<p>In production one expects the assistantid and threadid to be managed
-externally and provided in the configuration.</p>
+<p>In the configuration object one can set values for assistant name, assistant id,
+threadid and vector store id..</p>
+<p>In production one expects the assistantid, threadid and vectorStoreidand threadid
+to be savbed externally.</p>
+<p>The library follows the following rules - mainly to simplify the development process.</p>
+<h2>Basic setup</h2>
+<p>The following information is saved in the session metadata</p>
+<ul>
+<li>the id of the current thread</li>
+<li>the id of the current vector store</li>
+</ul>
 <h2>Assistant</h2>
 <p>Each instance of assistant has a unique id, However the names of the assistant
 are not unique.</p>
 <p>To avoid adding the overhead of persisting these id's the library
-has some local rules.</p>
-<ol>
-<li>If assistandid is specified, it then used to retrieve the session.
-(suspect this would be a production scenario)</li>
-<li>If assistandid is 'REUSE' then search for an assistant with the assistname.
+has some local rules during development.</p>
+<blockquote>
+<p>During development recommend setting devMode to true.
+This way a fresh environment is available for each development
+session.</p>
+</blockquote>
+<h2>devMode=true</h2>
 <ul>
-<li>If not found drop down to option 3 below and create a new assistant</li>
+<li>If a assistant with the specified assistName exists, it will be deleted.
+Its thread and vector store are also be deleted.</li>
+<li>A new assistant, with a new thread and vector store will be created.</li>
 </ul>
-</li>
-<li>If assistantid is 'NEW' then create a new assistant with the sessionName
+<h2>devMode=false</h2>
+<h3>Assistant</h3>
+<ol>
+<li>If assistantid is specified, it will be reused.
+If this assistant is not found, an exception will be thrown.</li>
+<li>If assistantid is null, then the following will happen:
 <ul>
-<li>If the assistant with the name exists, it will be deleted</li>
-<li>This might result in mulitple assistants with the same name</li>
+<li>search for assistant with that name</li>
+<li>if not found, an exception will be thrown</li>
 </ul>
 </li>
 </ol>
-<p>During development recommend setting assistantid to NEW</p>
-<h2>Thread</h2>
-<p>To avoid adding the overhead of persisting these id's the library
+<h3>Thread</h3>
+<p>To avoid the overhead of persisting the threadid the library
 has some local rules.</p>
 <ol>
-<li>If threadid is specified, it then used.
-(suspect this would be a production scenario)</li>
-<li>If threadid is 'REUSE', then the threadid saved with in
-the assistant's metadata will be used.</li>
-<li>If threadid is 'NEW' then a new thread is created
-<ul>
-<li>If a there was a threadid saved with the assistant it will be deleted.</li>
-<li>This new threadid will be saved in the current assistant's metadata.</li>
-</ul>
-</li>
+<li>If threadid is specified, it will be used</li>
+<li>Else if using an existing assistant, then the previous thread will be used.</li>
+<li>As a last resort, a new thread will be created.</li>
 </ol>
-<p>See the tutorial on Tools and Functions</p>
+<h3>Vector Store</h3>
+<ol>
+<li>If vectorStoreid is specified, it will be used.</li>
+<li>Else If using an existing assistant, then the previous vector store will be used.</li>
+</ol>
 </article>
 
 </section>

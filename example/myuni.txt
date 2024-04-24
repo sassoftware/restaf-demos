@@ -1,4 +1,7 @@
-Myuniverity is dedicated to providing free education to everyone
+
+University name: myuni   
+
+myuni is university dedicated to providing free education to everyone
 At the current time the university provides the following courses:
 
 - math

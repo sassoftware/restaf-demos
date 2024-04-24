@@ -25,7 +25,7 @@ const _readSASTableFunctionSpec = {
 }
 
 async function _readSASTable(params, userData, gptControl) {
-  let tappEnv = await gptControl.viyaOnDemand(gptControl, params.source);
+  let tappEnv = await gptControl.getViyaSession(gptControl, params.source);
   params.source = tappEnv.source;
   let r = await _idescribeTable(params, tappEnv, gptControl);
   return r.data;

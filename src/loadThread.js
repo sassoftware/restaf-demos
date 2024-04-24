@@ -12,10 +12,17 @@
  * @returns {promise} - return thread object
  */
 async function loadThread(gptControl) {
-  let { assistantApi, assistant, threadid } = gptControl;
+  let { assistantApi, assistant, threadid, devMode} = gptControl;
 
   try {
-    // if threadid is provided, use it
+    // if devMode is true, create a new thread
+    if (devMode === true) {
+      let thread = await assistantApi.createThread();
+      await modifyAssistant(gptControl, thread);
+      return thread;
+    }
+
+   // if threadid is provided, use it 
     if (threadid != null && threadid.trim().length > 0) {
       let thread = await assistantApi.getThread(threadid);
       await modifyAssistant(gptControl, thread);
@@ -23,8 +30,8 @@ async function loadThread(gptControl) {
     }
 
     // if lastThread is available use it
-    if ( assistant.metadata.lastThread != null &&
-      assistant.metadata.lastThread.trim().length > 0) {
+    if ( assistant.metadata.lastThread != null && assistant.metadata.lastThread.trim().length > 0) {
+      console.log('Using thread from last session');
       let thread = await assistantApi.getThread(assistant.metadata.lastThread);
       await modifyAssistant(gptControl, thread);
       return thread;
@@ -51,6 +58,8 @@ async function modifyAssistant(gptControl, thread) {
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
   gptControl.assistant = newAssistant;
   gptControl.assistantid = newAssistant.id;
+  gptControl.thread = thread;
+  gptControl.threadid = thread.id;
   return newAssistant;
 }
 

@@ -6,7 +6,7 @@
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
 import restafedit from '@sassoftware/restafedit';
-import viyaOnDemand from './viyaOnDemand.js';
+import getViyaSession from './getViyaSession.js';
  
 
 /**
@@ -40,7 +40,7 @@ async function setupViya(viyaConfig) {
   restaf: restaf,
   restaflib: restaflib,
   restafedit: restafedit,
-  viyaOnDemand: viyaOnDemand,
+  getViyaSession: getViyaSession,
   userData: viyaConfig.userData
 
 }

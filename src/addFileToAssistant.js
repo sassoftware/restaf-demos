@@ -53,7 +53,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
 
     } else {
       let vsFile = await assistantApi.createVectorStoresFiles(
-        gptControl.vectorStoreId,
+        gptControl.vectorStoreid,
         {file_id: file.id}
       );
       console.log("VectorStore File ", vsFile.id);

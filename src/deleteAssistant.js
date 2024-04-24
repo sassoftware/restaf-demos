@@ -51,13 +51,13 @@ async function deleteAssistant(gptControl, assistantid) {
   }
   // works with V2 of openai assistant
   try {
-    console.log(assistant.metadata.vectorStoreId);
-    if (assistant.metadata.vectorStoreId.trim().length > 0) {
+    console.log(assistant.metadata.vectorStoreid);
+    if (assistant.metadata.vectorStoreid.trim().length > 0) {
       let status = await assistantApi.deleteVectorStore(
-        assistant.metadata.vectorStoreId
+        assistant.metadata.vectorStoreid
       );
       console.log(
-        `VectorStore ${assistant.metadata.vectorStoreId} deleted`,
+        `VectorStore ${assistant.metadata.vectorStoreid} deleted`,
         status
       );
     }
