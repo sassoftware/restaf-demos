@@ -2,6 +2,8 @@
  * Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+
+// Reads token and host from the credentials file created by sas-viya auth login}loginCode
 import fs from 'fs';
 import os from 'os';
 function getToken() {
@@ -22,7 +24,7 @@ function getToken() {
     j = fs.readFileSync(url, 'utf8');
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
-   // process.env.VIYA_SERVER = host;
+
     console.log('Host set to ', host );
     return {host, token};
   } catch (e) {

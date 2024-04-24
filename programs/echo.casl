@@ -1,3 +1,0 @@
-action builtins.echo result=result /
-code='abc';
-send_response({casResults={results=result}});

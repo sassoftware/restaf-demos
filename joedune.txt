@@ -1,0 +1,25 @@
+This is the current resume for Joe Dune.
+
+Name: Joe Dune
+Address: 100, Happy Lane, Black Mountain, NC
+
+Date of Birth: Dec 25th, 1960
+Place of Birth: Jellico, TN
+
+Education:
+
+- Undergraduate Degree:  Bachelors in Statistics from UT, TN
+- Higher Education: PhD in Statistics from NC State, Raleight, NC
+
+Programming skills:
+
+ - SAS
+ - JavaScript
+ - Python
+ 
+Forgotten Programing Languages:
+
+- C
+- IBM Assembler
+
+
