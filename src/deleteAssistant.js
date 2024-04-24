@@ -34,9 +34,10 @@ async function deleteAssistant(gptControl, assistantid) {
       return "Assistant not found, nothing to delete";
     }
   }
-
+  debugger;
   // found assistant - now delete associated thread and files
   try {
+    console.log('assistant was found. Now deleting it');
     if (
       assistant.metadata.lastThread != null &&
       assistant.metadata.lastThread.length > 0

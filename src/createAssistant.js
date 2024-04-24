@@ -122,6 +122,7 @@ async function newAssistant(gptControl) {
   let options = {
     metadata: metadata,
   };
+  console.log(options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
   gptControl.assistant = newAssistant;
   return assistant;
