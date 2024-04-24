@@ -26,6 +26,7 @@ async function createAssistant(gptControl) {
     gptControl.threadid = null;
     await deleteAssistant(gptControl, null);
     let assistant = await newAssistant(gptControl);
+
     return assistant;
   }
 
@@ -34,6 +35,7 @@ async function createAssistant(gptControl) {
     console.log("Using assistantid ", assistantid);
     let assistant = await assistantApi.getAssistant(assistantid);
     gptControl.assistant = assistant;
+    gptControl.assistantid = assistant.id;
     if (gptControl.vectorStoreid === null) {
       let vs = await assistantApi.getVectorStore(assistant.metadata.vectorStoreid);
       gptControl.vectorStoreid = assistant.metadata.vectorStoreid;
@@ -61,6 +63,7 @@ async function createAssistant(gptControl) {
     
     if (assistant != null) {
       gptControl.assistant = assistant;
+      gptControl.assistantid = assistant.id;
       console.log("Found assistant ", assistantName, assistant.id);
       await loadThread(gptControl);
       console.log(assistant.metadata);
@@ -114,6 +117,7 @@ async function newAssistant(gptControl) {
 
   // now create a new thread
   gptControl.assistant = assistant;
+  gptControl.assistantid = assistant.id;
   let thread = await loadThread(gptControl);
   gptControl.thread = thread;
   let metadata = assistant.metadata;
@@ -125,6 +129,7 @@ async function newAssistant(gptControl) {
   console.log(options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
   gptControl.assistant = newAssistant;
+  gptControl.assistantid = newAssistant.id;
   return assistant;
 }
 export default createAssistant;

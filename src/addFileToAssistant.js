@@ -86,6 +86,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
       options.metadata = metadata;
       let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
       gptControl.assistant = newAssistant;
+      gptControl.assistantid = newAssistant.id;
     } catch (e) {
       console.log(e);
       throw new Error(
