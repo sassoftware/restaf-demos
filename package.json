@@ -1,6 +1,6 @@
 {
   "name": "viya-assistantjs-samples",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Samples for @sassoftware/viya-assistantjs",
   "main": "index.js",
   "type": "module",
