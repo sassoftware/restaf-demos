@@ -53,6 +53,57 @@ code_interpreter tool.
 
 See the two examples for a quick introduction to  this library.
 
+## Tool function signature
+
+The tool function signature is as follows:
+
+```javascript
+async function myToolFunction(params, userData, appControl) {
+  // params: parameters passed to the tool from gpt
+  // userData: userData set by the developer in the configuration object
+  // appControl: information about the assistant(returned from setupAssistant)
+  // return: a string or an object
+}
+```
+
+> The appControl is the control object of the library - so do not modify
+this object.
+
+The appControl object has the following properties that are useful in the tool function:
+
+```javascript
+{
+  getViyaSession: <function>, // to get viya session information
+  uploadFile: <function>,// to upload content to a file
+}
+
+### getViyaSession
+
+The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See <link> for more information. Some of the information is targeted to users of @sassoftware/restaf.
+
+```javascript
+let appEnv = await appControl.getViyaSession('cas');
+```
+
+### uploadFile
+
+This function is used to upload content. The call will result in creation of a
+ file with the specified name.
+ If the provider is openai,
+ then file is added to the current vector store and used in subsequent
+  calls to the assistant.
+See the example below
+
+```javascript
+
+    let f = await appControl.uploadFile('catalogSearch.txt', content, 'text/plain', 'assistants');
+    Parameters are:
+    - filename: name of the file to be created
+    - content: content to be written to the file
+    - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
+    - purpose: assistants is the only one supported at this time
+```
+
 ## Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a>
 
 See notes in the program below
@@ -76,8 +127,8 @@ let tools = [
   {
     type: 'function',
     function: {
-      name: 'myuniversity',
-      description: 'verify the specified course is available',
+      name: 'myuni',
+      description: 'verify the specified course is available for myuni university',
       parameters: {
         properties: {
           course: {
@@ -92,14 +143,12 @@ let tools = [
   },
 ];
 
-async function myuniversity(params, appEnv) {
+async function myuni(params, appEnv) {
   let { course } = params;
   const courseList = ['math', 'science', 'english', 'history', 'art'];
-  if (courseList.includes(course)) {
-    return `${course} is available`;
-  } else {
-    return `${course} is not available`;
-  }
+  return (courseList.includes(course) 
+    ?  return `${course} is available`
+    :  return `${course} is not available`);
 }
 ```
 
@@ -108,7 +157,8 @@ async function myuniversity(params, appEnv) {
 let config = {
   devMode: true,
   provider: 'openai',
-  model: process.env.OPENAI_MODEL, 
+  model: process.env.OPENAI_MODEL,
+  temperature: 0.5, 
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider
   },
@@ -116,7 +166,7 @@ let config = {
   assistantName: "SAS_ASSISTANT",
   threadid: null,
   vectorStoreid: null,
-  domainTools:  {tools: tools, functionList: {myuniversity}, instructions: 'Assistant for myUniverity'},
+  domainTools:  {tools: tools, functionList: {myuni}, instructions: 'Assistant for myUniverity'},
   viyaConfig: {
     logonPayload: null
   },
@@ -130,7 +180,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -147,7 +197,7 @@ async function chat(config) {
     let promptInstructions = ' ';
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      let response = await runAssistant(appControl, prompt,promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);
@@ -244,10 +294,10 @@ const tools = [
     },
   },
 ];
-async function listTables(params, userData, gptControl) {
+async function listTables(params, userData, appControl) {
   let { library, source, start, limit } = params;
   // get session information (source is either cas or sas|compute)
-  let appEnv = await gptControl.getViyaSession(gptControl, source);
+  let appEnv = await appControl.getViyaSession(source);
 
   // limit the number of tables to return
   let p = {
@@ -303,7 +353,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -320,7 +370,7 @@ async function chat(config) {
     let promptInstructions = " ";
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt, promptInstructions);
+      let response = await runAssistant(appControl, prompt, promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);

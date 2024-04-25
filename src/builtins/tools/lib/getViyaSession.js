@@ -6,14 +6,14 @@
  * @description - Allow functions to create a Viya session on demand(if not already created)
  * @async
  * @function getViyaSession
- * @param {gptControl} gptControl - gptControl object
+ * @param {appControl} appControl - appControl object
  * @param {string} source  - cas|compute
  * @returns {promise} - appEnv - return appEnv
  * @example - Delays session creation until needed
  */
 
-async function getViyaSession(gptControl, source) {
-  let appEnv = gptControl.appEnv;
+async function getViyaSession(appControl, source) {
+  let appEnv = appControl.appEnv;
   let {restaflib} = appEnv;
   let store = appEnv.store;
   // if it is already created, return it

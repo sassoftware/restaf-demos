@@ -58,7 +58,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -75,7 +75,7 @@ async function chat(config) {
     let promptInstructions = ' ';
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      let response = await runAssistant(appControl, prompt,promptInstructions);
       console.log(response);
     } catch (err) {
       console.log(err);

@@ -66,12 +66,12 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
   // upload joe Dune's resume
 
   let content = fs.readFileSync('../joedune.txt', 'utf8');
   console.log(content)
-  let r = await gptControl.uploadFile(
+  let r = await appControl.uploadFile(
     'joedune.txt',
     content,
     "text/plain",
@@ -93,7 +93,7 @@ async function chat(config) {
     let promptInstructions = ' ';
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      let response = await runAssistant(appControl, prompt,promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);

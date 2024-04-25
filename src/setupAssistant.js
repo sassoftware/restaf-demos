@@ -19,7 +19,7 @@ import builtinToolSets from "./builtins/tools/index.js";
  * @function setupAssistant
  * @description   Setup the assistant
  * @param {config} config - configuration object
- * @returns {promise} - return gptControl object}
+ * @returns {promise} - return appControl object}
  *
  */
 
@@ -73,15 +73,20 @@ async function setupAssistant(config) {
   console.log('-------------------------------------------------------------'); 
 
 
-  //moved this here to handle user override of all builtin tools
+  //helper functions
 
   const uploadFile =
-    (gptControl) => async (filename, content, mimeType, purpose) => {
-      let r = createFile(filename, content, mimeType, purpose, gptControl);
+    (appControl) => async (filename, content, mimeType, purpose) => {
+      let r = createFile(filename, content, mimeType, purpose, appControl);
       return r;
     };
+  const getViyaSessionf =
+  (appControl) => async (source) => {
+    let r = getViyaSession(appControl, source);
+    return r;
+  };
   
-  let gptControl = {
+  let appControl = {
     provider: config.provider,
     model: config.model,
     domainTools: toolSet,
@@ -110,41 +115,43 @@ async function setupAssistant(config) {
     code: config.code,
     retrieval: config.retrieval,
     userData: config.userData,
-    getViyaSession: getViyaSession,
+    getViyaSession: null,
     uploadFile: null
   };
 
   // setup Viya connections
-  gptControl.appEnv = await setupViya(config.viyaConfig);
-  gptControl.appEnv.getViyaSession = getViyaSession;
-  gptControl.appEnv.userData = config.userData;
-  gptControl.appEnv.user = config.user;
+  appControl.appEnv = await setupViya(config.viyaConfig);
+  
+  appControl.appEnv.userData = config.userData;
+  appControl.appEnv.user = config.user;
 
   // create assistant or reuse existing one
   try {
-    gptControl.assistant = await createAssistant(gptControl);
+    appControl.assistant = await createAssistant(appControl);
   } catch (error) {
     console.log(error);
     throw new Error(`Failed to create assistant ${error}`);
   }
-  gptControl.uploadFile = uploadFile(gptControl);
+  // two helper functions
+  appControl.uploadFile = uploadFile(appControl);
+  appControl.getViyaSession = getViyaSessionf(appControl);
 
   console.log("--------------------------------------");
   console.log("Current session:");
-  console.log("devMode: ", gptControl.devMode);
-  console.log("Provider: ", gptControl.provider);
-  console.log("Model: ", gptControl.model);
+  console.log("devMode: ", appControl.devMode);
+  console.log("Provider: ", appControl.provider);
+  console.log("Model: ", appControl.model);
   console.log(
     "Assistant: ",
-    gptControl.assistant.name,
+    appControl.assistant.name,
     "Assistant id",
-    gptControl.assistant.id
+    appControl.assistant.id
   );
-  console.log("Threadid: ", gptControl.thread.id);
-  console.log("VectorStoreId: ", gptControl.vectorStoreid);
+  console.log("Threadid: ", appControl.thread.id);
+  console.log("VectorStoreId: ", appControl.vectorStoreid);
   console.log("Using Viya:", (config.viyaConfig.logonPayload != null) ? true: false);
   console.log("--------------------------------------");
-  return gptControl;
+  return appControl;
 }
 
 export default setupAssistant;

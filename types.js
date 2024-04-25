@@ -85,8 +85,8 @@
  */
 
 /**
- * gptControl object
- * @typedef {object} gptControl
+ * appControl object
+ * @typedef {object} appControl
  * @property {string} provider - provider name
  * @property {string} model - model name
  * @property {toolspecs} domainTools tools prepended to the builtins
@@ -107,7 +107,7 @@
  * @property {object} code - if true, enable code interpreter
  * @property {boolean} retrieval - if true enable retrieval(now called file_search in openai)
  * @property {object} userData - user data object
- * @property {function} viyaOnDemand - viyaOnDemand function 
+ * @property {function} getViyaSession - get a viya session
  * @property {function} uploadFile - uploadFile function(in openai writes to vector store)
  */
   
@@ -117,12 +117,12 @@
  * @property {string} host - url to viya server
  * @property {logonPayload} - logonPayload
  * @property {string} source - cas|compute|none
- * @property {object} userData - user data object
  * @property {object} session - session object(for restaf users) if source is cas or compute
  * @property {object} servers - servers object(for restaf users) if source is cas or compute
  * @property {string} sessionID - session id if source is cas or compute
+ * @property {object} serverName - compute context or cas server name
  * @property {object} store - restaf store object
  * @property {object} restaflib - restaflib object if source is cas or compute
  * @property {object} restafedit - restafedit object if source is cas or compute
- * @property {object} serverName - compute context or cas server name
+ 
 */

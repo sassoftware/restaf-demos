@@ -148,9 +148,16 @@
 <p>@sassoftware/viya-assistantjs is a light weight JavaScript library to help SAS
 users build AI Assistants with minimal coding. It supports the Assistant
 from openai and Azure</p>
+<p>See <a href="https://sassoftware.github.io/viya-assistantjs/">documentation here</a></p>
 <p>See
-<a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-work</a>
+<a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-works</a>
 for clear explanation of openai Assistant.</p>
+<h2>Usage</h2>
+<p>Install the package using npm</p>
+<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/viya-assistantjs
+</code></pre>
+<p>In your JavaScript program import the entries.
+The documentation is <a href="https://sassoftware.github.io/restaf-demos/index.html">here</a></p>
 <h2>gpt models</h2>
 <p>Models used in the development of this library</p>
 <ul>
@@ -159,26 +166,89 @@ for clear explanation of openai Assistant.</p>
 </ul>
 <h2>Basic flow</h2>
 <ol>
-<li>Setup configuration object with information about the provider, model, credentials</li>
-<li>Create tools or use the builtin tools to satisfy user requests</li>
-<li>Call the <em>setupAssistant</em> method with this information
-along with other configuration information.</li>
-<li>Submit user prompt using the <em>runAssistant</em> method
+<li>
+<p>Setup configuration object with information about the provider, model, credentials</p>
+</li>
+<li>
+<p>Create tools or use the builtin tools to satisfy user requests</p>
+<ul>
+<li>The tools can be simple functions or calls to Viya or other services</li>
+<li>The tools can be used to satisfy user requests</li>
+<li>The tools can be used to upload files to the assistant</li>
+<li>See these links for more examples
+<ul>
+<li><a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs">Starter tools</a></li>
+<li><a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs-samples">Samples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Call the <em>setupAssistant</em> method with this information
+along with other configuration information.</p>
+</li>
+<li>
+<p>Submit user prompt using the <em>runAssistant</em> method</p>
 <ul>
 <li>The prompt might be resolved by gpt(ex: Who is CEO of SAS Institute)</li>
 <li>The prompt might request viya-assistantjs to call one of the tools to
 satisfy the request. This is where the rest api call to SAS will happen.</li>
 </ul>
 </li>
-<li>Process this response and repeat step 4.</li>
-<li>Additionally you can use the <em>uploadFile</em> method
+<li>
+<p>Process this response and repeat step 4.</p>
+</li>
+<li>
+<p>Additionally you can use the <em>uploadFile</em> method
 to upload information to the Assistant for use with the retrieval or
-code_interpreter tool.
+code_interpreter tool.</p>
 <ul>
 <li>The file uploaded in openai will be added to a vector store</li>
 </ul>
 </li>
 </ol>
+<p>See the two examples for a quick introduction to  this library.</p>
+<h2>Tool function signature</h2>
+<p>The tool function signature is as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>async function myToolFunction(params, userData, appControl) {
+  // params: parameters passed to the tool from gpt
+  // userData: userData set by the developer in the configuration object
+  // appControl: information about the assistant(returned from setupAssistant)
+  // return: a string or an object
+}
+</code></pre>
+<blockquote>
+<p>The appControl is the control object of the library - so do not modify
+this object.</p>
+</blockquote>
+<p>The appControl object has the following properties that are useful in the tool function:</p>
+<pre class="prettyprint source lang-javascript"><code>{
+  getViyaSession: &lt;function>, // to get viya session information
+  uploadFile: &lt;function>,// to upload content to a file
+}
+
+### getViyaSession
+
+The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See &lt;link> for more information. Some of the information is targeted to users of @sassoftware/restaf.
+
+```javascript
+let appEnv = await appControl.getViyaSession('cas');
+</code></pre>
+<h3>uploadFile</h3>
+<p>This function is used to upload content. The call will result in creation of a
+file with the specified name.
+If the provider is openai,
+then file is added to the current vector store and used in subsequent
+calls to the assistant.
+See the example below</p>
+<pre class="prettyprint source lang-javascript"><code>
+    let f = await appControl.uploadFile('catalogSearch.txt', content, 'text/plain', 'assistants');
+    Parameters are:
+    - filename: name of the file to be created
+    - content: content to be written to the file
+    - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
+    - purpose: assistants is the only one supported at this time
+</code></pre>
 <h2>Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a></h2>
 <p>See notes in the program below</p>
 <pre class="prettyprint source lang-javascript"><code>
@@ -197,8 +267,8 @@ let tools = [
   {
     type: 'function',
     function: {
-      name: 'myuniversity',
-      description: 'verify the specified course is available',
+      name: 'myuni',
+      description: 'verify the specified course is available for myuni university',
       parameters: {
         properties: {
           course: {
@@ -213,21 +283,20 @@ let tools = [
   },
 ];
 
-async function myuniversity(params, appEnv) {
+async function myuni(params, appEnv) {
   let { course } = params;
   const courseList = ['math', 'science', 'english', 'history', 'art'];
-  if (courseList.includes(course)) {
-    return `${course} is available`;
-  } else {
-    return `${course} is not available`;
-  }
+  return (courseList.includes(course) 
+    ?  return `${course} is available`
+    :  return `${course} is not available`);
 }
 </code></pre>
 <pre class="prettyprint source lang-javascript"><code>// Step 3: setup configuration, Use the tools defined above
 let config = {
   devMode: true,
   provider: 'openai',
-  model: process.env.OPENAI_MODEL, 
+  model: process.env.OPENAI_MODEL,
+  temperature: 0.5, 
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider
   },
@@ -235,7 +304,7 @@ let config = {
   assistantName: &quot;SAS_ASSISTANT&quot;,
   threadid: null,
   vectorStoreid: null,
-  domainTools:  {tools: tools, functionList: {myuniversity}, instructions: 'Assistant for myUniverity'},
+  domainTools:  {tools: tools, functionList: {myuni}, instructions: 'Assistant for myUniverity'},
   viyaConfig: {
     logonPayload: null
   },
@@ -249,7 +318,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -266,7 +335,7 @@ async function chat(config) {
     let promptInstructions = ' ';
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt,promptInstructions);
+      let response = await runAssistant(appControl, prompt,promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);
@@ -351,10 +420,10 @@ const tools = [
     },
   },
 ];
-async function listTables(params, userData, gptControl) {
+async function listTables(params, userData, appControl) {
   let { library, source, start, limit } = params;
   // get session information (source is either cas or sas|compute)
-  let appEnv = await gptControl.getViyaSession(gptControl, source);
+  let appEnv = await appControl.getViyaSession(source);
 
   // limit the number of tables to return
   let p = {
@@ -396,7 +465,7 @@ let config = {
       tokenType: &quot;bearer&quot;,
     },
   },
-  userData: {},
+  userData: {}, // your data to be passed on to the tools
 };
 </code></pre>
 <pre class="prettyprint source lang-javascript"><code>// run a chat session
@@ -406,7 +475,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -423,7 +492,7 @@ async function chat(config) {
     let promptInstructions = &quot; &quot;;
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt, promptInstructions);
+      let response = await runAssistant(appControl, prompt, promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);

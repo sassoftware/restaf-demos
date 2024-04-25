@@ -6,15 +6,15 @@
  * @async
  * @description - Cancel a previous run (on user request)
  * @function cancelRun
- * @param {gptControl} gptControl - gpt  session control object
+ * @param {appControl} appControl - gpt  session control object
  * @param {string} [threadid] - thread id
  * @param {string} [runid] - run id
  * returns {promise} - status (null if no run or thread or failed to cancel)
  * @example - This function will cancel the run
  */
 
-async function cancelRun(gptControl, threadid, runid) {
-  let {assistantApi, assistant, thread, run} = gptControl;  
+async function cancelRun(appControl, threadid, runid) {
+  let {assistantApi, assistant, thread, run} = appControl;  
 
   if (threadid != null && runid != null) {
     try {

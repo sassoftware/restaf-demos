@@ -13,12 +13,12 @@
  * @param {object} fileHandle - from host file system
  * @param {string} content - content of the file
  * @param {string} purpose - assistants|Fine-turning
- * @param {gptControl} gptControl - gptControl object
+ * @param {appControl} appControl - appControl object
 
  * @returns {promise} - return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
  */
-async function addFileToAssistant(filename, fileHandle, content, purpose, gptControl) {
-  let { assistantApi, assistant, provider } = gptControl;
+async function addFileToAssistant(filename, fileHandle, content, purpose, appControl) {
+  let { assistantApi, assistant, provider } = appControl;
 
   // get fileid
 
@@ -48,12 +48,12 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
         file.id
       );
       console.log("Assistant File ", assistantFile.id);
-      await setFileIds(gptControl, assistantFile);
+      await setFileIds(appControl, assistantFile);
       return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
 
     } else {
       let vsFile = await assistantApi.createVectorStoresFiles(
-        gptControl.vectorStoreid,
+        appControl.vectorStoreid,
         {file_id: file.id}
       );
       console.log("VectorStore File ", vsFile.id);
@@ -65,9 +65,9 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
     console.log(e);
     throw new Error(`Failed to upload file ${filename}`);
   }
-  async function setFileIds(gptControl, file) {
+  async function setFileIds(appControl, file) {
     
-    let { assistantApi, assistant, provider } = gptControl;
+    let { assistantApi, assistant, provider } = appControl;
     let currentFileIds =
       provider === "openai" ? assistant.file_ids : assistant.fileIds;
     // looks like it is possible to create a file with null file id
@@ -85,8 +85,8 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, gptCon
       metadata.files  = metadata.files + ' ' + file.id;
       options.metadata = metadata;
       let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
-      gptControl.assistant = newAssistant;
-      gptControl.assistantid = newAssistant.id;
+      appControl.assistant = newAssistant;
+      appControl.assistantid = newAssistant.id;
     } catch (e) {
       console.log(e);
       throw new Error(

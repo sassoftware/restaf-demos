@@ -12,7 +12,7 @@ import pollRun from "./pollRun.js";
  * @description - Run the latest prompt from the user
  * @function runAssistant
  *
- * @param {gptControl} gptControl - gpt  session control object
+ * @param {appControl} appControl - gpt  session control object
  * @param {string} prompt - user's prompt
  * @param {string} instructions - Additional instructions for the run
  * @returns {promise} - response from GPT(can be text, string, html etc...)
@@ -20,14 +20,14 @@ import pollRun from "./pollRun.js";
  * @example
  *  let prompt = 'fetch 20 records from cars from public';
  *  let promptInstructions = 'some instructions';
- *  let response = await runAssistant(gptControl, prompt, promptInstructions);
+ *  let response = await runAssistant(appControl, prompt, promptInstructions);
  *  console.log(response);
  */
 
-async function runAssistant(gptControl, prompt, instructions) {
-  gptControl.lastRun = [];
+async function runAssistant(appControl, prompt, instructions) {
+  appControl.lastRun = [];
   let start = Date.now();
-  let r = await irunAssistant(gptControl, prompt, instructions);
+  let r = await irunAssistant(appControl, prompt, instructions);
   
 
 
@@ -35,14 +35,14 @@ async function runAssistant(gptControl, prompt, instructions) {
   console.log('Time taken to run assistant: ', elapsed, ' seconds');
   return r;
 }
-async function irunAssistant(gptControl, prompt, instructions) {
-  let { thread, assistantApi, appEnv } = gptControl;
+async function irunAssistant(appControl, prompt, instructions) {
+  let { thread, assistantApi, appEnv } = appControl;
 
   //add the user request to thread
   try {
     // this seems to improve retrieval using files.
     let opts = {};
-    opts.fileIds = (gptControl.provider === 'azureai') ? gptControl.assistant.fileIds : gptControl.assistant.file_ids;
+    opts.fileIds = (appControl.provider === 'azureai') ? appControl.assistant.fileIds : appControl.assistant.file_ids;
     
     let _newMessage = await assistantApi.createMessage(
       thread.id,
@@ -61,28 +61,28 @@ async function irunAssistant(gptControl, prompt, instructions) {
   }
   // now run the thread
   // assume caller will catch any thrown errors
-  let r = await runPrompt(gptControl, appEnv, instructions);
+  let r = await runPrompt(appControl, appEnv, instructions);
   return r;
 }
-async function runPrompt(gptControl, appEnv, instructions) {
-  let { assistantApi, thread } = gptControl;
+async function runPrompt(appControl, appEnv, instructions) {
+  let { assistantApi, thread } = appControl;
 
   let runArgs = {
-    assistantid: gptControl.assistant.id,
+    assistantid: appControl.assistant.id,
     instructions: instructions,
-    tools: gptControl.assistant.tools,
-    temperature: gptControl.temperature
+    tools: appControl.assistant.tools,
+    temperature: appControl.temperature
   };
   // Run the assistant with the prompt and poll for completion
   
   let run = await assistantApi.createRun(thread.id, runArgs);
-  gptControl.run = run;
-  let runStatus = await pollRun(run, gptControl);
+  appControl.run = run;
+  let runStatus = await pollRun(run, appControl);
   
   //check for completion status
   let message;
   if (runStatus.status === "completed") {
-    message = await getLatestMessage(gptControl, 5);
+    message = await getLatestMessage(appControl, 5);
     return message;
   }
 
@@ -95,7 +95,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
   let done = null;
   do {
     let elapsed = Date.now();
-    runStatus= await required_action(runStatus, gptControl,appEnv);
+    runStatus= await required_action(runStatus, appControl,appEnv);
     elapsed = Math.round(Date.now() - elapsed) / 1000;
     console.log("Time taken to required action: ", elapsed, " seconds");
     if (runStatus.status === "requires_action") {
@@ -103,7 +103,7 @@ async function runPrompt(gptControl, appEnv, instructions) {
     } else {
       done = runStatus.status;
       console.log("getting latest message ");
-      message = await getLatestMessage(gptControl, 5);
+      message = await getLatestMessage(appControl, 5);
     }
   } while (done === null);
   return message;

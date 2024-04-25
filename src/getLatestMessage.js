@@ -5,13 +5,13 @@
 /**
  * @async
  * @description Return the latest message from thread
- * @param {gptControl}  gptControl - client control object
+ * @param {appControl}  appControl - client control object
  * @param {number} limit - limit the number of messages to return
  * @returns {promise} - messages - array of latest assistant messages[ {id, role, type, content}]
  * @example - This function will return latest assistant messages based on limit
  */
-async function getLatestMessage(gptControl, limit) {  
-  let {thread, assistantApi} = gptControl;
+async function getLatestMessage(appControl, limit) {  
+  let {thread, assistantApi} = appControl;
   
   const messages = await assistantApi.listMessages(thread.id, {limit:limit});
  

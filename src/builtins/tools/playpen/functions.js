@@ -31,13 +31,13 @@ function functions() {
   };
   return flist;
 }
-async function _catalogSearchInstance(params,appEnv,gptControl){
+async function _catalogSearchInstance(params,appEnv,appControl){
   params.rel ='instances';
-  return _catalogSearch(params,appEnv,gptControl);
+  return _catalogSearch(params,appEnv,appControl);
 }
 
 
-async function _catalogSearch(params, appEnv, gptControl) {
+async function _catalogSearch(params, appEnv, appControl) {
   let { metadata,start, limit, rel } = params;
   limit =(limit) ? limit : 10;
   start =(start) ? start : 0;
@@ -141,7 +141,7 @@ async function _getData(params, appEnv) {
   let r = await _idescribeTable(params, appEnv);
   return JSON.stringify({ table: r.table, data: r.data });
 }
-async function _runSAS(params, appEnv, gptControl) {
+async function _runSAS(params, appEnv, appControl) {
   let { program } = params;
   let { store, session, restaflib } = appEnv;
   /*

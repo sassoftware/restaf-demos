@@ -13,15 +13,15 @@ import createFile from "./createFile.js";
  * @function required_action
  * @description   Get the required action from the run status and execute the action
  * @param {object} runStatus - run status object
- * @param {gptControl} gptControl - gptControl object
+ * @param {appControl} appControl - appControl object
  * @returns {promise} - return the output status
  *  
  * @example
- *  let outputStatus = await required_action(runStatus, gptControl);
+ *  let outputStatus = await required_action(runStatus, appControl);
  */
 
-async function required_action(runStatus,gptControl) {
-  let{assistantApi,appEnv, domainTools, provider, thread, run} = gptControl;
+async function required_action(runStatus,appControl) {
+  let{assistantApi,appEnv, domainTools, provider, thread, run} = appControl;
   let {functionList} = domainTools;
   
   // get the required actions from the run status
@@ -59,7 +59,7 @@ async function required_action(runStatus,gptControl) {
     } else {
       try {
         let elapsedTime = Date.now();
-        let iresponse = await functionList[functionName](params, gptControl.userData, gptControl);
+        let iresponse = await functionList[functionName](params, appControl.userData, appControl);
         // let response =  (iresponse._message != null) ? iresponse._message : iresponse;
         let response = '';
         if (iresponse._message == null) {
@@ -98,7 +98,7 @@ if (fileList.length > 0){
   fileList.forEach(async (f) => {
     let mime = (f.mime) ? f.mime : 'text/plain';
     // future: f.vector information
-    let newFile = await createFile(f.name, f.content, mime,'assistants', gptControl);
+    let newFile = await createFile(f.name, f.content, mime,'assistants', appControl);
     fileids.push(newFile);
     console.log('uploading file', newFile);
   });
@@ -109,9 +109,9 @@ let newRun = await assistantApi.submitToolOutputsToRun(thread.id, run.id, toolsO
 
 
 // wait for output to appear in the thread messages
- let outputStatus = await pollRun(newRun, gptControl, 'output');
+ let outputStatus = await pollRun(newRun, appControl, 'output');
 if (raw.length > 0){
-  gptControl.lastRun.push({details: raw, fileids: fileids});
+  appControl.lastRun.push({details: raw, fileids: fileids});
 }
 return outputStatus; 
 }

@@ -11,21 +11,21 @@ import deleteAssistant from "./deleteAssistant.js";
  * @private
  * @function createAssistant
  * @description   Create a new assistant
- * @param {gptControl} gptControl - gptControl object
+ * @param {appControl} appControl - appControl object
  * @returns {promise} - return assistant object
  */
 
-async function createAssistant(gptControl) {
-  let { assistantName, assistantid, devMode, assistantApi } = gptControl;
+async function createAssistant(appControl) {
+  let { assistantName, assistantid, devMode, assistantApi } = appControl;
 
   // get assistant by assistantid
   // use this when developing the assistant
   // reduces clutter on your gpt provider
   console.log("devMode is ", devMode);
   if (devMode === true) {
-    gptControl.threadid = null;
-    await deleteAssistant(gptControl, null);
-    let assistant = await newAssistant(gptControl);
+    appControl.threadid = null;
+    await deleteAssistant(appControl, null);
+    let assistant = await newAssistant(appControl);
 
     return assistant;
   }
@@ -34,14 +34,14 @@ async function createAssistant(gptControl) {
   if (assistantid != null) {
     console.log("Using assistantid ", assistantid);
     let assistant = await assistantApi.getAssistant(assistantid);
-    gptControl.assistant = assistant;
-    gptControl.assistantid = assistant.id;
-    if (gptControl.vectorStoreid === null) {
+    appControl.assistant = assistant;
+    appControl.assistantid = assistant.id;
+    if (appControl.vectorStoreid === null) {
       let vs = await assistantApi.getVectorStore(assistant.metadata.vectorStoreid);
-      gptControl.vectorStoreid = assistant.metadata.vectorStoreid;
+      appControl.vectorStoreid = assistant.metadata.vectorStoreid;
     } 
-    await loadThread(gptControl);
-    return gptControl.assistant;
+    await loadThread(appControl);
+    return appControl.assistant;
   }
 
   // if assistantName is provided and assistantid is null
@@ -62,48 +62,48 @@ async function createAssistant(gptControl) {
     });
     
     if (assistant != null) {
-      gptControl.assistant = assistant;
-      gptControl.assistantid = assistant.id;
+      appControl.assistant = assistant;
+      appControl.assistantid = assistant.id;
       console.log("Found assistant ", assistantName, assistant.id);
-      await loadThread(gptControl);
+      await loadThread(appControl);
       console.log(assistant.metadata);
-      if (gptControl.vectorStoreid === null) {
+      if (appControl.vectorStoreid === null) {
         let vs = await assistantApi.getVectorStore(assistant.metadata.vectorStoreid);
-         gptControl.vectorStoreid = assistant.metadata.vectorStoreid;
+         appControl.vectorStoreid = assistant.metadata.vectorStoreid;
       }
     } else {
       // create a new assistant as a last resort
-      assistant = await newAssistant(gptControl);
-      gptControl.assistant = assistant;
-      gptControl.assistantid = assistant.id;
+      assistant = await newAssistant(appControl);
+      appControl.assistant = assistant;
+      appControl.assistantid = assistant.id;
       console.log(assistant.metadata);
-      if (gptControl.vectorStoreid === null) {
-         gptControl.vectorStoreid = assistant.metadata.vectorStoreid;
+      if (appControl.vectorStoreid === null) {
+         appControl.vectorStoreid = assistant.metadata.vectorStoreid;
       }
-      await loadThread(gptControl);
+      await loadThread(appControl);
       console.log(
         "Created new assistant ",
-        gptControl.assistant.id,
-        gptControl.assistant.name
+        appControl.assistant.id,
+        appControl.assistant.name
       );
     }
-    return gptControl.assistant;
+    return appControl.assistant;
   }
 }
 
-async function newAssistant(gptControl) {
-  let { assistantName, domainTools, model, assistantApi } = gptControl;
+async function newAssistant(appControl) {
+  let { assistantName, domainTools, model, assistantApi } = appControl;
   let createArgs = {
     name: assistantName,
     instructions: domainTools.instructions,
     model: model,
-    temperature: gptControl.temperature,
+    temperature: appControl.temperature,
     tools: domainTools.tools,
     metadata: { files: " ", lastThread: "", vectorStoreid: "" },
   };
-  if (gptControl.provider === "openai") {
+  if (appControl.provider === "openai") {
     let t = await assistantApi.createVectorStores({ name: assistantName });
-    gptControl.vectorStoreid = t.id;
+    appControl.vectorStoreid = t.id;
     createArgs.tool_resources = {
       file_search: {
         vector_store_ids: [t.id],
@@ -116,20 +116,20 @@ async function newAssistant(gptControl) {
   console.log("Created assistant ", assistant.id, assistant.name);
 
   // now create a new thread
-  gptControl.assistant = assistant;
-  gptControl.assistantid = assistant.id;
-  let thread = await loadThread(gptControl);
-  gptControl.thread = thread;
+  appControl.assistant = assistant;
+  appControl.assistantid = assistant.id;
+  let thread = await loadThread(appControl);
+  appControl.thread = thread;
   let metadata = assistant.metadata;
   metadata.lastThread = thread.id;
-  metadata.vectorStoreid = (!gptControl.vectorStoreid) ? "" : gptControl.vectorStoreid
+  metadata.vectorStoreid = (!appControl.vectorStoreid) ? "" : appControl.vectorStoreid
   let options = {
     metadata: metadata,
   };
   console.log(options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
-  gptControl.assistant = newAssistant;
-  gptControl.assistantid = newAssistant.id;
+  appControl.assistant = newAssistant;
+  appControl.assistantid = newAssistant.id;
   return assistant;
 }
 export default createAssistant;

@@ -24,14 +24,14 @@ const _readSASTableFunctionSpec = {
   }
 }
 
-async function _readSASTable(params, userData, gptControl) {
-  let tappEnv = await gptControl.getViyaSession(gptControl, params.source);
+async function _readSASTable(params, userData, appControl) {
+  let tappEnv = await appControl.getViyaSession(params.source);
   params.source = tappEnv.source;
-  let r = await _idescribeTable(params, tappEnv, gptControl);
+  let r = await _idescribeTable(params, tappEnv, appControl);
   return r.data;
 }
 
-async function _idescribeTable(params, appEnv, gptControl) {
+async function _idescribeTable(params, appEnv, appControl) {
   //TBD: need to move most of this code to restafedit
   let { table, limit, format, source, where, csv } = params;
   let { sessionID, restafedit } = appEnv;
@@ -43,7 +43,7 @@ async function _idescribeTable(params, appEnv, gptControl) {
   }
   // setup call to restafedit.setup
   
-  let appControl = {
+  let config= {
     source: source,
     table: iTable,
     casServerName: appEnv.casServerName,
@@ -60,7 +60,7 @@ async function _idescribeTable(params, appEnv, gptControl) {
 
   let tappEnv = await restafedit.setup(
     appEnv.logonPayload,
-    appControl,
+    config,
     sessionID
   );
 
@@ -69,7 +69,7 @@ async function _idescribeTable(params, appEnv, gptControl) {
     await restafedit.scrollTable('first', tappEnv);
     let tableSummary = await restafedit.getTableSummary(tappEnv);
     //let dataAsCsv = rows2csv(tappEnv.state.data);
-    let f = await gptControl.uploadFile(`${table}.json`,JSON.stringify(tappEnv.state.data), 'text/json', 'assistants');
+    let f = await appControl.uploadFile(`${table}.json`,JSON.stringify(tappEnv.state.data), 'text/json', 'assistants');
     describe = {
       table: iTable,
       tableSummary: tableSummary,

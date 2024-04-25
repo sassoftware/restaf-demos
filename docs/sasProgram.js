@@ -41,7 +41,7 @@ let tools = [
 ];
 
 //handler running sas code from a local file
-async function runSASLocalProgram(params, userData, gptControl) {
+async function runSASLocalProgram(params, userData, appControl) {
   let { program, output, source } = params;
 
   if (source == null) {
@@ -54,7 +54,7 @@ async function runSASLocalProgram(params, userData, gptControl) {
   if (output == null) {
     output = "log";
   }
-  let appEnv = await gptControl.getViyaSession(gptControl, source);
+  let appEnv = await appControl.getViyaSession(source);
   let src;
   try {
     src = await fss.readFile(program, "utf8");
@@ -127,7 +127,7 @@ chat(config)
 
 async function chat(config) {
   //Setup assistant
-  let gptControl = await setupAssistant(config);
+  let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -144,7 +144,7 @@ async function chat(config) {
     let promptInstructions = " ";
     try {
       // run prompt
-      let response = await runAssistant(gptControl, prompt, promptInstructions);
+      let response = await runAssistant(appControl, prompt, promptInstructions);
       console.log(response[0].content);
     } catch (err) {
       console.log(err);

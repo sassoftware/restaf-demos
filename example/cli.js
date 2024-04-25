@@ -29,7 +29,7 @@ chat(config)
   .catch((err) => console.log(err));
 
 async function chat(config) {
-    let gptControl = await setupAssistant(config);
+    let appControl = await setupAssistant(config);
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
@@ -70,10 +70,10 @@ async function chat(config) {
               content,
               "text/plain",
               "assistants",
-              gptControl
+              appControl
             );
             */
-            let r = await gptControl.uploadFile(f, content, "text/plain", "assistants");
+            let r = await appControl.uploadFile(f, content, "text/plain", "assistants");
             console.log(r);
           } catch (e) {
             console.log(e);
@@ -84,7 +84,7 @@ async function chat(config) {
           let filename = cmda[1].trim();
           let content = cmda[2].trim();
           let mimeType = "text/plain";
-          let r = await createFile(filename, content, mimeType, gptControl);
+          let r = await createFile(filename, content, mimeType, appControl);
           console.log(r);
           break;
         }
@@ -92,13 +92,13 @@ async function chat(config) {
         case "cancel": {
           //cancel current run
           let a = prompt.split(" ");
-          let r = await cancelRun(gptControl, a[1], a[2]);
+          let r = await cancelRun(appControl, a[1], a[2]);
           console.log(r);
           break;
         }
         case "tlist": {
           /*
-          let {store} = gptControl;
+          let {store} = appControl;
           let payload = {
             url: 'https://api.openai.com/v1/conversations',
             headers: {
@@ -110,40 +110,40 @@ async function chat(config) {
           let r = await store.request(payload);
           console.log(r);
           */
-          let r = await gptControl.assistantApi.listThreads(config.model);
+          let r = await appControl.assistantApi.listThreads(config.model);
           console.log(r);
 
           break;
         }
         case "deleteAssistant": {
           //cancel current run
-          let r = await deleteAssistant(gptControl, null);
+          let r = await deleteAssistant(appControl, null);
           console.log(r);
           break;
         }
         case "clearStores": {
-          let r = await clearStores(gptControl);
+          let r = await clearStores(appControl);
           console.log(r);
           break;
         }
         case "in": {
-          console.log(gptControl.assistant.instructions);
+          console.log(appControl.assistant.instructions);
           break;
         }
         case "showast": {
-          console.log(gptControl.assistant);
+          console.log(appControl.assistant);
           break;
         }
         case "createAssistant": {
           //cancel current run
-          gptControl = await setupAssistant(config);
+          appControl = await setupAssistant(config);
           break;
         }
         default: {
           //Note process.env is passed to runAssistant
-          // run assistant will pass both gptControl and process.env to tools functions
+          // run assistant will pass both appControl and process.env to tools functions
           let promptInstructions = " "; // 'some instructions
-          let response = await runAssistant(gptControl, prompt, " ");
+          let response = await runAssistant(appControl, prompt, " ");
           console.log(response[0].content);
       
           break;

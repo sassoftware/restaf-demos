@@ -6,12 +6,12 @@
  * @async
  * @description - Delete assistant
  * @function closeAssistant
- * @param {gptControl} gptControl - gpt session control object
+ * @param {appControl} appControl - gpt session control object
  * @param {object} [assistantid] - Assistant id
  * @returns {promise} - status string
  */
-async function deleteAssistant(gptControl, assistantid) {
-  let { assistantApi, assistant, assistantName } = gptControl;
+async function deleteAssistant(appControl, assistantid) {
+  let { assistantApi, assistant, assistantName } = appControl;
   if (assistantid != null) {
     try {
       assistant = await assistantApi.getAssistant(assistantid);
@@ -86,8 +86,8 @@ async function deleteAssistant(gptControl, assistantid) {
   try {
     let status = await assistantApi.deleteAssistant(assistant.id);
     console.log(`Assistant ${assistant.name} deleted`, status);
-    gptControl.assistant = null;
-    gptControl.assistantid = null;
+    appControl.assistant = null;
+    appControl.assistantid = null;
     return `Assistant ${assistant.name} deleted`;
   } catch (error) {
     console.log("Failed to delete assistant. Probably does not exist", error);

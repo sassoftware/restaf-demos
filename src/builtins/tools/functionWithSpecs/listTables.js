@@ -30,9 +30,9 @@ const _listTablesFunctionSpec = {
   }
 };
 
-async function _listTables(params, userData, gptControl) {
+async function _listTables(params, userData, appControl) {
   let { library, source, limit } = params;
-  let appEnv = await gptControl.getViyaSession(gptControl, source);
+  let appEnv = await appControl.getViyaSession(source);
   let p = {
     qs: {
       limit: limit == null ? 10 : limit,

@@ -26,7 +26,7 @@ const _listLibrarySpecs = {
   }
 }
 
-async function _listLibrary(params, userData, gptControl) {
+async function _listLibrary(params, userData, appControl) {
   let { limit, source, start } = params;
   
   
@@ -40,7 +40,7 @@ async function _listLibrary(params, userData, gptControl) {
     source = 'sas';
   }
   let s = source.toLowerCase();
-  let tAppEnv = await gptControl.getViyaSession(gptControl, s);
+  let tAppEnv = await appControl.getViyaSession(s);
   console.log('tAppEnv', tAppEnv.sessionID); 
   if (tAppEnv === null) {
     let list = [];

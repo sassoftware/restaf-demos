@@ -6,14 +6,14 @@
  * 
  * @description Return sepcified number of messages from thread
  * @private
- * @param {gptControl}  gptControl- client control object
+ * @param {appControl}  appControl- client control object
  * @param {number} limit - limit the number of messages to return
  * @returns {promise} - messages - array of messages[ {id, role, type, content}]
  * @example - This function will return the specified number of messages from the thread
  * Typically the top 2 will be the assistant message and user's prompt
  */
-async function getMessages(gptControl, limit) {  
-  let {thread, assistantApi} = gptControl;
+async function getMessages(appControl, limit) {  
+  let {thread, assistantApi} = appControl;
   const messages = await assistantApi.listMessages(thread.id, {limit:limit});
   let output = messages.data.map((m) => {
     let content = m.content[0];

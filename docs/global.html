@@ -213,7 +213,7 @@
         
         <span class="code-name">
             
-                cancelRun<span class="signature">(gptControl, threadid<span class="signature-attributes">opt</span>, runid<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+                cancelRun<span class="signature">(appControl, threadid<span class="signature-attributes">opt</span>, runid<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -264,13 +264,13 @@
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
 
 
   
@@ -448,7 +448,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                clearStores<span class="signature">(gptControl)</span><span class="type-signature"> &rarr; {promise}</span>
+                clearStores<span class="signature">(appControl)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -497,13 +497,13 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
 
 
   
@@ -629,7 +629,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                closeAssistant<span class="signature">(gptControl, assistantid<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span>
+                closeAssistant<span class="signature">(appControl, assistantid<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -680,13 +680,13 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
 
 
   
@@ -848,7 +848,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                createFile<span class="signature">(filename, content, mimeType, purpose, gptControl)</span><span class="type-signature"> &rarr; {promise}</span>
+                createFile<span class="signature">(filename, content, mimeType, purpose, appControl)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -995,7 +995,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
@@ -1011,7 +1011,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
   
 
-  <td class="description last"><p>gptControl object</p></td>
+  <td class="description last"><p>appControl object</p></td>
 </tr>
 
 
@@ -1120,7 +1120,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                getLatestMessage<span class="signature">(gptControl, limit)</span><span class="type-signature"> &rarr; {promise}</span>
+                getLatestMessage<span class="signature">(appControl, limit)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -1167,13 +1167,13 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
 
 
   
@@ -1324,7 +1324,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         
         <span class="code-name">
             
-                runAssistant<span class="signature">(gptControl, prompt, instructions)</span><span class="type-signature"> &rarr; {promise}</span>
+                runAssistant<span class="signature">(appControl, prompt, instructions)</span><span class="type-signature"> &rarr; {promise}</span>
             
         </span>
     </h4>
@@ -1373,13 +1373,13 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>gptControl</code></td>
+      <td class="name"><code>appControl</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type"><a href="global.html#gptControl">gptControl</a></code>
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
 
 
   
@@ -1540,7 +1540,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     
-        <pre class="prettyprint"><code>let prompt = 'fetch 20 records from cars from public'; let promptInstructions = 'some instructions'; let response = await runAssistant(gptControl, prompt, promptInstructions); console.log(response);</code></pre>
+        <pre class="prettyprint"><code>let prompt = 'fetch 20 records from cars from public'; let promptInstructions = 'some instructions'; let response = await runAssistant(appControl, prompt, promptInstructions); console.log(response);</code></pre>
     
 
 
@@ -1695,7 +1695,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 <div class="columns">
     
     <div class='param-desc column is-7'><ul>
-<li>return gptControl object}</li>
+<li>return appControl object}</li>
 </ul></div>
     
     
@@ -1726,6 +1726,542 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
         <div class='vertical-section'>
             <h1>Type Definitions</h1>
             <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">object</code>
+
+
+    </span>
+
+<h4 class="name" id="appControl">
+    <a class="href-link" href="#appControl">#</a>
+    
+    <span class="code-name">
+        appControl
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>appControl object</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>provider</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>provider name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>model</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>model name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>domainTools</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#toolspecs">toolspecs</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>tools prepended to the builtins</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>instructions-</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>Instructions string|null. If null default instructions is used</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistantName</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>assistant name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistant</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>current assistant object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistantid</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>assistant id|'0'|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>vectorStoreId</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>vector store id|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>thread</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>thread object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>threadid</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>thread id|'0'|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>appEnv</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>Viya session control object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>client</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>client object for openai|azureai</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>run</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>active run object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>api</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#assistantApi">assistantApi</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>maps openai api to azureai api(most of them)</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>code</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true, enable code interpreter</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>retrieval</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true enable retrieval(now called file_search in openai)</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>userData</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>user data object</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>getViyaSession</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">function</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>get a viya session</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>uploadFile</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">function</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>uploadFile function(in openai writes to vector store)</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+</div>
             
                 <div class="member">
 
@@ -2895,542 +3431,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
 
     <td class="description last"><p>endpoint for azureai</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-    <span class="method-parameter is-pulled-right">
-        <label>Type:</label>
-        
-<code class="param-type">object</code>
-
-
-    </span>
-
-<h4 class="name" id="gptControl">
-    <a class="href-link" href="#gptControl">#</a>
-    
-    <span class="code-name">
-        gptControl
-    </span>
-    
-</h4>
-
-
-
-
-<div class="description">
-    <p>gptControl object</p>
-</div>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>provider</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>provider name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>model</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>model name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>domainTools</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type"><a href="global.html#toolspecs">toolspecs</a></code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>tools prepended to the builtins</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>instructions-</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>Instructions string|null. If null default instructions is used</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>assistantName</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>assistant name</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>assistant</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>current assistant object|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>assistantid</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>assistant id|'0'|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>vectorStoreId</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>vector store id|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>thread</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>thread object|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>threadid</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>thread id|'0'|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>appEnv</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>Viya session control object|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>client</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>client object for openai|azureai</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>run</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>active run object|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>api</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type"><a href="global.html#assistantApi">assistantApi</a></code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>maps openai api to azureai api(most of them)</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>code</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>if true, enable code interpreter</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>retrieval</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">boolean</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>if true enable retrieval(now called file_search in openai)</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>userData</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>user data object</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>viyaOnDemand</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">function</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>viyaOnDemand function</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>uploadFile</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">function</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>uploadFile function(in openai writes to vector store)</p></td>
 </tr>
 
         

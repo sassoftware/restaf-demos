@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import fs from "fs";
-async function uploadFile(params, _appEnv, gptControl) {
+async function uploadFile(params, _appEnv, appControl) {
   let { filename, purpose} = params;
-  let { client, assistant } = gptControl;
+  let { client, assistant } = appControl;
 
   // get fileid
   const fileId = await client.files.create({
@@ -24,7 +24,7 @@ async function uploadFile(params, _appEnv, gptControl) {
       {
       file_ids: currentFileIds
       });
-    gptControl.assistant = newAssistant;
+    appControl.assistant = newAssistant;
     debugger;
     console.log('.......................', newAssistant);
   } catch (e) {

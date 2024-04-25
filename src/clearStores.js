@@ -6,7 +6,7 @@
  * @async
  * @description - Deletes upto 100 vector stores
  * @function clearStores
- * @param {gptControl} gptControl - gpt session control object
+ * @param {appControl} appControl - gpt session control object
  * @returns {promise} - status string
  * @example
  * This is a convenience function. With V2 of openai assistant, there can be a proliferation of vector stores
@@ -14,8 +14,8 @@
  * 
  */
 
-async function clearStores(gptControl) {
-  let { assistantApi } = gptControl;
+async function clearStores(appControl) {
+  let { assistantApi } = appControl;
 
   let vs = await assistantApi.listVectorStores({
     limit: 100,
@@ -25,7 +25,7 @@ async function clearStores(gptControl) {
   for (let i = 0; i < list.length; i++) {
     let l = list[i];
     console.log(l.name, l.id);
-    if (l.id !== gptControl.vectorStoreid) {
+    if (l.id !== appControl.vectorStoreid) {
       try {
         let r = await assistantApi.deleteVectorStore(l.id);
       } catch (error) {

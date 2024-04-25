@@ -10,12 +10,12 @@
  * @function pollRun
  * @description - Poll run status since there is no streaming support
  * @param {object} run - active run object 
- * @param {gptControl} gptControl - gpt  session control object
+ * @param {appControl} appControl - gpt  session control object
  * @returns {promise} - runStatus from client.beta.threads.runs.retrieve
  * @example - Will wait for completion(!(queued,in_progress, cancelling))
  */
-async function pollRun(run, gptControl, tag) {
-  let {assistantApi, thread} = gptControl;
+async function pollRun(run, appControl, tag) {
+  let {assistantApi, thread} = appControl;
   let done = null;
   let runStatus = null;
   function sleep(ms) {

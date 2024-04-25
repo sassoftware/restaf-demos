@@ -1,9 +1,9 @@
 
 import itemsData from '../lib/itemsData.js';
 
-async function _catalogSearchInstance(params,appEnv,gptControl){
+async function _catalogSearchInstance(params,appEnv,appControl){
   params.rel ='instances';
-  return _catalogSearch(params,appEnv,gptControl);
+  return _catalogSearch(params,appEnv,appControl);
 }
 const _catalogSearchFunctionSpec = {
   type: 'function',
@@ -94,8 +94,8 @@ const _catalogInstanceFunctionSpec = {
   }
 };
 
-async function _catalogSearch(params, userData, gptControl) {
-  let appEnv = gptControl.appEnv;
+async function _catalogSearch(params, userData, appControl) {
+  let appEnv = appControl.appEnv;
   let { metadata,start, limit, rel } = params;
   let { store } = appEnv;
   limit =(limit) ? limit : 10;
@@ -119,7 +119,7 @@ async function _catalogSearch(params, userData, gptControl) {
     let r = await store.apiCall(catalog.links(rel), payload);
     console.log('r=', JSON.stringify(r.itemsList(), null,4));
     let rx = itemsData(r, '_catalogSearch.txt'); 
-    let f = await gptControl.uploadFile('catalogSearch.txt', JSON.stringify(rx._details), 'plain/text', 'assistants');
+    let f = await appControl.uploadFile('catalogSearch.txt', JSON.stringify(rx._details), 'plain/text', 'assistants');
     return rx._message;
   } catch (err) {
     console.log(JSON.stringify(err));
