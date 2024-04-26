@@ -11,8 +11,24 @@ const _readSASTableFunctionSpec = {
       properties: {
         table: {
           type: 'string',
-          description: 'A comma-separated list of keywords like a,b,c',
+          description: 'The table to read. The table is specified in the form library.tablename',
         },
+        limit:{
+          type: 'integer',
+          description: 'The number of rows to read',
+        },
+        start:{
+          type: 'integer',
+          description: 'The row to start reading',
+        },
+        format:{
+          type: 'boolean',
+          description: 'Return the data in JSON format',
+        },
+        where:{
+          type: 'string',
+          description: 'The where clause to use in the query',
+        },  
         source: {
           type: 'string',
           description: 'The source is either CAS or SAS',

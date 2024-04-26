@@ -13,7 +13,9 @@
  * @property {string} vectorStoreId - vector store id|null
  * @property {toolspecs} domainTools - domain tools
  * @property {object} viyaConfig - viya config
- * @property {string} logLevel - log level
+ * @property {string} logLevel - log level - place holder for future use
+ * @property {object} pollStatus - if true, will print status of polling
+ * @property {object} pollInterval - interval for polling(default 5000ms)
  * @property {boolean} code - if true enable code-interpreter
  * @property {boolean} retrieval - if true enable retrieval(now called file_search)
  * @property {object} userData - user data object
@@ -86,26 +88,24 @@
 
 /**
  * appControl object
- * @typedef {object} appControl
+ * @typedef {object} appControl - created by setupAssistant
  * @property {string} provider - provider name
  * @property {string} model - model name
  * @property {toolspecs} domainTools tools prepended to the builtins
  * @property {string} instructions- Instructions string|null. If null default instructions is used
- * 
+ * @property {object} code - if true, enable code interpreter tool
+ * @property {boolean} retrieval - if true enable retrieval tool(now called file_search tool in openai)
  * @property {string} assistantName - assistant name
- * @property {object} assistant - current assistant object|null
- * @property {string} assistantid - assistant id|'0'|null
- * @property {string} vectorStoreId - vector store id|null
- 
- * @property {object} thread - thread object|null
+ * @property {string} assistantid - assistant id|null
  * @property {string} threadid - thread id|'0'|null
- 
- * @property {object} appEnv - Viya session control object|null
+ * @property {string} vectorStoreId - vector store id|null
+ * @property {object} assistant - current assistant object|null
+ * @property {object} thread - thread object|null
+ * @property {object} appEnv - Viya session control object
  * @property {object} client - client object for openai|azureai
  * @property {object} run  - active run object|null
- * @property {assistantApi} api - maps openai api to azureai api(most of them)
- * @property {object} code - if true, enable code interpreter
- * @property {boolean} retrieval - if true enable retrieval(now called file_search in openai)
+ * @property {assistantApi} api - maps openai api to azureai api(most of them) with extensions
+ 
  * @property {object} userData - user data object
  * @property {function} getViyaSession - get a viya session
  * @property {function} uploadFile - uploadFile function(in openai writes to vector store)
@@ -113,9 +113,9 @@
   
 
 /**
- * appEnv object
+ * appEnv object - returned by getViyaSession
  * @property {string} host - url to viya server
- * @property {logonPayload} - logonPayload
+ * @property {logonPayload} - logonPayload - passed in to setupAssistant
  * @property {string} source - cas|compute|none
  * @property {object} session - session object(for restaf users) if source is cas or compute
  * @property {object} servers - servers object(for restaf users) if source is cas or compute
@@ -124,5 +124,4 @@
  * @property {object} store - restaf store object
  * @property {object} restaflib - restaflib object if source is cas or compute
  * @property {object} restafedit - restafedit object if source is cas or compute
- 
 */

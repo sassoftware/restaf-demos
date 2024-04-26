@@ -17,6 +17,7 @@ import {
   createFile,
   builtinTools,
   clearStores,
+  clearFiles,
 } from "../src/index.js";
 
 
@@ -51,6 +52,9 @@ async function chat(config) {
     }
     if (cmd === "clear" && cmda[1] === "stores") {
       cmd = "clearStores"; // clear stores
+    }
+    if (cmd === "clear" && cmda[1] === "files") {
+      cmd = "clearFiles"; // clear stores
     }
     try {
       switch (cmd) {
@@ -126,6 +130,12 @@ async function chat(config) {
           console.log(r);
           break;
         }
+        case 'clearFiles': {  
+          let r = await clearFiles(appControl);
+          console.log(r);
+          break;
+
+        }
         case "in": {
           console.log(appControl.assistant.instructions);
           break;
@@ -177,6 +187,8 @@ function setupConfig() {
     code: process.env.APPENV_CODE === "TRUE" ? true : false,
     retrieval: process.env.APPENV_RETRIEVAL === "TRUE" ? true : false,
     userData: {},
+    pollStatus: process.env.APPENV_POLLSTATUS === 'TRUE',
+    pollInterval: (process.env.APPENV_POLLINTERVAL)? parseInt(process.env.APPENV_POLLINTERVAL): 5000
   };
   console.log(config);
   config.domainTools = {

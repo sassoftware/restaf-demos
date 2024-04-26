@@ -1,5 +1,5 @@
 // extract just the data and ignore links etc...
-function itemsData(r,rel) {
+function itemsData(r) {
  
   
   console.log('itemsData: ', r.itemsList().size);

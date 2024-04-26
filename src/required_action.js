@@ -76,8 +76,7 @@ async function required_action(runStatus,appControl) {
         }
 
         elapsedTime = Math.round((Date.now() - elapsedTime) / 1000);
-        console.log(`>> Function call ${functionName} completed in ${elapsedTime} seconds`);
-        console.log(`>> Function call ${functionName} completed`);
+        console.log(`Function call ${functionName} completed in ${elapsedTime} seconds`);
           toolsOutput.push({
             toolCallId: action.id,
             output: response

@@ -14,6 +14,7 @@ import createFile from './createFile.js';
 import cancelRun from './cancelRun.js';
 import builtinTools from './builtins/tools/index.js';
 import clearStores from './clearStores.js';
+import clearFiles from './clearFiles.js';
 export  {
   setupAssistant,
   runAssistant,
@@ -23,5 +24,6 @@ export  {
   createFile,
   cancelRun,
   clearStores,
+  clearFiles,
   builtinTools
 };

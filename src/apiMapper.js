@@ -152,7 +152,11 @@ function apiMapper(client, provider) {
     let [id] = args;
     return client.files.del(id);
   }
-  
+  const listFiles = (client) => (...args) =>{
+    let [options] = args;
+    return client.files.list(options);
+
+  }
   const createVectorStores = (client) => async (...args) =>{
     let [name] = args;
     console.log(name);
@@ -200,11 +204,13 @@ function apiMapper(client, provider) {
       getVectorStore: getVectorStore(client),
       createVectorStoresFiles: createVectorStoresFiles(client),
       deleteVectorStore: deleteVectorStore(client),
+      listVectorStores: listVectorStores(client),
 
       uploadFile: uploadFile(client),
       createAssistantFile: createAssistantFile(client),
       deleteFile: deleteFile(client),
-      listVectorStores: listVectorStores(client),
+      listFiles: listFiles(client),
+    
       
       createRun: createRun(client),
       getRun: getRun(client),

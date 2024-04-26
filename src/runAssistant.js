@@ -28,15 +28,13 @@ async function runAssistant(appControl, prompt, instructions) {
   appControl.lastRun = [];
   let start = Date.now();
   let r = await irunAssistant(appControl, prompt, instructions);
-  
-
-
   let elapsed = Math.round(Date.now() - start) / 1000
   console.log('Time taken to run assistant: ', elapsed, ' seconds');
+  console.log('-----------------------------------');
   return r;
 }
 async function irunAssistant(appControl, prompt, instructions) {
-  let { thread, assistantApi, appEnv } = appControl;
+  let { thread, assistantApi} = appControl;
 
   //add the user request to thread
   try {
@@ -61,10 +59,10 @@ async function irunAssistant(appControl, prompt, instructions) {
   }
   // now run the thread
   // assume caller will catch any thrown errors
-  let r = await runPrompt(appControl, appEnv, instructions);
+  let r = await runPrompt(appControl, instructions);
   return r;
 }
-async function runPrompt(appControl, appEnv, instructions) {
+async function runPrompt(appControl, instructions) {
   let { assistantApi, thread } = appControl;
 
   let runArgs = {
@@ -95,9 +93,9 @@ async function runPrompt(appControl, appEnv, instructions) {
   let done = null;
   do {
     let elapsed = Date.now();
-    runStatus= await required_action(runStatus, appControl,appEnv);
+    runStatus= await required_action(runStatus, appControl);
     elapsed = Math.round(Date.now() - elapsed) / 1000;
-    console.log("Time taken to required action: ", elapsed, " seconds");
+    console.log("Time taken for required action: ", elapsed, " seconds");
     if (runStatus.status === "requires_action") {
       console.log("runStatus wants to run another requires_action");
     } else {

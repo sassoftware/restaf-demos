@@ -26,7 +26,6 @@ const _keywordsFunctionSpec = {
 
 async function _keywords(params) {
   let { keywords, format } = params;
-  console.log('keywords', keywords, format);
   let rx = '';
   switch (format) {
     case 'html': {
@@ -54,7 +53,6 @@ async function _keywords(params) {
     default:
       rx =JSON.stringify(params);
   }
-  console.log('rx', rx);
   return rx;
 }
 let catalogSearch = {

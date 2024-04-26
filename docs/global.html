@@ -110,7 +110,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#clearStores">clearStores</a></li><li><a href="global.html#closeAssistant">closeAssistant</a></li><li><a href="global.html#createFile">createFile</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#cancelRun">cancelRun</a></li><li><a href="global.html#clearFiles">clearFiles</a></li><li><a href="global.html#clearStores">clearStores</a></li><li><a href="global.html#closeAssistant">closeAssistant</a></li><li><a href="global.html#createFile">createFile</a></li><li><a href="global.html#getLatestMessage">getLatestMessage</a></li><li><a href="global.html#runAssistant">runAssistant</a></li><li><a href="global.html#setupAssistant">setupAssistant</a></li></ul></div>
                 
             </nav>
         </div>
@@ -430,6 +430,187 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
     
     
         <pre class="prettyprint"><code>- This function will cancel the run</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="clearFiles">
+        <a class="href-link" href="#clearFiles">#</a>
+        
+            
+                <span class='tag'>async</span>
+            
+        
+        <span class="code-name">
+            
+                clearFiles<span class="signature">(appControl)</span><span class="type-signature"> &rarr; {promise}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <ul>
+<li>Deletes files</li>
+</ul>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>appControl</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#appControl">appControl</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>gpt session control object</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>status string</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">promise</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>This is a convenience function. With V2 of openai assistant, there can be a proliferation of vector storesif they are not managed properly. This function will delete all but the current vector store</code></pre>
     
 
 
@@ -1875,6 +2056,52 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
     
+        <td class="name"><code>code</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true, enable code interpreter tool</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>retrieval</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true enable retrieval tool(now called file_search tool in openai)</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
         <td class="name"><code>assistantName</code></td>
     
 
@@ -1898,29 +2125,6 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
     
-        <td class="name"><code>assistant</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>current assistant object|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
         <td class="name"><code>assistantid</code></td>
     
 
@@ -1937,53 +2141,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    <td class="description last"><p>assistant id|'0'|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>vectorStoreId</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">string</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>vector store id|null</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>thread</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>thread object|null</p></td>
+    <td class="description last"><p>assistant id|null</p></td>
 </tr>
 
         
@@ -2013,6 +2171,75 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
             
 <tr class="deep-level-0">
     
+        <td class="name"><code>vectorStoreId</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>vector store id|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>assistant</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>current assistant object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>thread</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>thread object|null</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
         <td class="name"><code>appEnv</code></td>
     
 
@@ -2029,7 +2256,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    <td class="description last"><p>Viya session control object|null</p></td>
+    <td class="description last"><p>Viya session control object</p></td>
 </tr>
 
         
@@ -2098,53 +2325,7 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    <td class="description last"><p>maps openai api to azureai api(most of them)</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>code</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">object</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>if true, enable code interpreter</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>retrieval</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">boolean</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>if true enable retrieval(now called file_search in openai)</p></td>
+    <td class="description last"><p>maps openai api to azureai api(most of them) with extensions</p></td>
 </tr>
 
         
@@ -3216,7 +3397,53 @@ returns {promise} - status (null if no run or thread or failed to cancel)</p></t
 
     
 
-    <td class="description last"><p>log level</p></td>
+    <td class="description last"><p>log level - place holder for future use</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>pollStatus</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>if true, will print status of polling</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>pollInterval</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>interval for polling(default 5000ms)</p></td>
 </tr>
 
         

@@ -24,16 +24,19 @@ async function pollRun(run, appControl, tag) {
   // Since there is no streaming support, sleep and poll the status
   tag = (tag == null) ? 'prompt' : tag;
   do {
-   runStatus = await assistantApi.getRun(thread.id, run.id);
-    
+    runStatus = await assistantApi.getRun(thread.id, run.id);   
     tag = (tag == null) ? 'prompt' : tag;
-    console.log("-------------------", tag, runStatus.status);
+    if (appControl.pollStatus == true) {
+      console.log(`Polling ${tag} status`);
+    }
     if ( !(runStatus.status === "queued" ||runStatus.status === "in_progress" ||
           runStatus.status === "cancelling")) {
       done = runStatus.status;
     } else {
-      await sleep(500);
-      console.log("waited 500 ms");
+      await sleep(appControl.pollInterval);
+      if (appControl.pollStatus == true) {
+         console.log(`Waited ${appControl.pollInterval} ms for ${tag}`);
+      }
     }
   } while (done === null);
 
