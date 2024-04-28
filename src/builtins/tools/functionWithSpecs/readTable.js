@@ -41,9 +41,9 @@ const _readSASTableFunctionSpec = {
 }
 
 async function _readSASTable(params, userData, appControl) {
-  let tappEnv = await appControl.getViyaSession(params.source);
-  params.source = tappEnv.source;
-  let r = await _idescribeTable(params, tappEnv, appControl);
+  let appEnv = await appControl.getViyaSession(params.source);
+  params.source = appEnv.source;
+  let r = await _idescribeTable(params, appEnv, appControl);
   return r.data;
 }
 
@@ -84,7 +84,7 @@ async function _idescribeTable(params, appEnv, appControl) {
   try {
     await restafedit.scrollTable('first', tappEnv);
     let tableSummary = await restafedit.getTableSummary(tappEnv);
-    //let dataAsCsv = rows2csv(tappEnv.state.data);
+
     let f = await appControl.uploadFile(`${table}.json`,JSON.stringify(tappEnv.state.data), 'text/json', 'assistants');
     describe = {
       table: iTable,

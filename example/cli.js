@@ -67,7 +67,6 @@ async function chat(config) {
             //let fileHandle = fs.createReadStream(f); //for openai
             debugger;
             let content = fs.readFileSync(f);
-            console.log(content);
             /*
             let r = await createFile(
               f,
@@ -175,13 +174,13 @@ function setupConfig() {
     },
     devMode: process.env.APPENV_DEVMODE === "TRUE",
     assistantid:
-      process.env.APPENV_ASSISTANTID.trim().length === 0
+      (process.env.ASSISTANTID == null || process.env.APPENV_ASSISTANTID.trim().length === 0)
         ? null
         : process.env.APPENV_ASSISTANTID,
     assistantName: process.env.APPENV_ASSISTANTNAME,
     vectorStoreid: process.env.APPENV_VECTORSTOREID,
     threadid:
-      process.env.APPENV_THREADID.trim().length === 0
+      (process.env.APPENV_THREADID == null ||process.env.APPENV_THREADID.trim().length === 0)
         ? null
         : process.env.APPENV_THREADID,
     code: process.env.APPENV_CODE === "TRUE" ? true : false,
@@ -220,7 +219,7 @@ function setupConfig() {
   let toolset = process.env.APPENV_TOOLSET
     ? process.env.APPENV_TOOLSET
     : "viya";
-  console.log(toolset);
-  config.domainTools = builtinTools[toolset];
+  //console.log(toolset);
+  // config.domainTools = builtinTools[toolset];
   return config;
 }

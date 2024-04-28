@@ -25,10 +25,10 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
   // really strange args for azure - not sure why they(both) coded it like this
   
   let file = null;
+  
   try {
-    
     file =
-      provider === "openai"
+      (provider === "openai")    
         ? await assistantApi.uploadFile(fileHandle, purpose)
         : await assistantApi.uploadFile(content, purpose, {
             filename: filename,
@@ -36,6 +36,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
 
     // now add to the assistant
     console.log("uploaded file:", file.id);
+    
 
     /* do not attach to assistant  if purpose is null*/
     if (purpose === null) {
@@ -43,12 +44,13 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
     }
     let assistantFile = null;
     if (provider === "azureai") {
+      
       assistantFile = await assistantApi.createAssistantFile(
         assistant.id,
         file.id
       );
-      console.log("Assistant File ", assistantFile.id);
-      await setFileIds(appControl, assistantFile);
+      
+      await setFileIds(appControl, file);
       return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
 
     } else {
@@ -56,7 +58,8 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
         appControl.vectorStoreid,
         {file_id: file.id}
       );
-      console.log("VectorStore File ", vsFile.id);
+      console.log("VectorStore File ID ", file.id);
+      await setFileIds(appControl, file);
       return { fileName: filename, fileId: file.id, vectorStoreFileId: vsFile.id};
 
       }
@@ -68,23 +71,29 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
   async function setFileIds(appControl, file) {
     
     let { assistantApi, assistant, provider } = appControl;
-    let currentFileIds =
-      provider === "openai" ? assistant.file_ids : assistant.fileIds;
-    // looks like it is possible to create a file with null file id
-    if (currentFileIds != null) {
-      currentFileIds = currentFileIds.filter((v) => v != null)
+    let currentFileIds = provider === "openai" ? assistant.file_ids : assistant.fileIds;
+
+    // do not update fileid array for openai
+    if (provider === "azureai") {
+      currentFileIds.push(file.id);
     } else {
-      currentFileIds = '';
+      currentFileIds = [];
+    }
+    if (currentFileIds.length == null) {
+      currentFileIds = [];
     }
     let options = {
-      currentFileIds: currentFileIds,
+      file_ids: currentFileIds,
     };
-
+  
     let metadata = assistant.metadata;
     try {
-      metadata.files  = metadata.files + ' ' + file.id;
+      metadata.files = metadata.files + " " + file.id;
       options.metadata = metadata;
-      let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
+      let newAssistant = await assistantApi.updateAssistant(
+        assistant.id,
+        options
+      );
       appControl.assistant = newAssistant;
       appControl.assistantid = newAssistant.id;
     } catch (e) {
@@ -93,6 +102,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
         `Failed to update assistant with new file ${file.id}`
       );
     }
+   
   }
 }
 export default addFileToAssistant;

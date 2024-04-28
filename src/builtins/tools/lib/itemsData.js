@@ -11,19 +11,16 @@ function itemsData(r) {
       let rt = r.items(item, 'data').toJS();
       let row = {name: item, label: rt.label, type: rt.type};
       if (rt.attributes != null) {
-        row.source = rt.attributes.sourceSystem;
+        row.source = (rt.attributes.sourceSystem) ? rt.attributes.sourceSystem.toLowerCase() : '';
         row.library = rt.attributes.library;
       }
       details[item] = rt;
-      console.log('details', details[item]);
       return row;
     });
   } else {
-   
     rx = (r.items('data') != null) ? [r.items('data').toJS()] : {warning: 'No data returned'};
     details = rx;
   }
-  console.log(details);
   return {_message: JSON.stringify(rx), _details: details};
 }
 export default itemsData;

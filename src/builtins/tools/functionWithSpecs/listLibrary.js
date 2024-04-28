@@ -18,7 +18,7 @@ const _listLibrarySpecs = {
         },
         source: {
           type: 'string',
-          description: 'cas, sas',
+          description: ' the source is either cas, sas',
         },
       },
       type: 'object',
@@ -28,29 +28,24 @@ const _listLibrarySpecs = {
 
 async function _listLibrary(params, userData, appControl) {
   let { limit, source, start } = params;
-  
-  
   let payload = {
     qs: {
       limit: limit == null ? 10 : limit,
       start: start == null ? 0 : start, 
     },
   };
-  if (source === null) {
-    source = 'sas';
+
+  let s = (source == null) ? 'cas' : source.toLowerCase();
+  let items = {};
+  let appEnv = await appControl.getViyaSession(s); 
+  if (appEnv === null) {
+    items[s]   = [];
+    return JSON.stringify(items);
   }
-  let s = source.toLowerCase();
-  let tAppEnv = await appControl.getViyaSession(s);
-  console.log('tAppEnv', tAppEnv.sessionID); 
-  if (tAppEnv === null) {
-    let list = [];
-    return JSON.stringify(list);
-  }
-  console.log('tAppEnv', tAppEnv.sessionID);
   
-  let r = await tAppEnv.restafedit.getLibraryList(tAppEnv, payload);
-  console.log(r);
-  let items = {cas: r};
+  let r = await appEnv.restafedit.getLibraryList(appEnv, payload);
+  
+  items[s] = r;
   
   return JSON.stringify(items);
 

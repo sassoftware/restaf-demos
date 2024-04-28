@@ -18,8 +18,6 @@ import addFileToAssistant from "./addFileToAssistant.js";
 async function createFile(filename, content, mimeType,purpose, appControl) {
   const blob = new Blob([content], { type: mimeType });
   const file = new File([blob], filename, { type: mimeType });
-  
-  console.log(blob);
   try {
     
     let r = await addFileToAssistant(filename, file, content, purpose, appControl);

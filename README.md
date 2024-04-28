@@ -1,8 +1,11 @@
 # @sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya
 
 @sassoftware/viya-assistantjs is a light weight JavaScript library to help SAS
-users build AI Assistants with minimal coding. It supports the Assistant
-from openai and Azure
+users build AI Assistants with minimal coding. This  version supports OpenAI Assistant.
+
+> A note on azureai Assistant support:
+ The support for Azureai Assistant is temporarily disabled until azureai
+ Assistant is upgraded to use V2 of openai Assistant.
 
 See [documentation here](https://sassoftware.github.io/viya-assistantjs/)
 
@@ -26,7 +29,6 @@ The documentation is [here](https://sassoftware.github.io/restaf-demos/index.htm
 Models used in the development of this library
 
 - openai: gpt-4-turbo-preview
-- azureai: gpt-4 1106 preview in zone East US 2
 
 ## Basic flow
 
@@ -55,13 +57,13 @@ See the two examples for a quick introduction to  this library.
 
 ## Tool function signature
 
-The tool function signature is as follows:
+The tool function signature used by this library is as follows.
 
 ```javascript
 async function myToolFunction(params, userData, appControl) {
   // params: parameters passed to the tool from gpt
   // userData: userData set by the developer in the configuration object
-  // appControl: information about the assistant(returned from setupAssistant)
+  // appControl: returned from setupAssistant
   // return: a string or an object
 }
 ```
@@ -76,10 +78,16 @@ The appControl object has the following properties that are useful in the tool f
   getViyaSession: <function>, // to get viya session information
   uploadFile: <function>,// to upload content to a file
 }
+```
 
 ### getViyaSession
 
-The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See <link> for more information. Some of the information is targeted to users of @sassoftware/restaf.
+The function takes one argument, the source(cas|sas), and returns an object of
+type appEnv.This object has Viya sessionID and other information needed to access
+Viya using REST api.
+
+See [this link](https://sassoftware.github.io/restaf-demos/global.html#appEnv)
+for details on the appEnv object.
 
 ```javascript
 let appEnv = await appControl.getViyaSession('cas');
@@ -87,22 +95,34 @@ let appEnv = await appControl.getViyaSession('cas');
 
 ### uploadFile
 
-This function is used to upload content. The call will result in creation of a
- file with the specified name.
- If the provider is openai,
- then file is added to the current vector store and used in subsequent
-  calls to the assistant.
-See the example below
+Use this function to upload content to the assistant. in openai, the file is
+added to the current vector store and available for file-search.
 
 ```javascript
-
-    let f = await appControl.uploadFile('catalogSearch.txt', content, 'text/plain', 'assistants');
+    A sample call is shown below
+    let f = await appControl.uploadFile('mydoc.txt', content, 'text/plain', 'assistants');
     Parameters are:
-    - filename: name of the file to be created
+    - mydoc.txt: name of the file to be created
     - content: content to be written to the file
     - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
-    - purpose: assistants is the only one supported at this time
+    - purpose: 'assistants' is the only purpose supported at this time
 ```
+
+## Example 1: Using the builtin tools
+
+The library comes with a a default set of tools to help you get started.
+The source code for these tools are available [here](https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs)
+
+The tools are:
+
+- catalogSearch - uses the Information Catalog service to search for information
+  - SAS Information Catalog license required. Otherwise it will fail.
+- keywords - a simple tool to format comma-separated keywords(used by testing tools)
+- listLibrary - list libraries in a cas or sas session
+- listTables - list tables in a cas or sas library
+- readTable - read a table in a cas or sas library
+
+The sample program is below.
 
 ## Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a>
 
@@ -113,6 +133,7 @@ See notes in the program below
 // Step 1: Import the necessary modules
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+
 import getToken from './getToken.js';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 let {host, token} = getToken();
@@ -234,8 +255,8 @@ Response: Here are the availability statuses for the courses you inquired about:
 ## Creating a AI Assistant with a Viya-based tool<a name="extend"></a>
 
 This example has a tool to list tables in a given caslib or libref. Clearly one
-would not use AI Assistant for this purpose. However this example demonstrates
-how to call Viya to respond to a user query.
+would not use AI Assistant for this purpose. However, this example demonstrates
+the basics of calling Viya to respond to a user query.
 
 This example uses @sassoftware/restafedit to make the API calls. You can
 use other ways to call Viya and get responses.
@@ -318,7 +339,7 @@ async function listTables(params, userData, appControl) {
 // Step 3: setup configuration
 let config = {
   devMode: true,
-  provider: "openai", // or 'azureai'
+  provider: "openai", 
   model: process.env.OPENAI_MODEL,
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider
@@ -396,7 +417,7 @@ Response: Here are the tables available in the SAS library named "sashelp":
 9. `APPLIANC`
 10. `ARSTOP`
 
-Please let me know if you need details on any of these tables or if there's 
+Please let me know if you need details on any of these tables or if there's
 anything else I can assist you with.
 
 Prompt: list tables in cas library Public

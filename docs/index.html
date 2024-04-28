@@ -72,6 +72,10 @@
                                 gettingStarted
                             </a>
                         
+                            <a class="dropdown-item" href="tutorial-getToken.html">
+                                getToken
+                            </a>
+                        
                             <a class="dropdown-item" href="tutorial-Run SAS Samples.html">
                                 Run SAS Samples
                             </a>
@@ -209,11 +213,11 @@ code_interpreter tool.</p>
 </ol>
 <p>See the two examples for a quick introduction to  this library.</p>
 <h2>Tool function signature</h2>
-<p>The tool function signature is as follows:</p>
+<p>The tool function signature used by this library is as follows:</p>
 <pre class="prettyprint source lang-javascript"><code>async function myToolFunction(params, userData, appControl) {
   // params: parameters passed to the tool from gpt
   // userData: userData set by the developer in the configuration object
-  // appControl: information about the assistant(returned from setupAssistant)
+  // appControl: returned from setupAssistant
   // return: a string or an object
 }
 </code></pre>
@@ -229,7 +233,7 @@ this object.</p>
 
 ### getViyaSession
 
-The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See &lt;link> for more information. Some of the information is targeted to users of @sassoftware/restaf.
+The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See [this](https://sassoftware.github.io/restaf-demos/global.html#appEnv) for details on the appEnv object.
 
 ```javascript
 let appEnv = await appControl.getViyaSession('cas');
@@ -237,17 +241,15 @@ let appEnv = await appControl.getViyaSession('cas');
 <h3>uploadFile</h3>
 <p>This function is used to upload content. The call will result in creation of a
 file with the specified name.
-If the provider is openai,
-then file is added to the current vector store and used in subsequent
-calls to the assistant.
-See the example below</p>
-<pre class="prettyprint source lang-javascript"><code>
-    let f = await appControl.uploadFile('catalogSearch.txt', content, 'text/plain', 'assistants');
+If the provider is openai,file is added to the current vector store
+and used in subsequent calls to the assistant.</p>
+<pre class="prettyprint source lang-javascript"><code>    An sample call is shown below
+    let f = await appControl.uploadFile('mydoc.txt', content, 'text/plain', 'assistants');
     Parameters are:
-    - filename: name of the file to be created
+    - mydoc.txt: name of the file to be created
     - content: content to be written to the file
     - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
-    - purpose: assistants is the only one supported at this time
+    - purpose: 'assistants' is the only purpose supported at this time
 </code></pre>
 <h2>Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a></h2>
 <p>See notes in the program below</p>
@@ -255,6 +257,7 @@ See the example below</p>
 // Step 1: Import the necessary modules
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+
 import getToken from './getToken.js';
 import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
 let {host, token} = getToken();

@@ -3,8 +3,7 @@ import itemsData from '../lib/itemsData.js';
 
 async function _catalogSearchInstance(params,appEnv,appControl){
   params.rel ='instances';
-  params.metadata = 'assetType:' + params.asset + ' ' + params.metadata;
-  console.log(params);
+  params.metadata = 'assetType:' + params.asset + ' ' + params.metadata
   return _catalogSearch(params,appEnv,appControl);
 }
 const _catalogSearchFunctionSpec = {
@@ -102,7 +101,7 @@ async function _catalogSearch(params, userData, appControl) {
   let { metadata,start, limit, rel } = params;
   console.log(params);
   let splitmetadata = metadata.trimStart().split(' ');
-  let assetType = 'catalogSearch.json';
+  let assetType = 'catalogSearch.txt';
   if (!splitmetadata[0].includes(':')) {
 
     if (["dataflows",
@@ -119,7 +118,6 @@ async function _catalogSearch(params, userData, appControl) {
     "riskdataprojects",
     "riskmodels"
     ].includes(splitmetadata[0])) {
-      console.log('asset search')
       assetType = `${splitmetadata[0]}.json`;
       splitmetadata[0] = 'assetType:' + splitmetadata[0];
       metadata = splitmetadata.join(' ');
@@ -149,7 +147,7 @@ async function _catalogSearch(params, userData, appControl) {
     };
     let r = await store.apiCall(catalog.links(rel), payload);
     let rx = itemsData(r); 
-    let f = await appControl.uploadFile(assetType, JSON.stringify(rx._details), 'text/json', 'assistants');
+    let f = await appControl.uploadFile(assetType, JSON.stringify(rx._details), 'text/plain', 'assistants');
     return rx._message;
   } catch (err) {
     console.log(JSON.stringify(err));

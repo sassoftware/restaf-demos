@@ -39,6 +39,7 @@ function apiMapper(client, provider) {
 
   const updateAssistant = (client) => (...args) =>{
     let [id, options] = args;
+    console.log('options', options)
     if (options.fileIds) {
       options.file_ids = options.fileIds;
       delete options.fileIds;
@@ -77,7 +78,7 @@ function apiMapper(client, provider) {
   }
   const deleteThread = (client) => (...args) =>{
     let [id] = args;
-    return client.beta.threads.del(id)
+    return client.beta.threads.del(id);
   }
   const getThread = (client) => (...args) =>{
     let [id] = args;
@@ -137,9 +138,7 @@ function apiMapper(client, provider) {
       file: fileHandle,
       purpose: purpose
     }
-    
     return client.files.create(options);
-
   }
   const createAssistantFile = (client) => (...args) =>{
     let [assistantid, fileId] = args;
@@ -159,16 +158,12 @@ function apiMapper(client, provider) {
   }
   const createVectorStores = (client) => async (...args) =>{
     let [name] = args;
-    console.log(name);
-    let r = await client.beta.vectorStores.create(name);
-    return r;
+    return client.beta.vectorStores.create(name);
   }
   
   const createVectorStoresFiles =(client) => async (...args) =>{
     let [vsid,fileid] = args;
-    console.log(vsid, fileid);
-    let r = await client.beta.vectorStores.files.create(vsid, fileid);
-    return r;
+    return client.beta.vectorStores.files.create(vsid, fileid);
   }
   const deleteVectorStore= (client) => async (...args) =>{
     let [id] = args;

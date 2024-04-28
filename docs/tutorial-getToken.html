@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Assistants and Threads</title>
+  <title> getToken</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -122,64 +122,48 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>Assistants and Threads</h1>
+                    <h1>getToken</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>Notes on Assistant and Threads- local rules</h1>
-<p>In the configuration object one can set values for assistant name, assistant id,
-threadid and vector store id..</p>
-<p>In production one expects the assistantid, threadid and vectorStoreidand threadid
-to be savbed externally.</p>
-<p>The library follows the following rules - mainly to simplify the development process.</p>
-<h2>Basic setup</h2>
-<p>The following information is saved in the session metadata</p>
-<ul>
-<li>the id of the current thread</li>
-<li>the id of the current vector store</li>
-</ul>
-<h2>Assistant</h2>
-<p>Each instance of assistant has a unique id, However the names of the assistant
-are not unique.</p>
-<p>To avoid adding the overhead of persisting these id's the library
-has some local rules during development.</p>
-<blockquote>
-<p>During development recommend setting devMode to true.
-This way a fresh environment is available for each development
-session.</p>
-</blockquote>
-<h2>devMode=true</h2>
-<ul>
-<li>If a assistant with the specified assistName exists, it will be deleted.
-Its thread and vector store are also be deleted.</li>
-<li>A new assistant, with a new thread and vector store will be created.</li>
-</ul>
-<h2>devMode=false</h2>
-<h3>Assistant</h3>
-<ol>
-<li>If assistantid is specified, it will be reused.
-If this assistant is not found, an exception will be thrown.</li>
-<li>If assistantid is null, then the following will happen:
-<ul>
-<li>search for assistant with that name</li>
-<li>if not found, an exception will be thrown</li>
-</ul>
-</li>
-</ol>
-<h3>Thread</h3>
-<p>To avoid the overhead of persisting the threadid the library
-has some local rules.</p>
-<ol>
-<li>If threadid is specified, it will be used</li>
-<li>Else if using an existing assistant, then the previous thread will be used.</li>
-<li>As a last resort, a new thread will be created.</li>
-</ol>
-<h3>Vector Store</h3>
-<ol>
-<li>If vectorStoreid is specified, it will be used.</li>
-<li>Else If using an existing assistant, then the previous vector store will be used.</li>
-</ol>
+    <p>Get host and token from the configuration file setup by running</p>
+<pre class="prettyprint source lang-bash"><code> sas-viya auth loginCode
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>/*
+* Copyright © 2024, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+* SPDX-License-Identifier: Apache-2.0
+*/
+import fs from 'fs';
+import os from 'os';
+function getToken() {
+ 
+ const homedir = os.homedir();
+ if (process.env.SAS_CLI_CONFIG){
+   homedir = process.env.SAS_CLI_CONFIG;
+ }
+ 
+ let sep = (os.platform() === 'win32') ? '\\' : '/';
+ let credentials = homedir + sep + '.sas' + sep + 'credentials.json';
+ let url = homedir + sep + '.sas' + sep + 'config.json';
+ try { 
+   let j = fs.readFileSync(credentials, 'utf8');
+   let js = JSON.parse(j);
+   let profile = (process.env.SAS_CLI_PROFILE) ? process.env.SAS_CLI_PROFILE : 'Default';
+   let token = js[profile]['access-token'];
+   j = fs.readFileSync(url, 'utf8');
+   js = JSON.parse(j);
+   let host = js[profile]['sas-endpoint'];
+   console.log('Host set to ', host );
+   return {host, token};
+ } catch (e) {
+   console.log('Error reading token from ' + authLoc);
+   throw 'credentials file not found';
+ }
+ 
+}
+export default getToken;
+</code></pre>
 </article>
 
 </section>

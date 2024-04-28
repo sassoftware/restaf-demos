@@ -59,22 +59,27 @@ async function irunAssistant(appControl, prompt, instructions) {
   }
   // now run the thread
   // assume caller will catch any thrown errors
+  
   let r = await runPrompt(appControl, instructions);
   return r;
 }
 async function runPrompt(appControl, instructions) {
   let { assistantApi, thread } = appControl;
-
+  
   let runArgs = {
     assistantid: appControl.assistant.id,
     instructions: instructions,
     tools: appControl.assistant.tools,
-    temperature: appControl.temperature
+    
   };
+  if (appControl.provider === "openai") {
+    runArgs.temperature = appControl.temperature
+  }
   // Run the assistant with the prompt and poll for completion
   
   let run = await assistantApi.createRun(thread.id, runArgs);
   appControl.run = run;
+  
   let runStatus = await pollRun(run, appControl);
   
   //check for completion status

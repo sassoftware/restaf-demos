@@ -22,7 +22,6 @@ function getToken() {
     j = fs.readFileSync(url, 'utf8');
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
-   // process.env.VIYA_SERVER = host;
     console.log('Host set to ', host );
     return {host, token};
   } catch (e) {

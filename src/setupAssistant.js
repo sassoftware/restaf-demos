@@ -37,7 +37,7 @@ async function setupAssistant(config) {
 
   // usew user tools if passed in, else use builtin tools
   
-  let useTool = config.toolSet ? config.toolSet : "viya";
+  let useTool = config.toolSet ? config.toolSet : "sasic";
   let toolSet = {};
   if (config.domainTools.tools.length > 0) {
     toolSet = config.domainTools;

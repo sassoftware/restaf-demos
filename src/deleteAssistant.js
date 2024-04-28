@@ -34,7 +34,7 @@ async function deleteAssistant(appControl, assistantid) {
       return "Assistant not found, nothing to delete";
     }
   }
-  debugger;
+  
   // found assistant - now delete associated thread and files
   try {
     console.log('assistant was found. Now deleting it');

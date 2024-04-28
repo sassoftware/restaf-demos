@@ -29,8 +29,8 @@
  */
 
 /**
- * logonPayload object for SAS Viya
- * @typedef {object} logonPayload
+ * logonPayload object for SAS Viya 
+ * @typedef {object} logonPayload - information set in setupAssistant config
  * @property {string} authType - code|token
  * @property {URL} host - host url
  * @property {string} token - token (if authType is token)
@@ -113,15 +113,16 @@
   
 
 /**
- * appEnv object - returned by getViyaSession
+ * appEnv object
+ * @typedef {object} appEnv - viya session control object
  * @property {string} host - url to viya server
- * @property {logonPayload} - logonPayload - passed in to setupAssistant
+ * @property {logonPayload} logonPayload - logonPayload - passed in to setupAssistant
  * @property {string} source - cas|compute|none
+ * @property {string} sessionID - session id if source is cas or compute
  * @property {object} session - session object(for restaf users) if source is cas or compute
  * @property {object} servers - servers object(for restaf users) if source is cas or compute
- * @property {string} sessionID - session id if source is cas or compute
  * @property {object} serverName - compute context or cas server name
- * @property {object} store - restaf store object
- * @property {object} restaflib - restaflib object if source is cas or compute
- * @property {object} restafedit - restafedit object if source is cas or compute
+ * @property {object} store - restaf store object(for restaf users)
+ * @property {object} restaflib - restaflib object(for restaf users)
+ * @property {object} restafedit - restafedit object(for restaf users)
 */
