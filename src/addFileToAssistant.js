@@ -72,20 +72,14 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
     
     let { assistantApi, assistant, provider } = appControl;
     let currentFileIds = provider === "openai" ? assistant.file_ids : assistant.fileIds;
-
-    // do not update fileid array for openai
-    if (provider === "azureai") {
-      currentFileIds.push(file.id);
-    } else {
+    if (currentFileIds == null) {
       currentFileIds = [];
     }
-    if (currentFileIds.length == null) {
-      currentFileIds = [];
-    }
+    currentFileIds.push(file.id);
     let options = {
-      file_ids: currentFileIds,
+      fileIds: currentFileIds,
     };
-  
+   // console.log("currentFileIds", currentFileIds);
     let metadata = assistant.metadata;
     try {
       metadata.files = metadata.files + " " + file.id;
