@@ -28,20 +28,22 @@ async function runAssistant(appControl, prompt, instructions) {
   appControl.lastRun = [];
   let start = Date.now();
   let r = await irunAssistant(appControl, prompt, instructions);
-  let elapsed = Math.round(Date.now() - start) / 1000
-  console.log('Time taken to run assistant: ', elapsed, ' seconds');
-  console.log('-----------------------------------');
+  let elapsed = Math.round(Date.now() - start) / 1000;
+  console.log("Time taken to run assistant: ", elapsed, " seconds");
+  console.log("-----------------------------------");
   return r;
 }
 async function irunAssistant(appControl, prompt, instructions) {
-  let { thread, assistantApi} = appControl;
+  let { thread, assistantApi } = appControl;
 
   //add the user request to thread
   try {
-    // this seems to improve retrieval using files.
+    // this seems to improve retrieval using files in azureai?.
     let opts = {};
-    opts.fileIds = (appControl.provider === 'azureai') ? appControl.assistant.fileIds : appControl.assistant.file_ids;
-    
+    if (appControl.provider === "azureai") {
+      opts.fileIds = appControl.assistant.fileIds;
+    }
+
     let _newMessage = await assistantApi.createMessage(
       thread.id,
       "user",
@@ -59,29 +61,28 @@ async function irunAssistant(appControl, prompt, instructions) {
   }
   // now run the thread
   // assume caller will catch any thrown errors
-  
+
   let r = await runPrompt(appControl, instructions);
   return r;
 }
 async function runPrompt(appControl, instructions) {
   let { assistantApi, thread } = appControl;
-  
+
   let runArgs = {
-    assistantid: appControl.assistant.id,
-    instructions: instructions,
-    tools: appControl.assistant.tools,
-    
-  };
-  if (appControl.provider === "openai") {
-    runArgs.temperature = appControl.temperature
-  }
-  // Run the assistant with the prompt and poll for completion
+      assistantId: appControl.assistant.id,
+      instructions: instructions,
+      tools: appControl.assistant.tools,
+      temperature: appControl.temperature,
+    };
+
   
+  // Run the assistant with the prompt and poll for completion
+
   let run = await assistantApi.createRun(thread.id, runArgs);
   appControl.run = run;
-  
+
   let runStatus = await pollRun(run, appControl);
-  
+
   //check for completion status
   let message;
   if (runStatus.status === "completed") {
@@ -98,7 +99,7 @@ async function runPrompt(appControl, instructions) {
   let done = null;
   do {
     let elapsed = Date.now();
-    runStatus= await required_action(runStatus, appControl);
+    runStatus = await required_action(runStatus, appControl);
     elapsed = Math.round(Date.now() - elapsed) / 1000;
     console.log("Time taken for required action: ", elapsed, " seconds");
     if (runStatus.status === "requires_action") {

@@ -96,7 +96,7 @@ function apiMapper(client, provider) {
     let [threadid, options] = args;
    // options.thread = threadid;
     let newOptions = {
-      assistant_id: options.assistantid,
+      assistant_id: options.assistantId,
       additional_instructions: options.instructions,
       tools: (options.tools != null) ? options.tools : []
     }

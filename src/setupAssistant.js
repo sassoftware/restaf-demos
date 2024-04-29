@@ -13,6 +13,9 @@ import createFile from "./createFile.js";
 
 import apiMapper from "./apiMapper.js";
 import builtinToolSets from "./builtins/tools/index.js";
+// import { setLogLevel } from "@azure/logger";
+
+
 
 /**
  * @async
@@ -33,6 +36,7 @@ async function setupAssistant(config) {
     client = new OpenAI({ apiKey: key, dangerouslyAllowBrowser: true });
   } else {
     client = new AssistantsClient(endPoint, new AzureKeyCredential(key, {}));
+   // setLogLevel("info");
   }
 
   // usew user tools if passed in, else use builtin tools

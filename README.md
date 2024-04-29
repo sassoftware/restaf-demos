@@ -4,8 +4,7 @@
 users build AI Assistants with minimal coding. This  version supports OpenAI Assistant.
 
 > A note on azureai Assistant support:
- The support for Azureai Assistant is temporarily disabled until azureai
- Assistant is upgraded to use V2 of openai Assistant.
+ At the current time, AzureAI assistant does not support retrieval/file-search  tools.
 
 See [documentation here](https://sassoftware.github.io/viya-assistantjs/)
 
