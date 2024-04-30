@@ -150,8 +150,11 @@
     <section>
         <article><h1>@sassoftware/viya-assistantjs - Build your own AI ASSISTANT for SAS Viya</h1>
 <p>@sassoftware/viya-assistantjs is a light weight JavaScript library to help SAS
-users build AI Assistants with minimal coding. It supports the Assistant
-from openai and Azure</p>
+users build AI Assistants with minimal coding. This  version supports OpenAI Assistant.</p>
+<blockquote>
+<p>A note on azureai Assistant support:
+At the current time, AzureAI assistant does not support retrieval/file-search  tools.</p>
+</blockquote>
 <p>See <a href="https://sassoftware.github.io/viya-assistantjs/">documentation here</a></p>
 <p>See
 <a href="https://platform.openai.com/docs/assistants/how-it-works">how-it-works</a>
@@ -163,10 +166,11 @@ for clear explanation of openai Assistant.</p>
 <p>In your JavaScript program import the entries.
 The documentation is <a href="https://sassoftware.github.io/restaf-demos/index.html">here</a></p>
 <h2>gpt models</h2>
-<p>Models used in the development of this library</p>
+<p>Specify the models to use in the configuration object. The library was developed using the
+the following:</p>
 <ul>
 <li>openai: gpt-4-turbo-preview</li>
-<li>azureai: gpt-4 1106 preview in zone East US 2</li>
+<li>azureai(eastus2): Model: gpt-4 version: 1106-preview</li>
 </ul>
 <h2>Basic flow</h2>
 <ol>
@@ -213,7 +217,7 @@ code_interpreter tool.</p>
 </ol>
 <p>See the two examples for a quick introduction to  this library.</p>
 <h2>Tool function signature</h2>
-<p>The tool function signature used by this library is as follows:</p>
+<p>The tool function signature used by this library is as follows.</p>
 <pre class="prettyprint source lang-javascript"><code>async function myToolFunction(params, userData, appControl) {
   // params: parameters passed to the tool from gpt
   // userData: userData set by the developer in the configuration object
@@ -222,28 +226,27 @@ code_interpreter tool.</p>
 }
 </code></pre>
 <blockquote>
-<p>The appControl is the control object of the library - so do not modify
-this object.</p>
+<p>The appControl is the control object returned by setupAssistant.
+Do not modify this object.</p>
 </blockquote>
 <p>The appControl object has the following properties that are useful in the tool function:</p>
 <pre class="prettyprint source lang-javascript"><code>{
   getViyaSession: &lt;function>, // to get viya session information
   uploadFile: &lt;function>,// to upload content to a file
 }
-
-### getViyaSession
-
-The function takes one argument, the source(cas|sas), and returns an object of type appEnv. This object has Viya sessionID and other information needed to access Viya using REST api. See [this](https://sassoftware.github.io/restaf-demos/global.html#appEnv) for details on the appEnv object.
-
-```javascript
-let appEnv = await appControl.getViyaSession('cas');
+</code></pre>
+<h3>getViyaSession</h3>
+<p>The function takes one argument, the source(cas|sas), and returns an object of
+type appEnv.This object has sessionID for specified source
+and other information needed to access Viya using REST api.</p>
+<p>See <a href="https://sassoftware.github.io/restaf-demos/global.html#appEnv">this link</a>
+for details on the appEnv object.</p>
+<pre class="prettyprint source lang-javascript"><code>let appEnv = await appControl.getViyaSession('cas');
 </code></pre>
 <h3>uploadFile</h3>
-<p>This function is used to upload content. The call will result in creation of a
-file with the specified name.
-If the provider is openai,file is added to the current vector store
-and used in subsequent calls to the assistant.</p>
-<pre class="prettyprint source lang-javascript"><code>    An sample call is shown below
+<p>Use this function to upload content to the assistant. in openai, the file is
+added to the current vector store and available for file-search.</p>
+<pre class="prettyprint source lang-javascript"><code>    A sample call is shown below
     let f = await appControl.uploadFile('mydoc.txt', content, 'text/plain', 'assistants');
     Parameters are:
     - mydoc.txt: name of the file to be created
@@ -251,6 +254,39 @@ and used in subsequent calls to the assistant.</p>
     - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
     - purpose: 'assistants' is the only purpose supported at this time
 </code></pre>
+<h2>devMode flag</h2>
+<p>This is a flag you can set in the configuration flag. When set to true,
+the setupAssistant will do the following:</p>
+<ol>
+<li>If an assistant with specified name exists, the following will be deleted:
+<ul>
+<li>assistant</li>
+<li>thread used during the last session</li>
+<li>vectorStore used during the last session</li>
+</ul>
+</li>
+<li>Any files uploaded during the last session will be deleted.</li>
+</ol>
+<p>This ensures that the new test session is clean and does not have
+any artifacts from the previous runs.</p>
+<h2>Builtin Tools</h2>
+<p>The library comes with a set of <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs">builtin tools</a> to help you get started.</p>
+<p>To use these, set the domainTools property in the configuration object as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>{
+  tools: [],
+  functionList: {},
+  instructions: ''
+}
+</code></pre>
+<p>The builtin tools are:</p>
+<ul>
+<li>catalogSearch - uses the Information Catalog service to search for information</li>
+<li>keywords - a simple tool to format comma-separated keywords(used by testing tools)</li>
+<li>listLibrary - list libraries in a cas or sas session</li>
+<li>listTables - list tables in a cas or sas library</li>
+<li>readTable - read a table in a cas or sas library
+.</li>
+</ul>
 <h2>Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a></h2>
 <p>See notes in the program below</p>
 <pre class="prettyprint source lang-javascript"><code>
@@ -368,8 +404,8 @@ Response: Here are the availability statuses for the courses you inquired about:
 <hr>
 <h2>Creating a AI Assistant with a Viya-based tool<a name="extend"></a></h2>
 <p>This example has a tool to list tables in a given caslib or libref. Clearly one
-would not use AI Assistant for this purpose. However this example demonstrates
-how to call Viya to respond to a user query.</p>
+would not use AI Assistant for this purpose. However, this example demonstrates
+the basics of calling Viya to respond to a user query.</p>
 <p>This example uses @sassoftware/restafedit to make the API calls. You can
 use other ways to call Viya and get responses.</p>
 <p>Some key points:</p>
@@ -445,7 +481,7 @@ async function listTables(params, userData, appControl) {
 <pre class="prettyprint source lang-javascript"><code>// Step 3: setup configuration
 let config = {
   devMode: true,
-  provider: &quot;openai&quot;, // or 'azureai'
+  provider: &quot;openai&quot;, 
   model: process.env.OPENAI_MODEL,
   credentials: {
     key: process.env.OPENAI_KEY, // obtain from provider

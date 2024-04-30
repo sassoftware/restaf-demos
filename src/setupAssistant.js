@@ -66,7 +66,8 @@ async function setupAssistant(config) {
 
   let summmary = toolSet.tools.map((i) => {
     if (i.type === "function") {
-      console.log(i.function.name,':', i.function.description)
+      let s = i.function.description.substring(0,72) + '...';
+      console.log(i.function.name,':', s)
       return { toolName: i.function.name, description: i.function.description };
     } else {
       console.log(i.type);

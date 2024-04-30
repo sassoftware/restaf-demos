@@ -25,9 +25,11 @@ The documentation is [here](https://sassoftware.github.io/restaf-demos/index.htm
 
 ## gpt models
 
-Models used in the development of this library
+Specify the models to use in the configuration object. The library was developed using the
+the following:
 
 - openai: gpt-4-turbo-preview
+- azureai(eastus2): Model: gpt-4 version: 1106-preview
 
 ## Basic flow
 
@@ -67,8 +69,8 @@ async function myToolFunction(params, userData, appControl) {
 }
 ```
 
-> The appControl is the control object of the library - so do not modify
-this object.
+> The appControl is the control object returned by setupAssistant. 
+Do not modify this object.
 
 The appControl object has the following properties that are useful in the tool function:
 
@@ -82,8 +84,8 @@ The appControl object has the following properties that are useful in the tool f
 ### getViyaSession
 
 The function takes one argument, the source(cas|sas), and returns an object of
-type appEnv.This object has Viya sessionID and other information needed to access
-Viya using REST api.
+type appEnv.This object has sessionID for specified source 
+and other information needed to access Viya using REST api.
 
 See [this link](https://sassoftware.github.io/restaf-demos/global.html#appEnv)
 for details on the appEnv object.
@@ -107,21 +109,42 @@ added to the current vector store and available for file-search.
     - purpose: 'assistants' is the only purpose supported at this time
 ```
 
-## Example 1: Using the builtin tools
+## devMode flag
 
-The library comes with a a default set of tools to help you get started.
-The source code for these tools are available [here](https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs)
+This is a flag you can set in the configuration flag. When set to true,
+the setupAssistant will do the following:
 
-The tools are:
+1. If an assistant with specified name exists, the following will be deleted:
+    - assistant
+    - thread used during the last session
+    - vectorStore used during the last session
+2. Any files uploaded during the last session will be deleted.
+
+This ensures that the new test session is clean and does not have
+any artifacts from the previous runs.
+
+## Builtin Tools
+
+The library comes with a set of [builtin tools](https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs) to help you get started.
+
+To use these, set the domainTools property in the configuration object as follows:
+  
+```javascript
+{
+  tools: [],
+  functionList: {},
+  instructions: ''
+}
+```
+
+The builtin tools are:
 
 - catalogSearch - uses the Information Catalog service to search for information
-  - SAS Information Catalog license required. Otherwise it will fail.
 - keywords - a simple tool to format comma-separated keywords(used by testing tools)
 - listLibrary - list libraries in a cas or sas session
 - listTables - list tables in a cas or sas library
 - readTable - read a table in a cas or sas library
-
-The sample program is below.
+.
 
 ## Example 1: Creating a AI Assistant with a simple custom tool<a name="default"></a>
 

@@ -3,7 +3,7 @@ import itemsData from '../lib/itemsData.js';
 
 async function _catalogSearchInstance(params,appEnv,appControl){
   params.rel ='instances';
-  params.metadata = 'assetType:' + params.asset + ' ' + params.metadata
+  params.searchstring = 'assetType:' + params.asset + ' ' + params.searchstring
   return _catalogSearch(params,appEnv,appControl);
 }
 const _catalogSearchFunctionSpec = {
@@ -13,7 +13,7 @@ const _catalogSearchFunctionSpec = {
     description: `Search for information in SAS using search terms. Users can alias search with the following terms:
         find,search, search for,where
         User can specify start and limit to limit the number of items returned.
-        The metdata string is created from the user input using these rules:
+        The searchstring string is created from the user input using these rules:
         a. if the string has no ':' or '=' at the end of the string, then use it as a  search term 
         b. if the string of the format  keystring:string or keystring: string treat it as another search term.
         c. The string AND is treated as a logical AND and a search term when it appears between two search terms.
@@ -24,9 +24,9 @@ const _catalogSearchFunctionSpec = {
     parameters: {
       properties: {
         
-        metadata: {
+        searchstring: {
           type: 'string',
-          description: 'The metadata to return',
+          description: 'The searchstring to return',
         },
         start: {
           type: 'integer',
@@ -38,7 +38,7 @@ const _catalogSearchFunctionSpec = {
         },
       },
       type: 'object',
-      required: ['metadata'],
+      required: ['searchstring'],
     }
   }
 };
@@ -58,9 +58,9 @@ const _catalogInstanceFunctionSpec = {
       `,
     parameters: {
       properties: {
-        metadata: {
+        searchstring: {
           type: 'string',
-          description: 'The metadata to return',
+          description: 'The searchstring to return',
         },
         start: {
           type: 'integer',
@@ -98,11 +98,11 @@ const _catalogInstanceFunctionSpec = {
 
 async function _catalogSearch(params, userData, appControl) {
   let appEnv = await appControl.getViyaSession('cas');
-  let { metadata,start, limit, rel } = params;
+  let { searchstring,start, limit, rel } = params;
   console.log(params);
-  let splitmetadata = metadata.trimStart().split(' ');
+  let splitsearchstring = searchstring.trimStart().split(' ');
   let assetType = 'catalogSearch.txt';
-  if (!splitmetadata[0].includes(':')) {
+  if (!splitsearchstring[0].includes(':')) {
 
     if (["dataflows",
     "datasets",
@@ -117,13 +117,13 @@ async function _catalogSearch(params, userData, appControl) {
     "decisions",
     "riskdataprojects",
     "riskmodels"
-    ].includes(splitmetadata[0])) {
-      assetType = `${splitmetadata[0]}.json`;
-      splitmetadata[0] = 'assetType:' + splitmetadata[0];
-      metadata = splitmetadata.join(' ');
+    ].includes(splitsearchstring[0])) {
+      assetType = `${splitsearchstring[0]}.json`;
+      splitsearchstring[0] = 'assetType:' + splitsearchstring[0];
+      searchstring = splitsearchstring.join(' ');
       
     } else {
-      assetType = `${splitmetadata[0]}.json`;
+      assetType = `${splitsearchstring[0]}.json`;
       console.log('not an asset search');
     }
   } 
@@ -143,11 +143,11 @@ async function _catalogSearch(params, userData, appControl) {
     
     let {catalog} = await store.addServices('catalog');
     let payload = {
-      qs: {q: metadata, limit: limit, start: start},
+      qs: {q: searchstring, limit: limit, start: start},
     };
     let r = await store.apiCall(catalog.links(rel), payload);
     let rx = itemsData(r); 
-    let f = await appControl.uploadFile(assetType, JSON.stringify(rx._details), 'text/plain', 'assistants');
+    let f = await appControl.uploadFile(assetType, rx._text /*JSON.stringify(rx._details)*/, 'text/plain', 'assistants');
     return rx._message;
   } catch (err) {
     console.log(JSON.stringify(err));

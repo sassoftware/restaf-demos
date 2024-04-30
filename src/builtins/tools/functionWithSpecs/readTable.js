@@ -6,7 +6,7 @@ const _readSASTableFunctionSpec = {
   type: 'function',
   function: {
     name: '_readSASTable',
-    description: 'Read the specified SAS Table. table is specified in the form libary.name. The source is either CAS or SAS',
+    description: 'Read the specified SAS or CAS Table. table is specified in the form libary.name. The source is either CAS or SAS',
     parameters: {
       properties: {
         table: {
@@ -35,7 +35,7 @@ const _readSASTableFunctionSpec = {
         }
       },
       type: 'object',
-      required: ['table']
+      required: ['table', 'source']
     }
   }
 }

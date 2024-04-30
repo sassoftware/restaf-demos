@@ -126,7 +126,7 @@ async function newAssistant(appControl) {
   let options = {
     metadata: metadata,
   };
-  console.log(options);
+  console.log('metadata ', options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
   appControl.assistant = newAssistant;
   appControl.assistantid = newAssistant.id;
