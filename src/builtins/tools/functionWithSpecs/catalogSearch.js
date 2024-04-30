@@ -118,13 +118,11 @@ async function _catalogSearch(params, userData, appControl) {
     "riskdataprojects",
     "riskmodels"
     ].includes(splitsearchstring[0])) {
-      assetType = `${splitsearchstring[0]}.json`;
+      assetType = `${splitsearchstring[0]}.txt`;
       splitsearchstring[0] = 'assetType:' + splitsearchstring[0];
       searchstring = splitsearchstring.join(' ');
-      
     } else {
-      assetType = `${splitsearchstring[0]}.json`;
-      console.log('not an asset search');
+      assetType = `${splitsearchstring[0]}.txt`;
     }
   } 
 

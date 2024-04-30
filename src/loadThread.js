@@ -17,7 +17,15 @@ async function loadThread(appControl) {
   try {
     // if devMode is true, create a new thread
     if (devMode === true) {
-      let thread = await assistantApi.createThread();
+      let tool_resources = {
+        file_search: {
+          vector_store_ids: [appControl.vectorStoreid],
+        }
+  
+      }
+      console.log(tool_resources);
+      let thread = await assistantApi.createThread({tool_resources: tool_resources});
+      console.log('Created new thread', thread);
       await modifyAssistant(appControl, thread);
       return thread;
     }
@@ -38,7 +46,14 @@ async function loadThread(appControl) {
     }
 
     // if no threadid or lastThread, create a new thread
-    let thread = await assistantApi.createThread();
+    let tool_resources = {
+      file_search: {
+        vector_store_ids: [appControl.vectorStoreid],
+      }
+
+    }
+    let thread = await assistantApi.createThread({tool_resources: tool_resources});
+    console.log('Created new thread', thread);
     await modifyAssistant(appControl, thread);
     return thread;
   } catch (error) {
