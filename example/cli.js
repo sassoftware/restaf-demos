@@ -15,7 +15,6 @@ import {
   cancelRun,
   deleteAssistant,
   createFile,
-  builtinTools,
   clearStores,
   clearFiles,
 } from "../src/index.js";
@@ -25,6 +24,7 @@ import {
 
 // setup configuration
 let config = setupConfig(process.env.OPENAI_PROVIDER);
+// start chat
 chat(config)
   .then((r) => console.log("done"))
   .catch((err) => console.log(err));
@@ -50,12 +50,7 @@ async function chat(config) {
     if (cmd === "create" && cmda[1] === "assistant") {
       cmd = "createAssistant"; // create assistant
     }
-    if (cmd === "clear" && cmda[1] === "stores") {
-      cmd = "clearStores"; // clear stores
-    }
-    if (cmd === "clear" && cmda[1] === "files") {
-      cmd = "clearFiles"; // clear stores
-    }
+    
     try {
       switch (cmd) {
         case "upload": {
@@ -78,6 +73,8 @@ async function chat(config) {
             */
             let r = await appControl.uploadFile(f, content, "text/plain", "assistants");
             console.log(r);
+            let vectorStore = await appControl.assistantApi.getVectorStore(appControl.vectorStoreid);
+            console.log(vectorStore);
           } catch (e) {
             console.log(e);
           }
@@ -124,23 +121,30 @@ async function chat(config) {
           console.log(r);
           break;
         }
-        case "clearStores": {
-          let r = await clearStores(appControl);
+        case "clear": {
+          let r = (cmda[1] === "stores") ? await clearStores(appControl) : await clearFiles(appControl);
           console.log(r);
           break;
         }
-        case 'clearFiles': {  
-          let r = await clearFiles(appControl);
-          console.log(r);
-          break;
-
-        }
+    
         case "in": {
           console.log(appControl.assistant.instructions);
           break;
         }
-        case "showast": {
-          console.log(appControl.assistant);
+        case "show": {
+          if (cmda[1] === "assistant") {
+             console.log(appControl.assistant);
+          } else if (cmda[1] === "thread") {
+            console.log(appControl.thread);
+          } else if (cmda[1] === "store") {
+            let vectorStore = await appControl.assistantApi.getVectorStore(appControl.vectorStoreid);
+            console.log(vectorStore);
+            let vsFiles = await appControl.assistantApi.listVectorStoresFiles(appControl.vectorStoreid);  
+            console.log(vsFiles.data);
+            
+          } 
+
+
           break;
         }
         case "createAssistant": {

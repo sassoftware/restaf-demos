@@ -12,7 +12,7 @@ function itemsData(r) {
         row.library = rt.attributes.library;
       }
       details[item] = rt;
-      text = text + '\n' + `${item} has the information: ${JSON.stringify(rt)}`;
+      text = text + '\n' + `${item}: ${JSON.stringify(rt)}`;
       return row;
     });
   } else {

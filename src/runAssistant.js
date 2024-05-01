@@ -70,7 +70,7 @@ async function runPrompt(appControl, instructions) {
 
   let runArgs = {
       assistantId: appControl.assistant.id,
-      instructions: instructions,
+      instructions: appControl.assistant.instructions,
       tools: appControl.assistant.tools,
       temperature: appControl.temperature,
     };

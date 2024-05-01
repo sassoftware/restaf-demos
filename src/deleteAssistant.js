@@ -12,6 +12,7 @@
  */
 async function deleteAssistant(appControl, assistantid) {
   let { assistantApi, assistant, assistantName } = appControl;
+  //delete specific assistant
   if (assistantid != null) {
     try {
       assistant = await assistantApi.getAssistant(assistantid);
@@ -20,6 +21,7 @@ async function deleteAssistant(appControl, assistantid) {
       return "Assistant not found, nothing to delete";
     }
   } else {
+    // delete assistant by name
     console.log("Attempting to find assistant by name ", assistantName);
     const myAssistants = await assistantApi.listAssistants({
       order: "desc",
@@ -38,10 +40,7 @@ async function deleteAssistant(appControl, assistantid) {
   // found assistant - now delete associated thread and files
   try {
     console.log('assistant was found. Now deleting it');
-    if (
-      assistant.metadata.lastThread != null &&
-      assistant.metadata.lastThread.length > 0
-    ) {
+    if (assistant.metadata.lastThread != null && assistant.metadata.lastThread.length > 0) {
       let status = await assistantApi.deleteThread(
         assistant.metadata.lastThread
       );
@@ -52,11 +51,8 @@ async function deleteAssistant(appControl, assistantid) {
   }
   // works with V2 of openai assistant
   try {
-    console.log(assistant.metadata.vectorStoreid);
     if (assistant.metadata.vectorStoreid.trim().length > 0) {
-      let status = await assistantApi.deleteVectorStore(
-        assistant.metadata.vectorStoreid
-      );
+      let status = await assistantApi.deleteVectorStore(assistant.metadata.vectorStoreid);
       console.log(
         `VectorStore ${assistant.metadata.vectorStoreid} deleted`,
         status
@@ -66,12 +62,13 @@ async function deleteAssistant(appControl, assistantid) {
     console.log("VectorStore deletion failed. Probably does not exist", error);
   }
 
-  let files = assistant.metadata.files.split(' ');
-  console.log(files);
+  let f = assistant.metadata.files.trimStart();
+  let files = f.split(' ');
+  console.log('Files to delete:', files);
   for (let i = 0; i < files.length; i++) {
-    console.log("file:", files[i]);
     if (files[i].trim().length > 0) {
       try {
+        console.log("Deleting file:", files[i]);
         let r = await assistantApi.deleteFile(files[i]);
       } catch (error) {
         console.log(
@@ -84,8 +81,8 @@ async function deleteAssistant(appControl, assistantid) {
   }
 
   try {
+    console.log("Deleting assistant:", assistant.name, assistant.id);
     let status = await assistantApi.deleteAssistant(assistant.id);
-    console.log(`Assistant ${assistant.name} deleted`, status);
     appControl.assistant = null;
     appControl.assistantid = null;
     return `Assistant ${assistant.name} deleted`;

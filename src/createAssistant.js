@@ -113,7 +113,7 @@ async function newAssistant(appControl) {
 
  
   let assistant = await assistantApi.createAssistant(createArgs);
-  console.log("Created assistant ", assistant.id, assistant.name);
+  console.log("Created assistant ", assistant.name, assistant.id);
 
   // now create a new thread
   appControl.assistant = assistant;
@@ -126,7 +126,7 @@ async function newAssistant(appControl) {
   let options = {
     metadata: metadata,
   };
-  console.log('metadata ', options);
+  console.log('Updating assistant metadata', options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
   appControl.assistant = newAssistant;
   appControl.assistantid = newAssistant.id;

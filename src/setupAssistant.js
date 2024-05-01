@@ -62,21 +62,18 @@ async function setupAssistant(config) {
     toolSet.tools.push({ type: "file_search" });
   } 
 
-  console.log('----------------------------------------------Toolset Summary'); 
+   
 
   let summmary = toolSet.tools.map((i) => {
     if (i.type === "function") {
       let s = i.function.description.substring(0,72) + '...';
-      console.log(i.function.name,':', s)
       return { toolName: i.function.name, description: i.function.description };
     } else {
-      console.log(i.type);
       return { toolName: i.type };
     }
   });
   
-  console.log('-------------------------------------------------------------'); 
-
+  
 
   //helper functions
 
@@ -105,6 +102,7 @@ async function setupAssistant(config) {
         : config.assistantid,
     assistant: null,
     thread: null,
+    vectorStore: null,
     threadid:
       config.threadid == null || config.threadid === ""
         ? null
@@ -149,15 +147,12 @@ async function setupAssistant(config) {
   console.log("devMode: ", appControl.devMode);
   console.log("Provider: ", appControl.provider);
   console.log("Model: ", appControl.model);
-  console.log(
-    "Assistant: ",
-    appControl.assistant.name,
-    "Assistant id",
-    appControl.assistant.id
-  );
+  console.log("Assistant Name: ",appControl.assistant.name);
+  console.log("Assistantid", appControl.assistant.id);
   console.log("Threadid: ", appControl.thread.id);
   console.log("VectorStoreId: ", appControl.vectorStoreid);
   console.log("Using Viya:", (config.viyaConfig.logonPayload != null) ? true: false);
+  console.log("Tools: ", summmary);
   console.log("--------------------------------------");
   return appControl;
 }

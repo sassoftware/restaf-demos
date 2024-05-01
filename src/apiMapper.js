@@ -39,7 +39,6 @@ function apiMapper(client, provider) {
 
   const updateAssistant = (client) => (...args) =>{
     let [id, options] = args;
-    console.log('options', options)
     if (options.fileIds) {
       options.file_ids = options.fileIds;
       delete options.fileIds;
@@ -177,6 +176,11 @@ function apiMapper(client, provider) {
     let [options] = args;
     return client.beta.vectorStores.list(options)
   }
+  const listVectorStoresFiles = (client) => (...args) =>{
+    let [options] = args;
+    console.log('options', options);
+    return client.beta.vectorStores.files.list(options);
+  }
 
   let assistantApi = client;
   if (provider === 'openai') {
@@ -200,6 +204,7 @@ function apiMapper(client, provider) {
       createVectorStoresFiles: createVectorStoresFiles(client),
       deleteVectorStore: deleteVectorStore(client),
       listVectorStores: listVectorStores(client),
+      listVectorStoresFiles: listVectorStoresFiles(client),
 
       uploadFile: uploadFile(client),
       createAssistantFile: createAssistantFile(client),
