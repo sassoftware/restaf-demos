@@ -4,6 +4,7 @@
  */
 /**
  * @async
+ * @private
  * @description - Deletes upto 100 vector stores
  * @function clearStores
  * @param {appControl} appControl - gpt session control object

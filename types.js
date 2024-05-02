@@ -35,7 +35,7 @@
  * @property {URL} host - host url
  * @property {string} token - token (if authType is token)
  * @property {string} tokenType - bearer(if authType is token)
- * @property {string} bearer - bearer(if authType is token)
+
  * 
  */
 

@@ -4,6 +4,7 @@
  */
 /**
  * @async
+ * @private
  * @description - Cancel a previous run (on user request)
  * @function cancelRun
  * @param {appControl} appControl - gpt  session control object

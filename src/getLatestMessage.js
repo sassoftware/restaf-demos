@@ -4,6 +4,7 @@
  */
 /**
  * @async
+ * @private
  * @description Return the latest message from thread
  * @param {appControl}  appControl - client control object
  * @param {number} limit - limit the number of messages to return

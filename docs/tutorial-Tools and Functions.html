@@ -60,6 +60,10 @@
                     <div class="dropdown-menu">
                         <div class="dropdown-content">
                         
+                            <a class="dropdown-item" href="tutorial-Accessing Viya.html">
+                                Accessing Viya
+                            </a>
+                        
                             <a class="dropdown-item" href="tutorial-Assistants and Threads.html">
                                 Assistants and Threads
                             </a>
@@ -114,7 +118,7 @@
             
             <nav>
                 
-                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Assistants and Threads.html">Assistants and Threads</a></li><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-getToken.html">getToken</a></li><li><a href="tutorial-Run SAS Samples.html">Run SAS Samples</a></li><li><a href="tutorial-setupConfiguration.html">setupConfiguration</a></li><li><a href="tutorial-Tools and Functions.html">Tools and Functions</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
+                    <div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-Accessing Viya.html">Accessing Viya</a></li><li><a href="tutorial-Assistants and Threads.html">Assistants and Threads</a></li><li><a href="tutorial-customTools.html">customTools</a></li><li><a href="tutorial-gettingStarted.html">gettingStarted</a></li><li><a href="tutorial-getToken.html">getToken</a></li><li><a href="tutorial-Run SAS Samples.html">Run SAS Samples</a></li><li><a href="tutorial-setupConfiguration.html">setupConfiguration</a></li><li><a href="tutorial-Tools and Functions.html">Tools and Functions</a></li><li><a href="tutorial-Useful links.html">Useful links</a></li></ul></div>
                 
             </nav>
         </div>
@@ -139,32 +143,13 @@ will look like this:</p>
 }
 </code></pre>
 <p>In @sassoftware/viya-appenvjs the function should look like this.</p>
-<pre class="prettyprint source lang-javascript"><code>async someFunction(params, appEnv) {
+<pre class="prettyprint source lang-javascript"><code>async someFunction(params, userData, appEnv) {
 }
 </code></pre>
+<p>params is the same as in the standard implementation.</p>
+<p>userData is an object that was set in the configuration object
+when calling setupAssistant.</p>
 <p>appEnv is an object with the following keys(among others).</p>
-<p>Depending on what was set in the configuration object
-when calling setupAssistant there are keys in appEnv that
-will be of interest to the function writer.</p>
-<h3>General</h3>
-<pre class="prettyprint source lang-text"><code>let appEnv=  {
-  host: &lt;Viya url>
-  logonPayload: passed in to setupConfig,
-  source: passed in to setupConfig> 
-  userData: passed in to the setupConfig
-
-  /* for restaf users - non-null if source is cas|compute*/
-  store: restaf object for restaf users 
-  session: viya session(cas or compute) object
-  servers: viya server object(cas - null for compute)
-  serverName: cas servername or compute context 
-  restaf: restaf,
-  restaflib: restaflib,
-  restafedit: restafedit, 
-  /* end of restaf section */
-  sessionID: sessionID associated with the session(see note below)
-}
-</code></pre>
 <blockquote>
 <p>Note on sessionID: If sessionID is non-null, you
 can use it to make api calls to compute or

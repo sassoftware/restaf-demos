@@ -4,6 +4,7 @@
  */
 /**
  * @async
+ * @private
  * @description - Delete assistant
  * @function closeAssistant
  * @param {appControl} appControl - gpt session control object

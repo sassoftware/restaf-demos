@@ -23,6 +23,9 @@ npm install @sassoftware/viya-assistantjs
 In your JavaScript program import the entries.
 The documentation is [here](https://sassoftware.github.io/restaf-demos/index.html)
 
+See the [tutorial section](https://sassoftware.github.io/restaf-demos/index.html) 
+for examples on the various capabilities of this library.
+
 ## gpt models
 
 Specify the models to use in the configuration object. The library was developed using the

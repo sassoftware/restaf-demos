@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> gettingStarted</title>
+  <title> Accessing Viya</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -126,118 +126,67 @@
             <div class="content">
                 <header class="page-title">
                     <p>Tutorial</p>
-                    <h1>gettingStarted</h1>
+                    <h1>Accessing Viya</h1>
                 </header>
                 <section>
 
 <article>
-    <h1>A step-by-step to creating your first Assistant</h1>
-<blockquote>
-<p>Set type to &quot;module&quot; in your package.json</p>
-</blockquote>
-<h2>Step 1: Install the library into your application</h2>
-<pre class="prettyprint source lang-cmd"><code>npm install @sassoftware/viya-assistantjs
+    <h1>Accessing Viya from the tools</h1>
+<h2>Step 1: Define your logonPayload</h2>
+<p>If you have access to the authentication token, then define logonPayload as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>let logonPayload = {
+  authType: 'server',
+  host: &lt;your Viya URL>,
+  token: &lt;SAS Viya token>
+  tokenType: 'bearer'
+}
 </code></pre>
-<h2>Step 2: Create a simple nodejs application(assistant.js)</h2>
-<p>Here is the skeleton code
-This is a fully functional chat program</p>
+<p>If you are using this in a browser environment with authorization_code flow,
+then define logonPayload as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>let logonPayload = {
+  authType: 'server,
+  host: &lt;your Viya URL>
+}
+</code></pre>
+<p>Now set the value of logonPayload in the config object as follows:</p>
 <pre class="prettyprint source lang-javascript"><code>
-import fs from 'fs';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-import {setupAssistant, runAssistant} from '@sassoftware/viya-assistantjs';
-
-// this import is to get token and host for Viya - created with sas-viya auth login|loginCode
-// replace the next two lines to suit your environment
-// see this link for the getToken function
-import getToken from './getToken.js'; 
-let {host, token} = getToken();
-
-// setup configuration
 let config = {
-  provider: 'openai',// or 'azureai'
-  model: 'gpt-4-turbo-review', // or 'gpt-3-turbo-review'
-  credentials: {
-    key: process.env.OPENAI_KEY, // for safety get it from environment
-    endPoint: null
-  },
-  assistantid: 'NEW', //let system create a new assistant
-  assistantName: &quot;SAS_ASSISTANT&quot;,
-
-  threadid: 'NEW', // let system create a new thread
-  domainTools: {tools: [], functionList: {}, instructions: '', replace: false},
-  retrieval: true,
+  ...
   viyaConfig: {
-    logonPayload: {
-      authType: 'server',
-      host: host,  // viya url - https://myviyaserver.acme.com
-      token: token,// viya token | null
-      tokenType: 'bearer'// if token is specified
-      },
-    source: 'cas' 
-  }  
-}
-
-// run a chat session
-chat(config)
-  .then((r) => console.log('done'))
-  .catch((err) => console.log(err));
-
-async function chat(config) {
-  //Setup assistant
-  let appControl = await setupAssistant(config);
-
-  // create readline interface and chat with user
-  const rl = readline.createInterface({ input, output });
-
-  // process user input in a loop
-  while (true) {
-    let prompt = await rl.question('>');
-    // exit session
-    if (prompt.toLowerCase() === 'exit' || prompt.toLowerCase() === 'quit') {
-      rl.close();
-      break;
-    }
-    // let assistant process the prompt
-    let promptInstructions = ' ';
-    try {
-      // run prompt
-      let response = await runAssistant(appControl, prompt,promptInstructions);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
+    logonPayload: logonPayload
   }
+  ..
+}
+</code></pre>
+<h2>Step 2:  getViyaSession function: Accessing Viya session in tools</h2>
+<p>In the code for your tool, you can access information to make REST API calls as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>let source = &lt;'cas' or 'sas'>
+let appEnv = await appControl.getViyaSession(source);)
+</code></pre>
+<p>The <a href="https://sassoftware.github.io/restaf-demos/global.html#appEnv">appEnv object</a>
+has information to access Viya.</p>
+<pre class="prettyprint source lang-javascript"><code>let appEnv = {
+  host: &lt;your Viya URL>,
+  logonPayload: &lt;your logonPayload>,
+  source: &lt;'cas' or 'sas' that was passed in the call to getViyaSession>
+  sessionID: &lt;cas or sas(compute) sessionID>
+  // the following are for restaf users
+  servers: &lt;server object is source is cas>
+  serverName: &lt;compute context for sas or cas server name>,
+  store: &lt;restaf store object>
+  restaflib: &lt;restaflib library methods for convenience>
+  restafedit: &lt;restafedit library methods for convenience>
 }
 
+
 </code></pre>
-<h2>Step 3: Run the sample app</h2>
-<pre class="prettyprint source lang-cmd"><code>node assistant
-</code></pre>
-<p>If source was set to 'cas' or 'compute' you can issue prompts that will use the
-builtin tools. (see the main doc for the default tools). By default you can ask for list of
-several Viya assets:</p>
-<ul>
-<li>list of reports, libraries (caslib or librefs
-<ul>
-<li>list reports</li>
-<li>list libs</li>
-</ul>
-</li>
-<li>for a given libref or caslib get list of tables
-<ul>
-<li>list tables in public</li>
-<li>list tables in sashelp</li>
-</ul>
-</li>
-<li>fetch data from a specified lib and table
-<ul>
-<li>get data for public.cars. limit to 20</li>
-</ul>
-</li>
-</ul>
-<h2>Peak ahead</h2>
-<p>In the next example will discuss how to add your own tools,</p>
+<p>The sessionID is created on first call and reused in subsequent calls.
+So in effect you can have one cas session and one sas session active during
+an assistant session</p>
+<h2>Using your own Viya session management</h2>
+<p>In step 1 set logonPayload to null. It is now upto the developer to manage Viya session.</p>
+<p>Hint: Use the userData object in the config object to store your
+session id and other global information.</p>
 </article>
 
 </section>
