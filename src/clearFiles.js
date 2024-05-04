@@ -4,7 +4,7 @@
  */
 /**
  * @async
- * @private
+ * @category utility
  * @description - Deletes files
  * @function clearFiles
  * @param {appControl} appControl - gpt session control object
@@ -17,22 +17,25 @@
 
 async function clearFiles(appControl) {
   let { assistantApi } = appControl;
+  let count = 0;
+  do {
+    let vs = await assistantApi.listFiles({
+      purpose: "assistants"
+    });
 
-  let vs = await assistantApi.listFiles({
-    purpose: 'assistants',
-  });
-
-  let list = vs.body.data;
-  for (let i = 0; i < list.length; i++) {
-    let l = list[i];
-    console.log(l.filename, l.id);
-    try {
-      let r = await assistantApi.deleteFile(l.id);
-    } catch (error) {
-      console.log("Failed to delete file", l.id, error);
+    let list = vs.body.data;
+    for (let i = 0; i < list.length; i++) {
+      let l = list[i];
+      console.log(l.filename, l.id);
+      try {
+        let r = await assistantApi.deleteFile(l.id);
+      } catch (error) {
+        console.log("Failed to delete file", l.id, error);
+      }
     }
-  }
-  return `Deleted ${list.length} files`;
+    count = count + list.length;
+  } while (list.length > 0);
+  console.log("Files deleted", count);
+  return {'Files Deleted': count};
 }
-
 export default clearFiles;

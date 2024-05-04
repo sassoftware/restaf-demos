@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import loadThread from "./loadThread.js";
 import deleteAssistant from "./deleteAssistant.js";
+import assistantByName from "./assistantByName.js";
 
 /**
  * @async
@@ -18,81 +18,122 @@ import deleteAssistant from "./deleteAssistant.js";
 async function createAssistant(appControl) {
   let { assistantName, assistantid, devMode, assistantApi } = appControl;
 
-  // get assistant by assistantid
-  // use this when developing the assistant
-  // reduces clutter on your gpt provider
   console.log("devMode is ", devMode);
+
+  // devMode = true - creater a fresh assistant
   if (devMode === true) {
     appControl.threadid = null;
     await deleteAssistant(appControl, null);
     let assistant = await newAssistant(appControl);
-
     return assistant;
   }
 
-  // if assistantid is provided, use it
-  if (assistantid != null) {
-    console.log("Using assistantid ", assistantid);
-    let assistant = await assistantApi.getAssistant(assistantid);
-    appControl.assistant = assistant;
-    appControl.assistantid = assistant.id;
-    if (appControl.vectorStoreid === null) {
-      let vs = await assistantApi.getVectorStore(assistant.metadata.vectorStoreid);
-      appControl.vectorStoreid = assistant.metadata.vectorStoreid;
-    } 
-    await loadThread(appControl);
-    return appControl.assistant;
-  }
-
-  // if assistantName is provided and assistantid is null
-  // find assistant by name and use it
-  // if not found, create a new assistant with that name
-
+  //-------------------------------------------------------------
+  // if assistantid or assistantname is provided, use it
+  // fail if not found
+  // assistantid takes precedence over assistantName
   let assistant = null;
-  if (assistantName != null) {
-    console.log("Attempting to find assistant by name ", assistantName);
-    const myAssistants = await assistantApi.listAssistants({
-      order: "desc",
-      limit: "100",
-    });
-    assistant = myAssistants.data.find((a) => {
-      if (a.name === assistantName) {
-        return a;
-      }
-    });
-    
-    if (assistant != null) {
-      appControl.assistant = assistant;
-      appControl.assistantid = assistant.id;
-      console.log("Found assistant ", assistantName, assistant.id);
-      await loadThread(appControl);
-      console.log(assistant.metadata);
-      if (appControl.vectorStoreid === null) {
-        let vs = await assistantApi.getVectorStore(assistant.metadata.vectorStoreid);
-         appControl.vectorStoreid = assistant.metadata.vectorStoreid;
-      }
+  console.log(assistantid);
+  try {
+    if (assistantid != null) {
+      console.log("Attempting to find assistant by id", assistantid);
+      assistant = await assistantApi.getAssistant(assistantid);
     } else {
-      // create a new assistant as a last resort
-      assistant = await newAssistant(appControl);
-      appControl.assistant = assistant;
-      appControl.assistantid = assistant.id;
-      console.log(assistant.metadata);
-      if (appControl.vectorStoreid === null) {
-         appControl.vectorStoreid = assistant.metadata.vectorStoreid;
-      }
-      await loadThread(appControl);
-      console.log(
-        "Created new assistant ",
-        appControl.assistant.id,
-        appControl.assistant.name
-      );
+      assistant = await assistantByName(assistantName, appControl);
     }
-    return appControl.assistant;
+    if (assistant == null) {
+      throw new Error("Assistant not found", assistantName);
+    }
+  } catch (error) {
+   
+    if (assistantid == null && assistantName != null) {
+      console.log("Creating new assistant", assistantName);
+      assistant = await newAssistant(appControl);
+    } else {
+      console.log("Error finding assistant", error);
+       throw new Error("Error finding assistant", error);
+    }
   }
+
+  // Now we have an existing assistant available
+  // setup thread and vector store
+
+  appControl.assistant = assistant;
+  appControl.assistantid = assistant.id;
+  console.log(assistant.name, assistant.id, assistant.metadata);
+  let thread = null;
+
+  // if threadid is not provided, use the last thread
+  let threadid =
+    appControl.threadid != null
+      ? appControl.threadid
+      : assistant.metadata.lastThread;
+
+  // if vectorStoreid is not provided, use the last vectorStoreid
+  let vectorStoreid =
+    appControl.vectorStoreid != null
+      ? appControl.vectorStoreid
+      : assistant.metadata.vectorStoreid;
+
+  // make sure the vector store id is valid
+  try {
+    let vs = await assistantApi.getVectorStore(vectorStoreid);
+    console.log("Vector store found", vs.id, vs.name);
+    appControl.vectorStore = vs;
+  } catch {
+    console.log("No vector store found", appControl.vectorStoreid);
+    throw new Error("No vector store found", appControl.vectorStoreid);
+  }
+
+  // check and see the threadid is valid
+  try {
+    thread = await assistantApi.getThread(threadid);
+    console.log('Thread found', thread.id, thread.metadata);
+  } catch {
+    console.log("No thread found", threadid);
+    throw new Error("No thread found", threadid);
+  }
+
+  // now update thread with the current tool_resources
+  // ignoring if state is the same
+  let tool_resources = {
+    file_search: {
+      vector_store_ids: [vectorStoreid],
+    },
+  };
+  if (appControl.provider === "openai") {
+    thread = await assistantApi.updateThread(thread.id, {
+      tool_resources: tool_resources});
+    console.log('Thread updated', thread.id);
+  } else {
+    console.log("No updates to threads in azureai");
+  }
+  assistant.thread = thread;
+  assistant.threadid = thread.id;
+
+  // update assistant with the new info - ignoring if state is the same
+
+  let metadata = assistant.metadata;
+  metadata.lastThread = thread.id;
+  metadata.vectorStoreid = vectorStoreid;
+  let options = {
+    metadata: metadata,
+    tool_resources: tool_resources,
+  };
+
+  assistant = await assistantApi.updateAssistant(assistant.id, options);
+  appControl.assistant = assistant;
+  appControl.assistantid = assistant.id;
+  appControl.thread = thread;
+  appControl.threadid = thread.id;
+  appControl.vectorStoreid = vectorStoreid;
+  appControl.vectorStore = appControl.vectorStore;
+  return appControl.assistant;
 }
 
 async function newAssistant(appControl) {
   let { assistantName, domainTools, model, assistantApi } = appControl;
+
   let createArgs = {
     name: assistantName,
     instructions: domainTools.instructions,
@@ -101,6 +142,8 @@ async function newAssistant(appControl) {
     tools: domainTools.tools,
     metadata: { files: " ", lastThread: "", vectorStoreid: "" },
   };
+
+  // vector for openai only
   if (appControl.provider === "openai") {
     let t = await assistantApi.createVectorStores({ name: assistantName });
     appControl.vectorStoreid = t.id;
@@ -111,23 +154,43 @@ async function newAssistant(appControl) {
     };
   }
 
- 
+  // create the assistant
+
   let assistant = await assistantApi.createAssistant(createArgs);
   console.log("Created assistant ", assistant.name, assistant.id);
 
-  // now create a new thread
   appControl.assistant = assistant;
   appControl.assistantid = assistant.id;
-  let thread = await loadThread(appControl);
+
+
+  let tool_resources = {
+    file_search: {
+      vector_store_ids: [appControl.vectorStoreid],
+    },
+  };
+  let options = {};
+  if (appControl.provider === "openai") {
+    options = {
+      tool_resources: tool_resources
+    };
+  }
+  let thread = await assistantApi.createThread(options);
+
   appControl.thread = thread;
+
+  // last step: update meatata
   let metadata = assistant.metadata;
   metadata.lastThread = thread.id;
-  metadata.vectorStoreid = (!appControl.vectorStoreid) ? "" : appControl.vectorStoreid
-  let options = {
+  metadata.vectorStoreid = !appControl.vectorStoreid
+    ? ""
+    : appControl.vectorStoreid;
+  options = {
     metadata: metadata,
   };
-  console.log('Updating assistant metadata', options);
+  console.log("Updating assistant metadata", options);
   let newAssistant = await assistantApi.updateAssistant(assistant.id, options);
+
+  // reset assistant in appControl
   appControl.assistant = newAssistant;
   appControl.assistantid = newAssistant.id;
   return assistant;

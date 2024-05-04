@@ -4,7 +4,7 @@
  */
 /**
  * @async
- * @private
+ * @category utility
  * @description - Deletes upto 100 vector stores
  * @function clearStores
  * @param {appControl} appControl - gpt session control object
@@ -18,23 +18,25 @@
 async function clearStores(appControl) {
   let { assistantApi } = appControl;
 
-  let vs = await assistantApi.listVectorStores({
-    limit: 100,
-  });
- 
-  let list = vs.body.data;
-  for (let i = 0; i < list.length; i++) {
-    let l = list[i];
-    console.log(l.name, l.id);
-    if (l.id !== appControl.vectorStoreid) {
-      try {
-        let r = await assistantApi.deleteVectorStore(l.id);
-      } catch (error) {
-        console.log("Failed to delete vector store", l.id, error);
+  do {
+    let vs = await assistantApi.listVectorStores({
+      limit: 100,
+    });
+    let list = vs.body.data;
+    for (let i = 0; i < list.length; i++) {
+      let l = list[i];
+      console.log(l.name, l.id);
+      if (l.id !== appControl.vectorStoreid) {
+        try {
+          let r = await assistantApi.deleteVectorStore(l.id);
+          } catch (error) {
+            console.log("Failed to delete vector store", l.id, error);
+          }
+        }
       }
-    }
-  }
-  return `Deleted ${list.length} stores`;
+  } while (list.length > 0);
+  
+  return `Stores deleted`;
 }
 
 export default clearStores;

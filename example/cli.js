@@ -53,6 +53,7 @@ async function chat(config) {
     
     try {
       switch (cmd) {
+
         case "upload": {
           // upload file and attach to assistant
           let f = cmda[1].trim();
@@ -176,9 +177,10 @@ function setupConfig() {
       key: process.env.APPENV_KEY,
       endPoint: process.env.APPENV_ENDPOINT,
     },
+    temperature: (process.env.APPENV_TEMPERATURE) ? parseFloat(process.env.APPENV_TEMPERATURE) : 0.5,
     devMode: process.env.APPENV_DEVMODE === "TRUE",
     assistantid:
-      (process.env.ASSISTANTID == null || process.env.APPENV_ASSISTANTID.trim().length === 0)
+      (process.env.APPENV_ASSISTANTID == null || process.env.APPENV_ASSISTANTID.trim().length === 0)
         ? null
         : process.env.APPENV_ASSISTANTID,
     assistantName: process.env.APPENV_ASSISTANTNAME,
@@ -203,7 +205,7 @@ function setupConfig() {
   config.viyaConfig = {};
   let logonPayload = null;
   if (config.devMode === true) {
-    config.assistantName= config.assistantName + "_DEV";
+    config.assistantName= config.assistantName ;
   }
   if (process.env.APPENV_VIYA === "TRUE") {
     let { token, host } = getToken();

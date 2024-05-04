@@ -149,6 +149,7 @@ async function setupAssistant(config) {
   console.log("Model: ", appControl.model);
   console.log("Assistant Name: ",appControl.assistant.name);
   console.log("Assistantid", appControl.assistant.id);
+  console.log('Temperature:', appControl.temperature);
   console.log("Threadid: ", appControl.thread.id);
   console.log("VectorStoreId: ", appControl.vectorStoreid);
   console.log("Using Viya:", (config.viyaConfig.logonPayload != null) ? true: false);

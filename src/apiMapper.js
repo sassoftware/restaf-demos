@@ -79,6 +79,10 @@ function apiMapper(client, provider) {
     let [id] = args;
     return client.beta.threads.del(id);
   }
+  const updateThread = (client) => (...args) =>{
+    let [id, options] = args;
+    return client.beta.threads.update(id, options);
+  }
   const getThread = (client) => (...args) =>{
     let [id] = args;
     return client.beta.threads.retrieve(id)
@@ -195,6 +199,7 @@ function apiMapper(client, provider) {
       getThread: getThread(client),
       deleteThread: deleteThread(client),
       listThreads: listThreads(client),
+      updateThread: updateThread(client),
 
       createMessage: createMessage(client),
       listMessages: listMessages(client),
