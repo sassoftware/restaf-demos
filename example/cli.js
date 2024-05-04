@@ -74,8 +74,10 @@ async function chat(config) {
             */
             let r = await appControl.uploadFile(f, content, "text/plain", "assistants");
             console.log(r);
-            let vectorStore = await appControl.assistantApi.getVectorStore(appControl.vectorStoreid);
-            console.log(vectorStore);
+            if (appControl.provider === "openai") { 
+              let vectorStore = await appControl.assistantApi.getVectorStore(appControl.vectorStoreid);
+              console.log(vectorStore);
+            }
           } catch (e) {
             console.log(e);
           }
@@ -170,6 +172,7 @@ async function chat(config) {
 }
 
 function setupConfig() {
+  console.log(process.env.APPENV_PROVIDER);
   let config = {
     provider: process.env.APPENV_PROVIDER,
     model: process.env.APPENV_MODEL,
