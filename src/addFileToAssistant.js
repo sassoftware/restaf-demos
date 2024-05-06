@@ -15,7 +15,7 @@
  * @param {string} purpose - assistants|Fine-turning
  * @param {appControl} appControl - appControl object
 
- * @returns {promise} - return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
+ * @returns {promise} - return { fileName: filename, fileid: file.id, assistantFileid: assistantFile.id};
  */
 async function addFileToAssistant(filename, fileHandle, content, purpose, appControl) {
   let { assistantApi, assistant, provider } = appControl;
@@ -37,10 +37,10 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
     // now add to the assistant
     console.log("uploaded file:", file.id);
     
-
+  debugger;
     /* do not attach to assistant  if purpose is null*/
     if (purpose === null) {
-      return { fileName: filename, fileId: file.id, assistantFileId: null};
+      return { fileName: filename, fileid: file.id, assistantFileid: null};
     }
     let assistantFile = null;
     if (provider === "azureai") {
@@ -51,7 +51,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
       );
       
       await setFileIds(appControl, file);
-      return { fileName: filename, fileId: file.id, assistantFileId: assistantFile.id};
+      return { fileName: filename, fileid: file.id, assistantFileid: assistantFile.id};
 
     } else {
       let vsFile = await assistantApi.createVectorStoresFiles(
@@ -60,7 +60,7 @@ async function addFileToAssistant(filename, fileHandle, content, purpose, appCon
       );
       console.log("VectorStore File ID ", file.id);
       await setFileIds(appControl, file);
-      return { fileName: filename, fileId: file.id, vectorStoreFileId: vsFile.id};
+      return { fileName: filename, fileid: file.id, vectorStoreFileid: vsFile.id};
 
       }
   

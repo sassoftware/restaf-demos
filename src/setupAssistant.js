@@ -41,18 +41,19 @@ async function setupAssistant(config) {
 
   // usew user tools if passed in, else use builtin tools
   
-  let useTool = config.toolSet ? config.toolSet : "sasic";
+  let useTool = config.toolSet ? config.toolSet : null;
   let toolSet = {};
-  if (config.domainTools.tools.length > 0) {
-    toolSet = config.domainTools;
-    console.log("Using user supplied tool");
-  } else {
+  // changed to allow no user tools
+  if (useTool != null) {
     let specs = builtinToolSets[useTool].tools;
     toolSet = {
       tools: specs,
       functionList: builtinToolSets[useTool].functionList,
       instructions: builtinToolSets[useTool].instructions,
     };
+  } else {
+    toolSet = config.domainTools;
+    console.log("Using user supplied tool");
   }
 
   if (config.code) {

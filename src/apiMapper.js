@@ -57,15 +57,11 @@ function apiMapper(client, provider) {
     let [threadid, role, content, options] = args;
     let newOptions = {
       role: role,
-      content: content
+      content: content,
     }
-    let o = {...options};
-    if (o.fileIds) {
-      o.file_ids = options.fileIds;
-      delete o.fileIds; 
+    if (options.attachments != null) {
+      newOptions.attachments = options.attachments;
     }
-    newOptions = Object.assign(newOptions, o);
-
     return client.beta.threads.messages.create(threadid, newOptions);
   }
   const createThread = (client) => (...args) =>{

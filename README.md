@@ -110,6 +110,13 @@ added to the current vector store and available for file-search.
     - content: content to be written to the file
     - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
     - purpose: 'assistants' is the only purpose supported at this time
+
+    The return value is the following object:
+    {
+      "fileName:  <name of file>
+      "fileid: "<id of the file>",
+      "vectorStoreid": "<id of the vector store(for azure)>",
+    }
 ```
 
 ## devMode flag
@@ -125,6 +132,21 @@ the setupAssistant will do the following:
 
 This ensures that the new test session is clean and does not have
 any artifacts from the previous runs.
+
+## Response from runAssistant
+
+The response from runAssistant is an array of objects. Each object has the 
+following properties:
+
+```javascript
+[
+    {
+        "id": <id of the message>,
+        "role": "assistant",
+        "type": <type of content, usually text>
+        "content": <The content of the message>
+    }
+]
 
 ## Builtin Tools
 

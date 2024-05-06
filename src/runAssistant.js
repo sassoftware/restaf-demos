@@ -15,6 +15,7 @@ import pollRun from "./pollRun.js";
  * @param {appControl} appControl - gpt  session control object
  * @param {string} prompt - user's prompt
  * @param {string} instructions - Additional instructions for the run
+ * @param {Array} attachment - array of files to attach to file_search for this prompt
  * @returns {promise} - response from GPT(can be text, string, html etc...)
  * @example - This function will run the assistant with the prompt and return the response from the assistant.
  * @example
@@ -24,26 +25,35 @@ import pollRun from "./pollRun.js";
  *  console.log(response);
  */
 
-async function runAssistant(appControl, prompt, instructions) {
+async function runAssistant(appControl, prompt, instructions, attachment) {
   appControl.lastRun = [];
   let start = Date.now();
-  let r = await irunAssistant(appControl, prompt, instructions);
+  let r = await irunAssistant(appControl, prompt, instructions, attachment);
   let elapsed = Math.round(Date.now() - start) / 1000;
   console.log("Time taken to run assistant: ", elapsed, " seconds");
   console.log("-----------------------------------");
   return r;
 }
-async function irunAssistant(appControl, prompt, instructions) {
+async function irunAssistant(appControl, prompt, instructions, attachment) {
   let { thread, assistantApi } = appControl;
 
   //add the user request to thread
   try {
     // this seems to improve retrieval using files in azureai?.
     let opts = {};
-    if (appControl.provider === "azureai") {
+    if (appControl.provider === "openai") {
+      if (attachment != null) {
+        let attachments = attachment.map((a) => {
+          return {
+            file_id: a,
+            tools: [{ type: "file_search" }],
+          };
+        });
+        opts.attachments = attachments;
+      }
+    } else {
       opts.fileIds = appControl.assistant.fileIds;
     }
-
     let _newMessage = await assistantApi.createMessage(
       thread.id,
       "user",
@@ -69,13 +79,12 @@ async function runPrompt(appControl, instructions) {
   let { assistantApi, thread } = appControl;
 
   let runArgs = {
-      assistantId: appControl.assistant.id,
-      instructions: appControl.assistant.instructions,
-      tools: appControl.assistant.tools,
-      temperature: appControl.temperature,
-    };
+    assistantId: appControl.assistant.id,
+    instructions: instructions + appControl.assistant.instructions,
+    tools: appControl.assistant.tools,
+    temperature: appControl.temperature,
+  };
 
-  
   // Run the assistant with the prompt and poll for completion
 
   let run = await assistantApi.createRun(thread.id, runArgs);

@@ -20,6 +20,7 @@ import {
 } from "../src/index.js";
 
 
+
 // import {setupAssistant, runAssistant, uploadFile} from '../dist/index.module.js';
 
 // setup configuration
@@ -34,6 +35,7 @@ async function chat(config) {
 
   // create readline interface and chat with user
   const rl = readline.createInterface({ input, output });
+ 
   while (true) {
     let prompt = await rl.question(">");
     // exit session
@@ -49,7 +51,7 @@ async function chat(config) {
     }
     if (cmd === "create" && cmda[1] === "assistant") {
       cmd = "createAssistant"; // create assistant
-    }
+    } 
     
     try {
       switch (cmd) {
@@ -63,7 +65,7 @@ async function chat(config) {
             //let fileHandle = fs.createReadStream(f); //for openai
             debugger;
             let content = fs.readFileSync(f);
-            /*
+          
             let r = await createFile(
               f,
               content,
@@ -71,13 +73,14 @@ async function chat(config) {
               "assistants",
               appControl
             );
-            */
-            let r = await appControl.uploadFile(f, content, "text/plain", "assistants");
+            
+            //let r = await appControl.uploadFile(f, content, "text/plain", "assistants");
             console.log(r);
             if (appControl.provider === "openai") { 
               let vectorStore = await appControl.assistantApi.getVectorStore(appControl.vectorStoreid);
               console.log(vectorStore);
             }
+            appControl.userData.fileid.push(r.fileid);
           } catch (e) {
             console.log(e);
           }
@@ -155,11 +158,21 @@ async function chat(config) {
           appControl = await setupAssistant(config);
           break;
         }
+        case "ask": {
+          let p = prompt.substring(3);
+          console.log(p); 
+          console.log(appControl.userData);
+          let ins = "First seach in the attachment for a response"
+          let response = await runAssistant(appControl, p, ins, appControl.userData.fileid);
+          console.log(response[0].content);
+          break;
+        }
         default: {
           //Note process.env is passed to runAssistant
           // run assistant will pass both appControl and process.env to tools functions
           let promptInstructions = " "; // 'some instructions
           let response = await runAssistant(appControl, prompt, " ");
+  
           console.log(response[0].content);
       
           break;
@@ -194,7 +207,7 @@ function setupConfig() {
         : process.env.APPENV_THREADID,
     code: process.env.APPENV_CODE === "TRUE" ? true : false,
     retrieval: process.env.APPENV_RETRIEVAL === "TRUE" ? true : false,
-    userData: {},
+    userData: {fileid: [] },
     pollStatus: process.env.APPENV_POLLSTATUS === 'TRUE',
     pollInterval: (process.env.APPENV_POLLINTERVAL)? parseInt(process.env.APPENV_POLLINTERVAL): 5000
   };
@@ -225,9 +238,9 @@ function setupConfig() {
   };
 
   // r.toolSet = 'viya'
-  let toolset = process.env.APPENV_TOOLSET
+  config.toolSet = process.env.APPENV_TOOLSET
     ? process.env.APPENV_TOOLSET
-    : "viya";
+    : null
   //console.log(toolset);
   // config.domainTools = builtinTools[toolset];
   return config;

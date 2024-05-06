@@ -146,6 +146,7 @@ async function _catalogSearch(params, userData, appControl) {
     let r = await store.apiCall(catalog.links(rel), payload);
     let rx = itemsData(r); 
     let f = await appControl.uploadFile(assetType, rx._text /*JSON.stringify(rx._details)*/, 'text/plain', 'assistants');
+    userData.fileid.push(f.fileid);
     return rx._message;
   } catch (err) {
     console.log(JSON.stringify(err));
