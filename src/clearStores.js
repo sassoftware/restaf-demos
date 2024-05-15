@@ -4,14 +4,11 @@
  */
 /**
  * @async
- * @category utility
- * @description - Deletes upto 100 vector stores
+ * @private
+ * @description - Deletes vector stores
  * @function clearStores
  * @param {appControl} appControl - gpt session control object
  * @returns {promise} - status string
- * @example
- * This is a convenience function. With V2 of openai assistant, there can be a proliferation of vector stores
- * if they are not managed properly. This function will delete all but the current vector store
  * 
  */
 

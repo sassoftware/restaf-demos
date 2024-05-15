@@ -4,7 +4,7 @@
  */
 /**
  * @async
- * @category utility
+ * @private
  * @description - Deletes files
  * @function clearFiles
  * @param {appControl} appControl - gpt session control object

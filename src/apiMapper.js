@@ -84,13 +84,6 @@ function apiMapper(client, provider) {
     return client.beta.threads.retrieve(id)
   }
 
-  const listThreads = (client) => (...args) =>{
-    let [deploymentName] = args;
-    console.log('deploymentName', deploymentName);
-    console.log(client.GetCompletions);
-    return client.getCompletions(deploymentName)
-  }
-
   const createRun = (client) => (...args) =>{
     let [threadid, options] = args;
    // options.thread = threadid;
@@ -194,7 +187,6 @@ function apiMapper(client, provider) {
       createThread: createThread(client),
       getThread: getThread(client),
       deleteThread: deleteThread(client),
-      listThreads: listThreads(client),
       updateThread: updateThread(client),
 
       createMessage: createMessage(client),

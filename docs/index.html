@@ -259,6 +259,13 @@ added to the current vector store and available for file-search.</p>
     - content: content to be written to the file
     - mimeType: mime type of the content - see https://platform.openai.com/docs/assistants/tools/file-search/vector-stores
     - purpose: 'assistants' is the only purpose supported at this time
+
+    The return value is the following object:
+    {
+      &quot;fileName:  &lt;name of file>
+      &quot;fileid: &quot;&lt;id of the file>&quot;,
+      &quot;vectorStoreid&quot;: &quot;&lt;id of the vector store(for azure)>&quot;,
+    }
 </code></pre>
 <h2>devMode flag</h2>
 <p>This is a flag you can set in the configuration flag. When set to true,
@@ -275,10 +282,26 @@ the setupAssistant will do the following:</p>
 </ol>
 <p>This ensures that the new test session is clean and does not have
 any artifacts from the previous runs.</p>
-<h2>Builtin Tools</h2>
-<p>The library comes with a set of <a href="https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs">builtin tools</a> to help you get started.</p>
-<p>To use these, set the domainTools property in the configuration object as follows:</p>
-<pre class="prettyprint source lang-javascript"><code>{
+<h2>Response from runAssistant</h2>
+<p>The response from runAssistant is an array of objects. Each object has the
+following properties:</p>
+<pre class="prettyprint source lang-javascript"><code>[
+    {
+        &quot;id&quot;: &lt;id of the message>,
+        &quot;role&quot;: &quot;assistant&quot;,
+        &quot;type&quot;: &lt;type of content, usually text>
+        &quot;content&quot;: &lt;The content of the message>
+    }
+]
+
+## Builtin Tools
+
+The library comes with a set of [builtin tools](https://github.com/sassoftware/restaf-demos/tree/viya-assistantjs/src/builtins/tools/functionWithSpecs) to help you get started.
+
+To use these, set the domainTools property in the configuration object as follows:
+  
+```javascript
+{
   tools: [],
   functionList: {},
   instructions: ''

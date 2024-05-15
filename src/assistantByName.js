@@ -7,10 +7,9 @@
  * @private
  * @description - find assistant by name
  * @function assistantByName
- * @params {string} name - assistant name
+ * @param {string} name - assistant name
  * @param {appControl} appControl - gpt  session control object
- * returns {promise} - status (null if no run or thread or failed to cancel)
- * @example - find an assistant by name
+ * @returns {promise} - status (null if no run or thread or failed to cancel)
  */
 async function assistantByName(name, appControl) {
   console.log("Attempting to find assistant by name ", name);
