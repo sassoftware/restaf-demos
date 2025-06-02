@@ -4,6 +4,7 @@
  */
 import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
+import deleteSession from './deleteSession.js';
 async function _describeTable(params, mode) {
 
   let { table, lib, limit, source, format, where} = params;
@@ -14,7 +15,7 @@ async function _describeTable(params, mode) {
   if (source === 'cas') {
     itable.caslib = lib;
   } else {
-    itable.libname = lib;
+    itable.libref = lib;
   }
   let config = {
     source: source,
@@ -32,8 +33,9 @@ async function _describeTable(params, mode) {
   console.log('config', config);
   console.log('logonPayload', logonPayload);
   console.log(restafedit.setup);
+  let appControl = {};
   try {
-    let appControl = await restafedit.setup(
+    appControl = await restafedit.setup(
       logonPayload,
       config,
       null,/* create a sessiion */
@@ -46,9 +48,11 @@ async function _describeTable(params, mode) {
      console.log('appControl.state.data', appControl.state.data);
      let tableSummary = await restafedit.getTableSummary(appControl);
      let t = (mode === 'describe') ? JSON.stringify(tableSummary) : JSON.stringify(appControl.state.data);
+     await deleteSession(appControl);
     return { content: [{ type: 'text', text: t }] };
   } catch (err) {
-    console.log(err);
+    console.log(JSON.stringify(err)); 
+    await deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }

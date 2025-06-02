@@ -5,6 +5,15 @@ This is demo of mcp server in nodejs.
 - indexhttp.js - uses http streaming(with no history)
 - indexstdio.js - uses stdio streaming
 
+## Notes
+
+This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools 
+might have created.
+
+In a production system the designer has to maka decisions on what needs to be cached and the implications of 
+such caching.
+
+The implication of this design choice is felt most when the tool needs to create a compute session - the requests will take longer than when the compute session is cached.
 
 ##  Using the server
 
