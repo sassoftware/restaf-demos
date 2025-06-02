@@ -5,6 +5,7 @@
 import { z } from 'zod';
 import _describeTable from './toolhelpers/_describeTable.js';
 import { required } from 'zod/v4-mini';
+import { fi } from 'zod/v4/locales';
 
 
 async function tools() {
@@ -44,7 +45,34 @@ async function tools() {
         console.log('describeTable', r);
         return r;
       }
-    }
+    },
+    {
+      name: "devascore",
+      description: `compute Deva Score for two numbers. If more than 2 numbers are provided, process the numbers from the left as follows:
+       - compute score for the first two numbers
+       - use the result and the next number to compute the next score
+       - repeat until all numbers are processed`,
+      schema: {
+        a: z.number(),
+        b: z.number()
+      },
+      handler: async ({ a, b }) => {
+        console.log('devascore', a, b);
+        return { content: [{ type: "text", text: String((a + b) * 100) }] }
+      }
+    },
+    {
+      name: "devssub",
+      description: "compute Deva Sub for two numbers",
+      schema: {
+        a: z.number(),
+        b: z.number()
+      },
+      handler: async ({ a, b }) => {
+        console.log('devssub', a, b);
+        return { content: [{ type: "text", text: String(a - b * 100) }] }
+      }
+    },
   ]
   
   return samples;
