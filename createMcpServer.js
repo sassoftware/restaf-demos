@@ -24,6 +24,9 @@ async function createMcpServer(mode, tools, prompts, resources) {
   // Register the addition tool
 
   tools.forEach(tool => {
+    console.log(`Registering tool: ${tool.name}`);
+    console.log(`Description: ${tool.description}`);  
+    console.log(`Schema: ${JSON.stringify(tool.schema)}`);
     mcpServer.tool(
       tool.name,
       tool.description,

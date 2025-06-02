@@ -5,22 +5,24 @@
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=12.14.0",
+    "node": ">=20.4.0.",
     "npm": ">=6.13.4",
     "yarn": ">=1.22.0"
   },
   "type": "module",
   "scripts": {
-    "start": "node --no-warnings indexhttp.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env --no-warnings indexhttp.js",
+    "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --no-warnings indexhttp.js",
     "test": "npx @modelcontextprotocol/inspector",
-    "debugcode": "node --inspect-brk indexhttp.js",
+    "debugcode": "node --inspect-brk --env-file=.env indexhttp.js",
     "deploy": "bash ./deploy.sh"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [
     "SAS Viya",
     "mcp",
-    "AgentAI"
+    "Agentic AI",
+    "Viya actions"
   ],
   "main": "./indexhttp.js",
   "bin": {
@@ -28,8 +30,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "@sassoftware/restaf": "^5.2.1",
-    "@sassoftware/restaflib": "^5.2.1",
+    "@sassoftware/restaf": "^5.3.3-0",
+    "@sassoftware/restafedit": "^3.8.4-0",
+    "@sassoftware/restaflib": "^5.3.3-0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",

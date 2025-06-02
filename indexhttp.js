@@ -20,10 +20,9 @@ app.get('/health', (req, res) => {
 	res.json({
 		name: 'Notes MCP Server',
 		version: '1.0.0',
-		description: 'A Model Context Protocol server for managing notes',
+		description: 'A Model Context Protocol server for DevaDB database.',
 		endpoints: {
 			mcp: '/mcp',
-			sse: '/sse',
 			health: '/health'
 		},
 		usage: 'Use with MCP Inspector or compatible MCP clients like vscode or your own MCP client'
@@ -50,7 +49,8 @@ const handleRequest = async (req, res) => {
 		debugger;
 		console.log(req.headers);
 		// new server and transport on each invocation
-		let { mcpServer, transport } = await createMcpServer('http', tools(), null, null);
+		let t = await tools();
+		let { mcpServer, transport } = await createMcpServer('http', t, null, null);
 
 		// let mcpServer handle the request
 		console.log('Request body:', req.body);

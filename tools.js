@@ -3,50 +3,50 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
+import _describeTable from './toolhelpers/_describeTable.js';
+import { required } from 'zod/v4-mini';
 
-function tools() {
+
+async function tools() {
+ 
   let samples = [
-    {
-      name: "devascore",
-      description: "compute Deva Score for two numbers",
+   
+     {
+      name: "ReadSASData",
+      description: `Reads data from specified table from a specified library.
+      if library is not specified, it defaults to public for cas and sashelp for sas.
+       User can specify the server as either cas or sas. If not specified, it defaults to cas.
+       User can also specify the limit the number of rows read. If not specified default to 10.
+       User can also specify a where clause. if not specified, default to a blank string`,
       schema: {
-        a: z.number(),
-        b: z.number()
+        table: z.string(),
+        library: z.string().optional(),
+        limit: z.number().optional(),
+        server: z.string().optional().default('cas'),
+        where: z.string().default(' ')
       },
-      handler: async ({ a, b }) => {
-        return { content: [{ type: "text", text: String((a + b) * 100) }] }
-      }
-    },
-    {
-      name: "devssub",
-      description: "compute Deva Sub for two numbers",
-      schema: {
-        a: z.number(),
-        b: z.number()
-      },
-      handler: async ({ a, b }) => {
-        return { content: [{ type: "text", text: String(a - b*100) }] }
-      }
-    },
-    {
-      name: "upcase",
-      description: "Upcase a string and return as JSON",
-      schema: {
-        a: z.string()
-      },
-      handler: async ({ a }) => {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({ x: a.toUpperCase() })
-            }
-          ]
+      required: ['table'],
+      handler: async ({ table, library, limit, server, where }) => {
+        const params = { table, limit, server, where };
+        let iparams = {
+          table: table,
+          lib: library || '',
+          limit: limit|| 10, // default limit
+          source: (server=== 'sas') ? 'compute' : 'cas', // default source
+          format: true, // default format
+          where: where || '' // no filter by default
+        };
+        if (library == null || library.trim().length === 0) {
+          iparams.lib = (iparams.source === 'cas') ? 'public' : 'sashelp'; // default library
         }
+        console.log('params', iparams);
+        let r = await _describeTable(iparams, 'query');
+        console.log('describeTable', r);
+        return r;
       }
     }
-    
   ]
+  
   return samples;
 }
 export default tools;
