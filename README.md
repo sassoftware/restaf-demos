@@ -19,7 +19,12 @@ With this server you can issue prompts like these:
 
 ##  Install and run the server
 
-- Clone this repository
+ > Make sure your node version is >= 22.16.0
+ 
+- Clone this repository as follows:
+    - https://github.com/sassoftware/restaf-demos mymcp -b mcp-serverjs
+    - then cd over to mymcp folder
+    - run the 'npm install' command
 - Copy .env.sample as .env
 - Edit .env file and set the values for authentication with Viya(see below)
 - Start the mcp server as described below
