@@ -7,6 +7,8 @@ import express from 'express';
 import createMcpServer from './createMcpServer.js';
 import tools from './tools.js';
 import cors from 'cors';
+import debug from 'debug';
+const log = debug('mcpserver');
 
 // setup express server
 const app = express();
@@ -15,7 +17,7 @@ app.use(cors())
 
 // setup routes
 app.get('/health', (req, res) => {
-	console.log('Received request for health endpoint');
+	log('Received request for health endpoint');
 	debugger;
 	res.json({
 		name: 'Notes MCP Server',
@@ -47,13 +49,13 @@ app.get('/', (req, res) => {
 const handleRequest = async (req, res) => {
 	try {
 		debugger;
-		console.log(req.headers);
+		log(req.headers);
 		// new server and transport on each invocation
 		let t = await tools();
 		let { mcpServer, transport } = await createMcpServer('http', t, null, null);
 
 		// let mcpServer handle the request
-		console.log('Request body:', req.body);
+		log('Request body:', req.body);
 		await transport.handleRequest(req, res, req.body);
 
 	} catch (error) {
@@ -76,5 +78,5 @@ app.post('/mcp', handleRequest);
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-	console.log(`MCP Stateless Streamable HTTP Server listening on port ${PORT}`);
+	console.log(`mcp-viya-services: Stateless Streamable HTTP Server listening on port ${PORT}`);
 });

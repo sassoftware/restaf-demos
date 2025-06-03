@@ -4,21 +4,41 @@
  */
 import { z } from 'zod';
 import _describeTable from './toolhelpers/_describeTable.js';
-import { required } from 'zod/v4-mini';
-import { fi } from 'zod/v4/locales';
+import debug from 'debug';
+const log = debug('tools');
+/**
+ * This function defines a set of tools that can be used to interact with SAS or CAS data.
+ * It includes tools for reading data from specified tables, computing scores, and performing subtractions.
+ * Each tool has a name, description, schema for input validation, and a handler function to execute the logic.
+ * 
+ * @returns {Array} An array of tool definitions.
+ */
+
 
 
 async function tools() {
  
+  let desc = `
+  ## Reads data from specified table from a specified library
+
+  - The table is required. If not specified prompt user for its value
+  - If library is not specified, it defaults to public for cas and sashelp for sas.
+  - If table is specified as x.y, set library to x and table to y.
+  - User can specify the server as either cas or sas. If not specified, it defaults to cas.
+  - User can also specify the limit the number of rows read. If not specified default to 10.
+  - User can also specify a where clause. if not specified, default to a blank string
+
+  ## Example prompts
+  
+  - read cars from public library in cas server
+  - read air from sashelp library in sas server
+  `
+
   let samples = [
    
      {
       name: "ReadSASData",
-      description: `Reads data from specified table from a specified library.
-      if library is not specified, it defaults to public for cas and sashelp for sas.
-       User can specify the server as either cas or sas. If not specified, it defaults to cas.
-       User can also specify the limit the number of rows read. If not specified default to 10.
-       User can also specify a where clause. if not specified, default to a blank string`,
+      description: desc,
       schema: {
         table: z.string(),
         library: z.string().optional(),
@@ -40,9 +60,9 @@ async function tools() {
         if (library == null || library.trim().length === 0) {
           iparams.lib = (iparams.source === 'cas') ? 'public' : 'sashelp'; // default library
         }
-        console.log('params', iparams);
+        log('params', iparams);
         let r = await _describeTable(iparams, 'query');
-        console.log('describeTable', r);
+        log('describeTable', r);
         return r;
       }
     },
@@ -57,7 +77,7 @@ async function tools() {
         b: z.number()
       },
       handler: async ({ a, b }) => {
-        console.log('devascore', a, b);
+        log('devascore', a, b);
         return { content: [{ type: "text", text: String((a + b) * 100) }] }
       }
     },
@@ -69,7 +89,7 @@ async function tools() {
         b: z.number()
       },
       handler: async ({ a, b }) => {
-        console.log('devssub', a, b);
+        log('devssub', a, b);
         return { content: [{ type: "text", text: String(a - b * 100) }] }
       }
     },

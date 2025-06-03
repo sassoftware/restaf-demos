@@ -6,6 +6,8 @@
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import debug from 'debug';
+const log = debug('mcpserver');
 
 
 async function createMcpServer(mode, tools, prompts, resources) {
@@ -24,9 +26,9 @@ async function createMcpServer(mode, tools, prompts, resources) {
   // Register the addition tool
 
   tools.forEach(tool => {
-    console.log(`Registering tool: ${tool.name}`);
-    console.log(`Description: ${tool.description}`);  
-    console.log(`Schema: ${JSON.stringify(tool.schema)}`);
+    log(`Registering tool: ${tool.name}`);
+    log(`Description: ${tool.description}`);  
+    log(`Schema: ${JSON.stringify(tool.schema)}`);
     mcpServer.tool(
       tool.name,
       tool.description,

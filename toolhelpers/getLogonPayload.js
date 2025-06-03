@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import getToken from './getToken.js';
+import debug from 'debug';
+const log = debug('logonpayload');
 function getLogonPayload() {
  
   let logonPayload = {
@@ -26,7 +28,7 @@ function getLogonPayload() {
     };
   }
 
-  console.log(`Using logon payload: ${JSON.stringify(logonPayload)}`);
+  log(`Using logon payload: ${JSON.stringify(logonPayload)}`);
   return logonPayload;
 }
 export default getLogonPayload;

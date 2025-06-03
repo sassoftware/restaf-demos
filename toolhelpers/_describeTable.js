@@ -5,11 +5,13 @@
 import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
+import debug from 'debug';
+const log = debug('read');
 async function _describeTable(params, mode) {
 
   let { table, lib, limit, source, format, where} = params;
   let logonPayload = getLogonPayload();
-  console.log('logonPayload', logonPayload);
+  log('logonPayload', logonPayload);
 
   let itable = {name: table};
   if (source === 'cas') {
@@ -30,9 +32,9 @@ async function _describeTable(params, mode) {
       }
     }
   };
-  console.log('config', config);
-  console.log('logonPayload', logonPayload);
-  console.log(restafedit.setup);
+  log('config', config);
+  log('logonPayload', logonPayload);
+  log(restafedit.setup);
   let appControl = {};
   try {
     appControl = await restafedit.setup(
@@ -43,15 +45,15 @@ async function _describeTable(params, mode) {
       'user',
       {}
     );
-    console.log('appControl', appControl);
+    log('appControl', appControl);
     await restafedit.scrollTable('first', appControl);
-     console.log('appControl.state.data', appControl.state.data);
+     log('appControl.state.data', appControl.state.data);
      let tableSummary = await restafedit.getTableSummary(appControl);
      let t = (mode === 'describe') ? JSON.stringify(tableSummary) : JSON.stringify(appControl.state.data);
      await deleteSession(appControl);
     return { content: [{ type: 'text', text: t }] };
   } catch (err) {
-    console.log(JSON.stringify(err)); 
+    log(JSON.stringify(err)); 
     await deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
