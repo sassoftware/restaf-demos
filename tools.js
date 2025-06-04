@@ -4,6 +4,7 @@
  */
 import { z } from 'zod';
 import _describeTable from './toolhelpers/_describeTable.js';
+import _listLibrary from './toolhelpers/_listLibrary.js';
 import debug from 'debug';
 const log = debug('tools');
 /**
@@ -22,12 +23,12 @@ async function tools() {
   ## Reads data from specified table from a specified library
 
   - The table is required. If not specified prompt user for its value
-  - If library is not specified, it defaults to public for cas and sashelp for sas.
   - If table is specified as x.y, set library to x and table to y.
+  - If library is not specified, it defaults to public for cas and sashelp for sas.
   - User can specify the server as either cas or sas. If not specified, it defaults to cas.
   - User can also specify the limit the number of rows read. If not specified default to 10.
-  - User can also specify a where clause. if not specified, default to a blank string
-
+  - User can also specify a where clause. if not specified, default to a blank string. 
+    
   ## Example prompts
   
   - read cars from public library in cas server
@@ -66,6 +67,30 @@ async function tools() {
         return r;
       }
     },
+    /*
+    {
+      name: "libraryExists",
+      description: `This tool verifies that the specified library exists in the specified server. 
+      if it exist the tool wil return a string 'YES'. If it does not exist, it will return a string 'NO'
+      If multiple libraries are specified make repeated calls see if the library exists.`,
+      schema: {
+        server: z.string().default('cas'),
+        library: z.string()
+      },
+      required: ['library'],
+      handler: async ({ server, library }) => {
+        const params = {server, library};
+        let iparams = {
+          source: (server=== 'sas') ? 'compute' : 'cas', // default source
+          library: library || '',
+        };
+        
+        let r = await _listLibrary(iparams);
+        log('getLibraries', r);
+        return r;
+      }
+    },
+    */
     {
       name: "devascore",
       description: `compute Deva Score for two numbers. If more than 2 numbers are provided, process the numbers from the left as follows:
