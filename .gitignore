@@ -1,3 +1,4 @@
 node_modules
 tls
 *.env
+!.env.example
