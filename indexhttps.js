@@ -5,9 +5,8 @@
  */
 import express from 'express';
 import createMcpServer from './createMcpServer.js'; // Adjust the import path as needed
-import tools from './tools.js'; // Adjust the import path as needed
 import https from 'https';
-import { _lte, _templateLiteral } from 'zod/v4/core';
+
 
 var key = fs.readFileSync('./tls/tls.key');
 var cert = fs.readFileSync('./tls/tls.crt');
@@ -15,19 +14,7 @@ let options = { key, cert };
 
 const app = express();
 let server = https.createServer(options, app);
-/*
-app.use('/mcp', express.json());
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	if (req.method === 'OPTIONS') {
-		res.sendStatus(200);
-	} else {
-		next();
-	}
-});
-*/
+
 
 app.get('/health', (req, res) => {
 	console.log('Received request for health endpoint');
@@ -66,7 +53,7 @@ async function handleRequest(req, res) {
 		debugger;
 	
 		// new server and transport on each invocation
-		let {mcpServer,transport} = await createMcpServer(tools(),null, null);
+		let {mcpServer,transport} = await createMcpServer('http');
 		
 		// let mcpServer handle the request
 		await transport.handleRequest(req, res, req.body);

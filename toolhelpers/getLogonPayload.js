@@ -9,7 +9,7 @@ function getLogonPayload() {
  
   let logonPayload = {
       host: process.env.VIYA_SERVER,
-      authType: "password",
+      authType: 'password',
       user: process.env.VIYA_USER,
       password: process.env.VIYA_PASSWORD,
       clientID: process.env.VIYA_CLIENTID,
@@ -24,7 +24,7 @@ function getLogonPayload() {
       host: host,
       authType: 'server',
       token: token,
-      tokenType: "Bearer"
+      tokenType: 'Bearer'
     };
   }
 

@@ -5,10 +5,9 @@
  */
 import express from 'express';
 import createMcpServer from './createMcpServer.js';
-import tools from './tools.js';
 import cors from 'cors';
 import debug from 'debug';
-const log = debug('mcpserver');
+const log = debug('main');
 
 // setup express server
 const app = express();
@@ -51,8 +50,8 @@ const handleRequest = async (req, res) => {
 		debugger;
 		log(req.headers);
 		// new server and transport on each invocation
-		let t = await tools();
-		let { mcpServer, transport } = await createMcpServer('http', t, null, null);
+		
+		let { _mcpServer, transport } = await createMcpServer('http');
 
 		// let mcpServer handle the request
 		log('Request body:', req.body);
@@ -78,5 +77,5 @@ app.post('/mcp', handleRequest);
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-	console.log(`mcp-viya-services: Stateless Streamable HTTP Server listening on port ${PORT}`);
+	console.log(`Stateless Streamable HTTP Server listening on port ${PORT}`);
 });

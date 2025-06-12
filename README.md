@@ -1,12 +1,28 @@
 # mcp-serverjs - A demo ModelContextProtocolServer(mcp) for SAS Viya
 
-This is demo of mcp server for SAS Viya written in nodejs. The key capability(tool in mcp terminology) of this server is to read cas and sas tables and return the results
+This is mcp server for SAS Viya written in nodejs. The intended audience is SAS users who want to
+take advantage of MCP to deliver IP they have created with SAS or other technologies.
+
+The server comes with a set of sample tools.
+
+## Simple tool
+
+- devascore - calculates a special score given two numbers
+
+## SAS related tools
+
+- readSASData - read SAS or  CAS tables
+- superstat - an example of accessing custom SAS code
+- searchAsset - an experimental tool using SAS/Catalog
+- loanscore - compute a loan score using SCR
+
 
 With this server you can issue prompts like these:
 
 - Read costchange from samples. Limit the number of records to 10.
 - read sashelp.air from sas
 - read public.cars from cas where make = toyota
+- compute superstat for 1,2
 
 > You can add your own capabilities to this server. See notes at the end of this document.
 
@@ -87,9 +103,11 @@ Now make sure your vscode Copilot is in "Agent Mode" - use the dropdown in the p
 
 Now you can issue prompts like
 
-- Read costchange from samples. Limit the number of records to 10.
+- Read costchange from samples.
 - read sashelp.air from sas
-- read public.cars from cas where make = toyota
+- read public.cars from cas where make eq toyota
+
+Try the other tools in this server
 
 
 ### Test with @modelcontextprotocol/inspector
@@ -103,8 +121,10 @@ npm test
 
 ## Enhancing the server
 
-- Add new tool definitions to the tools.js file
-- Currently supporting functions are in toolhelpers folder. Use your own conventions
+- Add a file to the toolSet folder
+    - Use one of the files in this folder as a guide
+- Add the new file to the index.js file in toolSet folder
+- Restart the mcp server
 
 ## Notes
 
@@ -116,3 +136,12 @@ such caching.
 
 The implication of this design choice is felt most when the tool needs to create a compute session - the requests will take longer than when the compute session is cached.
 
+
+## TBD
+
+- create a version that caches selected items for performance.
+- switch from express to hapijs - my preferred app server package
+- run in a namespace in a Viya server
+- work on futher generaliztion of this server so it can be used for more complex scenarios
+- Investigate integratinn A2A from Google with this server
+- create custom mcp host.

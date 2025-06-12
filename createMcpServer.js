@@ -3,19 +3,19 @@
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import toolSet from './toolSet/index.js';
 import debug from 'debug';
 const log = debug('mcpserver');
 
-
-async function createMcpServer(mode, tools, prompts, resources) {
+async function createMcpServer(mode) {
   // Create an MCP server
 
   const mcpServer = new McpServer({
-    name: "demo",
-    version: "1.0.0"
+    name: 'mcp-demo-services',
+    version: '1.0.0'
   }, { capabilities: {
       tools: {
         listChanged: true
@@ -24,11 +24,13 @@ async function createMcpServer(mode, tools, prompts, resources) {
   });
 
   // Register the addition tool
+  // TBD: Register resources and prompts
 
-  tools.forEach(tool => {
-    log(`Registering tool: ${tool.name}`);
-    log(`Description: ${tool.description}`);  
-    log(`Schema: ${JSON.stringify(tool.schema)}`);
+
+  console.log(`Creating MCP server in ${mode} mode`);
+  log(JSON.stringify(toolSet, null, 2 ));
+  toolSet.forEach(tool => {
+    log(`Registering tool in createMcpServer  : ${tool.name}`);
     mcpServer.tool(
       tool.name,
       tool.description,
@@ -37,12 +39,7 @@ async function createMcpServer(mode, tools, prompts, resources) {
     )
   })
 
-  // Register the prompts(TBD)
-  // Register resources(TBD)
-
-  // create a transport for the mcp server
-
-  const transport = (mode === "http")
+  const transport = (mode === 'http')
     ? new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })
     : new StdioServerTransport();
 
