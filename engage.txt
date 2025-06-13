@@ -1,0 +1,110 @@
+Model Context Server from SAS Consultants and SAS Customers View Point
+
+Most of the MCP servers you see in the market place were developed by companies
+to make it easier for their customers to use their technology. I expect SAS will also provide multiple MCP servers that are focused on the many solutions and capabilities we provide.
+
+Our customers use SAS to create programs/models  to meet their customers
+business needs. These content creator can now benefit from creating MCP servers for
+their models.
+
+One of the common patterns  are models that take input values as macro variables, do some computations and return the results.
+
+Consider this simple example below designed to compute something called superstat.
+It takes two input macros a and b, and returns a result.
+
+ods html style=barrettsblue;  
+          data temp;
+          superstat = (&a + &b) * 42;
+          run;
+          proc print data=temp;
+          run;
+          ods html close; 
+          run;
+
+The details of this tool is below.
+Here are the other  tools in mcp server. You can see the details in  this repository.
+
+devascore - Computes a special score called devascore for two numbers.
+superstat - compute superstat for two numbers(runs in SAS compute)
+loanscore  - scores a loan application using a model published to SCR.
+libraryExists - Checks for the existence of a specified library in a specified server.
+readSASData - Reads data from a specified table in a specified library.
+searchAssets - Searches SAS Catalog for a specific asset with a search string(trial implementation)
+
+
+The gory details
+
+Let us see how to use the MCP server I presented in the last posting.
+
+The tool definition for this example is below. It defines the instructions for the tool, the input schema and the handler. The handler is called by LLM when it chooses to run this tool. The handler has the SAS code to execute. It calls the function  _submitCode to call Viya to execute the code and get the results.
+
+let desc = `
+      superstat:  compute superstat for two numbers. 
+
+       ## Sample Prompt
+
+       - compute superstat for 1 and 2
+       - compute superstat for 3,5
+       `;
+
+  let spec = {
+    name: 'superstat',
+    description: desc,
+    schema: {
+      a: z.number(),
+      b: z.number()
+    },
+    required: ['a', 'b'],
+    handler: async (params) => {
+      let src = `
+          ods html style=barrettsblue;  
+          data temp;
+          superstat = (&a + &b) * 42;
+          run;
+          proc print data=temp;
+          run;
+          ods html close; 
+          run;
+          `;
+
+      let r = await _submitCode(src, params);
+      return r;
+    }
+
+  };
+
+The brains of this tool is in the _submitCode function. This is a good place to
+plug the coolness of my JavaScript libraries restaf and restaflib - writing applications
+with SAS REST API has never been easier. Compare this code to your code to execute SAS
+code using REST API.
+//
+import restaf from '@sassoftware/restaf';
+import restaflib from '@sassoftware/restaflib';
+import getLogonPayload from './getLogonPayload.js';
+
+async function _submitCode(src, params) {
+    try {
+        // setup
+        let store = restaf.initStore({});
+        let logonPayload = getLogonPayload();
+    
+        // get compute sessio, run sas code and retrieve result
+        let computeSession = await restaflib.computeSetup(store, null, logonPayload);
+        let computeSummary = await restaflib.computeRun(store, computeSession,src,params );
+        let ods = await restaflib.computeResults(store, computeSummary, "ods");
+
+        // cleanup
+        await store.apiCall( computeSession.links( 'delete' ) );
+        await store.logoff();
+
+        // return results in the format the LLM expects
+        return { content: [{ type: 'text', text: ods }] };
+    }
+    catch (error) {
+        // Oops! Something went wrong
+        return { content: [{ type: 'text', text: JSON.stringify(error) }] }
+    };
+
+}
+
+export default _submitCode;

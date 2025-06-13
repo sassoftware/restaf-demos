@@ -14,5 +14,6 @@
                 "env": {}
             }
         }
-    }
+    },
+    "editor.fontSize": 16
 }

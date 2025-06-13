@@ -51,7 +51,7 @@ async function _describeTable(params, mode) {
      let tableSummary = await restafedit.getTableSummary(appControl);
      let t = (mode === 'describe') ? JSON.stringify(tableSummary) : JSON.stringify(appControl.state.data);
      await deleteSession(appControl);
-      await appControl.store.logoff();
+     await appControl.store.logoff();
     return { content: [{ type: 'text', text: t }] };
    
   } catch (err) {

@@ -1,7 +1,7 @@
 {
   "name": "@sassoftware/mcp-serverjs",
   "version": "0.2.0",
-  "description": "Demo of mcp server for a Viya action",
+  "description": "Demo of mcp server written in nodejs",
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
   "engines": {
@@ -21,7 +21,10 @@
     "SAS Viya",
     "mcp",
     "Agentic AI",
-    "Viya actions"
+    "Viya actions",
+    "restaf",
+    "restafedit",
+    "restaflib"
   ],
   "main": "./indexhttp.js",
   "bin": {
