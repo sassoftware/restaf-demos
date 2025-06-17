@@ -14,6 +14,8 @@
     "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --no-warnings indexhttp.js",
     "test": "npx @modelcontextprotocol/inspector",
     "debugcode": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk --env-file=.env indexhttp.js",
+    "refresh": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node rt.js",
+    
     "deploy": "bash ./deploy.sh"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",

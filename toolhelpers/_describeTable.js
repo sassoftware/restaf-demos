@@ -10,7 +10,7 @@ const log = debug('read');
 async function _describeTable(params, mode) {
 
   let { table, lib, limit, source, format, where} = params;
-  let logonPayload = getLogonPayload();
+  let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
 
   let itable = {name: table};

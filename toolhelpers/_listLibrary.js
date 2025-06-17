@@ -12,7 +12,7 @@ const log = debug('listlibrary');
 async function _listLibrary(params) {
   let { source, library } = params;
 
-  let logonPayload = getLogonPayload();
+  let logonPayload = await getLogonPayload();
   let config = {
     source: source,
     table: null

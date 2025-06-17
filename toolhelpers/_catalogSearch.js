@@ -51,7 +51,7 @@ async function _catalogSearch(params, rel) {
   try {
 
     let store = restaf.initStore();
-    let logonPayload = getLogonPayload();
+    let logonPayload = await getLogonPayload();
     let msg = await store.logon(logonPayload);
     console.log('msg', msg);
     console.log(store.connection())

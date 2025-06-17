@@ -12,7 +12,7 @@ async function _submitCode(src, params) {
 		// setup
 		log('Initializing store and logon payload');
 		let store = restaf.initStore({});
-		let logonPayload = getLogonPayload();
+		let logonPayload = await getLogonPayload();
 	
 		// get compute sessio, run sas code and retrieve result
 		log('Creating compute session');
