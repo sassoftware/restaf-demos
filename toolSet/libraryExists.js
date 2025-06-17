@@ -33,21 +33,21 @@ function libraryExists() {
           let content = {};
           if (library === '*') {
             if (r.length === 0) {
-              content = {context: [ { type: 'text', text: 'No libraries found.' }]};
+              content = {content: [ { type: 'text', text: 'No libraries found.' }]};
             } else {
-              content = {context: [ { type: 'text', text: r.toString() }]};
+              content = {content: [ { type: 'text', text: r.toString() }]};
             }
           } else {
             if (r.length > 0) {
-              content = {context: [ { type: 'text', text: 'YES' }]};
+              content = {content: [ { type: 'text', text: 'YES' }]};
             } else {
-              content = {context: [ { type: 'text', text: 'NO' }]};
+              content = {content: [ { type: 'text', text: 'NO' }]};
             }
           }
           console.log(content);
           return content;
         } catch (err) {
-          return {context: [ { type: 'text', text: `Error checking library existence: ${JSON.stringify(err)}` }]};
+          return {content: [ { type: 'text', text: `Error checking library existence: ${JSON.stringify(err)}` }]};
         }
       }
     };

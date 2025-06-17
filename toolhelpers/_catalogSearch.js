@@ -12,12 +12,14 @@
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from '../toolhelpers/getLogonPayload.js';
 import _itemsData from '../toolhelpers/_itemsData.js';
+import debug from 'debug';
+const log = debug('catalogsearch');
 
 async function _catalogSearch(params, rel) {
   let { searchstring, start, limit } = params;
-  console.log(params);
+  log(params);
   let splitsearchstring = searchstring.trimStart().split(' ');
-  let assetType = 'catalogSearch.txt';
+  let assetType = ' ';
   if (!splitsearchstring[0].includes(':')) {
     if (['dataflows',
       'datasets',
@@ -33,11 +35,11 @@ async function _catalogSearch(params, rel) {
       'riskdataprojects',
       'riskmodels'
     ].includes(splitsearchstring[0])) {
-      assetType = `${splitsearchstring[0]}.txt`;
+      assetType = `${splitsearchstring[0]}`;
       splitsearchstring[0] = 'AssetType:' + splitsearchstring[0];
       searchstring = splitsearchstring.join(' ');
     } else {
-      assetType = `${splitsearchstring[0]}.txt`;
+      assetType = `${splitsearchstring[0]}`;
     }
   }
 
@@ -53,21 +55,19 @@ async function _catalogSearch(params, rel) {
     let store = restaf.initStore();
     let logonPayload = await getLogonPayload();
     let msg = await store.logon(logonPayload);
-    console.log('msg', msg);
-    console.log(store.connection())
 
     if (rel == null) {
       rel = 'search';
     }
-    console.log('---', searchstring, rel);
+    log('---', searchstring);
     let { catalog } = await store.addServices('catalog');
     let payload = {
       qs: { q: searchstring, limit: limit, start: start },
     };
-    console.log('payload', payload);
+    log('payload', payload);
 
     let r = await store.apiCall(catalog.links(rel), payload);
-    console.log('searchAssets', r);
+ 
     let rx = _itemsData(r);
     return {
       content: [
