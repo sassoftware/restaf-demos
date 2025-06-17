@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/mcp-serverjs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Demo of mcp server written in nodejs",
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
@@ -15,7 +15,6 @@
     "test": "npx @modelcontextprotocol/inspector",
     "debugcode": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk --env-file=.env indexhttp.js",
     "refresh": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node rt.js",
-    
     "deploy": "bash ./deploy.sh"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
