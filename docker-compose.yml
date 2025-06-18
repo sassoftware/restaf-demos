@@ -4,4 +4,4 @@ services:
     build: .
     restart: always
     environment:
-      - VIYA_SERVER=$V1
+      - VIYA_SERVER=$VIYA_SERVER
