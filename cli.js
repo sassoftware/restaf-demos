@@ -3,22 +3,22 @@
 * Copyright © 2019, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
 * SPDX-License-Identifier: Apache-2.0
 */
-'use strict';
 
-const restaf     = require('@sassoftware/restaf');
-const vorpal     = require('vorpal')();
-const fss        = require('fs');
-const fs         = fss.promises;
-const config     = require('./src/config');
-const logon      = require('./src/logon');
-const addClient  = require('./src/addClient');
-const delClient  = require('./src/delClient');
-const listClient = require('./src/listClient');
-const detailClient = require('./src/detailClient');
 
-const runCmds    = require('./src/runCmds');
-
-let argv = require('yargs').argv;
+import restaf from '@sassoftware/restaf';
+import vorpalImport from 'vorpal';
+const vorpal = vorpalImport();
+import fss from 'fs';
+const fs = fss.promises;
+import config from './src/config.js';
+import logon from './src/logon.js';
+import addClient from './src/addClient.js';
+import delClient from './src/delClient.js';
+import listClient from './src/listClient.js';
+import detailClient from './src/detailClient.js';
+import runCmds from './src/runCmds.js';
+import yargs from 'yargs';
+let argv = yargs.argv||{}
 let cmdFile = argv.file == null ? null : argv.file;;
 let ttl = argv.ttl == null ? null : argv.ttl;
 let clientConfigFile = argv.cfile == null ? null : argv.cfile; 
@@ -30,21 +30,30 @@ if (clientConfigFile !== null ) {
     console.log(clientConfig);
 
 }
-let payload = config();
-let store  = restaf.initStore();
-store.logon(payload)
-.then (() => runCli(store, cmdFile))
-.catch(err => {
-    console.log(err);
-});
 
+async function start() {
+    let logonPayload = await config();
+    console.log(logonPayload);
+    let store  = restaf.initStore();
+    await store.logon(logonPayload);
+    return { store, logonPayload };
+    }
+
+start()
+    .then(({ store, logonPayload }) => {
+        runCli(store, cmdFile)
+    })
+    .catch(err => {
+        console.error('Error during setup:', err);
+        process.exit(1);
+    });
 function runCli (store, cmdFile) {
    
     vorpal
         .command('logon')
         .description('Logon to Viya')
         .action((args, cb)=> {
-           logon(store, payload, vorpal)
+           logon(store, logonPayload, vorpal)
             .then (r => { 
                 vorpal.log('Logon Successful');
                 cb();
@@ -117,21 +126,21 @@ function runCli (store, cmdFile) {
                 .catch(e => { vorpal.log(e); cb();});
             });
      vorpal
-			.command('details <clientid>')
-			.alias('desc')
+            .command('details <clientid>')
+            .alias('desc')
             .alias('show')
-			.description('Details of selected clienti')
-			.action((args, cb) => {
-				detailClient(store, args.clientid)
-					.then((r) => {
-						vorpal.log(r);
-						cb();
-					})
-					.catch((e) => {
-						vorpal.log(e);
-						cb();
-					});
-			});
+            .description('Details of selected clienti')
+            .action((args, cb) => {
+                detailClient(store, args.clientid)
+                    .then((r) => {
+                        vorpal.log(r);
+                        cb();
+                    })
+                    .catch((e) => {
+                        vorpal.log(e);
+                        cb();
+                    });
+            });
     vorpal
         .command('token <file>')
         .description('save current oauth token to specified file')
@@ -154,13 +163,12 @@ function runCli (store, cmdFile) {
         .log('--------------------------------------')
         .log('Welcome to @sassoftware/registerclient to manage clientids')
         .log('Enter help to get a list of all the commands')
-        .log('Use logon command to start your SAS Viya session. User must be an admin.')
         .log('');
 
     if (cmdFile === null) {
         vorpal.show();
     } else {
-        logon(store, payload)
+        logon(store, logonPayload)
             .then (() => runCmds(store, cmdFile, vorpal))
             .then (r  => console.log(r))
             .catch(err => {

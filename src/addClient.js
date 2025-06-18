@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-module.exports = async function addClient (store, clientid, args, defaultConfigFile, ttl) {
+async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 	
     
 	let clientSecret = (args.secret != null) ? args.secret.trim() : null;
@@ -61,3 +61,4 @@ module.exports = async function addClient (store, clientid, args, defaultConfigF
 		return err.response.data;
 	}
 };
+export default addClient;

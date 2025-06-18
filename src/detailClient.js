@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-module.exports = async function detailClient (store, clientid) {
+async function detailClient (store, clientid) {
 	let payload = {
 		url    : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients/${clientid}`,
 		method : 'GET',
@@ -25,3 +25,4 @@ module.exports = async function detailClient (store, clientid) {
 		}
 	}
 };
+export default detailClient;

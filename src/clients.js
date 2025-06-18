@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const addapp = require('./addClient');
-const delapp = require('./delapp');
-const listapp = require('./listClient');
+import addapp from './addClient.js';
+import delapp from './delapp.js';
+import listapp from './listClient.js';
 
 function clients (store,args,vorpal) {
 
@@ -23,3 +23,4 @@ let sel = process.argv[2];
         process.exit(0);
     }
 }
+export default clients;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-module.exports = async function delClient (store, clientid) {
+async function delClient (store, clientid) {
 	let payload = {
 		url    : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients/${clientid}`,
 		method : 'DELETE',
@@ -25,3 +25,4 @@ module.exports = async function delClient (store, clientid) {
 		}
 	}
 };
+export default delClient;

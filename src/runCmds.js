@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 'use strict';
-let fs = require('fs').promises;
-module.exports = async function runCmds (store, cmdFile, vorpal) {
+import fs  from 'fs';
+let fss = fs.promises;
+
+async function runCmds (store, cmdFile, vorpal) {
 	vorpal.log('Starting command file processing');
-	let cmds = await fs.readFile(cmdFile, 'UTF8');
+	let cmds = await fss.readFile(cmdFile, 'UTF8');
 	vorpal.log('------------------------------------');
 	vorpal.log(cmds);
 	vorpal.log('------------------------------------');
@@ -32,3 +34,4 @@ module.exports = async function runCmds (store, cmdFile, vorpal) {
 	}
 	return 'All cmds processed';
 };
+export default runCmds;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-module.exports = async function listClient (store, all, vorpal) {
+async function listClient (store, all, vorpal) {
 	
 	let payload = {
 		url    : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients`,
@@ -43,3 +43,4 @@ module.exports = async function listClient (store, all, vorpal) {
 	
 	return `${r.data.length} clientids detected`;
 	};
+export default listClient;
