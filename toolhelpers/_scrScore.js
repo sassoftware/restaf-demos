@@ -5,16 +5,16 @@
 
 import axios from 'axios';
 import debug from 'debug';
-const log = debug('score');
+const log = debug('scr');
 
-async function _scrScore(url, params) {
-  let data = {};
-  //skip undefined and null values
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value != null) {
-      data[key] = value;
-    }
-  } 
+async function _scrScore(params) {
+  let { url, scenario } = params;
+
+  let data = scenario.split(',').reduce((acc, pair) => {
+    let [key, value] = pair.split('=');
+    acc[key.trim()] = value.trim();
+    return acc;
+  }, {});
 
   let config = {
     method: 'POST',
@@ -24,16 +24,17 @@ async function _scrScore(url, params) {
       'Accept': 'application/json'
     },
     data: data
-  }
+  };
+
   try {
-    console.log('Config:', config);
+    log('Config:', config);
     let response = await axios(config);
-    console.log('Response status:', response.status);
-    console.log(response.data.outputs);
-    return { outputs: response.data.outputs, error: null };  
+    log('Response status:', response.status);
+    log(response.data);
+    return { content: [{ type: 'text', text: JSON.stringify(response.data) }] };
   }
   catch (error) {
-    return {outputs: null, error: error};
+    return { content: [{ type: 'text', text: JSON.stringify(error) }] };
   }
 }
 export default _scrScore;

@@ -7,7 +7,7 @@ import debug from 'debug';
 const log = debug('logonpayload');
 async function getLogonPayload() {
  
-  if (process.env.USETOKEN !== 'TRUE') {
+  if (process.env.USEPASSWORD === 'TRUE') {
     let logonPayload = {
         host: process.env.VIYA_SERVER,
         authType: 'password',
@@ -19,7 +19,6 @@ async function getLogonPayload() {
     return logonPayload;
   }
 
-  // use this only in non-docker environments
   // need more configuration and code changes(mounting .sas folder) to make this work in docker
 
   try {

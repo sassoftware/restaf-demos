@@ -5,22 +5,8 @@
 import restaflib  from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
-
-/**
- * @description Score a MAS model
- * @async
- * @private
- * @module masScoring
- * @category builtins
- * @param {string} modelName - published name
- * @param {object} data - data to be scored
- * @param {boolean} uflag - if true, remove the last character(_) from the variable name
- * @param {*} appEnv - appEnv
- * @returns {object} - {status: {statusCode: 0, msg: null}, results: masRun results}
- * @example
- * let result = await appEnv.builtins.masScoring('mycoolmodel', {x1: 1, x2: 2}, appEnv);
- * 
- */
+import debug from 'debug';
+const log = debug('mas');
 async function _masScoring(params) {
  
  // setup
@@ -37,7 +23,7 @@ async function _masScoring(params) {
     describe.forEach(d => {
       inputs[d.name] = null;
     });
-    console.log('inputs', inputs);
+    log('inputs', inputs);
     if (scenario === null) {
       // if scenario is empty, return the inputs
       return { content: [{ type: 'text', text: JSON.stringify(inputs) }] };
@@ -48,13 +34,13 @@ async function _masScoring(params) {
        //v1 = v.startsWith('_') ? v.substring(0, v.length - 1) : v;
       iscenario[v] = (scenario[v1] == null) ? null : scenario[v1];
     }
-    console.log('iscenario', iscenario);
+    log('iscenario', iscenario);
     let result = await masRun(store, masControl, model, iscenario);
 		await store.logoff();
   
     return { content: [{ type: 'text', text: JSON.stringify(result) }] };
   } catch (err) {
-    console.log(err);
+    log(err);
     await store.logoff();
     return { status: { statusCode: 2, msg: err }, results: {} };
   }

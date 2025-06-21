@@ -1,0 +1,573 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SAS Container Runtime: hmeq",
+    "description": "This is the Big Decision Home Equity Decision running in SAS Container Runtime.",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://www.example.com:30083",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/hmeq": {
+      "post": {
+        "tags": [
+          "decision_c0874b77_973c_4032_96a",
+          "execute"
+        ],
+        "operationId": "execute",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SCRInput"
+              }
+            },
+            "application/vnd.sas.container.runtime.input+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SCRInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SCROutput"
+                }
+              },
+              "application/vnd.sas.container.runtime.output+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SCROutput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BAD_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/vnd.sas.container.runtime.error+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_SERVER_ERROR",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/vnd.sas.container.runtime.error+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/ready": {
+      "get": {
+        "tags": [
+          "k-8s-probes-controller"
+        ],
+        "operationId": "readiness",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/live": {
+      "get": {
+        "tags": [
+          "k-8s-probes-controller"
+        ],
+        "operationId": "liveness",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SCRInput": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "example": 1,
+            "maximum": 1,
+            "minimum": 1
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "Optional transaction id used for identifying the transaction."
+              },
+              "client_id": {
+                "type": "string",
+                "description": "Optional client id used for identifying the client sending the transaction."
+              }
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "BAD": {
+                "type": "number",
+                "example": 0.02839964141398099
+              },
+              "CLAGE": {
+                "type": "number",
+                "example": 0.46869090357633136
+              },
+              "CLNO": {
+                "type": "number",
+                "example": 0.4449642106765124
+              },
+              "DEBTINC": {
+                "type": "number",
+                "example": 0.5958925382433263
+              },
+              "DELINQ": {
+                "type": "number",
+                "example": 0.8279987501275864
+              },
+              "DEROG": {
+                "type": "number",
+                "example": 0.4261363374615632
+              },
+              "JOB": {
+                "type": "string",
+                "example": "This is a string",
+                "maxLength": 100
+              },
+              "LOAN": {
+                "type": "number",
+                "example": 0.7960860158886377
+              },
+              "MORTDUE": {
+                "type": "number",
+                "example": 0.7593984598646668
+              },
+              "NINQ": {
+                "type": "number",
+                "example": 0.5754184280557919
+              },
+              "REASON": {
+                "type": "string",
+                "example": "This is a string",
+                "maxLength": 100
+              },
+              "VALUE": {
+                "type": "number",
+                "example": 0.03826279610632255
+              },
+              "YOJ": {
+                "type": "number",
+                "example": 0.38180242815749244
+              }
+            }
+          }
+        }
+      },
+      "SCROutput": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "example": 1,
+            "maximum": 1,
+            "minimum": 1
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "Optional transaction id used for identifying the transaction."
+              },
+              "client_id": {
+                "type": "string",
+                "description": "Optional client id used for identifying the client sending the transaction."
+              },
+              "module_id": {
+                "type": "string",
+                "description": "id of the module executing in the SAS Container Runtime instance."
+              },
+              "step_id": {
+                "type": "string",
+                "description": "id of the step executing in the SAS Container Runtime instance."
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp denoting the time the transaction was received by the SAS Container Runtime instance."
+              },
+              "elapsed_nanos": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Elapsed time in nano seconds to process the transaction."
+              }
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "AOV16_IMP_CLAGE": {
+                "type": "number",
+                "example": 0.39696897357185046
+              },
+              "AOV16_IMP_CLNO": {
+                "type": "number",
+                "example": 0.5547133571088475
+              },
+              "AOV16_IMP_DEBTINC": {
+                "type": "number",
+                "example": 0.7612179499746531
+              },
+              "AOV16_IMP_MORTDUE": {
+                "type": "number",
+                "example": 0.4708485127162718
+              },
+              "AOV16_IMP_VALUE": {
+                "type": "number",
+                "example": 0.40719618175380445
+              },
+              "AOV16_IMP_YOJ": {
+                "type": "number",
+                "example": 0.5440678958554621
+              },
+              "AOV16_LOAN": {
+                "type": "number",
+                "example": 0.4831849372002671
+              },
+              "BAD": {
+                "type": "number",
+                "example": 0.6227359588140875
+              },
+              "CLAGE": {
+                "type": "number",
+                "example": 0.0036221743750582958
+              },
+              "CLNO": {
+                "type": "number",
+                "example": 0.9876403267761633
+              },
+              "DEBTINC": {
+                "type": "number",
+                "example": 0.010497674216106923
+              },
+              "DELINQ": {
+                "type": "number",
+                "example": 0.04625275314014232
+              },
+              "DEROG": {
+                "type": "number",
+                "example": 0.9517014842761405
+              },
+              "EM_CLASSIFICATION": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "EM_EVENTPROBABILITY": {
+                "type": "number",
+                "example": 0.056327779800010136
+              },
+              "EM_PROBABILITY": {
+                "type": "number",
+                "example": 0.3574891704101343
+              },
+              "GI_IMP_DELINQ_IMP_DEROG": {
+                "type": "number",
+                "example": 0.014288269031939471
+              },
+              "GI_IMP_DELINQ_IMP_JOB": {
+                "type": "number",
+                "example": 0.20884193598957657
+              },
+              "GI_IMP_DELINQ_IMP_NINQ": {
+                "type": "number",
+                "example": 0.9810917417360694
+              },
+              "GI_IMP_DELINQ_IMP_REASON": {
+                "type": "number",
+                "example": 0.14592184226484572
+              },
+              "GI_IMP_DEROG_IMP_JOB": {
+                "type": "number",
+                "example": 0.013614482294968422
+              },
+              "GI_IMP_DEROG_IMP_NINQ": {
+                "type": "number",
+                "example": 0.14208949603400034
+              },
+              "GI_IMP_DEROG_IMP_REASON": {
+                "type": "number",
+                "example": 0.8444412871397451
+              },
+              "GI_IMP_JOB_IMP_NINQ": {
+                "type": "number",
+                "example": 0.10874440886282466
+              },
+              "GI_IMP_JOB_IMP_REASON": {
+                "type": "number",
+                "example": 0.367661327888525
+              },
+              "GI_IMP_NINQ_IMP_REASON": {
+                "type": "number",
+                "example": 0.7239948964692405
+              },
+              "G_IMP_DELINQ": {
+                "type": "number",
+                "example": 0.06875079185875754
+              },
+              "G_IMP_DEROG": {
+                "type": "number",
+                "example": 0.9780690961327851
+              },
+              "G_IMP_JOB": {
+                "type": "number",
+                "example": 0.2877187142260961
+              },
+              "G_IMP_NINQ": {
+                "type": "number",
+                "example": 0.5168427118751069
+              },
+              "IMP_CLAGE": {
+                "type": "number",
+                "example": 0.01882878398420018
+              },
+              "IMP_CLNO": {
+                "type": "number",
+                "example": 0.8358667027152937
+              },
+              "IMP_DEBTINC": {
+                "type": "number",
+                "example": 0.9913305630934195
+              },
+              "IMP_DELINQ": {
+                "type": "number",
+                "example": 0.8570924248248769
+              },
+              "IMP_DEROG": {
+                "type": "number",
+                "example": 0.8307974737681973
+              },
+              "IMP_JOB": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "IMP_MORTDUE": {
+                "type": "number",
+                "example": 0.21150179048155782
+              },
+              "IMP_NINQ": {
+                "type": "number",
+                "example": 0.28506766675489414
+              },
+              "IMP_REASON": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "IMP_VALUE": {
+                "type": "number",
+                "example": 0.7457051631473108
+              },
+              "IMP_YOJ": {
+                "type": "number",
+                "example": 0.4871184870762745
+              },
+              "I_BAD": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "P_BAD0": {
+                "type": "number",
+                "example": 0.6071270723178896
+              },
+              "P_BAD1": {
+                "type": "number",
+                "example": 0.8369489981521656
+              },
+              "_WARN_": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "clno_bin": {
+                "type": "number",
+                "example": 0.4598631647645748
+              },
+              "debtinc_bin": {
+                "type": "number",
+                "example": 0.2186777145575084
+              },
+              "equity_bin": {
+                "type": "number",
+                "example": 0.8022160470662488
+              },
+              "loan_bin": {
+                "type": "number",
+                "example": 0.9614076630204113
+              },
+              "PathID": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "ruleFiredFlags": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              },
+              "rulesFiredForRecordCount": {
+                "type": "integer",
+                "format": "int32",
+                "example": -327500410
+              },
+              "ruleFiredPathTraversal": {
+                "type": "string",
+                "example": "",
+                "maxLength": 0
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "httpStatusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remediation": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
