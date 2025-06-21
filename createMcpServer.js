@@ -14,8 +14,8 @@ async function createMcpServer(mode) {
   // Create an MCP server
 
   const mcpServer = new McpServer({
-    name: 'mcp-demo-services',
-    version: '1.0.0'
+    name: 'SAS Viya Sample MCP Server',
+    version: '0.3.0'
   }, { capabilities: {
       tools: {
         listChanged: true
@@ -28,7 +28,6 @@ async function createMcpServer(mode) {
 
 
   console.log(`Creating MCP server in ${mode} mode`);
-  log(JSON.stringify(toolSet, null, 2 ));
   toolSet.forEach(tool => {
     log(`Registering tool in createMcpServer  : ${tool.name}`);
     mcpServer.tool(
@@ -39,12 +38,13 @@ async function createMcpServer(mode) {
     )
   })
 
+  // Create the transport based on the mode
   const transport = (mode === 'http')
     ? new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })
     : new StdioServerTransport();
 
   await mcpServer.connect(transport);
   return { mcpServer, transport };
-
+  
 }
 export default createMcpServer;

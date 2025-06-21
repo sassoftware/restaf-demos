@@ -19,9 +19,9 @@ app.get('/health', (req, res) => {
 	log('Received request for health endpoint');
 	debugger;
 	res.json({
-		name: 'Notes MCP Server',
+		name: 'SAS Viya Sample MCP Server',
 		version: '1.0.0',
-		description: 'A Model Context Protocol server for DevaDB database.',
+		description: 'SAS Viya Sample MCP Server',
 		endpoints: {
 			mcp: '/mcp',
 			health: '/health'
@@ -33,9 +33,9 @@ app.get('/health', (req, res) => {
 // Root endpoint info
 app.get('/', (req, res) => {
 	res.json({
-		name: 'Notes MCP Server',
+		name: 'SAS Viya Sample MCP Server',
 		version: '1.0.0',
-		description: 'A Model Context Protocol server for managing notes',
+		description: 'SAS Viya Sample MCP Server',
 		endpoints: {
 			mcp: '/mcp',
 			health: '/health'

@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-import _score from '../toolhelpers/_score.js';
+import _scrScore from '../toolhelpers/_scrScore.js';
 const log = debug('tools');
 
 function loanscore() {
@@ -51,7 +51,7 @@ function loanscore() {
       "yoj": 10.5
     };
 
-    let { outputs, error } = await _score(process.env.LOANURL, iparms);
+    let { outputs, error } = await _scrScore(process.env.LOANURL, iparms);
    
     if (error !== null) {
       console.error('Error scoring loan:', error);

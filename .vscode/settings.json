@@ -2,6 +2,7 @@
     "chat.mcp.discovery.enabled": true,
     "mcp": {
         
+        
         "inputs": [],
         "servers": {
             "mcp-server-time": {

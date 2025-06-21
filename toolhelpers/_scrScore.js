@@ -6,8 +6,8 @@
 import axios from 'axios';
 import debug from 'debug';
 const log = debug('score');
-async function _score(url, params) {
 
+async function _scrScore(url, params) {
   let data = {};
   //skip undefined and null values
   for (const [key, value] of Object.entries(params)) {
@@ -36,4 +36,4 @@ async function _score(url, params) {
     return {outputs: null, error: error};
   }
 }
-export default _score;
+export default _scrScore;

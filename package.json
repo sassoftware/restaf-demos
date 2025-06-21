@@ -28,6 +28,7 @@
     "restaflib"
   ],
   "main": "./indexhttp.js",
+
   "bin": {
     "@sassoftware/mcp-serverjs": "./indexhttp.js"
   },

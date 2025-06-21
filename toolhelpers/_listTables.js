@@ -6,14 +6,14 @@ import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
 import debug from 'debug';
 
-const log = debug('listlibrary');
+const log = debug('listtables');
 
-async function _listLibrary(params) {
-  let { source, library } = params;
+async function _listTables(params) {
+  let { server, lib, limit} = params;
 
   let logonPayload = await getLogonPayload();
   let config = {
-    source: source,
+    source: server,
     table: null
   };
   let appControl = {};
@@ -30,23 +30,21 @@ async function _listLibrary(params) {
 
     let payload = {
       qs: {
-        limit: 1000,
+        limit: limit || 20, // Use the limit from params or default to 1000
         start: 0,
       }
     };
-    library = library.trim();
-    if (library !== '*') {
-      payload.qs.filter = `eq(name, '${library}')`;
-    }
+
     log(payload);
-    let items = await restafedit.getLibraryList(appControl, payload);
+    let items = await restafedit.getTableList(lib, appControl, payload);
     log('items', items);
-    return { content: [{ type: 'text', text: JSON.stringify(items) }] };
+    return {content: [{ type: 'text', text: JSON.stringify(items) }] };
   } catch (err) {
     log(JSON.stringify(err));
-    //  await deleteSession(appControl);
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
+    return {content: [{ type: 'text', text: JSON.stringify(err) }] }
   }
-}
 
-export default _listLibrary;
+};
+
+
+export default _listTables;

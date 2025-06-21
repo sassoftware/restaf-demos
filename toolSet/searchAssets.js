@@ -29,13 +29,12 @@ Search the SAS Catalog for assets using a flexible search string.
     description: description,
     schema: {
       searchstring: z.string().default(''),
-      // asset: z.enum(['dataflows', 'datasets', 'dataplans', 'models', 'modelprojects', 'modelstudioprojects', 'report', 'rulesets', 'referencedatadomains', 'codefiles', 'decisions', 'riskdataprojects', 'riskmodels']).default('dataflows'),
       assetType: z.string().default('datasets'),
       start: z.number().default(0),
       limit: z.number().default(10),
 
     },
-    required: ['asset'],
+    required: ['assetType'],
     handler: async (params) => {
       console.log('searchAssets params', params);
       return await _catalogSearch(params, 'search');

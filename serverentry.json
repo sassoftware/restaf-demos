@@ -1,5 +1,0 @@
-{
-    "type": "streamable-http",
-    "url": "http://localhost:3000/mcp",
-    "note": "For Streamable HTTP connections, add this URL directly in Client"
-}

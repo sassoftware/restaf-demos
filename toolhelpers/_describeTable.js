@@ -9,7 +9,7 @@ import debug from 'debug';
 const log = debug('read');
 async function _describeTable(params, mode) {
 
-  let { table, lib, limit, source, format, where} = params;
+  let { table, lib, start, limit, server, where} = params;
   let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
 
@@ -20,14 +20,14 @@ async function _describeTable(params, mode) {
     itable.libref = lib;
   }
   let config = {
-    source: source,
+    source: server,
     table: itable,
 
     initialFetch: {
       qs: {
-        start: 0,
-        limit: limit || 1,
-        format: format,
+        start: start - 1, // Adjust for 0-based index
+        limit: limit,
+        format: true,
         where: where || ''
       }
     }
@@ -52,6 +52,7 @@ async function _describeTable(params, mode) {
      let t = (mode === 'describe') ? JSON.stringify(tableSummary) : JSON.stringify(appControl.state.data);
      await deleteSession(appControl);
      await appControl.store.logoff();
+     log
     return { content: [{ type: 'text', text: t }] };
    
   } catch (err) {

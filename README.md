@@ -50,16 +50,16 @@ And then use your Copilot to read any cas or sas table in your Viya server.
 
 # Viya Authentication
 
-### Password flow
-
-Create the appropriate clientid and clientsecret for a password flow in  your server
-
 ### Tokens created with sas-viya auth loginCode
 
-Once you have created a token with sas-viya auth loginCode, set the USETOKEN to TRUE in the .env file.
+Once you have created a token and refresh token with **sas-viya auth loginCode**, set the USETOKEN to TRUE in the .env file.
+The code will use the refresh token to create a new token for each prompt - which is similar to how sas-cli works.
 
 Currently this option will not work if server is running in Docker. I need some additional code in the setup to make it work.
 
+### Password flow
+
+Create the appropriate clientid and clientsecret for a password flow in  your server
 ### TBD
 Support for client-credentials.
 
@@ -96,7 +96,7 @@ Add the following to the list of mcp servers
 ```
 and then start it.
 
-Now make sure your vscode Copilot is in "Agent Mode" - use the dropdown in the prompt area
+Now make sure your IDE Copilot is in "Agent Mode" - use the dropdown in the prompt area
 
 > You are now ready to use your copilot to list data from SAS and CAS Tables
 
@@ -141,7 +141,7 @@ The implication of this design choice is felt most when the tool needs to create
 
 - create a version that caches selected items for performance.
 - switch from express to hapijs - my preferred app server package
-- run in a namespace in a Viya server
+- run in a namespace in a Viya server 
 - work on futher generaliztion of this server so it can be used for more complex scenarios
 - Investigate integratinn A2A from Google with this server
 - create custom mcp host.
