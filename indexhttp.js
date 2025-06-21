@@ -31,6 +31,7 @@ app.get('/health', (req, res) => {
 });
 
 // Root endpoint info
+
 app.get('/', (req, res) => {
 	res.json({
 		name: 'SAS Viya Sample MCP Server',
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 		usage: 'Use with MCP Inspector or compatible MCP clients'
 	});
 });
+
 
 // mcp endpoint - the key entrypoint for the MCP server
 const handleRequest = async (req, res) => {
@@ -76,4 +78,8 @@ app.post('/mcp', handleRequest);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
-app.listen(PORT);
+app.listen(PORT, () => {
+	log(`Server is running on http://localhost:${PORT}`);
+	console.log(`MCP server is ready at http://localhost:${PORT}/mcp`);
+	console.log(`Health endpoint is available at http://localhost:${PORT}/health`);
+});

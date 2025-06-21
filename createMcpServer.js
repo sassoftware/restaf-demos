@@ -40,9 +40,16 @@ async function createMcpServer(mode) {
 
   // Create the transport based on the mode
   const transport = (mode === 'http')
-    ? new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })
+    ? new StreamableHTTPServerTransport({
+       sessionIdGenerator: undefined,
+        enableJsonResponse: true , 
+        port:8080,
+        host: 'localhost',
+        endpoint: '/mcp',
+        reponseMode: 'stream'
+      })
     : new StdioServerTransport();
-
+  console.log('Using transport:', transport);
   await mcpServer.connect(transport);
   return { mcpServer, transport };
   
