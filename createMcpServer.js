@@ -39,12 +39,18 @@ async function createMcpServer(mode) {
   })
 
   // Create the transport based on the mode
+  /*
   const transport = (mode === 'http')
     ? new StreamableHTTPServerTransport({
         sessionIdGenerator: undefined,
         enableJsonResponse: true 
       })
     : new StdioServerTransport();
+    */
+  const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined,
+        enableJsonResponse: true 
+      });
   log('Using transport:', transport);
   await mcpServer.connect(transport);
   return { mcpServer, transport };

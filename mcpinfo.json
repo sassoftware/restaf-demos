@@ -16,8 +16,14 @@
             },
             
             "Viya MCP Server for Models": {
-                "type": "http",
-                "url": "http://localhost:8080/mcp"
+                 "command": "npx",
+                "args": [
+                    "-y",
+                    "@sassoftware/mcp-serverjs@latest"
+                ],
+                "env": {
+                    "DEBUG": "none"
+                }
             },
             "Azure MCP Server": {
                 "command": "npx",
