@@ -2,7 +2,6 @@
     "github.copilot.advanced": {},
     "files.autoSave": "afterDelay",
     "mcp": {
-
         "inputs": [],
         "servers": {
             "mcp-server-time": {
@@ -14,17 +13,7 @@
                 ],
                 "env": {}
             },
-            
-            "Viya MCP Server for Models": {
-                 "command": "npx",
-                "args": [
-                    "-y",
-                    "@sassoftware/mcp-serverjs@latest"
-                ],
-                "env": {
-                    "DEBUG": "none"
-                }
-            },
+
             "Azure MCP Server": {
                 "command": "npx",
                 "args": [
@@ -33,9 +22,14 @@
                     "server",
                     "start"
                 ]
+            },
+            "Viya Models MCP Server": {
+                "type": "http",
+                "url": "http://localhost:8080/mcp"
             }
         }
     },
     "chat.mcp.discovery.enabled": true,
-    "terminal.integrated.defaultProfile.windows": "Git Bash"
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "npm.enableRunFromFolder": true
 }

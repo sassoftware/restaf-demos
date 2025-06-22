@@ -90,9 +90,10 @@ Go to the vscode settings and search for mcp. Then select Model Server Context P
 Add the following to the list of mcp servers
 
 ```js
- "mcp-viya-services":{
+ "Viya Models MCP Server": {
+    "type": "http",
     "url": "http://localhost:8080/mcp"
-}
+ }
 ```
 and then start it.
 

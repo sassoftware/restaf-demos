@@ -14,7 +14,7 @@ async function _describeTable(params, mode) {
   log('logonPayload', logonPayload);
 
   let itable = {name: table};
-  if (source === 'cas') {
+  if (server === 'cas') {
     itable.caslib = lib;
   } else {
     itable.libref = lib;
