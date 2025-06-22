@@ -1,0 +1,35 @@
+{
+    "github.copilot.advanced": {},
+    "files.autoSave": "afterDelay",
+    "mcp": {
+
+        "inputs": [],
+        "servers": {
+            "mcp-server-time": {
+                "command": "python",
+                "args": [
+                    "-m",
+                    "mcp_server_time",
+                    "--local-timezone=America/Los_Angeles"
+                ],
+                "env": {}
+            },
+            
+            "Viya MCP Server for Models": {
+                "type": "http",
+                "url": "http://localhost:8080/mcp",
+            },
+            "Azure MCP Server": {
+                "command": "npx",
+                "args": [
+                    "-y",
+                    "@azure/mcp@latest",
+                    "server",
+                    "start"
+                ]
+            }
+        }
+    },
+    "chat.mcp.discovery.enabled": true,
+    "terminal.integrated.defaultProfile.windows": "Git Bash"
+}
