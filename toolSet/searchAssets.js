@@ -8,9 +8,11 @@ import _catalogSearch from '../toolhelpers/_catalogSearch.js';
 function searchAssets() {
 
   let description = `
-Search the SAS Catalog for assets using a flexible search string.
+## searchAssets: Search the SAS Catalog for assets using a flexible search string.
 
 - Supports searching for various asset types (e.g., datasets, dataflows, models).
+ - the default asset type is 'datasets'.
+- The search string can include keywords, filters, and logical operators.
 - You can specify start and limit to control pagination of results.
 - The searchstring can include:
   - Simple terms (e.g., customer).
@@ -28,8 +30,8 @@ Search the SAS Catalog for assets using a flexible search string.
     name: 'searchAssets',
     description: description,
     schema: {
-      searchstring: z.string().default(''),
-      assetType: z.string().default('datasets'),
+      searchstring: z.string(),
+      assetType: z.string(),
       start: z.number().default(0),
       limit: z.number().default(10),
 

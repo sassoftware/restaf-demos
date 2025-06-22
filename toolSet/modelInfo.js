@@ -10,16 +10,16 @@ const log = debug('tools');
 
 function modelInfo() {
   let description = `
-      ## modelInfo is tool that returns information about a mode published to MAS server in SAS Viya.
-      The input to this tool is:
+## modelInfo is tool that returns information about a mode published to MAS server in SAS Viya.
+The input to this tool is:
 
-      - model - the name assigned to the model in MAS server.
-        - The model name is the name assigned to the model when it was published to MAS server
-     
-      ### Sample Prompts
-      - info on cancer1
-      - what is the model mycoolmodel
-      `;
+- model - the name assigned to the model in MAS server.
+  - The model name is the name assigned to the model when it was published to MAS server
+
+### Sample Prompts
+- info on cancer1
+- what is the model mycoolmodel
+`;
   let spec = {
     name: 'modelInfo',
     description: description,

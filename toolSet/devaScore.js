@@ -8,11 +8,11 @@ const log = debug('devascore');
 
 function devaScore() {
     let description = `
-      ## devascore: compute Deva Score for two numbers.
-       - if more than 2 numbers are provided, process the numbers from the left as follows:
-        - compute score for the first two numbers
-        - use the result of the previous step and the next number to compute the next score
-        - repeat until all numbers are processed`;
+## devascore: compute Deva Score for two numbers.
+- if more than 2 numbers are provided, process the numbers from the left as follows:
+- compute score for the first two numbers
+- use the result of the previous step and the next number to compute the next score
+- repeat until all numbers are processed`;
     let spec = {
         name: 'devaScore',
         description: description,

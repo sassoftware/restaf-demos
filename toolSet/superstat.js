@@ -7,13 +7,13 @@ import { z } from 'zod';
 
 function superstat() {
   let desc = `
-      superstat:  compute superstat for two numbers. 
+  ## superstat:  compute superstat for two numbers. 
 
-       ## Sample Prompt
+  ## Sample Prompt
 
-       - compute superstat for 1 and 2
-       - compute superstat for 3,5
-       `;
+    - compute superstat for 1 and 2
+    - compute superstat for 3,5
+    `;
 
   let spec = {
     name: 'superstat',

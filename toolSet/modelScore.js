@@ -10,24 +10,24 @@ const log = debug('tools');
 
 function modelScore() {
   let description = `
-      ## modelScore - This tool is used to score a scenario using a model published to MAS serer in SAS Viya.
-      The input to this tool is:
+  ## modelScore - This tool is used to score a scenario using a model published to MAS serer in SAS Viya.
+  The input to this tool is:
 
+  
+  - model - the name assigned to the model in MAS server.
+    - The model name is the name assigned to the model when it was published to MAS server
+  - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
+    - if scenario is not specified, the tool will return the variables in the model
       
-      - model - the name assigned to the model in MAS server.
-        - The model name is the name assigned to the model when it was published to MAS server
-      - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
-        - if scenario is not specified, the tool will return the variables in the model
-         
 
-      ### Sample Prompts
-      - modelscore with mycoolmodel for x1=1,x2=2
-    
-      ### Notes
-      In a real solution, each model will have its own tool named in a user friendly manner
-      and the user only has to supply the scenario object.
-      For example, the model "mycoolmodel" could have a tool named "MyCoolModel".
-      `;
+  ### Sample Prompts
+  - modelscore with mycoolmodel for x1=1,x2=2
+
+  ### Notes
+  In a real solution, each model will have its own tool named in a user friendly manner
+  and the user only has to supply the scenario object.
+  For example, the model "mycoolmodel" could have a tool named "MyCoolModel".
+  `;
   let spec = {
     name: 'modelScore',
     description: description,
