@@ -38,7 +38,7 @@ function modelScore() {
     required: ['model', 'scenario'],
     handler: async (params) => {
       let {model, scenario, uflag} = params;
-      console.log(params);
+      log(params);
         // Convert the scenario string to an object
         // Example: "x=1, y=2, z=3" to { x: 1, y: 2, z: 3 }
       let scenarioObj = scenario.split(',').reduce((acc, pair) => {
@@ -51,7 +51,7 @@ function modelScore() {
         scenario: scenarioObj,
         uflag: uflag // Assuming uflag is always f for this tool
       };
-      console.log('modelScore params', iparams);
+      log('modelScore params', iparams);
       // Check if the params.scenario is a string and parse it
       let r = await _masScoring(iparams);
       return r;

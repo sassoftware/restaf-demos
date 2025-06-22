@@ -60,7 +60,7 @@ const handleRequest = async (req, res) => {
 		await transport.handleRequest(req, res, req.body);
 
 	} catch (error) {
-		console.error('Error handling MCP request:', error);
+		log('Error handling MCP request:', error);
 		if (!res.headersSent) {
 			res.status(500).json({
 				jsonrpc: '2.0',
@@ -78,6 +78,10 @@ app.post('/mcp', handleRequest);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
-console.log(`SAS Viya Sample MCP Server listening on port ${PORT}`);
+//console.log(`SAS Viya Sample MCP Server listening on port ${PORT}`);
 app.listen(PORT, () => {
+	log(`SAS Viya Sample MCP Server listening on port ${PORT}`);
+	log('Visit http://localhost:8080/health for health check');
+	log('Visit http://localhost:8080/ for root info');
+	log('Visit http://localhost:8080/mcp to interact with the MCP server');
 });

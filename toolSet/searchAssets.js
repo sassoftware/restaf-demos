@@ -4,6 +4,8 @@
  */
 import { z } from 'zod';
 import _catalogSearch from '../toolhelpers/_catalogSearch.js';
+import debug from 'debug';
+const log = debug('tools');
 
 function searchAssets() {
 
@@ -38,7 +40,7 @@ function searchAssets() {
     },
     required: ['assetType'],
     handler: async (params) => {
-      console.log('searchAssets params', params);
+      log('searchAssets params', params);
       return await _catalogSearch(params, 'search');
     }
 

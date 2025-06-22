@@ -27,7 +27,7 @@ async function createMcpServer(mode) {
   // TBD: Register resources and prompts
 
 
-  console.log(`Creating MCP server in ${mode} mode`);
+  log(`Creating MCP server in ${mode} mode`);
   toolSet.forEach(tool => {
     log(`Registering tool in createMcpServer  : ${tool.name}`);
     mcpServer.tool(
@@ -49,7 +49,7 @@ async function createMcpServer(mode) {
         reponseMode: 'stream'
       })
     : new StdioServerTransport();
-  console.log('Using transport:', transport);
+  log('Using transport:', transport);
   await mcpServer.connect(transport);
   return { mcpServer, transport };
   
