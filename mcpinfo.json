@@ -17,7 +17,7 @@
             
             "Viya MCP Server for Models": {
                 "type": "http",
-                "url": "http://localhost:8080/mcp",
+                "url": "http://localhost:8080/mcp"
             },
             "Azure MCP Server": {
                 "command": "npx",
