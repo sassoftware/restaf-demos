@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/mcp-serverjs",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Demo of mcp server written in nodejs",
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
