@@ -82,5 +82,5 @@ console.log(`MCP Server listening on port ${PORT}`);
 console.log('Visit http://localhost:8080/health for health check');
 console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
 app.listen(PORT, () => {
-	console.log(`Ready`);
+	console.log(`Ready. Press Ctrl+C to stop the server`);
 });
