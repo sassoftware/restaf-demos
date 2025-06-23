@@ -10,7 +10,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env --no-warnings indexhttp.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env --no-warnings cli.js",
     "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --no-warnings indexhttp.js",
     "test": "npx @modelcontextprotocol/inspector",
     "debugcode": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk --env-file=.env indexhttp.js",
@@ -29,9 +29,9 @@
     "restafedit",
     "restaflib"
   ],
-  "main": "./indexhttp.js",
+  "main": "./cli.js",
   "bin": {
-    "@sassoftware/mcp-serverjs": "./indexhttp.js"
+    "@sassoftware/mcp-serverjs": "./cli.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
