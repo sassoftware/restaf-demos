@@ -19,7 +19,7 @@ app.get('/health', (req, res) => {
 	log('Received request for health endpoint');
 	debugger;
 	res.json({
-		name: 'SAS Viya Sample MCP Server',
+		name: '@sassoftware/mcp-server',
 		version: '1.0.0',
 		description: 'SAS Viya Sample MCP Server',
 		endpoints: {
