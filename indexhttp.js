@@ -78,10 +78,9 @@ app.post('/mcp', handleRequest);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
-//console.log(`SAS Viya Sample MCP Server listening on port ${PORT}`);
+console.log(`MCP Server listening on port ${PORT}`);
+console.log('Visit http://localhost:8080/health for health check');
+console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
 app.listen(PORT, () => {
-	log(`SAS Viya Sample MCP Server listening on port ${PORT}`);
-	log('Visit http://localhost:8080/health for health check');
-	log('Visit http://localhost:8080/ for root info');
-	log('Visit http://localhost:8080/mcp to interact with the MCP server');
+	console.log(`Ready`);
 });
