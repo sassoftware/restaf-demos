@@ -1,0 +1,68 @@
+Ready to use Model Context Protocol for Viya
+
+In the previous two postings, I introduced a MCP server and some examples.
+But to even try it, you had to clone the project - usually a barrier to busy folks.
+
+The mcp server is focused on using models published to MAS or SCR containers running on Azure(should work on AWS or other provider but I have not
+tested it there)
+
+This server is designed for users of existing models. 
+The development of mcp tools for model builders is an exercise best left to the R&D folks.
+
+
+Step 1: Enabling github copilot
+
+I will describe how to enable the github copilot to use this tool. Similar methodologies can be
+used with other mcp enabled copilots.
+
+Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
+
+Add the following to the list of mcp servers
+
+```js
+ "Viya Models MCP Server": {
+    "type": "http",
+    "url": "http://localhost:8080/mcp"
+ }
+```
+The name can be anything you like.
+
+
+Step 2: Create tokens for your favorite Viya Server
+
+This mcp server works similar to sas viya cli commands. So use the following command to create the necessary tokek and 
+refresh token. You only need to do this once every 90 days or whenever the refresh token expires.
+
+1. create a default auth Profile
+
+Issue this command and follow instructions
+
+sas-viya profile init
+
+2. create token with this command and follow the instructions
+
+sas-viya auth loginCode
+
+Step 3: Start the mcp server
+
+{Requirements: you must have installed node version 20.16 or greater}
+
+npx @sassoftware/mcp-serverjs
+
+At this point the mcp server will be running on port 8080
+
+Step 4: Go to your Copilot and start interacting with the mcp server
+
+
+What can you do:
+
+list models - will list all the models published to MAS
+
+describe <model> - get the input variables for the specified model.
+
+
+
+
+
+
+ 

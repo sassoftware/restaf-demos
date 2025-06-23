@@ -22,6 +22,7 @@ function modelScore() {
 
   ### Sample Prompts
   - modelscore with mycoolmodel for x1=1,x2=2
+  - score model mycoolmodel with x1=1,x2=2
 
   ### Notes
   In a real solution, each model will have its own tool named in a user friendly manner
