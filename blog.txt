@@ -1,64 +1,69 @@
-Ready to use Model Context Protocol for Viya
+Ready to use Model Context Protocol9MCP) Server for Scoring
+
+Preamble:
+The development of mcp tools for model builders (or other SAS products) is an exercise best left to the R&D folks an is beyond my scope.
+
+This mcp server is for sas users who want to take advantage of mcp server for the IP they have built using SAS Viya.
 
 In the previous two postings, I introduced a MCP server and some examples.
-But to even try it, you had to clone the project - usually a barrier to busy folks.
+But to try it, you had to clone the project - usually a barrier to busy folks.
 
-The mcp server is focused on using models published to MAS or SCR containers running on Azure(should work on AWS or other provider but I have not
-tested it there)
+So the first step to removing this barrier is a cli to run the mcp server.
 
-This server is designed for users of existing models. 
-The development of mcp tools for model builders is an exercise best left to the R&D folks.
+A cli is now available to try a working mcp server. This mcp server has the following tools
 
 
-Step 1: Enabling github copilot
+ MAS
+    listModels: list models -- will list models published to MAS
+    modelInfo: describe <model> -- will retun the expected input values
+   -modelScore: score <model> - score the specified model. The input is a string of comma delimited values
+ SCR
+   scrInfo: describe a scr model at specified url
+   scrScore: score scr model at specified url. The input is a string of comma delimited value
+Tables
+   listTable: list tables in a specified lib in either cas or sas server
+   readTable: read one or more records from  a specified tables
 
-I will describe how to enable the github copilot to use this tool. Similar methodologies can be
-used with other mcp enabled copilots.
+
+Follow these basic steps to see how an mcp server can help you.
+
+Step 1: Start the mcp server
+Issue this command from any shell on your desktop
+npx @sassoftware/mcp-serverjs@latest
+
+To stop the server simply press CTRL C
+
+
+Step 2: Enabling github copilot for the mcp server
+
+Similar methodologies can be used with other mcp enabled copilots.
 
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
 
 Add the following to the list of mcp servers
 
-```js
- "Viya Models MCP Server": {
+
+ "Viya-Models-MCP-Server": {
     "type": "http",
     "url": "http://localhost:8080/mcp"
  }
-```
+
 The name can be anything you like.
 
 
-Step 2: Create tokens for your favorite Viya Server
+Step 3: Create tokens for your favorite Viya Server
 
-This mcp server works similar to sas viya cli commands. So use the following command to create the necessary tokek and 
-refresh token. You only need to do this once every 90 days or whenever the refresh token expires.
+This mcp server works similar to sas viya cli commands. So use the following command to create the necessary token and refresh token. You need to do this once every 90 days or whenever the refresh token expires.
 
-1. create a default auth Profile
-
-Issue this command and follow instructions
-
-sas-viya profile init
-
-2. create token with this command and follow the instructions
-
+create a default auth Profile
+Issue this command and follow instruction: sas-viya profile ini
+create token with this command and follow the instructions
 sas-viya auth loginCode
 
-Step 3: Start the mcp server
-
-{Requirements: you must have installed node version 20.16 or greater}
-
-npx @sassoftware/mcp-serverjs
-
-At this point the mcp server will be running on port 8080
+ 
 
 Step 4: Go to your Copilot and start interacting with the mcp server
-
-
-What can you do:
-
-list models - will list all the models published to MAS
-
-describe <model> - get the input variables for the specified model.
+See below for a full session
 
 
 

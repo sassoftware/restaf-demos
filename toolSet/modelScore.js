@@ -42,11 +42,16 @@ function modelScore() {
       log(params);
         // Convert the scenario string to an object
         // Example: "x=1, y=2, z=3" to { x: 1, y: 2, z: 3 }
-      let scenarioObj = scenario.split(',').reduce((acc, pair) => {
-          let [key, value] = pair.split('=');
-          acc[key.trim()] = value.trim();
-          return acc;
-        }, {});
+      let scenarioObj ='';
+      if (typeof scenario === 'object') {
+        scenarioObj = scenario;
+      } else {
+        scenarioObj = scenario.split(',').reduce((acc, pair) => {
+            let [key, value] = pair.split('=');
+            acc[key.trim()] = value;
+            return acc;
+          }, {});
+        }
       let iparams = {
         model: model,
         scenario: scenarioObj,

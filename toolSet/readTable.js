@@ -21,7 +21,7 @@ function readTable() {
 - User can also specify a where clause. if not specified, default to a blank string. 
 - If the user specfies a specific row number to read, then set start to that row number and limit to 1.
 
-### Format of the response
+### Format the response
 Always try to display the data as a table using markdown format. If the table is too large, then display the first 10 rows of the table.
 
 ### Example prompts

@@ -32,7 +32,9 @@ async function _masScoring(params) {
     for (let v in inputs) {
        let v1 = (uflag === true) ? v.substring(0, v.length - 1) : v;
        //v1 = v.startsWith('_') ? v.substring(0, v.length - 1) : v;
-      iscenario[v] = (scenario[v1] == null) ? null : scenario[v1];
+      let t = (scenario[v1] == null) ? null : scenario[v1];
+      t  = (v.type !== 'decimal' && t != null) ? parseFloat(t) : t;
+      iscenario[v] = t; 
     }
     log('iscenario', iscenario);
     let result = await masRun(store, masControl, model, iscenario);
