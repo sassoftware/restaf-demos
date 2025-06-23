@@ -1,4 +1,4 @@
-Ready to use Model Context Protocol9MCP) Server for Scoring
+Ready to use Model Context Protocol(MCP) Server for Scoring
 
 Preamble:
 The development of mcp tools for model builders (or other SAS products) is an exercise best left to the R&D folks an is beyond my scope.
