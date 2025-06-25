@@ -34,6 +34,8 @@ npx @sassoftware/mcp-serverjs@latest
 To stop the server simply press CTRL C
 
 
+
+
 Step 2: Enabling github copilot for the mcp server
 
 Similar methodologies can be used with other mcp enabled copilots.
@@ -65,6 +67,7 @@ sas-viya auth loginCode
 Step 4: Go to your Copilot and start interacting with the mcp server
 See below for a full session
 
+https://sasoffice365-my.sharepoint.com/:v:/g/personal/deva_kumar_sas_com/EQ_BUHxZ_VJAuN74_UgbUM4BrUo-WQxM9kPlz-v8ctOBrw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=I61fDz
 
 
 

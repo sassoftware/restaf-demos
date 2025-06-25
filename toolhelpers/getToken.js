@@ -5,7 +5,6 @@
 import fs from 'fs';
 import os from 'os';
 import qs from 'qs';
-import axios from 'axios';
 async function getToken() {
   let homedir = os.homedir();
   if (process.env.SAS_CLI_CONFIG) {
@@ -30,29 +29,35 @@ async function getToken() {
     throw 'Error reading or parsing credentials/config file: ' + e;
   }
   async function refreshToken(token, host) {
-    let config = {
-      url: `${host}/SASLogon/oauth/token`,
-      method: 'POST',
+    const url = `${host}/SASLogon/oauth/token`;
+    const body = new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: token,
+      client_id: 'sas.cli'
+    });
 
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      data: qs.stringify({
-        grant_type: 'refresh_token',
-        refresh_token: token,
-        client_id: 'sas.cli'
-      })
-    };
     try {
-      let r = await axios(config);
-      return r.data.access_token;
-    }
-    catch (err) {
-      console.log('Error refreshing token: ', JSON.stringify(err, null, 4));
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body.toString()
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        console.log('Error refreshing token: ', error);
+        throw new Error(error);
+      }
+
+      const data = await response.json();
+      return data.access_token;
+    } catch (err) {
+      console.log('Error refreshing token: ', err);
       throw err;
     }
-
   }
 
 }
