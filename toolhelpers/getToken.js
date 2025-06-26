@@ -4,7 +4,7 @@
  */
 import fs from 'fs';
 import os from 'os';
-import qs from 'qs';
+
 async function getToken() {
   let homedir = os.homedir();
   if (process.env.SAS_CLI_CONFIG) {

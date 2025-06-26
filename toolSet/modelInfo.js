@@ -16,6 +16,9 @@ The input to this tool is:
 - model - the name assigned to the model in MAS server.
   - The model name is the name assigned to the model when it was published to MAS server
 
+- Display both the inputs and outputs of the model.
+}
+
 ### Sample Prompts
 - info on cancer1
 - what is the model mycoolmodel
