@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 function superstat() {
   let desc = `
-  ## superstat:  compute superstat for two numbers. 
+  ## superstat:  compute superstat for two numbers using SAS programming 
 
   ## Sample Prompt
 

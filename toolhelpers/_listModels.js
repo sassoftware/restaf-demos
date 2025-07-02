@@ -5,29 +5,28 @@
 
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
+import debug from 'debug';
+const log = debug('modelList');
 
-async function _modelList(params) {
+async function _listModels(params) {
  // setup
 
   let store = restaf.initStore({});
   let logonPayload = await getLogonPayload();
 
   try {
-     await store.logon(logonPayload);
-    console.log('logged on to server');
+    await store.logon(logonPayload);
     let {microanalyticScore} = await store.addServices('microanalyticScore');
-    console.log('added microanalyticScore service');
     let result = await store.apiCall(microanalyticScore.links('modules'));
     let list = result.itemsList().toJS();
-    console.log(list);
     console.log('result', JSON.stringify(list, null, 2));
     await store.logoff();
     return {content: [{ type: 'text', text: JSON.stringify(list) }] };
   } catch (err) {
-    console.log(JSON.stringify(err, null, 2));
+    log(JSON.stringify(err, null, 2));
     await store.logoff();
     return {content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
 
-export default _modelList;
+export default _listModels;

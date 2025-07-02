@@ -11,13 +11,11 @@ async function _masDescribe(params) {
   let { masSetup, masDescribe } = restaflib;
   let store = restaf.initStore({});
   let logonPayload = await getLogonPayload();
-  let inputs = {};
-  let masControl;
+
   let {model} = params;
   try {
-    masControl = await masSetup(store, [model], logonPayload);
+    let masControl = await masSetup(store, [model], logonPayload);
     let describe = await masDescribe(masControl, model, null,true);
-    console.log('describe', describe);
     return { content: [{ type: 'text', text: JSON.stringify(describe) }] };
   } catch (err) {
     console.log(err);

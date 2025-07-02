@@ -4,42 +4,45 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import express from 'express';
-import createMcpServer from './createMcpServer.js'; // Adjust the import path as needed
+import createMcpServer from './createMcpServer.js';
 import https from 'https';
+import cors from 'cors';
+import debug from 'debug';
+const log = debug('main');
 
+// setup express server
 
 var key = fs.readFileSync('./tls/tls.key');
 var cert = fs.readFileSync('./tls/tls.crt');
 let options = { key, cert };
 
 const app = express();
-let server = https.createServer(options, app);
+app.use(express.json());
+app.use(cors())
 
-
+// setup routes
 app.get('/health', (req, res) => {
-	console.log('Received request for health endpoint');
+	log('Received request for health endpoint');
 	debugger;
 	res.json({
-		name: 'Notes MCP Server',
+		name: '@sassoftware/mcp-server',
 		version: '1.0.0',
-		description: 'A Model Context Protocol server for managing notes',
+		description: 'SAS Viya Sample MCP Server',
 		endpoints: {
 			mcp: '/mcp',
-			sse: '/sse',
 			health: '/health'
 		},
-		usage: 'Use with MCP Inspector or compatible MCP clients'
+		usage: 'Use with MCP Inspector or compatible MCP clients like vscode or your own MCP client'
 	});
 });
 
 // Root endpoint info
-app.get('/', (req, res) => {
 
-	debugger;
+app.get('/', (req, res) => {
 	res.json({
-		name: 'Notes MCP Server',
+		name: 'SAS Viya Sample MCP Server',
 		version: '1.0.0',
-		description: 'A Model Context Protocol server for managing notes',
+		description: 'SAS Viya Sample MCP Server',
 		endpoints: {
 			mcp: '/mcp',
 			health: '/health'
@@ -48,80 +51,44 @@ app.get('/', (req, res) => {
 	});
 });
 
-async function handleRequest(req, res) {
+
+// mcp endpoint - the key entrypoint for the MCP server
+const handleRequest = async (req, res) => {
 	try {
 		debugger;
-	
+		log(req.headers);
 		// new server and transport on each invocation
-		let {mcpServer,transport} = await createMcpServer('http');
 		
+		let { _mcpServer, transport } = await createMcpServer('http');
+
 		// let mcpServer handle the request
+		log('Request body:', req.body);
 		await transport.handleRequest(req, res, req.body);
-		return; //no-op
+
 	} catch (error) {
-		console.error('Error handling MCP request:', error);
+		log('Error handling MCP request:', error);
 		if (!res.headersSent) {
 			res.status(500).json({
 				jsonrpc: '2.0',
 				error: {
 					code: -32603,
-					message: 'Internal server error',
+					message: JSON.stringify(error),
 				},
 				id: null,
 			});
 		}
 	}
 
-
 }
-// Handle POST requests for client-to-server communication
-app.post('/mcp', (req, res) => {
-	console.log('Received MCP request:', req.body);
-	debugger;
-	console.log(req.headers);
-	handleRequest(req, res)
-	.then (() => {
-		
-	})
-	.catch((error) => {
-		console.error('Error handling MCP request:', error);
-		if (!res.headersSent) {
-			res.status(200).json({
-				jsonrpc: '2.0',
-				error: {
-					code: -32603,
-					message: JSON.stringify(error),
-				},
-				id: null,
-			});
-		}
-	});
+app.post('/mcp', handleRequest);
+
+// Start the server
+const PORT = process.env.PORT || 8080;
+console.log(`MCP Server listening on port ${PORT}`);
+console.log('Visit http://localhost:8080/health for health check');
+console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
+console.log('Press Ctrl+C to stop the server');
+https.createServer(options, app).listen(PORT, () => {
+    console.log('Running...');
 });
 
-app.get('/mcptest', (req, res) => {
-	console.log('Received MCPtest request:', req.body);
-	debugger;
-	console.log(req.headers);
-	handleRequest(req, res)
-	.then (() => {
-		console.log('MCP request handled successfully');
-	})
-	.catch((error) => {
-		console.error('Error handling MCP request:', error);
-		if (!res.headersSent) {
-			res.status(200).json({
-				jsonrpc: '2.0',
-				error: {
-					code: -32603,
-					message: JSON.stringify(error),
-				},
-				id: null,
-			});
-		}
-	});
-});
-// Start the server
-const PORT = process.env.PORT || 8080
-server.listen(PORT, () => {
-	console.log(`MCP Stateless Streamable HTTPS Server listening on port ${PORT}`);
-});

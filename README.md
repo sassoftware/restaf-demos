@@ -1,133 +1,114 @@
-# mcp-serverjs - A demo ModelContextProtocolServer(mcp) for SAS Viya
+# mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring with SAS Viya
 
-This is mcp server for SAS Viya written in nodejs. The intended audience is SAS users who want to
-take advantage of MCP to deliver IP they have created with SAS or other technologies.
+MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
-The server comes with a set of sample tools.
+The  mcp server  described here is designed for scoring with SAS Viya.  See below for the capabilities in the starter kit and how you can modify it for your own use.
 
-## Simple tool
+The source code is the repository <https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs>.
+It is provided under the Apache-2.0 license.
 
-- devascore - calculates a special score given two numbers
+---
 
-## SAS related tools
+## Using the default mcp server
 
-- readSASData - read SAS or  CAS tables
-- superstat - an example of accessing custom SAS code
-- searchAsset - an experimental tool using SAS/Catalog
-- loanscore - compute a loan score using SCR
+---
 
+Follow these basic steps to see how an mcp server can help you.
 
-With this server you can issue prompts like these:
+### Step 1: Start the mcp server
 
-- Read costchange from samples. Limit the number of records to 10.
-- read sashelp.air from sas
-- read public.cars from cas where make = toyota
-- compute superstat for 1,2
+Issue this command from any shell on your desktop
 
-> You can add your own capabilities to this server. See notes at the end of this document.
+> npx @sassoftware/mcp-serverjs@latest
 
-## Useful links
-
-- [Documentation on modelcontextprotocol(mcp)](https://modelcontextprotocol.io/introduction)
-
-- [mcp sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
+Make sure that you have a node version >=22
 
 
-##  Install and run the server
+### Step 2: Enable github copilot for the mcp server
 
- > Make sure your node version is >= 22.16.0
- 
-- Clone this repository as follows:
-    - https://github.com/sassoftware/restaf-demos mymcp -b mcp-serverjs
-    - then cd over to mymcp folder
-    - run the 'npm install' command
-- Copy .env.sample as .env
-- Edit .env file and set the values for authentication with Viya(see below)
-- Start the mcp server as described below
-- Register with your MCP host(see example for github Copilot below)
-
-And then use your Copilot to read any cas or sas table in your Viya server.
-
-# Viya Authentication
-
-### Tokens created with sas-viya auth loginCode
-
-Once you have created a token and refresh token with **sas-viya auth loginCode**, set the USETOKEN to TRUE in the .env file.
-The code will use the refresh token to create a new token for each prompt - which is similar to how sas-cli works.
-
-Currently this option will not work if server is running in Docker. I need some additional code in the setup to make it work.
-
-### Password flow
-
-Create the appropriate clientid and clientsecret for a password flow in  your server
-### TBD
-Support for client-credentials.
-
-
-## Start the mcp server
-
-### Run server on docker Desktop
-
-```sh
-npm run deploy
-```
-
-### Run without docker desktop
-Make sure your node version is >= 22.16.0
-
-```sh
-npm start
-```
-
-## Using the mcp server
-
-### With vscode Copilot
-
-> Note: you can use any mcp enabled host - ex: Claude Desktop, custom apps etc...
-
+Similar methodologies can be used with other mcp enabled copilots.
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
-
 Add the following to the list of mcp servers
 
 ```js
- "Viya Models MCP Server": {
+ "Viya-Models-MCP-Server": {
     "type": "http",
     "url": "http://localhost:8080/mcp"
  }
 ```
-and then start it.
+The name can be anything you like.
+ 
+#### Sidebar: Authentication with your Viya Server
 
-Now make sure your IDE Copilot is in "Agent Mode" - use the dropdown in the prompt area
+This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token. You need to do this once every 90 days or whenever the refresh token expires.
 
-> You are now ready to use your copilot to list data from SAS and CAS Tables
+`create a default auth Profile`. 
+Issue this command and follow instruction: sas-viya profile init
 
-
-Now you can issue prompts like
-
-- Read costchange from samples.
-- read sashelp.air from sas
-- read public.cars from cas where make eq toyota
-
-Try the other tools in this server
+`create token` 
+Issue this command and follow the instructions: sas-viya auth loginCode
 
 
-### Test with @modelcontextprotocol/inspector
+### Issuing prompts
 
-The inspector is a nice way to debug any new tools you write. If you are
-accessing compute service, increase the timeout option.
+Use the copilot prompt area to issue prompts. To learn about each tool
+issue this prompt
 
-```sh
-npm test
+```txt
+how do I use <some tool name>
 ```
 
-## Enhancing the server
+---
+
+## Tools
+
+---
+
+These are sample tools. Use them as a guide for your own tools or use them as is.
+
+### Simple tool
+
+- devascore - calculates a special score given two numbers. This is useful for testing the mcp server
+
+### Data related tools
+
+- listLibrary - list available libraries in cas or sas
+- listTables - list tables in a specified library in cas or sas
+- readTable - read records from a cas or sas table
+- searchAsset - an experimental tool using SAS/Catalog
+
+### Scoring with Models in MAS
+
+- listModels - list models published to MAS
+- modelInfo  - display the input and output variables for a specified model
+- modelScore - score using the seleced model
+
+### Scoring with SCR
+
+- scrInfo - display the input and output variables for a specified SCR instance
+- scrScore - score using the specified SCR instance
+
+
+### Scoring with SAS code
+- superstat - an example of accessing custom SAS code
+
+
+---
+
+## Enhancing or modifying the server
+
+---
 
 - Add a file to the toolSet folder
     - Use one of the files in this folder as a guide
 - Add the new file to the index.js file in toolSet folder
 - Restart the mcp server
 
+---
+
 ## Notes
+
+---
 
 This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools 
 might have created.
@@ -137,12 +118,9 @@ such caching.
 
 The implication of this design choice is felt most when the tool needs to create a compute session - the requests will take longer than when the compute session is cached.
 
+### Useful links
 
-## TBD
+- [Documentation on modelcontextprotocol(mcp)](https://modelcontextprotocol.io/introduction)
 
-- create a version that caches selected items for performance.
-- switch from express to hapijs - my preferred app server package
-- run in a namespace in a Viya server 
-- work on futher generaliztion of this server so it can be used for more complex scenarios
-- Investigate integratinn A2A from Google with this server
-- create custom mcp host.
+- [mcp sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
+

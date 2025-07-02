@@ -9,16 +9,17 @@ import debug from 'debug';
 const log = debug('listlibrary');
 
 async function _listLibrary(params) {
-  let { source, library } = params;
+  let { server, limit, start } = params;
 
   let logonPayload = await getLogonPayload();
   let config = {
-    source: source,
+    source: (server === 'sas') ? 'compute' : server,
     table: null
   };
   let appControl = {};
   log(config);
   try {
+    // setup request control
     let appControl = await restafedit.setup(
       logonPayload,
       config,
@@ -28,22 +29,26 @@ async function _listLibrary(params) {
       {}
     );
 
+    // query parameters
     let payload = {
       qs: {
-        limit: 1000,
-        start: 0,
+        limit: limit,
+        start: start - 1
       }
     };
+    
+    /*
     library = library.trim();
     if (library !== '*') {
       payload.qs.filter = `eq(name, '${library}')`;
     }
+    */
     log(payload);
     let items = await restafedit.getLibraryList(appControl, payload);
     log('items', items);
     return { content: [{ type: 'text', text: JSON.stringify(items) }] };
   } catch (err) {
-    log(JSON.stringify(err));
+    console.log(JSON.stringify(err));
     //  await deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }

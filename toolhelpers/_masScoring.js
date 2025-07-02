@@ -6,7 +6,7 @@ import restaflib  from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
 import debug from 'debug';
-const log = debug('mas');
+const log = debug('masscoring');
 async function _masScoring(params) {
  
  // setup

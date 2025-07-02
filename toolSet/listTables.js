@@ -21,6 +21,9 @@ The limit parameter is the number of tablesthat are returned. The default is 10.
   - lib = the name of the library from which to list tables.
   - server = the name of the server from which to list tables. Default is 'cas'.
   - limit = the number of models to return. Default is 10.
+  - start = the starting point for the list of tables. Default is 1. You can use this to paginate through the list of tables by
+    setting it to the previous limit + 1. 
+
 
 ### Sample Prompts
 - list tables in samples in cas server and limit to 20
@@ -33,7 +36,8 @@ The limit parameter is the number of tablesthat are returned. The default is 10.
     schema: {
       'lib': z.string(),
       'server': z.string(), // default server is 'cas'
-      'limit': z.number()
+      'limit': z.number(),
+      'start': z.number() 
     },
     required: ['lib'],
     handler: async (params) => { 

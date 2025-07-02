@@ -9,20 +9,19 @@ import debug from 'debug';
 const log = debug('listtables');
 
 async function _listTables(params) {
-  let { server, lib, limit} = params;
+  let { server, lib, limit, start} = params;
 
   let logonPayload = await getLogonPayload();
   let config = {
-    source: server,
+    source: (server === 'sas') ? 'compute' : server,
     table: null
   };
-  let appControl = {};
   log(config);
   try {
     let appControl = await restafedit.setup(
       logonPayload,
       config,
-      null,/* create a sessiion */
+      null,/* create a session */
       {},
       'user',
       {}
@@ -30,8 +29,8 @@ async function _listTables(params) {
 
     let payload = {
       qs: {
-        limit: limit || 20, // Use the limit from params or default to 1000
-        start: 0,
+        limit: limit || 10, // Use the limit from params or default to 1000
+        start: start - 1,
       }
     };
 

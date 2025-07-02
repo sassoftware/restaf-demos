@@ -6,7 +6,7 @@ import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
 import debug from 'debug';
-const log = debug('read');
+const log = debug('readtable');
 async function _describeTable(params, mode) {
 
   let { table, lib, start, limit, server, where} = params;

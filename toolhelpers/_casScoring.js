@@ -16,13 +16,6 @@ async function _casScoring(params) {
   }
  
   try {
-    /*
-    let args = {
-      model: model,
-      modelName: modelName,
-      scenario: scenario
-    }
-      */
     let output = await caslScore(store, session, params); 
     let status = { statusCode: 0, msg: null };
     let results = output.casResults;

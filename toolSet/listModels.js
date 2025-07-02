@@ -4,9 +4,7 @@
  */
 
 import { z } from 'zod';
-import debug from 'debug';
-import _modelList from '../toolhelpers/_modelList.js';
-const log = debug('tools');
+import _listModels from '../toolhelpers/_listModels.js';
 
 function listModels() {
   let description = `
@@ -18,6 +16,7 @@ function listModels() {
   
   ### Parameters
     - limit = the number of models to return. Default is 10.
+    - start = the index to start from. Default is 1. Use this to paginate through the list of models by specifying the start value as the previous limit + 1.
 
   ### Sample Prompts
   - list models and  limit to 20
@@ -27,11 +26,12 @@ function listModels() {
     name: 'listModels',
     description: description,
     schema: {
-      'limit': z.number()
+      'limit': z.number(),
+      'start': z.number() 
     },
     handler: async (params) => { 
       // Check if the params.scenario is a string and parse it
-      let r = await _modelList(params);
+      let r = await _listModels(params);
       return r;
     }
   }

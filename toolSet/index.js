@@ -7,7 +7,7 @@ import listTables from './listTables.js';
 import modelScore from './modelScore.js';
 import modelInfo from './modelInfo.js'; 
 
-import libraryExists from './libraryExists.js'; 
+import listLibrary from './listLibrary.js'; 
 import readTable from './readTable.js';
 
 import scrInfo from './scrInfo.js';
@@ -25,7 +25,7 @@ let list = [
     scrInfo(),
     scrScore(),
 
-    libraryExists(),
+    listLibrary(),
     readTable(),
 
     superstat(),

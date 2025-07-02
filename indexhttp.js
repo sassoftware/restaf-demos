@@ -10,6 +10,11 @@ import debug from 'debug';
 const log = debug('main');
 
 // setup express server
+/*
+var key = fs.readFileSync('./tls/tls.key');
+var cert = fs.readFileSync('./tls/tls.crt');
+let options = { key, cert };
+*/
 const app = express();
 app.use(express.json());
 app.use(cors())
@@ -81,6 +86,7 @@ const PORT = process.env.PORT || 8080;
 console.log(`MCP Server listening on port ${PORT}`);
 console.log('Visit http://localhost:8080/health for health check');
 console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
+console.log('Press Ctrl+C to stop the server');
 app.listen(PORT, () => {
-	console.log(`Ready. Press Ctrl+C to stop the server`);
+	console.log(`Running...`);
 });
