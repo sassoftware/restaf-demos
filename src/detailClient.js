@@ -5,7 +5,7 @@
 
 async function detailClient (store, clientid) {
 	let payload = {
-		url    : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients/${clientid}`,
+		url    : `${store.connection()['host']}/SASLogon/oauth/clients/${clientid}`,
 		method : 'GET',
 		headers: {
 			accept       : '*/*',

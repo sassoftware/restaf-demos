@@ -6,7 +6,9 @@
 async function listClient (store, all, vorpal) {
 	
 	let payload = {
-		url    : `${process.env.VIYA_SERVER}/SASLogon/oauth/clients`,
+		//url    : `${store.connection()['host']}/SASLogon/oauth/clients`,
+		url    : `${store.connection()['host']}/SASLogon/oauth/clients`,
+		//url    : `${store.connection()['host']}/SASLogon/oauth/
 		method : 'GET',
 		headers: {
 			authorization: 'bearer ' + store.connection()['token']

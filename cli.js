@@ -36,6 +36,7 @@ async function start() {
     console.log(logonPayload);
     let store  = restaf.initStore();
     await store.logon(logonPayload);
+    console.log(store.connection());
     return { store, logonPayload };
     }
 
