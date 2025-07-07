@@ -22,7 +22,7 @@ function devaScore() {
         },
         handler: async ({ a, b }) => {
             log('devascore', a, b);
-            return { content: [{ type: 'text', text: String((a + b) * 100) }] }
+            return { content: [{ type: 'text', text: String((a + b) * 42) }] }
         }
     }
     return spec;
