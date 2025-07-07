@@ -8,6 +8,7 @@ import modelScore from './modelScore.js';
 import modelInfo from './modelInfo.js'; 
 
 import listLibrary from './listLibrary.js'; 
+import findLibrary from './findLibrary.js';
 import readTable from './readTable.js';
 
 import scrInfo from './scrInfo.js';
@@ -15,6 +16,7 @@ import scrScore from './scrScore.js';
 import searchAssets from './searchAssets.js';
 import devaScore from './devaScore.js';
 import superstat from './superstat.js';
+import findTable from './findTable.js';
 
 let list = [
     listModels(),
@@ -26,6 +28,8 @@ let list = [
     scrScore(),
 
     listLibrary(),
+    findLibrary(),
+    findTable(),
     readTable(),
 
     superstat(),
@@ -34,5 +38,5 @@ let list = [
     searchAssets()
  
 ];
-//console.log(`ToolSet: ${JSON.stringify(list)}`);
+
 export default list;

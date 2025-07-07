@@ -24,7 +24,6 @@ function listLibrary() {
   - List libraries in the cas with a limit of 10
   - List libraries in the sas starting from 11
 
-
   `;
 
 
@@ -34,7 +33,8 @@ function listLibrary() {
     schema: {
       server: z.string().default('cas'),
       limit: z.number(),
-      start: z.number()
+      start: z.number(),
+      where: z.string().default('')
     },
     required: ['server'],
     handler: async (params) => {

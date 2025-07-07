@@ -9,7 +9,7 @@ import debug from 'debug';
 const log = debug('listlibrary');
 
 async function _listLibrary(params) {
-  let { server, limit, start } = params;
+  let { server, limit, start, name } = params;
 
   let logonPayload = await getLogonPayload();
   let config = {
@@ -36,13 +36,13 @@ async function _listLibrary(params) {
         start: start - 1
       }
     };
-    
-    /*
-    library = library.trim();
-    if (library !== '*') {
-      payload.qs.filter = `eq(name, '${library}')`;
+
+    if (name != null) {
+      payload.qs = {
+        filter: `eq(name, '${name}')`
+      }
     }
-    */
+
     log(payload);
     let items = await restafedit.getLibraryList(appControl, payload);
     log('items', items);

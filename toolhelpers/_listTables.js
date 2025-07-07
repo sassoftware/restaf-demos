@@ -9,7 +9,7 @@ import debug from 'debug';
 const log = debug('listtables');
 
 async function _listTables(params) {
-  let { server, lib, limit, start} = params;
+  let { server, lib, limit, start, name} = params;
 
   let logonPayload = await getLogonPayload();
   let config = {
@@ -34,6 +34,11 @@ async function _listTables(params) {
       }
     };
 
+    if (name != null) {
+      payload.qs = {
+        filter: `eq(name, '${name}')`
+      }
+    }
     log(payload);
     let items = await restafedit.getTableList(lib, appControl, payload);
     log('items', items);

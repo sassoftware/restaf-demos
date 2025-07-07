@@ -9,23 +9,30 @@ import debug from 'debug';
 const log = debug('modelList');
 
 async function _listModels(params) {
- // setup
+  let { limit, start } = params;
+  // setup
 
   let store = restaf.initStore({});
   let logonPayload = await getLogonPayload();
 
   try {
     await store.logon(logonPayload);
-    let {microanalyticScore} = await store.addServices('microanalyticScore');
-    let result = await store.apiCall(microanalyticScore.links('modules'));
+    let { microanalyticScore } = await store.addServices('microanalyticScore');
+    let payload = {
+      qs: {
+        limit: limit || 10,
+        start: start || 1 // note: bug in microanalyticScore service, start is not zero based
+      }
+    }
+    let result = await store.apiCall(microanalyticScore.links('modules'), payload);
     let list = result.itemsList().toJS();
-    console.log('result', JSON.stringify(list, null, 2));
+    log('result', JSON.stringify(list, null, 2));
     await store.logoff();
-    return {content: [{ type: 'text', text: JSON.stringify(list) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(list) }] };
   } catch (err) {
     log(JSON.stringify(err, null, 2));
     await store.logoff();
-    return {content: [{ type: 'text', text: JSON.stringify(err) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
 

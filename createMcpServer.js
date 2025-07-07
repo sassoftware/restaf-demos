@@ -14,7 +14,7 @@ async function createMcpServer(mode) {
   // Create an MCP server
 
   const mcpServer = new McpServer({
-    name: 'SAS Viya Sample MCP Server',
+    name: 'Viya-scoring-mcp-server',
     version: '0.3.0'
   }, { capabilities: {
       tools: {
