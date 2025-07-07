@@ -2,7 +2,15 @@
 
 MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
-The  mcp server  described here is designed for scoring with SAS Viya.  See below for the capabilities in the starter kit and how you can modify it for your own use.
+The  mcp server  described here is designed for scoring with SAS Viya. In this document "scoring" is used to describe executing any code that takes some input and returns results. 
+
+Some examples are:
+
+- models created with SAS solutions like Model Studio, Intelligent Decisioning etc...
+- user written SAS programs
+- functions that call SAS products using REST API to get results
+
+  See below for the capabilities in the starter kit and how you can modify it for your own use.
 
 The source code is the repository <https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs>.
 It is provided under the Apache-2.0 license.
@@ -31,7 +39,7 @@ Go to the vscode settings and search for mcp. Then select Model Server Context P
 Add the following to the list of mcp servers
 
 ```js
- "Viya-Models-MCP-Server": {
+ "viya-scoring-mcp-server": {
     "type": "http",
     "url": "http://localhost:8080/mcp"
  }
@@ -43,10 +51,10 @@ The name can be anything you like.
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token. You need to do this once every 90 days or whenever the refresh token expires.
 
 `create a default auth Profile`. 
-Issue this command and follow instruction: sas-viya profile init
+Issue this command and follow instruction: `sas-viya profile init`
 
 `create token` 
-Issue this command and follow the instructions: sas-viya auth loginCode
+Issue this command and follow the instructions: `sas-viya auth loginCode`
 
 
 ### Issuing prompts
@@ -72,20 +80,23 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 
 ### Data related tools
 
+- findLibrary - check if specified library exists
 - listLibrary - list available libraries in cas or sas
-- listTables - list tables in a specified library in cas or sas
-- readTable - read records from a cas or sas table
+- findTable   - check if specified table  exists in specified library in cas or sas
+- listTables  - list tables in a specified library in cas or sas
+- readTable   - read records from a cas or sas table
 - searchAsset - an experimental tool using SAS/Catalog
 
 ### Scoring with Models in MAS
 
+- findModel  - check if specified model exists in MAS server
 - listModels - list models published to MAS
 - modelInfo  - display the input and output variables for a specified model
 - modelScore - score using the seleced model
 
 ### Scoring with SCR
 
-- scrInfo - display the input and output variables for a specified SCR instance
+- scrInfo  - display the input and output variables for a specified SCR instance
 - scrScore - score using the specified SCR instance
 
 
@@ -101,6 +112,7 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 
 - Add a file to the toolSet folder
     - Use one of the files in this folder as a guide
+    - Use toolhelpers folder for the function code(recommended)
 - Add the new file to the index.js file in toolSet folder
 - Restart the mcp server
 
@@ -110,11 +122,7 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 
 ---
 
-This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools 
-might have created.
-
-In a production system the designer has to maka decisions on what needs to be cached and the implications of 
-such caching.
+This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. In a production system the designer has to make decisions on what needs to be cached and the implications of such caching.
 
 The implication of this design choice is felt most when the tool needs to create a compute session - the requests will take longer than when the compute session is cached.
 

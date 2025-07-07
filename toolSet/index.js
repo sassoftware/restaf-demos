@@ -17,10 +17,12 @@ import searchAssets from './searchAssets.js';
 import devaScore from './devaScore.js';
 import superstat from './superstat.js';
 import findTable from './findTable.js';
+import findModel from './findModel.js';
 
 let list = [
     listModels(),
     listTables(),
+    findModel(),
     modelInfo(),
     modelScore(),
 

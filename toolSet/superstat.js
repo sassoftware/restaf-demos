@@ -9,10 +9,26 @@ function superstat() {
   let desc = `
   ## superstat:  compute superstat for two numbers using SAS programming 
 
+  ## Details
+  This is a tool to demonstrate using SAS programming to score. The SAS program for suprestat is
+  below. In a real application this would be a more complex program that is 
+  available to the SAS server.
+
+  
+    ods html style=barrettsblue;  
+    data temp;
+    superstat = (&a + &b) * 42;
+    run;
+    proc print data=temp;
+    run;
+    ods html close; 
+    run;
+  
   ## Sample Prompt
 
     - compute superstat for 1 and 2
     - compute superstat for 3,5
+    
     `;
 
   let spec = {

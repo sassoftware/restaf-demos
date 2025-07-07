@@ -9,7 +9,7 @@ import debug from 'debug';
 const log = debug('modelList');
 
 async function _listModels(params) {
-  let { limit, start } = params;
+  let { limit, start , name} = params;
   // setup
 
   let store = restaf.initStore({});
@@ -23,6 +23,11 @@ async function _listModels(params) {
         limit: limit || 10,
         start: start || 1 // note: bug in microanalyticScore service, start is not zero based
       }
+    }
+    if (name != null) {
+      payload.qs = {
+        filter: `eq(name, '${name}')`
+      } 
     }
     let result = await store.apiCall(microanalyticScore.links('modules'), payload);
     let list = result.itemsList().toJS();

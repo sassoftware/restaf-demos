@@ -17,7 +17,7 @@ If multiple names are specified, repeat the operation for
 
 
   ### Required Parameters
-  - **name**: The name of the tableto find
+  - **name**: The name of the table to find
   - **lib**: The name of the library where the table is located
 
   ### Optional Parameters
