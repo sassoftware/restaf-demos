@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "listModels",
+    "arguments": { "limit": 10, "start": 1 },
+    "_meta": { "progressToken": "2af4f755-cd3d-4d0e-ad51-0ce2e32ebb0f" }
+  }
+}

@@ -1,0 +1,376 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    prometheus.io/path: /internal/metrics
+    prometheus.io/port: "10445"
+    prometheus.io/scheme: https
+    prometheus.io/scrape: "true"
+    sas.com/certificate-file-format: jks
+    sas.com/component-name: sas-studio-app
+    sas.com/component-version: 6.1056.4-20241004.1728045495289
+    sas.com/kustomize-base: spring
+    sas.com/pod-uses-liveness-probe: http
+    sas.com/pod-uses-readiness-probe: http
+    sas.com/pod-uses-startup-probe: http
+    sas.com/tls-enabled-ports: all
+    sas.com/tls-mode: full-stack
+    sas.com/version: 6.1056.4
+    sidecar.istio.io/proxyCPU: 15m
+    sidecar.istio.io/proxyMemory: 115Mi
+  creationTimestamp: "2025-05-28T23:42:55Z"
+  generateName: sas-studio-app-5bd9db6559-
+  labels:
+    app: sas-studio-app
+    app.kubernetes.io/name: sas-studio-app
+    pod-template-hash: 5bd9db6559
+    sas.com/deployment: sas-viya
+    sas.com/start-sequencer: "true"
+    workload.sas.com/class: stateless
+  name: sas-studio-app-5bd9db6559-cjqnp
+  namespace: viya
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: sas-studio-app-5bd9db6559
+    uid: d50de1a8-fd4c-4220-9e44-2114b7dac461
+  resourceVersion: "112865799"
+  uid: 0c71e7ee-e63b-4fd1-b4ad-cee21c8598b0
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - preference:
+          matchExpressions:
+          - key: workload.sas.com/class
+            operator: In
+            values:
+            - stateless
+        weight: 100
+      - preference:
+          matchExpressions:
+          - key: workload.sas.com/class
+            operator: NotIn
+            values:
+            - compute
+            - cas
+            - stateful
+        weight: 50
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - sas-studio-app
+          topologyKey: kubernetes.io/hostname
+        weight: 100
+  automountServiceAccountToken: false
+  containers:
+  - env:
+    - name: SAS_K8S_DEPLOYMENT_NAME
+      value: sas-studio-app
+    - name: SAS_CADENCE_NAME
+      valueFrom:
+        configMapKeyRef:
+          key: SAS_CADENCE_NAME
+          name: sas-deployment-metadata-hc69d6cg95
+    - name: SAS_CADENCE_VERSION
+      valueFrom:
+        configMapKeyRef:
+          key: SAS_CADENCE_VERSION
+          name: sas-deployment-metadata-hc69d6cg95
+    - name: SAS_CADENCE_RELEASE
+      valueFrom:
+        configMapKeyRef:
+          key: SAS_CADENCE_RELEASE
+          name: sas-deployment-metadata-hc69d6cg95
+    - name: JAVA_OPTION_XMX
+      value: -Xmx512m
+    envFrom:
+    - configMapRef:
+        name: sas-java-tls-config-mkt22c2k7b
+    - configMapRef:
+        name: sas-java-config-fg8dm449m4
+    - configMapRef:
+        name: sas-shared-config-tb67g5mgbf
+    - secretRef:
+        name: sas-consul-client
+    - configMapRef:
+        name: sas-spring-23-management-config-9498f59kmm
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-studio-app:6.1056.4-20241004.1728045495289
+    imagePullPolicy: IfNotPresent
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - sh
+          - -c
+          - sleep 5
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /internal/live
+        port: http-internal
+        scheme: HTTPS
+      periodSeconds: 20
+      successThreshold: 1
+      timeoutSeconds: 5
+    name: sas-studio-app
+    ports:
+    - containerPort: 8080
+      name: http
+      protocol: TCP
+    - containerPort: 10445
+      name: http-internal
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /internal/ready
+        port: http-internal
+        scheme: HTTPS
+      periodSeconds: 20
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 650M
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+    startupProbe:
+      failureThreshold: 360
+      httpGet:
+        path: /internal/live
+        port: http-internal
+        scheme: HTTPS
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /tmp
+      name: tmp
+    - mountPath: /opt/sas/viya/config/tmp
+      name: tmp
+    - mountPath: /security
+      name: security
+    - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts
+      name: security
+      subPath: cacerts
+    - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/private
+      name: security
+      subPath: private
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  imagePullSecrets:
+  - name: sas-image-pull-secrets-tkbfh74582
+  initContainers:
+  - envFrom:
+    - configMapRef:
+        name: sas-go-config-4m2m8m8662
+    - configMapRef:
+        name: sas-shared-config-tb67g5mgbf
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-start-sequencer:2.14.0-20241003.1727965998179
+    imagePullPolicy: IfNotPresent
+    name: sas-start-sequencer
+    resources:
+      limits:
+        cpu: 250m
+        memory: 250Mi
+      requests:
+        cpu: 25m
+        memory: 25Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+  - env:
+    - name: KUBE_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: SAS_CERTFRAME_TOKEN_DIR
+      value: /certframe-token
+    - name: SAS_ADDITIONAL_CA_CERTIFICATES_DIR
+      value: /customer-provided-ca-certificates
+    envFrom:
+    - configMapRef:
+        name: sas-certframe-java-config-7mmtgffmg7
+    - configMapRef:
+        name: sas-certframe-ingress-certificate-config-6mt27h98mb
+    - configMapRef:
+        name: sas-certframe-user-config-679cgdbhdt
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-certframe:3.58.1-20241015.1729018469597
+    imagePullPolicy: IfNotPresent
+    name: sas-certframe
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 50Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /certframe-token
+      name: certframe-token
+    - mountPath: /security
+      name: security
+    - mountPath: /customer-provided-ca-certificates
+      name: customer-provided-ca-certificates
+  nodeName: aks-generic-26399941-vmss0000du
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoSchedule
+    key: workload.sas.com/class
+    operator: Equal
+    value: stateful
+  - effect: NoSchedule
+    key: workload.sas.com/class
+    operator: Equal
+    value: stateless
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  volumes:
+  - emptyDir: {}
+    name: tmp
+  - name: certframe-token
+    secret:
+      defaultMode: 420
+      secretName: sas-certframe-token
+  - emptyDir: {}
+    name: security
+  - configMap:
+      defaultMode: 420
+      name: sas-customer-provided-ca-certificates-mf6c58m496
+    name: customer-provided-ca-certificates
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-05-29T10:52:05Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-05-29T11:02:43Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-05-29T11:06:14Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-05-29T11:06:14Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-05-29T10:51:33Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://806825e77f04e26fa364063b4ce38cc11bb49a09f100379693e7ba1967009e7a
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-studio-app:6.1056.4-20241004.1728045495289
+    imageID: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-studio-app@sha256:8fa0b836a08cf1f893408c35201878c265154f53c9c49650c3e6802160e81e0c
+    lastState: {}
+    name: sas-studio-app
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2025-05-29T11:05:16Z"
+  hostIP: 192.168.0.10
+  hostIPs:
+  - ip: 192.168.0.10
+  initContainerStatuses:
+  - containerID: containerd://2b8989f0341133fd620189e20b7f39c37441a324976f184712b724849d898c1a
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-start-sequencer:2.14.0-20241003.1727965998179
+    imageID: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-start-sequencer@sha256:2d423e03b8e609b38bb3e50fd171faaeb6550b9a82ae710876628ef0984fc2d0
+    lastState: {}
+    name: sas-start-sequencer
+    ready: true
+    restartCount: 1
+    started: false
+    state:
+      terminated:
+        containerID: containerd://2b8989f0341133fd620189e20b7f39c37441a324976f184712b724849d898c1a
+        exitCode: 0
+        finishedAt: "2025-05-29T11:02:39Z"
+        reason: Completed
+        startedAt: "2025-05-29T11:02:08Z"
+  - containerID: containerd://5a205112f9c6e2cf0599728ddc549573a67baf587187a46e3bc99aadc3cd6127
+    image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-certframe:3.58.1-20241015.1729018469597
+    imageID: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-certframe@sha256:de3a5d6e412f003cad9c60d075d9252d3854d5022f1dfb9e123b8fe869e8fb70
+    lastState: {}
+    name: sas-certframe
+    ready: true
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://5a205112f9c6e2cf0599728ddc549573a67baf587187a46e3bc99aadc3cd6127
+        exitCode: 0
+        finishedAt: "2025-05-29T11:02:43Z"
+        reason: Completed
+        startedAt: "2025-05-29T11:02:42Z"
+  phase: Running
+  podIP: 10.244.2.23
+  podIPs:
+  - ip: 10.244.2.23
+  qosClass: Burstable
+  startTime: "2025-05-29T10:51:33Z"

@@ -1,0 +1,595 @@
+apiVersion: v1
+items:
+- apiVersion: viya.sas.com/v1alpha1
+  kind: CASDeployment
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"viya.sas.com/v1alpha1","kind":"CASDeployment","metadata":{"annotations":{"sas.com/component-name":"sas-cas-operator","sas.com/component-version":"3.49.1-20241002.1727890840445","sas.com/config-init-mode":"initcontainer","sas.com/sas-access-config":"true","sas.com/sas-kerberos-config":"true","sas.com/tls-mode":"full-stack","sas.com/version":"3.49.1"},"labels":{"app":"sas-cas-operator","app.kubernetes.io/instance":"default","app.kubernetes.io/managed-by":"sas-cas-operator","app.kubernetes.io/name":"cas","casoperator.sas.com/instance":"default","casoperator.sas.com/tenant":"shared","sas.com/admin":"namespace","sas.com/backup-role":"provider","sas.com/cas-server-default":"true","sas.com/deployment":"sas-viya","sas.com/tenant":"shared","workload.sas.com/class":"cas"},"name":"default","namespace":"viya","ownerReferences":[{"apiVersion":"orchestration.sas.com/v1alpha1","blockOwnerDeletion":true,"controller":true,"kind":"SASDeployment","name":"sas-viya","uid":"8fc171b3-2f12-4208-90bb-684ef24314aa"}]},"spec":{"appendCASAllowlistPaths":[],"backupControllers":0,"controllerTemplate":{"metadata":{"annotations":{"prometheus.io/scheme":"https","sas.com/certificate-file-format":"pem","sas.com/tls-enabled-ports":"all","sas.com/tls-mode":"full-stack"},"labels":{"pod.security.sas.com/exception-allow-privilege-escalation":"exempt","pod.security.sas.com/exception-default-capabilities":"exempt","pod.security.sas.com/exception-run-as-non-root":"exempt"}},"spec":{"affinity":{"nodeAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"workload.sas.com/class","operator":"In","values":["cas"]}]},"weight":100},{"preference":{"matchExpressions":[{"key":"workload.sas.com/class","operator":"NotIn","values":["compute","stateless","stateful"]}]},"weight":1}],"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"kubernetes.azure.com/mode","operator":"NotIn","values":["system"]},{"key":"workload.sas.com/class","operator":"In","values":["cas"]}]}]}},"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/name","operator":"In","values":["sas-cas-server"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"containers":[{"env":[{"name":"SAS_LICENSE","valueFrom":{"secretKeyRef":{"key":"SAS_LICENSE","name":"sas-cas-license"}}},{"name":"CONSUL_HTTP_ADDR","value":"https://localhost:8500"},{"name":"CASCFG_DQLOCALE","value":"ENUSA"},{"name":"CASCFG_DQSETUPLOC","value":"QKB CI 33"}],"envFrom":[{"configMapRef":{"name":"sas-shared-config-tb67g5mgbf"}},{"configMapRef":{"name":"sas-java-config-fg8dm449m4"}},{"configMapRef":{"name":"sas-access-config-2m979dm8hh"}},{"configMapRef":{"name":"sas-cas-config-26bg5m9gb4"}},{"configMapRef":{"name":"sas-deployment-metadata-hc69d6cg95"}},{"secretRef":{"name":"sas-consul-client"}},{"configMapRef":{"name":"sas-restore-job-parameters-c8k4g7hb2g"}},{"configMapRef":{"name":"sas-tls-config-dg85g4hfh8"}}],"image":"cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-cas-server:1.65.22-20241015.1728989505532","imagePullPolicy":"IfNotPresent","name":"sas-cas-server","readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/internal/state","port":8777,"scheme":"HTTPS"},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"requests":{"cpu":"250m","memory":"2Gi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/cas/permstore","name":"cas-default-permstore-volume"},{"mountPath":"/cas/data","name":"cas-default-data-volume"},{"mountPath":"/cas/cache","name":"cas-default-cache-volume"},{"mountPath":"/cas/config","name":"cas-default-config-volume"},{"mountPath":"/tmp","name":"cas-tmp-volume","subPath":"tmp"},{"mountPath":"/opt/sas/viya/config/tmp/sas-cas","name":"cas-tmp-volume","subPath":"sas-cas"},{"mountPath":"/cas/license","name":"cas-license-volume"},{"mountPath":"/opt/sas/viya/home/commonfiles","name":"commonfilesvols","readOnly":true},{"mountPath":"/etc/podinfo","name":"podinfo"},{"mountPath":"/sasviyabackup","name":"backup"},{"mountPath":"/security","name":"security"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts","name":"security","subPath":"cacerts"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/private","name":"security","subPath":"private"},{"mountPath":"/rdutil","name":"sas-rdutil-dir"},{"mountPath":"/opt/sas/viya/home/share/refdata/qkb","name":"sas-quality-knowledge-base-volume"}]},{"args":["-c","rm -f /tmp/sas-shutdown; while [ ! -f /tmp/sas-shutdown ]; do /opt/sas/viya/home/bin/backup_agent_job_start.sh; echo 'restarting backup script'; sleep 3; done;"],"command":["/bin/bash"],"env":[{"name":"BACKUP_MOUNT_LOCATION","value":"/sasviyabackup"},{"name":"BACKUP_SOURCE_MOUNTS","value":"cas-default-data-volume"},{"name":"cas-default-data-volume","value":"/cas/data"},{"name":"NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['casoperator.sas.com/cas-env-consul-name']"}}},{"name":"CAS_NODE_TYPE","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['casoperator.sas.com/node-type']"}}},{"name":"CAS_CONTROLLER_ACTIVE","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['casoperator.sas.com/controller-active']"}}},{"name":"CAS_CFG_MODE","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['casoperator.sas.com/cas-cfg-mode']"}}},{"name":"CAS_SERVICE_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['casoperator.sas.com/service-name']"}}}],"envFrom":[{"configMapRef":{"name":"sas-go-config-4m2m8m8662"}},{"configMapRef":{"name":"sas-shared-config-tb67g5mgbf"}},{"configMapRef":{"name":"sas-java-config-fg8dm449m4"}},{"configMapRef":{"name":"sas-backup-agent-parameters-2mg4tcth69"}},{"secretRef":{"name":"sas-consul-client"}},{"configMapRef":{"name":"sas-tls-config-dg85g4hfh8"}}],"image":"cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-backup-agent:2.89.1-20241008.1728372497338","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["bash","-c","touch /tmp/sas-shutdown; pkill -SIGKILL 'backup-agent' ; kill -SIGKILL $(ps -Af | grep 'backup_agent_job_start.sh'  | grep -v grep | awk '{print $2}')"]}}},"name":"sas-backup-agent","resources":{"limits":{"cpu":"100m","memory":"2Gi"},"requests":{"cpu":"100m","memory":"2Gi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/sasviyabackup","name":"backup"},{"mountPath":"/cas/data","name":"cas-default-data-volume"},{"mountPath":"/tmp","name":"tmp"},{"mountPath":"/security","name":"security"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts","name":"security","subPath":"cacerts"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/private","name":"security","subPath":"private"}]},{"args":["-c","rm -f /tmp/sas-shutdown; while [ ! -f /tmp/sas-shutdown ]; do /opt/sas/viya/home/bin/sas-consul-server-entrypoint.sh; echo restarting_consul_script; sleep 3; done;"],"command":["/bin/bash"],"env":[{"name":"CONSUL_SERVER_LIST","value":"sas-consul-server"},{"name":"CONSUL_SERVER_FLAG","value":"false"},{"name":"CONSUL_CLIENT_ADDRESS","value":"127.0.0.1"},{"name":"CONSUL_DATACENTER_NAME","value":"viya"},{"name":"CONSUL_TOKENS_ENCRYPTION","valueFrom":{"secretKeyRef":{"key":"CONSUL_TOKENS_ENCRYPTION","name":"sas-consul-management"}}},{"name":"CONSUL_CAS_POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"CONSUL_NODE_NAME","value":"$(CONSUL_CAS_POD_NAME)-agent"}],"envFrom":[{"configMapRef":{"name":"sas-shared-config-tb67g5mgbf"}},{"configMapRef":{"name":"sas-go-config-4m2m8m8662"}},{"secretRef":{"name":"sas-consul-client"}},{"configMapRef":{"name":"sas-tls-config-dg85g4hfh8"}}],"image":"cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-consul-server:1.1910001.0-20241008.1728408569914","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","PROTO=\"http\"; [[ ! -z ${SAS_CERTIFICATE_FILE+x} ]] \u0026\u0026 export PROTO=\"https\"; CONSUL_HTTP_ADDR=$PROTO://localhost:8500; touch /tmp/sas-shutdown; /opt/sas/viya/home/bin/consul leave ; sleep 5; pkill consul"]}}},"name":"sas-consul-agent","ports":[{"containerPort":8300,"name":"server","protocol":"TCP"},{"containerPort":8301,"name":"serflan-tcp","protocol":"TCP"},{"containerPort":8301,"name":"serflan-udp","protocol":"UDP"},{"containerPort":8500,"name":"http","protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","/opt/sas/viya/home/bin/consul-readiness-probe.sh"]},"failureThreshold":3,"initialDelaySeconds":5,"periodSeconds":20,"successThreshold":1,"timeoutSeconds":60},"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/opt/sas/viya/config/etc/consul.d","name":"consul-tmp-volume","subPath":"consul.d"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/tokens/consul/default","name":"consul-tmp-volume","subPath":"consul-tokens"},{"mountPath":"/opt/sas/viya/config/tmp/sas-consul","name":"consul-tmp-volume","subPath":"sas-consul"},{"mountPath":"/tmp","name":"consul-tmp-volume","subPath":"tmp"},{"mountPath":"/consul/data/","name":"consul-tmp-volume","subPath":"data"},{"mountPath":"/security","name":"security"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts","name":"security","subPath":"cacerts"},{"mountPath":"/opt/sas/viya/config/etc/SASSecurityCertificateFramework/private","name":"security","subPath":"private"}]}],"imagePullSecrets":[{"name":"sas-image-pull-secrets-tkbfh74582"}],"initContainers":[{"env":[{"name":"KUBE_POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"SAS_CERTFRAME_TOKEN_DIR","value":"/certframe-token"},{"name":"SAS_ADDITIONAL_CA_CERTIFICATES_DIR","value":"/customer-provided-ca-certificates"},{"name":"SAS_CERTIFICATE_PRIVATE_KEY_PERMISSIONS","value":"644"}],"envFrom":[{"configMapRef":{"name":"sas-certframe-ingress-certificate-config-6mt27h98mb"}},{"configMapRef":{"name":"sas-certframe-user-config-679cgdbhdt"}},{"configMapRef":{"name":"sas-certframe-config-6t84hm65mc"}}],"image":"cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-certframe:3.58.1-20241015.1729018469597","name":"sas-certframe","resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/certframe-token","name":"certframe-token"},{"mountPath":"/security","name":"security"},{"mountPath":"/customer-provided-ca-certificates","name":"customer-provided-ca-certificates"}]},{"env":[{"name":"SAS_INIT_CONFIG_LOG_LEVEL","value":"INFO"},{"name":"SSL_CERT_FILE","value":"/security/trustedcerts.pem"}],"envFrom":[{"configMapRef":{"name":"sas-go-config-4m2m8m8662"}},{"configMapRef":{"name":"sas-shared-config-tb67g5mgbf"}},{"configMapRef":{"name":"sas-access-config-2m979dm8hh"}},{"secretRef":{"name":"sas-consul-client"}}],"image":"cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-config-init:1.24.10-20241003.1727964516700","imagePullPolicy":"IfNotPresent","name":"sas-config-init","resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/cas/config/","name":"cas-default-config-volume"},{"mountPath":"/opt/sas/viya/home/commonfiles","name":"commonfilesvols"},{"mountPath":"/security","name":"security"}]}],"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001},"serviceAccountName":"sas-cas-server","tolerations":[{"effect":"NoSchedule","key":"workload.sas.com/class","operator":"Equal","value":"cas"}],"volumes":[{"downwardAPI":{"items":[{"fieldRef":{"fieldPath":"metadata.labels"},"path":"labels"}]},"name":"podinfo"},{"name":"cas-default-permstore-volume","persistentVolumeClaim":{"claimName":"cas-default-permstore"}},{"name":"cas-default-data-volume","persistentVolumeClaim":{"claimName":"cas-default-data"}},{"emptyDir":{},"name":"cas-default-cache-volume"},{"emptyDir":{},"name":"cas-default-config-volume"},{"emptyDir":{},"name":"cas-tmp-volume"},{"name":"cas-license-volume","secret":{"items":[{"key":"SAS_LICENSE","path":"license.sas"}],"secretName":"sas-cas-license"}},{"name":"commonfilesvols","persistentVolumeClaim":{"claimName":"sas-commonfiles","readOnly":true}},{"name":"backup","persistentVolumeClaim":{"claimName":"sas-cas-backup-data"}},{"emptyDir":{},"name":"tmp"},{"emptyDir":{},"name":"consul-tmp-volume"},{"name":"certframe-token","secret":{"secretName":"sas-certframe-token"}},{"emptyDir":{},"name":"security"},{"configMap":{"name":"sas-customer-provided-ca-certificates-mf6c58m496"},"name":"customer-provided-ca-certificates"},{"name":"sas-quality-knowledge-base-volume","persistentVolumeClaim":{"claimName":"sas-quality-knowledge-base"}},{"configMap":{"defaultMode":493,"name":"sas-qkb-management-scripts"},"name":"sas-rdutil-dir"}]}},"controllerTemplateAdditions":{"spec":{"tolerations":[{"effect":"NoSchedule","key":"workload.sas.com/class","operator":"Equal","value":"cascontroller"}]}},"ingressTemplate":{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/backend-protocol":"HTTPS","nginx.ingress.kubernetes.io/proxy-body-size":"2048m","nginx.ingress.kubernetes.io/proxy-buffer-size":"16k","nginx.ingress.kubernetes.io/proxy-read-timeout":"300","sas.com/tls-mode":"full-stack"},"labels":{}},"spec":{"rules":[{"host":"viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com"}],"tls":[{"hosts":["viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com"],"secretName":"sas-ingress-certificate-mg5d6ttd5c"}]}},"instanceID":"default","publishBinaryService":false,"publishHTTPIngress":true,"publishHTTPService":false,"routeTemplate":{"metadata":{"annotations":{},"labels":{}},"spec":{"host":"viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com"}},"workerTemplate":{},"workerTemplateAdditions":{"metadata":{"annotations":{"casoperator.sas.com/remove-sidecars":"sas-backup-agent,sas-consul-agent"}},"spec":{"tolerations":[{"effect":"NoSchedule","key":"workload.sas.com/class","operator":"Equal","value":"casworker"}]}},"workers":0}}
+      sas.com/component-name: sas-cas-operator
+      sas.com/component-version: 3.49.1-20241002.1727890840445
+      sas.com/config-init-mode: initcontainer
+      sas.com/sas-access-config: "true"
+      sas.com/sas-kerberos-config: "true"
+      sas.com/tls-mode: full-stack
+      sas.com/version: 3.49.1
+    creationTimestamp: "2024-10-28T16:20:53Z"
+    generation: 9
+    labels:
+      app: sas-cas-operator
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/managed-by: sas-cas-operator
+      app.kubernetes.io/name: cas
+      casoperator.sas.com/instance: default
+      casoperator.sas.com/tenant: shared
+      sas.com/admin: namespace
+      sas.com/backup-role: provider
+      sas.com/cas-server-default: "true"
+      sas.com/deployment: sas-viya
+      sas.com/tenant: shared
+      workload.sas.com/class: cas
+    name: default
+    namespace: viya
+    ownerReferences:
+    - apiVersion: orchestration.sas.com/v1alpha1
+      blockOwnerDeletion: true
+      controller: true
+      kind: SASDeployment
+      name: sas-viya
+      uid: 8fc171b3-2f12-4208-90bb-684ef24314aa
+    resourceVersion: "112878833"
+    uid: db33956c-45c9-4659-bb33-f0999e32f247
+  spec:
+    appendCASAllowlistPaths: []
+    backupControllers: 0
+    controllerTemplate:
+      metadata:
+        annotations:
+          prometheus.io/scheme: https
+          sas.com/certificate-file-format: pem
+          sas.com/tls-enabled-ports: all
+          sas.com/tls-mode: full-stack
+        labels:
+          pod.security.sas.com/exception-allow-privilege-escalation: exempt
+          pod.security.sas.com/exception-default-capabilities: exempt
+          pod.security.sas.com/exception-run-as-non-root: exempt
+      spec:
+        affinity:
+          nodeAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                - key: workload.sas.com/class
+                  operator: In
+                  values:
+                  - cas
+              weight: 100
+            - preference:
+                matchExpressions:
+                - key: workload.sas.com/class
+                  operator: NotIn
+                  values:
+                  - compute
+                  - stateless
+                  - stateful
+              weight: 1
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.azure.com/mode
+                  operator: NotIn
+                  values:
+                  - system
+                - key: workload.sas.com/class
+                  operator: In
+                  values:
+                  - cas
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - sas-cas-server
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+        containers:
+        - env:
+          - name: SAS_LICENSE
+            valueFrom:
+              secretKeyRef:
+                key: SAS_LICENSE
+                name: sas-cas-license
+          - name: CONSUL_HTTP_ADDR
+            value: https://localhost:8500
+          - name: CASCFG_DQLOCALE
+            value: ENUSA
+          - name: CASCFG_DQSETUPLOC
+            value: QKB CI 33
+          envFrom:
+          - configMapRef:
+              name: sas-shared-config-tb67g5mgbf
+          - configMapRef:
+              name: sas-java-config-fg8dm449m4
+          - configMapRef:
+              name: sas-access-config-2m979dm8hh
+          - configMapRef:
+              name: sas-cas-config-26bg5m9gb4
+          - configMapRef:
+              name: sas-deployment-metadata-hc69d6cg95
+          - secretRef:
+              name: sas-consul-client
+          - configMapRef:
+              name: sas-restore-job-parameters-c8k4g7hb2g
+          - configMapRef:
+              name: sas-tls-config-dg85g4hfh8
+          image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-cas-server:1.65.22-20241015.1728989505532
+          imagePullPolicy: IfNotPresent
+          name: sas-cas-server
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /internal/state
+              port: 8777
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /cas/permstore
+            name: cas-default-permstore-volume
+          - mountPath: /cas/data
+            name: cas-default-data-volume
+          - mountPath: /cas/cache
+            name: cas-default-cache-volume
+          - mountPath: /cas/config
+            name: cas-default-config-volume
+          - mountPath: /tmp
+            name: cas-tmp-volume
+            subPath: tmp
+          - mountPath: /opt/sas/viya/config/tmp/sas-cas
+            name: cas-tmp-volume
+            subPath: sas-cas
+          - mountPath: /cas/license
+            name: cas-license-volume
+          - mountPath: /opt/sas/viya/home/commonfiles
+            name: commonfilesvols
+            readOnly: true
+          - mountPath: /etc/podinfo
+            name: podinfo
+          - mountPath: /sasviyabackup
+            name: backup
+          - mountPath: /security
+            name: security
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts
+            name: security
+            subPath: cacerts
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/private
+            name: security
+            subPath: private
+          - mountPath: /rdutil
+            name: sas-rdutil-dir
+          - mountPath: /opt/sas/viya/home/share/refdata/qkb
+            name: sas-quality-knowledge-base-volume
+        - args:
+          - -c
+          - rm -f /tmp/sas-shutdown; while [ ! -f /tmp/sas-shutdown ]; do /opt/sas/viya/home/bin/backup_agent_job_start.sh;
+            echo 'restarting backup script'; sleep 3; done;
+          command:
+          - /bin/bash
+          env:
+          - name: BACKUP_MOUNT_LOCATION
+            value: /sasviyabackup
+          - name: BACKUP_SOURCE_MOUNTS
+            value: cas-default-data-volume
+          - name: cas-default-data-volume
+            value: /cas/data
+          - name: NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['casoperator.sas.com/cas-env-consul-name']
+          - name: CAS_NODE_TYPE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['casoperator.sas.com/node-type']
+          - name: CAS_CONTROLLER_ACTIVE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['casoperator.sas.com/controller-active']
+          - name: CAS_CFG_MODE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['casoperator.sas.com/cas-cfg-mode']
+          - name: CAS_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['casoperator.sas.com/service-name']
+          envFrom:
+          - configMapRef:
+              name: sas-go-config-4m2m8m8662
+          - configMapRef:
+              name: sas-shared-config-tb67g5mgbf
+          - configMapRef:
+              name: sas-java-config-fg8dm449m4
+          - configMapRef:
+              name: sas-backup-agent-parameters-2mg4tcth69
+          - secretRef:
+              name: sas-consul-client
+          - configMapRef:
+              name: sas-tls-config-dg85g4hfh8
+          image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-backup-agent:2.89.1-20241008.1728372497338
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - bash
+                - -c
+                - touch /tmp/sas-shutdown; pkill -SIGKILL 'backup-agent' ; kill -SIGKILL
+                  $(ps -Af | grep 'backup_agent_job_start.sh'  | grep -v grep | awk
+                  '{print $2}')
+          name: sas-backup-agent
+          resources:
+            limits:
+              cpu: 100m
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /sasviyabackup
+            name: backup
+          - mountPath: /cas/data
+            name: cas-default-data-volume
+          - mountPath: /tmp
+            name: tmp
+          - mountPath: /security
+            name: security
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts
+            name: security
+            subPath: cacerts
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/private
+            name: security
+            subPath: private
+        - args:
+          - -c
+          - rm -f /tmp/sas-shutdown; while [ ! -f /tmp/sas-shutdown ]; do /opt/sas/viya/home/bin/sas-consul-server-entrypoint.sh;
+            echo restarting_consul_script; sleep 3; done;
+          command:
+          - /bin/bash
+          env:
+          - name: CONSUL_SERVER_LIST
+            value: sas-consul-server
+          - name: CONSUL_SERVER_FLAG
+            value: "false"
+          - name: CONSUL_CLIENT_ADDRESS
+            value: 127.0.0.1
+          - name: CONSUL_DATACENTER_NAME
+            value: viya
+          - name: CONSUL_TOKENS_ENCRYPTION
+            valueFrom:
+              secretKeyRef:
+                key: CONSUL_TOKENS_ENCRYPTION
+                name: sas-consul-management
+          - name: CONSUL_CAS_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: CONSUL_NODE_NAME
+            value: $(CONSUL_CAS_POD_NAME)-agent
+          envFrom:
+          - configMapRef:
+              name: sas-shared-config-tb67g5mgbf
+          - configMapRef:
+              name: sas-go-config-4m2m8m8662
+          - secretRef:
+              name: sas-consul-client
+          - configMapRef:
+              name: sas-tls-config-dg85g4hfh8
+          image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-consul-server:1.1910001.0-20241008.1728408569914
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - PROTO="http"; [[ ! -z ${SAS_CERTIFICATE_FILE+x} ]] && export PROTO="https";
+                  CONSUL_HTTP_ADDR=$PROTO://localhost:8500; touch /tmp/sas-shutdown;
+                  /opt/sas/viya/home/bin/consul leave ; sleep 5; pkill consul
+          name: sas-consul-agent
+          ports:
+          - containerPort: 8300
+            name: server
+            protocol: TCP
+          - containerPort: 8301
+            name: serflan-tcp
+            protocol: TCP
+          - containerPort: 8301
+            name: serflan-udp
+            protocol: UDP
+          - containerPort: 8500
+            name: http
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - /opt/sas/viya/home/bin/consul-readiness-probe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 60
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /opt/sas/viya/config/etc/consul.d
+            name: consul-tmp-volume
+            subPath: consul.d
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/tokens/consul/default
+            name: consul-tmp-volume
+            subPath: consul-tokens
+          - mountPath: /opt/sas/viya/config/tmp/sas-consul
+            name: consul-tmp-volume
+            subPath: sas-consul
+          - mountPath: /tmp
+            name: consul-tmp-volume
+            subPath: tmp
+          - mountPath: /consul/data/
+            name: consul-tmp-volume
+            subPath: data
+          - mountPath: /security
+            name: security
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts
+            name: security
+            subPath: cacerts
+          - mountPath: /opt/sas/viya/config/etc/SASSecurityCertificateFramework/private
+            name: security
+            subPath: private
+        imagePullSecrets:
+        - name: sas-image-pull-secrets-tkbfh74582
+        initContainers:
+        - env:
+          - name: KUBE_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: SAS_CERTFRAME_TOKEN_DIR
+            value: /certframe-token
+          - name: SAS_ADDITIONAL_CA_CERTIFICATES_DIR
+            value: /customer-provided-ca-certificates
+          - name: SAS_CERTIFICATE_PRIVATE_KEY_PERMISSIONS
+            value: "644"
+          envFrom:
+          - configMapRef:
+              name: sas-certframe-ingress-certificate-config-6mt27h98mb
+          - configMapRef:
+              name: sas-certframe-user-config-679cgdbhdt
+          - configMapRef:
+              name: sas-certframe-config-6t84hm65mc
+          image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-certframe:3.58.1-20241015.1729018469597
+          name: sas-certframe
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /certframe-token
+            name: certframe-token
+          - mountPath: /security
+            name: security
+          - mountPath: /customer-provided-ca-certificates
+            name: customer-provided-ca-certificates
+        - env:
+          - name: SAS_INIT_CONFIG_LOG_LEVEL
+            value: INFO
+          - name: SSL_CERT_FILE
+            value: /security/trustedcerts.pem
+          envFrom:
+          - configMapRef:
+              name: sas-go-config-4m2m8m8662
+          - configMapRef:
+              name: sas-shared-config-tb67g5mgbf
+          - configMapRef:
+              name: sas-access-config-2m979dm8hh
+          - secretRef:
+              name: sas-consul-client
+          image: cr.sas.com/viya-4-x64_oci_linux_2-docker/sas-config-init:1.24.10-20241003.1727964516700
+          imagePullPolicy: IfNotPresent
+          name: sas-config-init
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /cas/config/
+            name: cas-default-config-volume
+          - mountPath: /opt/sas/viya/home/commonfiles
+            name: commonfilesvols
+          - mountPath: /security
+            name: security
+        securityContext:
+          fsGroup: 1001
+          runAsGroup: 1001
+          runAsNonRoot: true
+          runAsUser: 1001
+        serviceAccountName: sas-cas-server
+        tolerations:
+        - effect: NoSchedule
+          key: workload.sas.com/class
+          operator: Equal
+          value: cas
+        volumes:
+        - downwardAPI:
+            items:
+            - fieldRef:
+                fieldPath: metadata.labels
+              path: labels
+          name: podinfo
+        - name: cas-default-permstore-volume
+          persistentVolumeClaim:
+            claimName: cas-default-permstore
+        - name: cas-default-data-volume
+          persistentVolumeClaim:
+            claimName: cas-default-data
+        - emptyDir: {}
+          name: cas-default-cache-volume
+        - emptyDir: {}
+          name: cas-default-config-volume
+        - emptyDir: {}
+          name: cas-tmp-volume
+        - name: cas-license-volume
+          secret:
+            items:
+            - key: SAS_LICENSE
+              path: license.sas
+            secretName: sas-cas-license
+        - name: commonfilesvols
+          persistentVolumeClaim:
+            claimName: sas-commonfiles
+            readOnly: true
+        - name: backup
+          persistentVolumeClaim:
+            claimName: sas-cas-backup-data
+        - emptyDir: {}
+          name: tmp
+        - emptyDir: {}
+          name: consul-tmp-volume
+        - name: certframe-token
+          secret:
+            secretName: sas-certframe-token
+        - emptyDir: {}
+          name: security
+        - configMap:
+            name: sas-customer-provided-ca-certificates-mf6c58m496
+          name: customer-provided-ca-certificates
+        - name: sas-quality-knowledge-base-volume
+          persistentVolumeClaim:
+            claimName: sas-quality-knowledge-base
+        - configMap:
+            defaultMode: 493
+            name: sas-qkb-management-scripts
+          name: sas-rdutil-dir
+    controllerTemplateAdditions:
+      spec:
+        tolerations:
+        - effect: NoSchedule
+          key: workload.sas.com/class
+          operator: Equal
+          value: cascontroller
+    ingressTemplate:
+      metadata:
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+          nginx.ingress.kubernetes.io/proxy-body-size: 2048m
+          nginx.ingress.kubernetes.io/proxy-buffer-size: 16k
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+          sas.com/tls-mode: full-stack
+        labels: {}
+      spec:
+        rules:
+        - host: viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com
+        tls:
+        - hosts:
+          - viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com
+          secretName: sas-ingress-certificate-mg5d6ttd5c
+    instanceID: default
+    publishBinaryService: false
+    publishHTTPIngress: true
+    publishHTTPService: false
+    routeTemplate:
+      metadata:
+        annotations: {}
+        labels: {}
+      spec:
+        host: viya.kumar-zv1-azure-nginx-84560a6e.unx.sas.com
+    shutdown: false
+    workerTemplate: {}
+    workerTemplateAdditions:
+      metadata:
+        annotations:
+          casoperator.sas.com/remove-sidecars: sas-backup-agent,sas-consul-agent
+      spec:
+        tolerations:
+        - effect: NoSchedule
+          key: workload.sas.com/class
+          operator: Equal
+          value: casworker
+    workers: 0
+  status:
+    conditions:
+    - status: "False"
+      type: PendingServices
+    - reason: ControllerFound
+      status: "False"
+      type: Shutdown
+    - reason: NoBackupController
+      status: "False"
+      type: HA
+    controllerFailed:
+    - false
+    - false
+    controllerStarted:
+    - true
+    - false
+    transferStatus:
+      currentInstance: 0
+      prevInstance: 0
+      stage: 0
+kind: List
+metadata:
+  resourceVersion: ""

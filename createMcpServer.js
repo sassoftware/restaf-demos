@@ -7,6 +7,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import toolSet from './toolSet/index.js';
+import { logger } from "mcp-framework";
 import debug from 'debug';
 const log = debug('mcpserver');
 
@@ -38,17 +39,6 @@ async function createMcpServer(mode) {
     )
   })
 
-  // Create the transport based on the mode
-  
-  /*
-  const transport = (mode === 'http')
-    ? new StreamableHTTPServerTransport({
-        sessionIdGenerator: undefined,
-        enableJsonResponse: true 
-      })
-    : new StdioServerTransport();
-    
-  */
   const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: undefined,
         enableJsonResponse: true 
