@@ -6,6 +6,8 @@
 import { z } from 'zod';
 import debug from 'debug';
 import _scrScore from '../toolhelpers/_scrScore.js';
+import scrModels from '../db/scrModels.js';
+
 const log = debug('scr');
 
 function scrScore() {
@@ -14,10 +16,11 @@ function scrScore() {
   Azure.
 
   The input to this tool is:
-  - url - the uel of the deployed SCR container.
+  - name - the name of the deployed SCR container.
   - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
     - if scenario is not specified, the tool will return the variables in the model
-      
+  - stream - if this optional input is true, the result is returned as a string of the form "x=1, y=2, z=3"
+
 
   ### Sample Prompts
   - scrscore with url  for x1=1,x2=2
@@ -29,12 +32,17 @@ function scrScore() {
     name: 'scrScore',
     description: description,
     schema: {
-      url: z.string(),
-      scenario: z.string()
+      name: z.string(),
+      scenario: z.string(),
+      stream: z.boolean()
     },
-    required: ['loan'],
+    required: ['name', 'scenario'],
     handler: async (params) => {
-      let r = await _scrScore(params);
+      let url= scrModels(params.name);
+      if (url === null) {
+        return { status: { statusCode: 2, msg: `SCR model ${params.name} not found` }, results: {} };
+      }
+      let r = await _scrScore({url: url, scenario: params.scenario, stream });
       return r;
     }
   }

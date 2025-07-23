@@ -20,9 +20,12 @@ async function _scrInfo(params) {
     log('Config:', config);
     let response = await axios(config);
     log('Response status:', response.status);
-  //  let r = response.data.components.schemas.SCRInput.properties.data.properties;
-    log('Response data:', JSON.stringify(response.data, null, 2));
-    return {content: [{ type: 'text', text: JSON.stringify(response.data)}]};
+    let r = {
+      input: response.data.components.schemas.SCRInput.properties.data.properties,
+      output: response.data.components.schemas.SCROutput.properties.data.properties
+    };
+    log('Response data:', JSON.stringify(r, null, 2));
+    return {content: [{ type: 'text', text: JSON.stringify(r)}]};
   }
   catch (error) {
     return {content: [{ type: 'text', text: JSON.stringify(error) }]};  

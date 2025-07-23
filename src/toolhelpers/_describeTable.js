@@ -9,10 +9,10 @@ import debug from 'debug';
 const log = debug('readtable');
 async function _describeTable(params, mode) {
 
-  let { table, lib, start, limit, server, where} = params;
+  let { table, lib, start, limit, server, format, where} = params;
   let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
-
+  
   let itable = {name: table};
   if (server === 'cas') {
     itable.caslib = lib;
@@ -27,14 +27,14 @@ async function _describeTable(params, mode) {
       qs: {
         start: start - 1, // Adjust for 0-based index
         limit: limit,
-        format: true,
+        format: format || false,
         where: where || ''
       }
     }
   };
   log('config', config);
   log('logonPayload', logonPayload);
-  log(restafedit.setup);
+  
   let appControl = {};
   try {
     appControl = await restafedit.setup(

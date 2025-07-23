@@ -18,8 +18,9 @@ function readTable() {
 - User can specify the server as either cas or sas. If not specified, default server to cas
 - User can also specify the limit the number of rows read. If not specified default to 10.
 - User can also specify the start row. If not specified, default to 1.
-- User can also specify a where clause. if not specified, default to a blank string. 
-- If the user specfies a specific row number to read, then set start to that row number and limit to 1.
+- User can also specify a where clause. if not specified, default to a blank string.
+- User can also specify the format of the retrieved data. If not specified, default to false (which means the data will not be formatted).
+- If the user specifies a specific row number to read, then set start to that row number and limit to 1.
 
 ### Format the response
 Always try to display the data as a table using markdown format. If the table is too large, then display the first 10 rows of the table.
@@ -38,7 +39,8 @@ Always try to display the data as a table using markdown format. If the table is
         start: z.number(),
         limit: z.number(),
         server: z.string(),
-        where: z.string()
+        where: z.string(),
+        format: z.boolean()
       },
       required: ['table', 'lib'],
       handler: async (params) => {

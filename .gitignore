@@ -1,4 +1,4 @@
 node_modules
-tls
-*.env
-!.env.example
+*.ca.crt
+*.tls.crt
+*.tls.key

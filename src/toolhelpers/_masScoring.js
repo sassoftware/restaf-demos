@@ -5,7 +5,9 @@
 import restaflib  from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
+import { v4 as uuidv4 } from 'uuid';
 import debug from 'debug';
+import { uuid } from 'zod/v4';
 const log = debug('masscoring');
 async function _masScoring(params) {
  
@@ -15,13 +17,15 @@ async function _masScoring(params) {
   let logonPayload = await getLogonPayload();
   let inputs = {};
   let masControl;
-  let {model, scenario, uflag} = params;
+  let {model, scenario, stream, uflag} = params;
   try {
     masControl = await masSetup(store, [model], logonPayload);
     let describe = await masDescribe(masControl, model);
-    inputs = {};
+    let inputs = {};
+    let types = {};
     describe.forEach(d => {
       inputs[d.name] = null;
+      types[d.name] = d.type;
     });
     log('inputs', inputs);
     if (scenario === null) {
@@ -30,22 +34,29 @@ async function _masScoring(params) {
     }
     let iscenario = {};
     for (let v in inputs) {
+      console.log( inputs[v]);
        let v1 = (uflag === true) ? v.substring(0, v.length - 1) : v;
        //v1 = v.startsWith('_') ? v.substring(0, v.length - 1) : v;
       let t = (scenario[v1] == null) ? null : scenario[v1];
-      t  = (v.type !== 'decimal' && t != null) ? parseFloat(t) : t;
+      log('t', t, typeof t, v1, types[v]);
+      t  = (types[v] === 'decimal' && typeof t === 'string'   ) ? parseFloat(t) : t;
       iscenario[v] = t; 
     }
     log('iscenario', iscenario);
     let result = await masRun(store, masControl, model, iscenario);
+  // add a unique key for the result
 		await store.logoff();
   
-    return { content: [{ type: 'text', text: JSON.stringify(result) }] };
+    let r = {...result, ...scenario}; // merge the result with the scenario 
+    console.log(r);
+    return { content: [{ type: 'text', text: JSON.stringify(r) }] };
+
   } catch (err) {
     log(err);
     await store.logoff();
-    return { status: { statusCode: 2, msg: err }, results: {} };
+    return { content: [{ type: 'text', text: JSON.stringify({ status: { statusCode: 2, msg: err }, results: {} }) }] };
   }
 }
 
 export default _masScoring;
+

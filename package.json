@@ -10,14 +10,17 @@
   },
   "type": "module",
   "scripts": {
-    "nossl": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env --no-warnings index.js",
-    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  HTTPS=TRUE node --env-file=.env --no-warnings index.js",
-    "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 HTTPS=TRUE node --no-warnings index.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env --no-warnings cli.js",
+    "starthttps": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  HTTPS=TRUE  node --env-file=.env --no-warnings cli.js",
+    "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 HTTPS=TRUE node --no-warnings cli.js",
     "test": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npx @modelcontextprotocol/inspector",
-    "debug": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  HTTPS=TRUE node --inspect-brk --env-file=.env index.js",
+    "debug": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  HTTPS=TRUE node --inspect-brk --env-file=.env cli.js",
+    "dnossl": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk --env-file=.env cli.js",
     "deploy": "bash ./deploy.sh",
     "bump": "npm version prerelease",
-    "pub": "npm publish --tag latest --access public"
+    "pub": "npm publish --tag latest --access public",
+    "build": "rimraf lib && babel src --out-dir lib",
+    "redisapp": "cd redis &&  docker compose up --build --force-recreate -d"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [
@@ -29,9 +32,10 @@
     "restafedit",
     "restaflib"
   ],
-  "main": "./indexhttp.js",
+  "unpkg": "./src/core.js",
+  "main": "./src/core.js",
   "bin": {
-    "@sassoftware/mcp-serverjs": "./indexhttp.js"
+    "@sassoftware/mcp-serverjs": "./cli.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.1",
@@ -46,10 +50,17 @@
     "express-list-endpoints": "^7.1.1",
     "mcp-framework": "^0.2.15",
     "selfsigned": "^2.4.1",
+    "uuid": "^11.1.0",
     "zod": "^3.25.28"
   },
   "devDependencies": {
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@types/debug": "^4.1.12",
     "@types/node": "^22.15.21",
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   }
 }

@@ -10,19 +10,23 @@ const log = debug('tools');
 
 function modelScore() {
   let description = `
-  ## modelScore - This tool is used to score a scenario using a model published to MAS serer in SAS Viya.
+  ## modelScore - This tool scores a scenario using a model published to MAS serer in SAS Viya 
+
   The input to this tool is:
 
-  
   - model - the name assigned to the model in MAS server.
     - The model name is the name assigned to the model when it was published to MAS server
   - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
-    - if scenario is not specified, the tool will return the variables in the model
-      
+  - stream - The default is true. the result is returned as a string of the form "x=1, y=2, z=3". If set to true the result is 
+  stringified JSON object
+  
 
   ### Sample Prompts
   - modelscore with mycoolmodel for x1=1,x2=2
   - score model mycoolmodel with x1=1,x2=2
+  - score mycoolmodel with x1=1,x2=2 and stream=false
+
+ 
 
   ### Notes
   In a real solution, each model will have its own tool named in a user friendly manner
@@ -34,11 +38,12 @@ function modelScore() {
     description: description,
     schema: {
       'model': z.string(),
-      'scenario': z.string('') 
+      'scenario': z.string(''),
+      "stream": z.boolean()
     },
     required: ['model', 'scenario'],
     handler: async (params) => {
-      let {model, scenario, uflag} = params;
+      let {model, scenario, stream, uflag} = params;
       log(params);
         // Convert the scenario string to an object
         // Example: "x=1, y=2, z=3" to { x: 1, y: 2, z: 3 }
@@ -55,6 +60,7 @@ function modelScore() {
       let iparams = {
         model: model,
         scenario: scenarioObj,
+        stream: stream || false, // Default to false if not provided
         uflag: uflag // Assuming uflag is always f for this tool
       };
       log('modelScore params', iparams);

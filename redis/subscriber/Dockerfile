@@ -4,10 +4,8 @@ RUN apk add --no-cache --upgrade bash
 WORKDIR /usr/src/app
 COPY package*.json ./
 COPY . .
-EXPOSE 8080
+EXPOSE 8081
 RUN npm install
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-ENV PORT=8080
-ENV HTTPS=false
-ENV TLS_CREATE="C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost"
+ENV PORT=8081
 CMD ["npm", "start"]

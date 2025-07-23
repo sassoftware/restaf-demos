@@ -16,6 +16,7 @@ async function getLogonPayload() {
         clientID: process.env.VIYA_CLIENTID,
         clientSecret: process.env.VIYA_CLIENTSECRET
       };
+      
     return logonPayload;
   }
 
@@ -29,6 +30,7 @@ async function getLogonPayload() {
       token: token,
       tokenType: 'Bearer'
     };
+    
     return logonPayload;
   } catch (e) {
     log('Error getting token: ', e);

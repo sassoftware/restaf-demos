@@ -1,0 +1,2 @@
+curl -k -X POST https://localhost:8080/mcp -H "Content-Type: application/json" -H "Accept: application/json,text/event-stream" \
+ -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name": "listModels","arguments": { "limit": "10", "start": "1"}}}'

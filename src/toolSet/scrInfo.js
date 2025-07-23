@@ -6,27 +6,31 @@
 import { z } from 'zod';
 import debug from 'debug';
 import _scrInfo from '../toolhelpers/_scrInfo.js';
+import scrModels from '../db/scrModels.js';
 const log = debug('scr');
 
 function scrInfo() {
   let description = `
-  ## scrInfo is tool that returns information about a SCR model running at specified URL
-  Extract the schema of the SCRInput object from the SCR model's API metadata and show the data element in SCRInput.
-  Also extract the schema of the SCROutput object from the SCR model's API metadata and show the data element in SCROutput.
-
+  ## scrInfo is tool that returns information about a SCR model. 
+ It returns the input and output schema for the SCR model.
   ### Sample queries
 
-  - describe scr mode at http://....
+  - describe scr model "loan"
+  - describe scr model http://....
   `;
   let spec = {
     name: 'scrInfo',
     description: description,
     schema: {
-      url: z.string()
+      name: z.string(),
     },
-    required: ['url'],
+    required: ['name'],
     handler: async (params) => {
-      let r = await _scrInfo(params);
+      let url= scrModels(params.name);
+      if (url === null) {
+        return { status: { statusCode: 2, msg: `SCR model ${params.name} not found` }, results: {} };
+      }
+      let r = await _scrInfo({url});
       return r;
     }
   }
