@@ -19,9 +19,7 @@ function scrScore() {
   - name - the name of the deployed SCR container.
   - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
     - if scenario is not specified, the tool will return the variables in the model
-  - stream - if this optional input is true, the result is returned as a string of the form "x=1, y=2, z=3"
-
-
+  
   ### Sample Prompts
   - scrscore with url  for x1=1,x2=2
 
@@ -33,8 +31,7 @@ function scrScore() {
     description: description,
     schema: {
       name: z.string(),
-      scenario: z.string(),
-      stream: z.boolean()
+      scenario: z.string()
     },
     required: ['name', 'scenario'],
     handler: async (params) => {
@@ -42,7 +39,7 @@ function scrScore() {
       if (url === null) {
         return { status: { statusCode: 2, msg: `SCR model ${params.name} not found` }, results: {} };
       }
-      let r = await _scrScore({url: url, scenario: params.scenario, stream });
+      let r = await _scrScore({url: url, scenario: params.scenario});
       return r;
     }
   }

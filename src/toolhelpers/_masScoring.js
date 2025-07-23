@@ -7,7 +7,6 @@ import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
 import { v4 as uuidv4 } from 'uuid';
 import debug from 'debug';
-import { uuid } from 'zod/v4';
 const log = debug('masscoring');
 async function _masScoring(params) {
  
@@ -17,7 +16,7 @@ async function _masScoring(params) {
   let logonPayload = await getLogonPayload();
   let inputs = {};
   let masControl;
-  let {model, scenario, stream, uflag} = params;
+  let {model, scenario, uflag} = params;
   try {
     masControl = await masSetup(store, [model], logonPayload);
     let describe = await masDescribe(masControl, model);
@@ -48,7 +47,7 @@ async function _masScoring(params) {
 		await store.logoff();
   
     let r = {...result, ...scenario}; // merge the result with the scenario 
-    console.log(r);
+    log(r);
     return { content: [{ type: 'text', text: JSON.stringify(r) }] };
 
   } catch (err) {
