@@ -14,4 +14,10 @@ if (process.argv[2] === 'https') {
     process.env.HTTPS = true;
 }
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-core();
+core()
+.then (() => {
+    console.log('MCP Server initialized successfully.');
+})
+.catch((error) => {
+    console.error('Error initializing MCP Server:', error);
+});
