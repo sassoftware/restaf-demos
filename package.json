@@ -10,8 +10,8 @@
   },
   "type": "module",
   "scripts": {
-    "startx": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node cli.js",
-    "start": "bash ./start.sh",
+    "start": "node cli.js",
+    "startsh": "bash ./start.sh",
     "indocker": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 HTTPS=TRUE node --no-warnings cli.js",
     "test": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npx @modelcontextprotocol/inspector",
     "debug": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  HTTPS=TRUE node --inspect-brk --env-file=.env cli.js",
