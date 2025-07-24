@@ -1,4 +1,6 @@
 import core  from './src/core.js';
+import {config} from 'dotenv';
+config();
 if (process.argv[2] === 'https'){
     process.env.HTTPS = true;
 }
