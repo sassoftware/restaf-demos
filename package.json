@@ -20,7 +20,7 @@
     "bump": "npm version prerelease",
     "pub": "npm publish --tag latest --access public",
     "build": "rimraf lib && babel src --out-dir lib",
-    "redisapp": "cd redis &&  docker compose up --build --force-recreate -d"
+    "redissub": "cd redis &&  docker compose up --build --force-recreate -d"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [

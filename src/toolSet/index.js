@@ -10,6 +10,7 @@ import modelInfo from './modelInfo.js';
 import listLibrary from './listLibrary.js'; 
 import findLibrary from './findLibrary.js';
 import readTable from './readTable.js';
+import tableInfo from './tableInfo.js';
 
 import scrInfo from './scrInfo.js';
 import scrScore from './scrScore.js';
@@ -17,12 +18,14 @@ import searchAssets from './searchAssets.js';
 import devaScore from './devaScore.js';
 import superstat from './superstat.js';
 import findTable from './findTable.js';
-import findModel from './findModel.js';
+import findModel from './findModel.js'
+
 
 let list = [
     listModels(),
     listTables(),
-    findModel(),
+  
+    findModel(),    
     modelInfo(),
     modelScore(),
 
@@ -33,6 +36,7 @@ let list = [
     findLibrary(),
     findTable(),
     readTable(),
+    tableInfo(),
 
     superstat(),
     devaScore(),

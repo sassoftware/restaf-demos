@@ -156,7 +156,20 @@ async function core() {
 		console.log('Visit http://localhost:8080/health for health check');
 		console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
 		console.log('Press Ctrl+C to stop the server');
-		app.listen(PORT, () => {
+	
+		let appServer = app.listen(PORT, () => {
+		});
+		process.on('SIGTERM', () => {
+			appServer.close(() => {
+				console.log('Server closed');
+			});
+			process.exit(0);
+		});
+		process.on('SIGINT', () => {
+			appServer.close(() => {
+				console.log('Server closed');
+			});
+			process.exit(0);
 		});
 	}
 

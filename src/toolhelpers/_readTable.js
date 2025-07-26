@@ -7,13 +7,13 @@ import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
 import debug from 'debug';
 const log = debug('readtable');
-async function _describeTable(params, mode) {
+async function _readTable(params) {
 
-  let { table, lib, start, limit, server, format, where} = params;
+  let { table, lib, start, limit, server, format, where } = params;
   let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
-  
-  let itable = {name: table};
+
+  let itable = { name: table };
   if (server === 'cas') {
     itable.caslib = lib;
   } else {
@@ -34,7 +34,7 @@ async function _describeTable(params, mode) {
   };
   log('config', config);
   log('logonPayload', logonPayload);
-  
+
   let appControl = {};
   try {
     appControl = await restafedit.setup(
@@ -47,19 +47,18 @@ async function _describeTable(params, mode) {
     );
     log('appControl', appControl);
     await restafedit.scrollTable('first', appControl);
-     log('appControl.state.data', appControl.state.data);
-     let tableSummary = await restafedit.getTableSummary(appControl);
-     let t = (mode === 'describe') ? JSON.stringify(tableSummary) : JSON.stringify(appControl.state.data);
-     await deleteSession(appControl);
-     await appControl.store.logoff();
-     log
+    log('appControl.state.data', appControl.state.data)
+    let t = JSON.stringify(appControl.state.data);
+    await deleteSession(appControl);
+    await appControl.store.logoff();
+
     return { content: [{ type: 'text', text: t }] };
-   
+
   } catch (err) {
-    log(JSON.stringify(err)); 
+    log(JSON.stringify(err));
     await deleteSession(appControl);
     await appControl.store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
-export default _describeTable;
+export default _readTable;

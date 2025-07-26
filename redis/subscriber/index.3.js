@@ -61,27 +61,28 @@ async function main() {
   /* save the new data */
   action table.save /
       table = {caslib= 'casuser', name='${process.env.CAS_TABLE}'}
-      caslib='casuser' name='${process.env.CAS_TABLE}.sashdat' replace=true;
+      caslib='casuser' name='${process.env.CAS_TABLE}.sashdat' replace=True;
 
   /* load the new table into casuser */
-  /*
-  action table.loadTable status=status1 r=rc1 /
+  action table.loadTable r = result2 /
       caslib='casuser' casout={caslib='casuser' name='${process.env.CAS_TABLE}' replace=true} 
       path='${process.env.CAS_TABLE}.sashdat' ;
-  */
+
   /* now promote it to ${process.env.CAS_LIB} with new name */
-  
-  table.promote status=status r=rc/
+
+  table.promote r=rcp/
       caslib='casuser'
       name='${process.env.CAS_TABLE}'
+      drop=true
+      quiet=true
       target='${process.env.CAS_TABLE}'
       targetlib='${process.env.CAS_LIB}';
-    
-      send_response({status=status, rc=rc, message='Table promoted successfully'});
+      send_response({status=rcp});
       `;
     console.log('src: ', src);
-    let frc = await restaflib.caslRun(store, session, src, {}, true);
-    console.log('rc from casAppendTable: ', JSON.stringify(frc, null, 2));
+     rc = await restaflib.caslRun(store, session, src, {}, true);
+    // rc = await restaflib.casAppendTable(store, session, tempTable, masterTable, true);
+    console.log('rc from casAppendTable: ', JSON.stringify(rc, null, 2));
     return true;
   }
   
@@ -99,21 +100,16 @@ async function main() {
       return;
     }
     log(`Received message from channel: ${channel}: ${message}`);
-    // need to do some cleanup to convert the message to a datastep
-    let cols= [];
-    let values=[];
-    let r1 = message.split(',').reduce((acc, pair) => {
-      let [key, value] = pair.split('=');
-      cols.push(key);
-      if (value.trim().length === 0){  //quick patch for empty values
-        value = 'none';
-      }
-      values.push(value);
-      acc[key] = value;
-      return acc;
-    }, {});
-    console.log('Received message as JS Object ', r1);
-    let csv = cols.join(',') + '\n' + values.join(',');
+    console.log(typeof message, ' message type');
+    let m = message.replace(/[\[\]']+/g, '');
+    let lines = m.split('\n');
+    let csv = [];
+    let headers = lines[0].split(',');
+    csv.push(headers);
+    let data = lines.slice(1).map(line => line.split(','));
+    csv.push(data)
+      
+    console.log(csv.length, ' rows received');
     console.log('Received message as CSV: ', csv);
     
     appendData(csv)
