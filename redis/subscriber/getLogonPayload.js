@@ -30,7 +30,7 @@ async function getLogonPayload() {
       token: token,
       tokenType: 'Bearer'
     };
-    console.log('logonPayload: ', logonPayload);
+    log('logonPayload', logonPayload);
     return logonPayload;
   } catch (e) {
     log('Error getting token: ', e);

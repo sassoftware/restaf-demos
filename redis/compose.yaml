@@ -24,11 +24,5 @@ services:
       - REDIS_CHANNEL=score
       - CAS_TABLE=cancerscores
       - CAS_LIB=Public
-
-      - DEBUG=subscriber
-
-
-
-
-
-
+      - DEBUG=
+      
