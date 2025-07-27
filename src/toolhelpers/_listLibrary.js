@@ -46,7 +46,9 @@ async function _listLibrary(params) {
     log(payload);
     let items = await restafedit.getLibraryList(appControl, payload);
     log('items', items);
-    return { content: [{ type: 'text', text: JSON.stringify(items) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(items) }],
+      structuredContent: items
+    };
   } catch (err) {
     console.log(JSON.stringify(err));
     //  await deleteSession(appControl);

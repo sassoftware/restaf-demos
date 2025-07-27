@@ -42,7 +42,8 @@ async function _listTables(params) {
     log(payload);
     let items = await restafedit.getTableList(lib, appControl, payload);
     log('items', items);
-    return {content: [{ type: 'text', text: JSON.stringify(items) }] };
+    return {content: [{ type: 'text', text: JSON.stringify(items) }],
+      structuredContent: items};
   } catch (err) {
     log(JSON.stringify(err));
     return {content: [{ type: 'text', text: JSON.stringify(err) }] }

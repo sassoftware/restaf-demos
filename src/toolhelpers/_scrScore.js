@@ -32,7 +32,7 @@ async function _scrScore(params) {
     log('Response status:', response.status);
     log(response.data);
     let r = { ...response.data, ...scenario }; // merge the response with the scenario and add a unique key
-    return { content: [{ type: 'text', text: JSON.stringify(r) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(r) }], structuredContent: r };
   
   }
   catch (error) {

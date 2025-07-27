@@ -16,7 +16,9 @@ async function _masDescribe(params) {
   try {
     let masControl = await masSetup(store, [model], logonPayload);
     let describe = await masDescribe(masControl, model, null,true);
-    return { content: [{ type: 'text', text: JSON.stringify(describe) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(describe) }],
+      structuredContent: describe
+     };
   } catch (err) {
     console.log(err);
     await store.logoff();

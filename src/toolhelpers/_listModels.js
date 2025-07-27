@@ -33,7 +33,9 @@ async function _listModels(params) {
     let list = result.itemsList().toJS();
     log('result', JSON.stringify(list, null, 2));
     await store.logoff();
-    return { content: [{ type: 'text', text: JSON.stringify(list) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(list) }],
+      structuredContent: list
+    };
   } catch (err) {
     log(JSON.stringify(err, null, 2));
     await store.logoff();

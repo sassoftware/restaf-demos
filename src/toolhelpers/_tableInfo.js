@@ -50,7 +50,7 @@ async function _tableInfo(params, mode) {
      await deleteSession(appControl);
      await appControl.store.logoff();
      log
-    return { content: [{ type: 'text', text: t }] };
+    return { content: [{ type: 'text', text: t }] , structuredContent: tableSummary };
    
   } catch (err) {
     log(JSON.stringify(err)); 

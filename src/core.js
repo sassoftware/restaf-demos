@@ -160,14 +160,16 @@ async function core() {
 		let appServer = app.listen(PORT, () => {
 		});
 		process.on('SIGTERM', () => {
+			console.log('Server closed');
 			appServer.close(() => {
-				console.log('Server closed');
+				
 			});
 			process.exit(0);
 		});
 		process.on('SIGINT', () => {
+			console.log('Server closed');
 			appServer.close(() => {
-				console.log('Server closed');
+				
 			});
 			process.exit(0);
 		});

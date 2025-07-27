@@ -74,7 +74,8 @@ async function _catalogSearch(params, rel) {
         {
         type: 'text', text: JSON.stringify(rx)
         }
-      ]
+      ],
+      structuredContent: rx,
     }
   } catch (err) {
     console.error('Error in searchAssets:', JSON.stringify(err, null, 4));

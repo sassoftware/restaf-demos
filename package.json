@@ -38,7 +38,7 @@
     "@sassoftware/mcp-serverjs": "./cli.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.15.1",
+    "@modelcontextprotocol/sdk": "^1.17.0",
     "@sassoftware/restaf": "^5.3.3-2",
     "@sassoftware/restafedit": "^3.8.4-2",
     "@sassoftware/restaflib": "^5.3.3-2",

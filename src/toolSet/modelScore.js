@@ -12,17 +12,20 @@ function modelScore() {
   let description = `
   ## modelScore - This tool scores a scenario using a model published to MAS serer in SAS Viya 
 
-  The input to this tool is:
+  ### Required Parameters
 
   - model - the name assigned to the model in MAS server.
     - The model name is the name assigned to the model when it was published to MAS server
   - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
   
-  
+  ### Optional Parameters
+  - uflag - uflag is optional. uflag is set to false by default. If true, the names of the model fields have a leading underscore.
+  - stream - stream is optional. stream is set to false by default. If true, the results are returned as a string of name,value pairs ready for publishing to a stream.
+ 
 
   ### Sample Prompts
-  - modelscore with mycoolmodel for x1=1,x2=2
-  - score model mycoolmodel with x1=1,x2=2
+  - modelscore with mycoolmodel for x1=1,x2=2 with stream=false
+  - score model mycoolmodel with x1=1,x2=2 
   - score mycoolmodel with x1=1,x2=2 
 
  
@@ -37,12 +40,15 @@ function modelScore() {
     description: description,
     schema: {
       'model': z.string(),
-      'scenario': z.string('')
+      'scenario': z.string(),
+      'uflag': z.boolean(),
+      'stream': z.boolean()
     },
     required: ['model', 'scenario'],
-    handler: async (params) => {
-      let {model, scenario, uflag} = params;
-      log(params);
+    handler: async (iparams) => {
+      let params = {...iparams}; 
+      let scenario = params.scenario;
+   
         // Convert the scenario string to an object
         // Example: "x=1, y=2, z=3" to { x: 1, y: 2, z: 3 }
       let scenarioObj ='';
@@ -55,14 +61,10 @@ function modelScore() {
             return acc;
           }, {});
         }
-      let iparams = {
-        model: model,
-        scenario: scenarioObj,
-        uflag: uflag // Assuming uflag is always f for this tool
-      };
-      log('modelScore params', iparams);
+      params.scenario= scenarioObj;
+      log('modelScore params', params);
       // Check if the params.scenario is a string and parse it
-      let r = await _masScoring(iparams);
+      let r = await _masScoring(params)
       return r;
     }
   }

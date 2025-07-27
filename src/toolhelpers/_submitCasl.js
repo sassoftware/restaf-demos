@@ -20,7 +20,7 @@ async function _submitCasl(params) {
       let r = await caslRun(store, session, src, (args == null) ? {} : args, true);
       await store.apiCall( session.links( 'delete' ) );
       store.logoff()
-      return {content: [{ type: 'text', text: JSON.stringify(r.items()) }]};
+      return {content: [{ type: 'text', text: JSON.stringify(r.items()) }], structuredContent: r.items() };
     } catch (err) {
       console.log(err);
       store.logoff();

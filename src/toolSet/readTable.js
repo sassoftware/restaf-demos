@@ -19,7 +19,7 @@ function readTable() {
 - limit - User can also specify the limit the number of rows read. If not specified default to 10.
 - start - User can also specify the start row. If not specified, default to 1.
 - where - User can also specify a where clause. if not specified, default to a blank string.
-- formatIf format is set to true, the record will have formatted values. Otherwise the unformatted values are
+- format If format is set to true, the record will have formatted values. Otherwise the unformatted values are
   returned. If format is not specified, set format to false 
 - row - If the user specifies a specific row number to read, then set start to that row number and limit to 1.
 

@@ -21,7 +21,7 @@ services:
     volumes: 
       - ~/.sas:/usr/src/app/.sas
     environment:
-      - REDIS_CHANNEL=test
+      - REDIS_CHANNEL=score
       - CAS_TABLE=cancerscores
       - CAS_LIB=Public
 

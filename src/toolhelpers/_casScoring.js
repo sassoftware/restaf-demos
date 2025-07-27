@@ -19,7 +19,7 @@ async function _casScoring(params) {
     let output = await caslScore(store, session, params); 
     let status = { statusCode: 0, msg: null };
     let results = output.casResults;
-    return {content: [{ type: 'text', text: JSON.stringify(results) }]};
+    return {content: [{ type: 'text', text: JSON.stringify(results) }], structuredContent: results};
     await store.apiCall( session.links( 'delete' ) );
     store.logoff();
   } catch (err) {

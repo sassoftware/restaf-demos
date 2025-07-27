@@ -25,7 +25,7 @@ async function _scrInfo(params) {
       output: response.data.components.schemas.SCROutput.properties.data.properties
     };
     log('Response data:', JSON.stringify(r, null, 2));
-    return {content: [{ type: 'text', text: JSON.stringify(r)}]};
+    return {content: [{ type: 'text', text: JSON.stringify(r)}], structuredContent: r};
   }
   catch (error) {
     return {content: [{ type: 'text', text: JSON.stringify(error) }]};  

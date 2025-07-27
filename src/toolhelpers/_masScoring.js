@@ -16,7 +16,7 @@ async function _masScoring(params) {
   let logonPayload = await getLogonPayload();
   let inputs = {};
   let masControl;
-  let {model, scenario, uflag} = params;
+  let {model, scenario, uflag, stream} = params;
   try {
     masControl = await masSetup(store, [model], logonPayload);
     let describe = await masDescribe(masControl, model);
@@ -33,7 +33,6 @@ async function _masScoring(params) {
     }
     let iscenario = {};
     for (let v in inputs) {
-      console.log( inputs[v]);
        let v1 = (uflag === true) ? v.substring(0, v.length - 1) : v;
        //v1 = v.startsWith('_') ? v.substring(0, v.length - 1) : v;
       let t = (scenario[v1] == null) ? null : scenario[v1];
@@ -48,8 +47,21 @@ async function _masScoring(params) {
   
     let r = {...result, ...scenario}; // merge the result with the scenario 
     log(r);
-    return { content: [{ type: 'text', text: JSON.stringify(r) }] };
-
+    if (stream ===  false){
+      return { 
+        content: [{ type: 'text', text: JSON.stringify(r) }],
+        structuredContent: r
+       };
+    } else {
+      let t = ' ';
+      let sep = ''
+      for (let k in r) {
+        t += sep + k + '=' + r[k];
+        sep = ', ';
+      }
+      console.log('t', t);
+      return { content: [{ type: 'text', text: t }], structuredContent: r };
+    }
   } catch (err) {
     log(err);
     await store.logoff();

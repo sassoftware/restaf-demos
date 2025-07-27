@@ -52,7 +52,7 @@ async function _readTable(params) {
     await deleteSession(appControl);
     await appControl.store.logoff();
 
-    return { content: [{ type: 'text', text: t }] };
+    return { content: [{ type: 'text', text: t }], structuredContent: appControl.state.data };
 
   } catch (err) {
     log(JSON.stringify(err));
