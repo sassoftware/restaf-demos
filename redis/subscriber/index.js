@@ -10,8 +10,6 @@ import getLogonPayload from './getLogonPayload.js';
 import appendData from './appendData.js';
 import debug from 'debug';
 
-
-
 async function main() {
 
   // setup
@@ -37,7 +35,7 @@ async function main() {
     if (channel !== process.env.REDIS_CHANNEL) {
       return;
     }
-    log(`Received message from channel: ${channel}: ${message}`);
+    log(`Received message from channel: ${channel}`);
     // need to do some cleanup to convert the message to a datastep
     let cols = [];
     let values = [];
@@ -52,13 +50,13 @@ async function main() {
       return acc;
     }, {}); 
     console.log('Received message as JS Object ', r1);
-    console.log('no of cols: ', cols.length, ' values: ', values.length);
-    console.log('mo of values: ', values.length);
+    console.log('No of cols: ', cols.length, ' values: ', values.length);
+    console.log('No of values: ', values.length);
     let csv = cols.join(',') + '\n' + values.join(',');
     console.log('Received message as CSV: ', csv);
 
     let publishrc = true;
-    console.log(appendData);
+
     appendData(store, session, csv)
       .then((rc) => {
         publishrc = rc;

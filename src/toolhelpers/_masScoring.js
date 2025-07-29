@@ -46,7 +46,6 @@ async function _masScoring(params) {
 		await store.logoff();
     let r = {...result, ...scenario};
     
-    console.log('>>>>>>>>>>>>', Object.keys(r), Object.keys(r).length);
     log(r);
     let t = '';
     let sep = ''
@@ -54,7 +53,7 @@ async function _masScoring(params) {
       t += sep + k + '=' + r[k];
       sep = ', ';
     }
-    console.log('t', t);
+    log('text content', t);
     return { content: [{ type: 'text', text: t }], structuredContent: r };
   
   } catch (err) {

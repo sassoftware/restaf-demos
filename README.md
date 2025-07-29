@@ -1,4 +1,4 @@
-# mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring with SAS Viya
+# mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring 
 
 MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
@@ -103,11 +103,64 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 ### Scoring with SAS code
 - superstat - an example of accessing custom SAS code
 
-
+---
+## Persisting the scores
 ---
 
-## Enhancing or modifying the server
+The default app is setup to publish the results to Viya using mcp/redis. The description below is for the demo application.
 
+
+### Step 1: Add mcp/redis to 
+
+### Step 1:
+
+ Add mcp/redis to Vscode mcp setup. Below is the updated configuration
+
+```js
+      "viyascoring": {
+        "type": "http",
+        "url": "http://localhost:8080/mcp",
+       
+      },
+      "redis": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "--name", "mcp_redis",
+          "--network", "redisapp_default",
+          "-i",
+          "-e", "REDIS_HOST=redis",
+          "-e", "REDIS_PORT=6379",  
+          "-e", "REDIS_SSL=false",
+          "mcp/redis"
+        ]
+      }
+
+```
+
+### Step 2: Start the redis database and subscriber
+
+See the folder redis. 
+
+Run this command to start redis database and subscriber. Change the CAS_LIB and CAS_TABLE to your master table.
+
+```sh
+npm run redissub
+```
+
+
+### Step 3: Create the master table
+
+Run this command to use the default master table. This code will vary based on your application.
+
+```sh
+npm run setup
+
+```
+
+---
+## Adding new tools
 ---
 
 - Add a file to the toolSet folder

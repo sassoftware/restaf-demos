@@ -21,7 +21,7 @@
     "pub": "npm publish --tag latest --access public",
     "build": "rimraf lib && babel src --out-dir lib",
     "redissub": "cd redis &&  docker compose up --build --force-recreate -d",
-    "setup": "cd prepDemo && node setup.js"
+    "setup": "cd prepDemo && node setupMaster.js"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [
