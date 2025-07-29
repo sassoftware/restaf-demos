@@ -44,24 +44,19 @@ async function _masScoring(params) {
     let result = await masRun(store, masControl, model, iscenario);
   // add a unique key for the result
 		await store.logoff();
-  
-    let r = {...result, ...scenario}; // merge the result with the scenario 
+    let r = {...result, ...scenario};
+    
+    console.log('>>>>>>>>>>>>', Object.keys(r), Object.keys(r).length);
     log(r);
-    if (stream ===  false){
-      return { 
-        content: [{ type: 'text', text: JSON.stringify(r) }],
-        structuredContent: r
-       };
-    } else {
-      let t = ' ';
-      let sep = ''
-      for (let k in r) {
-        t += sep + k + '=' + r[k];
-        sep = ', ';
-      }
-      console.log('t', t);
-      return { content: [{ type: 'text', text: t }], structuredContent: r };
+    let t = '';
+    let sep = ''
+    for (let k in r) {
+      t += sep + k + '=' + r[k];
+      sep = ', ';
     }
+    console.log('t', t);
+    return { content: [{ type: 'text', text: t }], structuredContent: r };
+  
   } catch (err) {
     log(err);
     await store.logoff();

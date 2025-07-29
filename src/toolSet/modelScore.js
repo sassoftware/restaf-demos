@@ -10,21 +10,26 @@ const log = debug('tools');
 
 function modelScore() {
   let description = `
-  ## modelScore - This tool scores a scenario using a model published to MAS serer in SAS Viya 
+  ## modelScore - This tool scores a scenario using a model published to MAS serer in SAS Viya. 
+  
+  ### Important note:
+  
+  Pass all the fields in the user supplied scenario to the tool.
+  It is upto the tool to extract the proper fields from the scenario and pass them to the model.
 
   ### Required Parameters
 
   - model - the name assigned to the model in MAS server.
     - The model name is the name assigned to the model when it was published to MAS server
-  - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
-  
+  - scenario - The scenario is a key-values pairs like x=1, y=2, z=3. When creating the arguments for the tool ignore any
+  knowledge you have of the model input fields.
+
   ### Optional Parameters
   - uflag - uflag is optional. uflag is set to false by default. If true, the names of the model fields have a leading underscore.
-  - stream - stream is optional. stream is set to false by default. If true, the results are returned as a string of name,value pairs ready for publishing to a stream.
  
 
   ### Sample Prompts
-  - modelscore with mycoolmodel for x1=1,x2=2 with stream=false
+  - modelscore with mycoolmodel for x1=1,x2=2 
   - score model mycoolmodel with x1=1,x2=2 
   - score mycoolmodel with x1=1,x2=2 
 
@@ -41,8 +46,7 @@ function modelScore() {
     schema: {
       'model': z.string(),
       'scenario': z.string(),
-      'uflag': z.boolean(),
-      'stream': z.boolean()
+      'uflag': z.boolean()
     },
     required: ['model', 'scenario'],
     handler: async (iparams) => {

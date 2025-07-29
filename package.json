@@ -20,7 +20,8 @@
     "bump": "npm version prerelease",
     "pub": "npm publish --tag latest --access public",
     "build": "rimraf lib && babel src --out-dir lib",
-    "redissub": "cd redis &&  docker compose up --build --force-recreate -d"
+    "redissub": "cd redis &&  docker compose up --build --force-recreate -d",
+    "setup": "cd prepDemo && node setup.js"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [
@@ -39,9 +40,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",
-    "@sassoftware/restaf": "^5.3.3-2",
-    "@sassoftware/restafedit": "^3.8.4-2",
-    "@sassoftware/restaflib": "^5.3.3-2",
+    "@sassoftware/restaf": "^5.3.3-7",
+    "@sassoftware/restafedit": "^3.8.4-5",
+    "@sassoftware/restaflib": "^5.3.3-7",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",

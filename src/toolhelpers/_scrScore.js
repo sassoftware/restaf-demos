@@ -31,8 +31,15 @@ async function _scrScore(params) {
     let response = await axios(config);
     log('Response status:', response.status);
     log(response.data);
+     let t = ' ';
+    let sep = ''
+    for (let k in r) {
+      t += sep + k + '=' + r[k];
+      sep = ', ';
+    }
+    console.log('t', t);
     let r = { ...response.data, ...scenario }; // merge the response with the scenario and add a unique key
-    return { content: [{ type: 'text', text: JSON.stringify(r) }], structuredContent: r };
+    return { content: [{ type: 'text', text: t }], structuredContent: r };
   
   }
   catch (error) {

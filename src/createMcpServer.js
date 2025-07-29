@@ -29,7 +29,7 @@ async function createMcpServer(mode) {
 
   log(`Creating MCP server in ${mode} mode`);
   toolSet.forEach(tool => {
-    log(`Registering tool in createMcpServer  : ${tool.name}`);
+    log(`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
     mcpServer.tool(
       tool.name,
       tool.description,
