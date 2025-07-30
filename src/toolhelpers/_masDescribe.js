@@ -9,7 +9,13 @@ import getLogonPayload from './getLogonPayload.js';
 async function _masDescribe(params) {
  // setup
   let { masSetup, masDescribe } = restaflib;
-  let store = restaf.initStore({});
+  let store = restaf.initStore({
+      casProxy: true,
+      options: {
+        proxyServer: null,
+        httpOptions: null
+      }
+  });
   let logonPayload = await getLogonPayload();
 
   let {model} = params;
@@ -20,7 +26,7 @@ async function _masDescribe(params) {
       structuredContent: describe
      };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     await store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }

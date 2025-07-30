@@ -16,7 +16,7 @@ async function _masScoring(params) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpsOptions: null
+        httpOptions: null
       }
   });
   let logonPayload = await getLogonPayload();
@@ -69,9 +69,11 @@ async function _masScoring(params) {
       sep = ', ';
     }
     log('text content', t);
+    /*
     console.error('iscenario', Object.keys(iscenario).length);
     console.error('scenario', Object.keys(scenario).length);
     console.error('length of text content', Object.keys(r), Object.keys(r).length);
+    */
     return { content: [{ type: 'text', text: JSON.stringify(r)}], structuredContent: r};
   
   } catch (err) {

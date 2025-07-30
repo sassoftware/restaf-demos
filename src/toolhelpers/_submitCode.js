@@ -11,20 +11,26 @@ async function _submitCode(src, params) {
 	try {
 		// setup
 		log('Initializing store and logon payload');
-		let store = restaf.initStore({});
+		let store = restaf.initStore({
+			casProxy: true,
+			options: {
+				proxyServer: null,
+				httpOptions: null
+			}
+		});
 		let logonPayload = await getLogonPayload();
-	
+
 		// get compute sessio, run sas code and retrieve result
 		log('Creating compute session');
 		let computeSession = await restaflib.computeSetup(store, null, logonPayload);
 		log('Submitting code to compute session');
-		let computeSummary = await restaflib.computeRun(store, computeSession,src,params );
+		let computeSummary = await restaflib.computeRun(store, computeSession, src, params);
 		log('Retrieving results from compute session');
 		let ods = await restaflib.computeResults(store, computeSummary, "ods");
 
 		// cleanup
 		log('Session cleanup');
-		await store.apiCall( computeSession.links( 'delete' ) );
+		await store.apiCall(computeSession.links('delete'));
 		await store.logoff();
 
 		// return results in the format the LLM expects

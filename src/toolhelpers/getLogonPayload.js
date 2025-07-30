@@ -30,7 +30,7 @@ async function getLogonPayload() {
       token: token,
       tokenType: 'Bearer'
     };
-    console.log('Using Viya host: ', host);
+    console.error('Using Viya host: ', host);
     return logonPayload;
   } catch (e) {
     log('Error getting token: ', e);

@@ -7,7 +7,13 @@ import getLogonPayload from './getLogonPayload.js';
 async function _submitCasl(params) {
   const { caslRun } = restaflib;
   let logonPayload = await getLogonPayload();
-  let store = restaf.initStore({});
+   let store = restaf.initStore({
+      casProxy: true,
+      options: {
+        proxyServer: null,
+        httpOptions: null
+      }
+  });
   
   let session = await restaflib.casSetup(store, logonPayload);
   if (session == null) {
@@ -22,13 +28,13 @@ async function _submitCasl(params) {
       store.logoff()
       return {content: [{ type: 'text', text: JSON.stringify(r.items()) }], structuredContent: r.items() };
     } catch (err) {
-      console.log(err);
+      console.error(err);
       store.logoff();
       return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 
     }
   }
   catch (err) {
-    console.log(err);
+    console.error(err);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 
   }
 }

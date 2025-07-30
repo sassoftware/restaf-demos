@@ -8,7 +8,13 @@ import getLogonPayload from './getLogonPayload.js';
 async function _casScoring(params) {
   let { caslScore } = restaflib;
   let logonPayload = await getLogonPayload();
-  let store = restaf.initStore({});
+  let store = restaf.initStore({
+       casProxy: true,
+       options: {
+         proxyServer: null,
+         httpOptions: null
+       }
+   });
   
   let session = await restaflib.casSetup(store, logonPayload);
   if (session == null) {
@@ -23,7 +29,7 @@ async function _casScoring(params) {
     await store.apiCall( session.links( 'delete' ) );
     store.logoff();
   } catch (err) {
-    console.log(err);
+    console.error(err);
     await store.apiCall( session.links( 'delete' ) );
     store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 

@@ -53,7 +53,13 @@ async function _catalogSearch(params, rel) {
 
   try {
 
-    let store = restaf.initStore();
+     let store = restaf.initStore({
+      casProxy: true,
+      options: {
+        proxyServer: null,
+        httpOptions: null
+      }
+  });
     let logonPayload = await getLogonPayload();
     let msg = await store.logon(logonPayload);
 

@@ -48,14 +48,14 @@ async function getToken() {
 
       if (!response.ok) {
         const error = await response.text();
-        console.log('Error refreshing token: ', error);
+        console.error('Error refreshing token: ', error);
         throw new Error(error);
       }
 
       const data = await response.json();
       return data.access_token;
     } catch (err) {
-      console.log('Error refreshing token: ', err);
+      console.error('Error refreshing token: ', err);
       throw err;
     }
   }

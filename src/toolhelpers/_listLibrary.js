@@ -35,7 +35,8 @@ async function _listLibrary(params) {
     }
     let appControl = await restafedit.setup(
       logonPayload,
-      config,null,{},'user',{}, {}, storeConfig
+      config
+      ,null,{},'user',{}, {}, storeConfig
     );
 
     // query parameters
@@ -59,7 +60,7 @@ async function _listLibrary(params) {
       structuredContent: items
     };
   } catch (err) {
-    console.log(JSON.stringify(err));
+    console.error(JSON.stringify(err));
     //  await deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }

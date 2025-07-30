@@ -68,8 +68,8 @@ function modelScore() {
           }, {});
         }
       params.scenario= scenarioObj;
-      console.log('count', count);
-      console.log('scnario', Object.keys(scenario).length);
+      console.error('count', count);
+      console.error('scnario', Object.keys(scenario).length);
       log('modelScore params', params);
       // Check if the params.scenario is a string and parse it
       let r = await _masScoring(params)

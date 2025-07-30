@@ -13,7 +13,13 @@ async function _listModels(params) {
   const log = debug('modelList');
   // setup
 
-  let store = restaf.initStore({});
+  let store = restaf.initStore({
+      casProxy: true,
+      options: {
+        proxyServer: null,
+        httpOptions: null
+      }
+  });
   let logonPayload = await getLogonPayload();
 
   try {

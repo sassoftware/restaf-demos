@@ -38,7 +38,7 @@ async function _scrScore(params) {
       t += sep + k + '=' + r[k];
       sep = ', ';
     }
-    console.log('t', t);
+    console.error('t', t);
     let r = { ...response.data, ...scenario }; // merge the response with the scenario and add a unique key
     return { content: [{ type: 'text', text: t }], structuredContent: r };
   
