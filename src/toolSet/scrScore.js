@@ -8,9 +8,10 @@ import debug from 'debug';
 import _scrScore from '../toolhelpers/_scrScore.js';
 import scrModels from '../db/scrModels.js';
 
-const log = debug('scr');
+
 
 function scrScore() {
+  const log = debug('scr');
   let description = `
   ## scrScore - This tool is used to score a scenario using a model published as a SCR container to some provider like 
   Azure.

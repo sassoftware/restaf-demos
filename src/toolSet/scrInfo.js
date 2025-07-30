@@ -7,9 +7,10 @@ import { z } from 'zod';
 import debug from 'debug';
 import _scrInfo from '../toolhelpers/_scrInfo.js';
 import scrModels from '../db/scrModels.js';
-const log = debug('scr');
+
 
 function scrInfo() {
+  const log = debug('scr');
   let description = `
   ## scrInfo is tool that returns information about a SCR model. 
  It returns the input and output schema for the SCR model.

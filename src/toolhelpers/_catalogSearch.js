@@ -13,10 +13,11 @@ import restaf from '@sassoftware/restaf';
 import getLogonPayload from '../toolhelpers/getLogonPayload.js';
 import _itemsData from '../toolhelpers/_itemsData.js';
 import debug from 'debug';
-const log = debug('catalogsearch');
+
 
 async function _catalogSearch(params, rel) {
   let { searchstring, start, limit } = params;
+  const log = debug('catalogsearch');
   log(params);
   let splitsearchstring = searchstring.trimStart().split(' ');
   let assetType = ' ';

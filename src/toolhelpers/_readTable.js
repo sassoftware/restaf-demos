@@ -6,9 +6,9 @@ import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
 import debug from 'debug';
-const log = debug('readtable');
-async function _readTable(params) {
 
+async function _readTable(params) {
+  const log = debug('readtable');
   let { table, lib, start, limit, server, format, where } = params;
   let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
@@ -47,12 +47,19 @@ async function _readTable(params) {
     );
     log('appControl', appControl);
     await restafedit.scrollTable('first', appControl);
-    log('appControl.state.data', appControl.state.data)
-    let t = JSON.stringify(appControl.state.data);
+    log('appControl.state.data', appControl.state.data);
+    let outdata = appControl.state.data.map((d) => {
+      delete d._rowIndex;
+      delete d._modified;
+      delete d._index_;
+      return d;
+    });
+
+
     await deleteSession(appControl);
     await appControl.store.logoff();
-
-    return { content: [{ type: 'text', text: t }], structuredContent: appControl.state.data };
+    let t = (limit === 1) ? JSON.stringify(outdata[0]) : JSON.stringify(outdata);
+    return { content: [{ type: 'text', text: t }], structuredContent: outdata };
 
   } catch (err) {
     log(JSON.stringify(err));

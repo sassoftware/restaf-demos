@@ -5,10 +5,11 @@
 
 import axios from 'axios';
 import debug from 'debug';
-const log = debug('scr');
+
 
 async function _scrScore(params) {
   let { url, scenario} = params;
+  const log = debug('scr');
 
   let data = scenario.split(',').reduce((acc, pair) => {
     let [key, value] = pair.split('=');

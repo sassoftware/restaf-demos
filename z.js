@@ -1,0 +1,5 @@
+let x = "{\"EM_CLASSIFICATION\":\"B\",\"EM_EVENTPROBABILITY\":0.0006037741792530739,\"EM_PROBABILITY\":0.9993962258207469,\"I_diagnosis\":\"B\",\"P_diagnosisB\":0.9993962258207469,\"P_diagnosisM\":0.0006037741792530739,\"_WARN_\":\"    \",\"area1\":492.1,\"area2\":13.38,\"area3\":553.7,\"compactness1\":0.08393,\"compactness2\":0.0118,\"compactness3\":0.1472,\"concave_points1\":0.01924,\"concave_points2\":0.007978,\"concave_points3\":0.06343,\"concavity1\":0.01288,\"concavity2\":0.006564,\"concavity3\":0.05233,\"fractal_dimension1\":0.061,\"fractal_dimension2\":0.001392,\"fractal_dimension3\":0.06922,\"perimeter1\":81.78,\"perimeter2\":1.34,\"perimeter3\":88.54,\"radius1\":12.72,\"radius2\":0.1807,\"radius3\":13.5,\"smoothness1\":0.09667,\"smoothness2\":0.006064,\"smoothness3\":0.1298,\"symmetry1\":0.1638,\"symmetry2\":0.01374,\"symmetry3\":0.2369}"
+console.log('type of x', typeof x);
+let y = JSON.parse(x);
+console.log('type of y', typeof y, y);
+console.log(y); 

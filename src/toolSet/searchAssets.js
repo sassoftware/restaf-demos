@@ -5,9 +5,10 @@
 import { z } from 'zod';
 import _catalogSearch from '../toolhelpers/_catalogSearch.js';
 import debug from 'debug';
-const log = debug('tools');
+
 
 function searchAssets() {
+  const log = debug('tools');
 
   let description = `
 ## searchAssets: Search the SAS Catalog for assets using a flexible search string.

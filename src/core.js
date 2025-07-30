@@ -10,14 +10,14 @@ import cors from 'cors';
 import debug from 'debug';
 import fs from 'fs';
 import selfsigned from 'selfsigned';
-import { ca } from 'zod/v4/locales';
-const log = debug('main');
+
 
 // setup express server
 
 
 async function core() {
 	// setup for change to persistence session
+	const log = debug('main');
 	const appEnv = {
 		HTTPS: (process.env.HTTPS != null && process.env.HTTPS.toUpperCase() === 'TRUE')?  true : false,
 		tls: null,
@@ -143,34 +143,34 @@ async function core() {
 			appEnv.tls.requestCert = false;
 			appEnv.tls.rejectUnauthorized = false;
 		}
-		/*
-		console.log(`MCP Server listening on port ${PORT}`);
-		console.log('Visit https://localhost:8080/health for health check');
-		console.log('Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server');
-		console.log('Press Ctrl+C to stop the server');
-		*/
+		
+		console.error(`[Note} MCP Server listening on port ${PORT}`);
+		console.error('[Note] Visit https://localhost:8080/health for health check');
+		console.error('[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server');
+		console.error('[Note] Press Ctrl+C to stop the server');
+		
 		let server = https.createServer(appEnv.tls);
 		server.listen(PORT, () => {
 		});
 	} else {
 		
-		console.log(`MCP Server listening on port ${PORT}`);
-		console.log('Visit http://localhost:8080/health for health check');
-		console.log('Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
-		console.log('Press Ctrl+C to stop the server');
+		console.error(`[Note] MCP Server listening on port ${PORT}`);
+		console.error('[Note] Visit http://localhost:8080/health for health check');
+		console.error('[Note] Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
+		console.error('[Note] Press Ctrl+C to stop the server');
 		
 	
 		let appServer = app.listen(PORT, () => {
 		});
 		process.on('SIGTERM', () => {
-			console.log('Server closed');
+			console.error('Server closed');
 			appServer.close(() => {
 				
 			});
 			process.exit(0);
 		});
 		process.on('SIGINT', () => {
-			console.log('Server closed');
+			console.error('Server closed');
 			appServer.close(() => {
 				
 			});
@@ -225,12 +225,12 @@ async function core() {
 
 
 		let pems = selfsigned.generate(attr);
-		console.log
+		console.error
 		let tls = {
 			cert: pems.cert,
 			key: pems.private
 		};
-		console.log('Generated self-signed TLS certificate');
+		console.error('Generated self-signed TLS certificate');
 		return tls;
 
 

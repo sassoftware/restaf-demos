@@ -1,0 +1,28 @@
+ {
+  "mcp": {
+    "viyaScoring": {
+      "type": "http",
+      "url": "http://localhost:8080/mcp"
+    },
+  "redis": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "--name",
+          "mcp_redis",
+          "--network",
+          "redisapp_default",
+          "-i",
+          "-e",
+          "REDIS_HOST=redis",
+          "-e",
+          "REDIS_PORT=6379",
+          "-e",
+          "REDIS_SSL=false",
+          "mcp/redis"
+        ]
+      }
+    }
+}
+ 

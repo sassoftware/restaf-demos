@@ -4,9 +4,10 @@
  */
 import { z } from 'zod';
 import debug from 'debug';
-const log = debug('tools');
+
 import _tableInfo  from '../toolhelpers/_tableInfo.js';
 function tableInfo(Table) {
+  const log = debug('tools');
      let describe = `
 ## tableInfo is a tool that returns information about a table.
 Use readTable to read the table and get the data.

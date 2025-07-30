@@ -6,9 +6,10 @@
 import { z } from 'zod';
 import debug from 'debug';
 import _listTables from '../toolhelpers/_listTables.js';
-const log = debug('tools');
+
 
 function listTables() {
+  const log = debug('tools');
   let description = `
 ## listTables  - This tool listts the table in a specified library(lib) in either CAS or SAS server.
 The prompt must of the form  

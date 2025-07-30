@@ -4,9 +4,10 @@
  */
 import { z } from 'zod';
 import debug from 'debug';
-const log = debug('tools');
+
 import _readTable from  '../toolhelpers/_readTable.js';
 function readTable() {
+    const log = debug('tools');
      let describe = `
 ## readTable is a tool to read data from  the specified table and from the  specified lib
 

@@ -16,17 +16,26 @@ async function _listLibrary(params) {
     source: (server === 'sas') ? 'compute' : server,
     table: null
   };
-  let appControl = {};
+
   log(config);
+  /*
+  logonPayload,
+  appControl,
+  sessionID,
+  uBuiltins,
+  user,
+  userData,
+  storeConfig
+  */
   try {
     // setup request control
+    let storeConfig= {
+      casProxy: true,
+      options: { ns: null, proxyServer: null }
+    }
     let appControl = await restafedit.setup(
       logonPayload,
-      config,
-      null,/* create a sessiion */
-      {},
-      'user',
-      {}
+      config,null,{},'user',{}, {}, storeConfig
     );
 
     // query parameters

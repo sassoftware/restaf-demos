@@ -5,9 +5,10 @@
 
 import axios from 'axios';
 import debug from 'debug';
-const log = debug('scr');
 
 async function _scrInfo(params) {
+  const log = debug('scr');
+
   let {url} = params;
   let config = {
     method: 'GET',

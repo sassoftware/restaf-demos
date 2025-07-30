@@ -3,40 +3,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import Redis from 'ioredis';
-
-import restaf from '@sassoftware/restaf';
-import restaflib from '@sassoftware/restaflib';
-import getLogonPayload from './getLogonPayload.js';
 import appendData from './appendData.js';
 import debug from 'debug';
 
 async function main() {
 
-  // setup
+  // setup redis connection and subscribe to the channel
   const log = debug('subscriber');
   const redis = new Redis({ host: 'redis', port: 6379 });
   let count = 0;
-  let logonPayload = await getLogonPayload();
-  let store = restaf.initStore({});
-  let { _servers, session } = await restaflib.casSetup(store, logonPayload);
-  log('session created');
-
-  // subscribe to the Redis channel
   redis.subscribe(process.env.REDIS_CHANNEL, (err, count) => {
     if (err) {
       console.error('Failed to subscribe: ', err.message);
       return;
     }
-    console.log(`Subscribed successfully! This client is currently subscribed to ${count} channels.`);
+    console.log(`Subscribed successfully! This client is currently subscribed to ${process.env.REDIS_CHANNEL} channel.`);
   });
 
-  // Read the messages on the subscribed channel
+  // Read the messages on the subscribed channel and update master table
   redis.on('message', (channel, message) => {
     if (channel !== process.env.REDIS_CHANNEL) {
       return;
     }
-    log(`Received message from channel: ${channel}`);
-    // need to do some cleanup to convert the message to a datastep
+  
+    console.log(`Received message from channel: ${channel}`);
+    console.log(`Message: ${message}`);
+  
     let cols = [];
     let values = [];
     let r1 = message.split(',').reduce((acc, pair) => {
@@ -57,7 +49,8 @@ async function main() {
 
     let publishrc = true;
 
-    appendData(store, session, csv)
+    // ready to append the data to the master table
+    appendData(csv)
       .then((rc) => {
         publishrc = rc;
         log(`Processed message count: ${count}`);

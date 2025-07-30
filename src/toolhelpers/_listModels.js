@@ -6,10 +6,11 @@
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
 import debug from 'debug';
-const log = debug('modelList');
+
 
 async function _listModels(params) {
   let { limit, start , name} = params;
+  const log = debug('modelList');
   // setup
 
   let store = restaf.initStore({});

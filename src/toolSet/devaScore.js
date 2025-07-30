@@ -4,9 +4,10 @@
  */
 import {z} from 'zod';
 import debug from 'debug';
-const log = debug('devascore');
+
 
 function devaScore() {
+    const log = debug('devascore');
     let description = `
 ## devascore: compute Deva Score for two numbers.
 - if more than 2 numbers are provided, process the numbers from the left as follows:

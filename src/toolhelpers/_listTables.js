@@ -6,10 +6,11 @@ import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
 import debug from 'debug';
 
-const log = debug('listtables');
+
 
 async function _listTables(params) {
   let { server, lib, limit, start, name} = params;
+  const log = debug('listtables');
 
   let logonPayload = await getLogonPayload();
   let config = {

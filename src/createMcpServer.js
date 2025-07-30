@@ -6,11 +6,10 @@
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import toolSet from './toolSet/index.js';
-import { logger } from "mcp-framework";
-import debug from 'debug';
-const log = debug('mcpserver');
+
 
 async function createMcpServer(mode) {
+  //const log = debug('mcpserver');
   // Create an MCP server
 
   const mcpServer = new McpServer({
@@ -27,9 +26,9 @@ async function createMcpServer(mode) {
   // TBD: Register resources and prompts
 
 
-  log(`Creating MCP server in ${mode} mode`);
+ // log(`Creating MCP server in ${mode} mode`);
   toolSet.forEach(tool => {
-    log(`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
+    // (`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
     mcpServer.tool(
       tool.name,
       tool.description,
@@ -43,7 +42,7 @@ async function createMcpServer(mode) {
         enableJsonResponse: true 
       });
 
-  log('Transport mode:', mode);
+  console.error('[Note] Transport mode:', mode);
   await mcpServer.connect(transport);
   return { mcpServer, transport };
   

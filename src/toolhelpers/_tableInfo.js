@@ -6,9 +6,9 @@ import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
 import debug from 'debug';
-const log = debug('readtable');
-async function _tableInfo(params, mode) {
 
+async function _tableInfo(params, mode) {
+  const log = debug('readtable');
   let { table, lib, start, limit, server, format, where} = params;
   let logonPayload = await getLogonPayload();
  

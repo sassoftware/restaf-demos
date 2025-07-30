@@ -2,12 +2,19 @@
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
-import debug from 'debug';
+import getLogonPayload from './getLogonPayload.js';
 
-async function appendData(store, session, csv) {
-  console.log('appendData called with csv: ', csv);
-  let log = debug('updatedata');
+let debug = require('debug');
+async function appendData(csv) {
+    let log = debug('appendData');
+  
+    let count = 0;
+    let logonPayload = await getLogonPayload();
+    let store = restaf.initStore({});
+    let { _servers, session } = await restaflib.casSetup(store, logonPayload);
+    log('session created');
 // upload the current data to the CAS table
     let tempTable = { caslib: 'casuser', name: 'testupload' };
     let rc = await restaflib.casUpload(store, session, null, tempTable, true, csv);
@@ -62,7 +69,9 @@ async function appendData(store, session, csv) {
     console.log('src: ', src);
     let frc = await restaflib.caslRun(store, session, src, {}, true);
     console.log('rc from casAppendTable: ', JSON.stringify(frc, null, 2));
-    return frc;;
+    await store.apiCall( session.links( 'delete' ) );
+    store.logoff();
+    return frc;
   }
 
 export default appendData;

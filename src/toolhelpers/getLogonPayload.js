@@ -4,9 +4,9 @@
  */
 import getToken from './getToken.js';
 import debug from 'debug';
-const log = debug('logonpayload');
+
 async function getLogonPayload() {
- 
+  const log = debug('logonpayload');
   if (process.env.USEPASSWORD === 'TRUE') {
     let logonPayload = {
         host: process.env.VIYA_SERVER,
