@@ -45,7 +45,50 @@ Add the following to the list of mcp servers
  }
 ```
 The name can be anything you like.
- 
+
+### Step 3: Enable publishing  of scores(optional)
+
+To enable persistence, a few steps are required.
+
+1. Add mcp/redis settings.json
+
+```json
+"redis": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "--name",
+          "mcp_redis",
+          "--network",
+          "redisapp_default",
+          "-i",
+          "-e",
+          "REDIS_HOST=redis",
+          "-e",
+          "REDIS_PORT=6379",
+          "-e",
+          "REDIS_SSL=false",
+          "mcp/redis"
+        ]
+      }
+
+
+```
+
+2. Clone the repository
+
+3. run npm install
+
+4. run this command to start redis and the subscriber.
+
+Start the redis server and subscriber by issuing this command
+
+```sh
+npm run redissub
+```
+
+
 #### Sidebar: Authentication with your Viya Server
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token. You need to do this once every 90 days or whenever the refresh token expires.
@@ -110,34 +153,6 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 The default app is setup to publish the results to Viya using mcp/redis. The description below is for the demo application.
 
 
-### Step 1: Add mcp/redis to 
-
-### Step 1:
-
- Add mcp/redis to Vscode mcp setup. Below is the updated configuration
-
-```js
-      "viyascoring": {
-        "type": "http",
-        "url": "http://localhost:8080/mcp",
-       
-      },
-      "redis": {
-        "command": "docker",
-        "args": [
-          "run",
-          "--rm",
-          "--name", "mcp_redis",
-          "--network", "redisapp_default",
-          "-i",
-          "-e", "REDIS_HOST=redis",
-          "-e", "REDIS_PORT=6379",  
-          "-e", "REDIS_SSL=false",
-          "mcp/redis"
-        ]
-      }
-
-```
 
 ### Step 2: Start the redis database and subscriber
 

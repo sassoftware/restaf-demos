@@ -71,18 +71,15 @@ async function core() {
 	const handleRequest = async (req, res) => {
 		try {
 			debugger;
-
-			log(req.headers);
 			// new server and transport on each invocation
 
 			let { _mcpServer, transport } = await createMcpServer('http',appEnv);
 
 			// let mcpServer handle the request
-			log('Request body:', req.body);
+		
 			await transport.handleRequest(req, res, req.body);
 
 		} catch (error) {
-			log('Error handling MCP request:', error);
 			if (!res.headersSent) {
 				res.status(500).json({
 					jsonrpc: '2.0',
@@ -225,7 +222,7 @@ async function core() {
 
 
 		let pems = selfsigned.generate(attr);
-		console.error
+		// selfsigned generates a new keypair
 		let tls = {
 			cert: pems.cert,
 			key: pems.private
