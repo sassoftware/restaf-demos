@@ -32,7 +32,7 @@ async function main() {
     let cols = [];
     let values = [];
     let r1 = message.split(',').reduce((acc, pair) => {
-      let [key, value] = pair.split('=');
+      let [key, value] = pair.split(/[=:|]/);
       cols.push(key);
       if (value === undefined || value.trim().length === 0) {  //quick patch for empty values
         value = 'none';
