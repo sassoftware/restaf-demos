@@ -1,44 +1,22 @@
 {
-  "name": "restaf-demos",
-  "version": "3.1.0",
-  "description": "nodejs demos for restaf",
+  "name": "@sassoftware/redis-subscriber",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "cd ./examples && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npm test",
-    "debug": "cd ./examples && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npm run debug"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "docker compose up --build --force-recreate -d"
+
   },
-  "repository": "https://github.com/sassoftware/restaf-demos",
-  "keywords": [
-    "restaf",
-    "http",
-    "REST"
-  ],
-  "author": "Deva Kumaraswamy <deva.kumar@sas.com>",
-  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sassoftware/restaf-demos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/sassoftware/restaf-demos/issues"
   },
   "homepage": "https://github.com/sassoftware/restaf-demos#readme",
-  "resolutions": {
-    "**/minimist": "^0.2.1",
-    "**/kind-of": "^6.0.3",
-    "**/serialize-javascript": "^3.1.0",
-    "**/ini": "^1.3.7",
-    "**/node-forge": "^0.10.0",
-    "**/node-fetch": "^2.6.1",
-    "**/elliptic": "^6.5.3",
-    "**/underscore": "1.12.1",
-    "**/yargs-parser": "20.2.2",
-    "**/trim-newlines": "3.0.1",
-    "**/glob-parent": "5.1.2"
-  },
-  "dependencies": {
-    "@sassoftware/restaf": "^5.2.3",
-    "@sassoftware/restaflib": "^5.2.3",
-    "immutable": "^4.0.0-rc.12",
-    "prettyjson": "1.2.5"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3"
-  }
+  "description": ""
 }
