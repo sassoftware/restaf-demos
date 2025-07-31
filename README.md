@@ -1,5 +1,17 @@
 # mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring 
 
+- [Introduction](#intro)
+- [Using the default mcp server](#defserver)
+  - [Start the mcp server](#startserver)
+  - [Enable client for mcp server](#enable)
+  - [Enable mcp/redis - optional](#redis)
+
+
+---
+---
+
+## Introduction(#intro)
+
 MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
 The  mcp server  described here is designed for scoring with SAS Viya. In this document "scoring" is used to describe executing any code that takes some input and returns results. 
@@ -15,15 +27,17 @@ Some examples are:
 The source code is the repository <https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs>.
 It is provided under the Apache-2.0 license.
 
+
+
 ---
 
-## Using the default mcp server
+## Using the default mcp server<a name="defserver"></a>
 
 ---
 
 Follow these basic steps to see how an mcp server can help you.
 
-### Step 1: Start the mcp server
+### Step 1: Start the mcp server<a name="startserver"></a>
 
 Issue this command from any shell on your desktop
 
@@ -32,7 +46,7 @@ Issue this command from any shell on your desktop
 Make sure that you have a node version >=22
 
 
-### Step 2: Enable github copilot for the mcp server
+### Step 2: Enable github copilot for the mcp server<a name="enable"> </a>
 
 Similar methodologies can be used with other mcp enabled copilots.
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
@@ -46,9 +60,9 @@ Add the following to the list of mcp servers
 ```
 The name can be anything you like.
 
-### Step 3: Enable publishing  of scores(optional)
+### Step 3: Enable mcp/redis<a name="redis"> </a>
 
-To enable persistence, a few steps are required.
+To enable persistence with redis, a few steps are required.
 
 1. Add mcp/redis settings.json
 
@@ -76,16 +90,10 @@ To enable persistence, a few steps are required.
 
 ```
 
-2. Clone the repository
-
-3. run npm install
-
-4. run this command to start redis and the subscriber.
-
-Start the redis server and subscriber by issuing this command
+2. Clone the repository [redis-subscriber](ttps://github.com/sassoftware/restaf-demos/tree/redis-subscriber) and cd to that directory and run this command. It will create containers on your docker desktop for redis server and the subscriber application.
 
 ```sh
-npm run redissub
+npm start
 ```
 
 

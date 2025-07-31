@@ -3,12 +3,15 @@
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { randomUUID } from "node:crypto"
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
 import toolSet from './toolSet/index.js';
 
 
-async function createMcpServer(mode) {
+async function createMcpServer(mode, appEnv) {
   //const log = debug('mcpserver');
   // Create an MCP server
 
@@ -36,15 +39,18 @@ async function createMcpServer(mode) {
       tool.handler
     )
   })
+  appEnv.mcpServer = mcpServer;
+  let transport;
+  transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
+   
+  });
 
-  const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: undefined,
-        enableJsonResponse: true 
-      });
 
   console.error('[Note] Transport mode:', mode);
   await mcpServer.connect(transport);
-  return { mcpServer, transport };
+  return transport;
   
 }
 export default createMcpServer;
