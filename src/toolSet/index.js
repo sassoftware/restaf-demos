@@ -20,9 +20,8 @@ import superstat from './superstat.js';
 import findTable from './findTable.js';
 import findModel from './findModel.js'
 
-
 let list = [
-    listModels(),
+    listModels(a),
     listTables(),
   
     findModel(),    
@@ -44,5 +43,6 @@ let list = [
     searchAssets()
  
 ];
+
 
 export default list;

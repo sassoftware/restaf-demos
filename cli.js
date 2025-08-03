@@ -13,7 +13,7 @@ if (fs.existsSync('./.env')) {
 if (process.argv[2] === 'https') {
     process.env.HTTPS = true;
 }
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 core()
 .then (() => {
     console.log('MCP Server initialized successfully.');

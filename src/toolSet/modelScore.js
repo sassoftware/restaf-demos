@@ -11,6 +11,7 @@ const log = debug('tools');
 function modelScore() {
   let description = `
   ## modelScore - This tool scores user supplied scenario data with a model published to MAS server in SAS Viya. 
+ 
    
   ### Output
   The tool will return the scoring results merged with the fields used by the model for scoring
@@ -19,14 +20,17 @@ function modelScore() {
 
   - model - the name assigned to the model in MAS server.
     - The model name is the name assigned to the model when it was published to MAS server
-  - scenario - The scenario is a key-values pairs like x=1, y=2, z=3.
+  - scenario - The scenario is an object or a string that contains the fields and values to be scored by the model.
+    - The scenario can be a string in the format "x1=1, x2=2" or an object like {x1: 1, x2: 2}.
+    - The scenario can also be an array of objects, where each object contains the fields and values to be scored.
+    - If the scenario is a string, it will be converted to an object before scoring.
 
   ### Optional Parameters
   - uflag - uflag is optional. uflag is set to false by default. If true, the names of the model fields have a leading underscore.
  
 
   ### Sample Prompts
-  - modelscore with mycoolmodel for x1=1,x2=2 
+  - modelscore with mycoolmodel for {x1=1,x2=2 }
   - score model mycoolmodel with x1=1,x2=2 
   - score mycoolmodel with x1=1,x2=2 
 

@@ -29,9 +29,11 @@ async function createMcpServer(mode, appEnv) {
   // TBD: Register resources and prompts
 
 
+ 
  // log(`Creating MCP server in ${mode} mode`);
   toolSet.forEach(tool => {
     // (`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
+   
     mcpServer.tool(
       tool.name,
       tool.description,
@@ -42,9 +44,12 @@ async function createMcpServer(mode, appEnv) {
   appEnv.mcpServer = mcpServer;
   let transport;
   transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
+    sessionIdGenerator: ()=> randomUUID(),
     enableJsonResponse: true,
-   
+    onsessioninitialized: (sessionId) => {
+      appEnv.transports[sessionId] = transport;
+
+    }
   });
 
 

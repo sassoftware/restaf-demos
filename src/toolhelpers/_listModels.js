@@ -8,7 +8,7 @@ import getLogonPayload from './getLogonPayload.js';
 import debug from 'debug';
 
 
-async function _listModels(params) {
+async function _listModels(appEnv,params) {
   let { limit, start , name} = params;
   const log = debug('modelList');
   // setup

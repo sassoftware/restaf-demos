@@ -11,8 +11,6 @@ import cors from 'cors';
 import debug from 'debug';
 import fs from 'fs';
 import selfsigned from 'selfsigned';
-import { it } from 'node:test';
-
 
 
 // setup express server
@@ -37,13 +35,13 @@ async function core() {
 		origin: "*",
 		exposedHeaders: ['mcp-session-id'],
 		allowedHeaders: ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language", "mcp-session-id"],
-		
+
 	}));
 
 	// setup routes
 	app.get('/health', (req, res) => {
 		log('Received request for health endpoint');
-		
+
 		res.json({
 			name: '@sassoftware/mcp-server',
 			version: '1.0.0',
@@ -74,67 +72,57 @@ async function core() {
 
 	// mcp endpoint - the key entrypoint for the MCP server
 	const handleRequest = async (req, res) => {
+		let transport;
 		try {
-			
-			let transport = await createMcpServer('http', appEnv);
-			await transport.handleRequest(req, res,req.body);
+			let sessionId = req.headers['mcp-session-id'];
+			console.error('MCP session id:', sessionId);
+			if (sessionId && appEnv.transports[sessionId]) {
+				transport = appEnv.transports[sessionId];
+			} else {
+				// create a new transport
+				transport = await createMcpServer('http', appEnv);
+			}
+
 		} catch (error) {
-		if (!res.headersSent) {
-			res.status(500).json({
-				jsonrpc: '2.0',
-				error: {
-					code: -32603,
-					message: JSON.stringify(error),
-				},
-				id: null,
-			});
+			if (!res.headersSent) {
+				res.status(500).json({
+					jsonrpc: '2.0',
+					error: {
+						code: -32603,
+						message: JSON.stringify(error),
+					},
+					id: null,
+				});
+			}
+
 		}
-		
+		await transport.handleRequest(req, res, req.body);
+
 	}
 
-}
-const handleRequest2 = async (req, res) => {
-	try {
-		
+	app.post('/mcp', handleRequest);
 
-		log(req.headers);
-		// new server and transport on each invocation
-		// let mcpServer handle the request
-		log('Request body:', req.body);
-		res.json({ x: 1 })
+	// Start the server
+	const PORT = process.env.PORT || 8080;
 
-	} catch (error) {
-		log('Error handling MCP request:', error);
-		if (!res.headersSent) {
-			res.status(500).json({
-				jsonrpc: '2.0',
-				error: {
-					code: -32603,
-					message: JSON.stringify(error),
-				},
-				id: null,
-			});
+	// get user specified TLS options 
+	if (process.env.SSLCERT != null ) {
+		let tlsdir = process.env.SSLCERT;
+		let options = {};
+		if (tlsdir != null && fs.existsSync(`${tlsdir}/key.pem`) === true) {
+			options.key = fs.readFileSync(`${tlsdir}/key.pem`, { encoding: 'utf8' });
+			options.cert = fs.readFileSync(`${tlsdir}/crt.pem`, { encoding: 'utf8' });
+			if (fs.existsSync(`${tlsdir}/ca.pem`) === true) {
+			  options.ca = fs.readFileSync(`${tlsdir}/ca.pem`, { encoding: 'utf8' });
+			}
+			appEnv.tls = options;
 		}
 	}
+	
 
-}
-app.post('/mcp', handleRequest);
-app.post('/mcp2', handleRequest2);
-
-// Start the server
-const PORT = process.env.PORT || 8080;
-
-// get user specified TLS options 
-if (process.env.TLS_CRT != null && fs.existsSync(process.env.TLS_CRT) === true) {
-	let options = {};
-	options.key = fs.readFileSync(process.env.TLS_KEY, { encoding: 'utf8' });
-	options.cert = fs.readFileSync(process.env.TLS_CRT, { encoding: 'utf8' });
-	options.ca = fs.readFileSync(process.env.TLS_CA, { encoding: 'utf8' });
-	appEnv.tls = options;
-}
-
-// place holder - https server has issues as mcp server
+	// place holder - https server has issues as mcp server
 if (appEnv.HTTPS === true) {
+
 	if (appEnv.tls === null) {
 		appEnv.tls = await getTls();
 		appEnv.tls.requestCert = false;
@@ -146,7 +134,7 @@ if (appEnv.HTTPS === true) {
 	console.error('[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server');
 	console.error('[Note] Press Ctrl+C to stop the server');
 
-	let server = https.createServer(appEnv.tls);
+	let server = https.createServer(appEnv.tls, app);
 	server.listen(PORT, () => {
 	});
 } else {
@@ -222,6 +210,8 @@ async function getTls() {
 
 
 	let pems = selfsigned.generate(attr);
+	console.error('Generated self-signed TLS certificate');
+	console.error(pems)
 	// selfsigned generates a new keypair
 	let tls = {
 		cert: pems.cert,

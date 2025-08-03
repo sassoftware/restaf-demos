@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import _listModels from '../toolhelpers/_listModels.js';
 
-function listModels() {
+function listModels(appEnv) {
   let description = `
   ## listModels - This tool list all the available models in the MAS server.
   The prompt must of the form  
@@ -31,7 +31,7 @@ function listModels() {
     },
     handler: async (params) => { 
       // Check if the params.scenario is a string and parse it
-      let r = await _listModels(params);
+      let r = await _listModels(appEnv, params);
       return r;
     }
   }
