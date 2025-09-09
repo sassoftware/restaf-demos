@@ -40,7 +40,7 @@ async function _masScoring(params) {
       return { content: [{ type: 'text', text: JSON.stringify(inputs) }] };
     }
     let iscenario = {};
-
+    
     for (let v in inputs) {
        let v1 = (uflag === true) ? v.substring(0, v.length - 1) : v;
       let t = (scenario[v1] == null) ? null : scenario[v1];

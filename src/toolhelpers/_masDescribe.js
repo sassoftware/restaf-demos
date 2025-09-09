@@ -5,6 +5,7 @@
 import restaflib  from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
+import getStoreOpts from './getStoreOpts.js';
 
 async function _masDescribe(params) {
  // setup
@@ -13,7 +14,7 @@ async function _masDescribe(params) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: null
+        httpOptions: getStoreOpts()
       }
   });
   let logonPayload = await getLogonPayload();

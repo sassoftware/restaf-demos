@@ -13,6 +13,7 @@ import restaf from '@sassoftware/restaf';
 import getLogonPayload from '../toolhelpers/getLogonPayload.js';
 import _itemsData from '../toolhelpers/_itemsData.js';
 import debug from 'debug';
+import getStoreOpts from '../toolhelpers/getStoreOpts.js';
 
 
 async function _catalogSearch(params, rel) {
@@ -57,7 +58,7 @@ async function _catalogSearch(params, rel) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: null
+        httpOptions: getStoreOpts()
       }
   });
     let logonPayload = await getLogonPayload();

@@ -5,7 +5,7 @@
 import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
 import debug from 'debug';
-
+import getStoreOpts from './getStoreOpts.js';
 
 
 async function _listTables(params) {
@@ -25,7 +25,7 @@ async function _listTables(params) {
       null,/* create a session */
       {},
       'user',
-      {}
+      getStoreOpts()
     );
 
     let payload = {

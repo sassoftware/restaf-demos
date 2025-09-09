@@ -106,122 +106,123 @@ async function core() {
 	const PORT = process.env.PORT || 8080;
 
 	// get user specified TLS options 
-	if (process.env.SSLCERT != null ) {
+	console.error('HTTPS=', appEnv.HTTPS);
+	if (process.env.SSLCERT != null && appEnv.HTTPS === true) {
 		let tlsdir = process.env.SSLCERT;
 		let options = {};
 		if (tlsdir != null && fs.existsSync(`${tlsdir}/key.pem`) === true) {
 			options.key = fs.readFileSync(`${tlsdir}/key.pem`, { encoding: 'utf8' });
 			options.cert = fs.readFileSync(`${tlsdir}/crt.pem`, { encoding: 'utf8' });
 			if (fs.existsSync(`${tlsdir}/ca.pem`) === true) {
-			  options.ca = fs.readFileSync(`${tlsdir}/ca.pem`, { encoding: 'utf8' });
+				options.ca = fs.readFileSync(`${tlsdir}/ca.pem`, { encoding: 'utf8' });
 			}
 			appEnv.tls = options;
 		}
 	}
-	
+
 
 	// place holder - https server has issues as mcp server
-if (appEnv.HTTPS === true) {
+	if (appEnv.HTTPS === true) {
 
-	if (appEnv.tls === null) {
-		appEnv.tls = await getTls();
-		appEnv.tls.requestCert = false;
-		appEnv.tls.rejectUnauthorized = false;
+		if (appEnv.tls === null) {
+			appEnv.tls = await getTls();
+			appEnv.tls.requestCert = false;
+			appEnv.tls.rejectUnauthorized = false;
+		}
+
+		console.error(`[Note] MCP Server listening on port ${PORT}`);
+		console.error('[Note] Visit https://localhost:8080/health for health check');
+		console.error('[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server');
+		console.error('[Note] Press Ctrl+C to stop the server');
+
+		let server = https.createServer(appEnv.tls, app);
+		server.listen(PORT, () => {
+		});
+	} else {
+
+		console.error(`[Note] MCP Server listening on port ${PORT}`);
+		console.error('[Note] Visit http://localhost:8080/health for health check');
+		console.error('[Note] Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
+		console.error('[Note] Press Ctrl+C to stop the server');
+
+
+		let appServer = app.listen(PORT, () => {
+		});
+		process.on('SIGTERM', () => {
+			console.error('Server closed');
+			appServer.close(() => {
+
+			});
+			process.exit(0);
+		});
+		process.on('SIGINT', () => {
+			console.error('Server closed');
+			appServer.close(() => {
+
+			});
+			process.exit(0);
+		});
 	}
 
-	console.error(`[Note} MCP Server listening on port ${PORT}`);
-	console.error('[Note] Visit https://localhost:8080/health for health check');
-	console.error('[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server');
-	console.error('[Note] Press Ctrl+C to stop the server');
+	async function getTls() {
+		let options = {
+			keySize: 2048,
+			days: 360,
+			algorithm: "sha256",
+			clientCertificate: true,
+			extensions: {},
+		};
+		let tlscreate = (process.env.TLS_CREATE == null)
+			? 'TLS_CREATE=C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost,ALT:na.sas.com'
+			: process.env.TLS_CREATE;
+		let subjt = tlscreate.replaceAll('"', '').trim();
+		let subj = subjt.split(',');
 
-	let server = https.createServer(appEnv.tls, app);
-	server.listen(PORT, () => {
-	});
-} else {
-
-	console.error(`[Note] MCP Server listening on port ${PORT}`);
-	console.error('[Note] Visit http://localhost:8080/health for health check');
-	console.error('[Note] Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server');
-	console.error('[Note] Press Ctrl+C to stop the server');
-
-
-	let appServer = app.listen(PORT, () => {
-	});
-	process.on('SIGTERM', () => {
-		console.error('Server closed');
-		appServer.close(() => {
-
+		let d = {};
+		subj.map(c => {
+			let r = c.split(':');
+			d[r[0]] = r[1];
+			return { value: r[1] };
 		});
-		process.exit(0);
-	});
-	process.on('SIGINT', () => {
-		console.error('Server closed');
-		appServer.close(() => {
 
-		});
-		process.exit(0);
-	});
-}
-
-async function getTls() {
-	let options = {
-		keySize: 2048,
-		days: 360,
-		algorithm: "sha256",
-		clientCertificate: true,
-		extensions: {},
-	};
-	let tlscreate = (process.env.TLS_CREATE == null)
-		? 'TLS_CREATE=C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost,ALT:na.sas.com'
-		: process.env.TLS_CREATE;
-	let subjt = tlscreate.replaceAll('"', '').trim();
-	let subj = subjt.split(',');
-
-	let d = {};
-	subj.map(c => {
-		let r = c.split(':');
-		d[r[0]] = r[1];
-		return { value: r[1] };
-	});
-
-	let attr = [
-		{
-			name: 'commonName',
-			value: d.CN /*process.env.APPHOST*/,
-		},
-		{
-			name: 'countryName',
-			value: d.C
-		}, {
-			shortName: 'ST',
-			value: d.ST
-		}, {
-			name: 'localityName',
-			value: d.L,
-		}, {
-			name: 'organizationName',
-			value: d.O
-		},
-		{
-			shortName: 'OU',
-			value: d.OU
-		}
-	];
+		let attr = [
+			{
+				name: 'commonName',
+				value: d.CN /*process.env.APPHOST*/,
+			},
+			{
+				name: 'countryName',
+				value: d.C
+			}, {
+				shortName: 'ST',
+				value: d.ST
+			}, {
+				name: 'localityName',
+				value: d.L,
+			}, {
+				name: 'organizationName',
+				value: d.O
+			},
+			{
+				shortName: 'OU',
+				value: d.OU
+			}
+		];
 
 
-	let pems = selfsigned.generate(attr);
-	console.error('Generated self-signed TLS certificate');
-	console.error(pems)
-	// selfsigned generates a new keypair
-	let tls = {
-		cert: pems.cert,
-		key: pems.private
-	};
-	console.error('Generated self-signed TLS certificate');
-	return tls;
+		let pems = selfsigned.generate(attr);
+		console.error('Generated self-signed TLS certificate');
+		console.error(pems)
+		// selfsigned generates a new keypair
+		let tls = {
+			cert: pems.cert,
+			key: pems.private
+		};
+		console.error('Generated self-signed TLS certificate');
+		return tls;
 
 
-}
+	}
 }
 
 export default core;

@@ -31,7 +31,7 @@ function listModels(appEnv) {
     },
     handler: async (params) => { 
       // Check if the params.scenario is a string and parse it
-      let r = await _listModels(appEnv, params);
+      let r = await _listModels(params);
       return r;
     }
   }

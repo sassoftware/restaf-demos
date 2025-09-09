@@ -63,7 +63,7 @@ function modelScore() {
       } else if (Array.isArray(scenario)) { 
         scenarioObj = scenario[0];
       } else {
-       
+        console.log('Incoming scenario', scenario);
         scenarioObj = scenario.split(',').reduce((acc, pair) => {
             let [key, value] = pair.split('=');
             acc[key.trim()] = value;

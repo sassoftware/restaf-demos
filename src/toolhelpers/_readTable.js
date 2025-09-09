@@ -5,6 +5,7 @@
 import restafedit from '@sassoftware/restafedit';
 import getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
+import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
 async function _readTable(params) {
@@ -43,7 +44,7 @@ async function _readTable(params) {
       null,/* create a sessiion */
       {},
       'user',
-      {}
+      getStoreOpts()
     );
     log('appControl', appControl);
     await restafedit.scrollTable('first', appControl);

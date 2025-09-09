@@ -4,6 +4,7 @@
  */
 import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
+import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
 const log = debug('listlibrary');
@@ -31,7 +32,7 @@ async function _listLibrary(params) {
     // setup request control
     let storeConfig= {
       casProxy: true,
-      options: { ns: null, proxyServer: null }
+      options: { ns: null, proxyServer: null, httpOptions: getStoreOpts() }
     }
     let appControl = await restafedit.setup(
       logonPayload,

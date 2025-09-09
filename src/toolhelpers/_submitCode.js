@@ -5,12 +5,14 @@
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
 import getLogonPayload from './getLogonPayload.js';
-import { log } from 'console';
+
+
 
 async function _submitCode(src, params) {
+
 	try {
 		// setup
-		log('Initializing store and logon payload');
+		console.error('Initializing store and logon payload');
 		let store = restaf.initStore({
 			casProxy: true,
 			options: {
@@ -21,28 +23,36 @@ async function _submitCode(src, params) {
 		let logonPayload = await getLogonPayload();
 
 		// get compute sessio, run sas code and retrieve result
-		log('Creating compute session');
+		console.error('Creating compute session');
 		let computeSession = await restaflib.computeSetup(store, null, logonPayload);
-		log('Submitting code to compute session');
+		console.error(`Compute session: ${computeSession.id}`);
+		console.error('Submitting code to compute session');
 		let computeSummary = await restaflib.computeRun(store, computeSession, src, params);
-		log('Retrieving results from compute session');
+		console.error('Retrieving results from compute session');
 		let ods = await restaflib.computeResults(store, computeSummary, "ods");
+		let logo = await restaflib.computeResults(store, computeSummary, "log");
+		let tables = await restaflib.computeResults(store, computeSummary, 'tables');
+		let structuredOutput = { ods, logo, tables };
+		// add output tables next
 
 		// cleanup
-		log('Session cleanup');
+		console.error('Session cleanup');
 		await store.apiCall(computeSession.links('delete'));
 		await store.logoff();
 
 		// return results in the format the LLM expects
-		log('Returning results');
-		return { content: [{ type: 'text', text: ods }] };
+		console.error('Returning results');
+		return {
+			content: [{ type: 'text', text: JSON.stringify(structuredOutput) }],
+			structuredContent: structuredOutput
+		};
 	}
 	catch (error) {
 		// Oops! Something went wrong
-		log(`Error in _submitCode: ${JSON.stringify(error)}`);
+		console.error(`Error in _submitCode: ${JSON.stringify(error)}`);
 		return { content: [{ type: 'text', text: JSON.stringify(error) }] }
-	};
+	}
+};
 
-}
 
 export default _submitCode;

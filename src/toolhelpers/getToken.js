@@ -5,6 +5,9 @@
 import fs from 'fs';
 import os from 'os';
 
+import { Agent, fetch } from 'undici';
+import getOpts from './getOpts.js';
+
 async function getToken() {
   let homedir = os.homedir();
   if (process.env.SAS_CLI_CONFIG) {
@@ -18,6 +21,7 @@ async function getToken() {
     let j = fs.readFileSync(credentials, 'utf8');
     let js = JSON.parse(j);
     let profile = (process.env.SAS_CLI_PROFILE) ? process.env.SAS_CLI_PROFILE : 'Default';
+    console.error('[Note] Using profile: ' + profile);
     let refresh_token = js[profile]['refresh-token'];
     j = fs.readFileSync(url, 'utf8');
     js = JSON.parse(j);
@@ -26,36 +30,45 @@ async function getToken() {
     let token = await refreshToken(refresh_token, host);
     return { host, token };
   } catch (e) {
-    throw 'Error reading or parsing credentials/config file: ' + e;
+    throw '[Error] Failed to read credentials/config file: ' + e;
   }
   async function refreshToken(token, host) {
     const url = `${host}/SASLogon/oauth/token`;
+    console.error('[Note] Refreshing token for host: ' + host);
+    let opts = getOpts();
+
+    const agent = new Agent({
+      connect: getOpts()
+    });
+    
     const body = new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: token,
       client_id: 'sas.cli'
     });
-
+    
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          dispatcher: agent
         },
         body: body.toString()
       });
 
       if (!response.ok) {
         const error = await response.text();
-        console.error('Error refreshing token: ', error);
+        console.error('[Error] Failed to refresh token: ', error);
         throw new Error(error);
       }
 
       const data = await response.json();
+
       return data.access_token;
     } catch (err) {
-      console.error('Error refreshing token: ', err);
+      console.error('[Error] Failed to refresh token: ', err);
       throw err;
     }
   }

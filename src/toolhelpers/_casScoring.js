@@ -5,6 +5,7 @@
 import restaflib from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
+import getStoreOpts from './getStoreOpts.js';
 async function _casScoring(params) {
   let { caslScore } = restaflib;
   let logonPayload = await getLogonPayload();
@@ -12,7 +13,7 @@ async function _casScoring(params) {
        casProxy: true,
        options: {
          proxyServer: null,
-         httpOptions: null
+         httpOptions: getStoreOpts()
        }
    });
   

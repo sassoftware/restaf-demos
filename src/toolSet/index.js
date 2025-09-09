@@ -18,10 +18,12 @@ import searchAssets from './searchAssets.js';
 import devaScore from './devaScore.js';
 import superstat from './superstat.js';
 import findTable from './findTable.js';
-import findModel from './findModel.js'
+import findModel from './findModel.js';
+import runSAS from './runSAS.js';
+
 
 let list = [
-    listModels(a),
+    listModels(),
     listTables(),
   
     findModel(),    
@@ -30,6 +32,7 @@ let list = [
 
     scrInfo(),
     scrScore(),
+    runSAS(),
 
     listLibrary(),
     findLibrary(),
