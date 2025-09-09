@@ -5,7 +5,6 @@
 
 import { z } from 'zod';
 import _submitCode from '../toolhelpers/_submitCode.js';
-import { required } from 'zod/v4-mini';
 
 
 function runSAS() {
@@ -16,8 +15,6 @@ function runSAS() {
 
   - program - the code for the SAS program to be executed on the SAS server
 
-  ### Output
-  The tool will return results in a JSON format
 
   ### Sample Prompts
   - run sas 'data a; x=1; run;'
@@ -34,36 +31,6 @@ function runSAS() {
       program: z.string()
     },
     required: ['program'],
-    /*
-    inputSchema: {
-      type: 'object',
-      properties: {
-        program: {
-          type: 'string', description: 'the SAS code to be executed on the SAS server'
-        }
-      },
-      required: ['program'],
-    },
-   
-    outputSchema: {
-      type: 'object',
-      properties: {
-        ods: {
-          type: 'string',
-          description: 'The ODS output from the submitted SAS code'
-        },
-        log: {
-          type: 'string',
-          description: 'The SAS log from the submitted SAS code'
-        },
-        tables: {
-          type: 'array',
-          description: 'Any output tables from the submitted SAS code'
-        }
-      }
-    },
-    */
-   
     handler: async (params) => {
       let src = params.program;
       console.log('runSAS handler', src);

@@ -12,7 +12,6 @@ async function _submitCode(src, params) {
 
 	try {
 		// setup
-		console.error('Initializing store and logon payload');
 		let store = restaf.initStore({
 			casProxy: true,
 			options: {
@@ -23,25 +22,21 @@ async function _submitCode(src, params) {
 		let logonPayload = await getLogonPayload();
 
 		// get compute sessio, run sas code and retrieve result
-		console.error('Creating compute session');
+	
 		let computeSession = await restaflib.computeSetup(store, null, logonPayload);
-		console.error(`Compute session: ${computeSession.id}`);
-		console.error('Submitting code to compute session');
 		let computeSummary = await restaflib.computeRun(store, computeSession, src, params);
-		console.error('Retrieving results from compute session');
 		let ods = await restaflib.computeResults(store, computeSummary, "ods");
-		let logo = await restaflib.computeResults(store, computeSummary, "log");
+		let log = await restaflib.computeResults(store, computeSummary, "log");
 		let tables = await restaflib.computeResults(store, computeSummary, 'tables');
-		let structuredOutput = { ods, logo, tables };
+		let structuredOutput = { ods, log, tables: tables };
 		// add output tables next
 
 		// cleanup
-		console.error('Session cleanup');
 		await store.apiCall(computeSession.links('delete'));
 		await store.logoff();
 
 		// return results in the format the LLM expects
-		console.error('Returning results');
+	
 		return {
 			content: [{ type: 'text', text: JSON.stringify(structuredOutput) }],
 			structuredContent: structuredOutput

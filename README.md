@@ -153,6 +153,8 @@ These are sample tools. Use them as a guide for your own tools or use them as is
 
 ### Scoring with SAS code
 - superstat - an example of accessing custom SAS code
+- runSAS - runs the sas code that is supplied by the user
+- runMacro - runs a macro available to the server. User passes additional macro variables as name, value pairs.
 
 ---
 ## Persisting the scores

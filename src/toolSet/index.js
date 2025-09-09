@@ -20,6 +20,7 @@ import superstat from './superstat.js';
 import findTable from './findTable.js';
 import findModel from './findModel.js';
 import runSAS from './runSAS.js';
+import runMacro from './runMacro.js';
 
 
 let list = [
@@ -33,6 +34,7 @@ let list = [
     scrInfo(),
     scrScore(),
     runSAS(),
+    runMacro(),
 
     listLibrary(),
     findLibrary(),
