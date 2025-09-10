@@ -123,7 +123,6 @@ async function core() {
 
 	// place holder - https server has issues as mcp server
 	if (appEnv.HTTPS === true) {
-
 		if (appEnv.tls === null) {
 			appEnv.tls = await getTls();
 			appEnv.tls.requestCert = false;
