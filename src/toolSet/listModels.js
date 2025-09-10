@@ -26,7 +26,7 @@ function listModels(appEnv) {
     name: 'listModels',
     description: description,
     schema: {
-      'limit': z.number(),
+      'limit': z.number().default(10),
       'start': z.number() 
     },
     handler: async (params) => { 

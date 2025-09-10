@@ -39,10 +39,11 @@ Always try to display the data as a table using markdown format. If the table is
         table: z.string(),
         lib: z.string(),
         start: z.number(),
-        limit: z.number(),
+        limit: z.number().default(10),
         server: z.string(),
-        where: z.string(),
-        format: z.boolean()
+        where: z.string().default(''),
+        format: z.boolean().default(true)
+
       },
       required: ['table', 'lib'],
       handler: async (params) => {

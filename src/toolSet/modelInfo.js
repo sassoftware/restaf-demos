@@ -10,18 +10,24 @@ const log = debug('tools');
 
 function modelInfo() {
   let description = `
-## modelInfo is tool that returns information about a model published to MAS server in SAS Viya.
-The input to this tool is:
+## modelInfo
 
-- model - the name assigned to the model in MAS server.
-  - The model name is the name assigned to the model when it was published to MAS server
+Returns metadata for a model published to the MAS (Model Aggregation Service) in SAS Viya.
 
-- Display both the inputs and outputs of the model.
-}
+Inputs
+- model (string): The name of the model as published to MAS.
 
-### Sample Prompts
+What it returns
+- A JSON object containing model metadata as provided by MAS, typically including:
+  - Inputs: variable names, data types, roles/usage, allowed values or ranges
+  - Outputs: prediction names, types, levels or classes
+ 
+Usage notes
+- Use this to discover required scoring inputs and to interpret model outputs before calling scoring endpoints.
+
+Example prompts
 - info on cancer1
-- what is the model mycoolmodel
+- describe model mycoolmodel
 `;
   let spec = {
     name: 'modelInfo',

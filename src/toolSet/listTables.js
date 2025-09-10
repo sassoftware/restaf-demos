@@ -10,34 +10,68 @@ import _listTables from '../toolhelpers/_listTables.js';
 
 function listTables() {
   const log = debug('tools');
+  let llmDescription =  `{
+  "purpose": "Map natural language requests to listTables parameters and return a compact machine-readable response.",
+  "param_mapping": {
+    "lib": "required - infer from phrases like 'in <lib>' or ask a short clarifying question if missing",
+    "server": "infer 'cas' or 'sas' from prompt keywords; default 'cas'",
+    "limit": "positive integer, default 10",
+    "start": "1-indexed offset, default 1",
+    "where": "optional filter string"
+  },
+  "response_schema": "{ tables: string[], nextStart?: number }",
+  "behavior": "Return only JSON that matches response_schema. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }. Include nextStart = start + limit when more results likely exist.",
+  "clarification_rules": "If lib missing: 'Which library do you want to list tables from?'. If server ambiguous: 'Do you mean CAS or SAS?'. If user says 'next', interpret as start = previousStart + previousLimit.",
+  "examples": [
+    { "input": "list tables in samples in cas", "mapped_params": { "lib": "Samples", "server": "cas" } },
+    { "input": "show me sashelp tables, 5 per page", "mapped_params": { "lib": "sashelp", "server": "sas", "limit": 5 } }
+  ]
+}`;
+
   let description = `
-## listTables  - This tool listts the table in a specified library(lib) in either CAS or SAS server.
-The prompt must of the form  
-  - list tables in <library_name> in <server_name>.
-It can be optionally followed by a limit parameter.
-.
-The limit parameter is the number of tablesthat are returned. The default is 10.
+## listTables — list tables in a library on CAS or SAS
 
-### Parameters
-  - lib = the name of the library from which to list tables.
-  - server = the name of the server from which to list tables. Default is 'cas'.
-  - limit = the number of models to return. Default is 10.
-  - start = the starting point for the list of tables. Default is 1. You can use this to paginate through the list of tables by
-    setting it to the previous limit + 1. 
+Purpose
+- Return the tables contained in a specified library (lib) on either a CAS or SAS server.
+- Designed for natural-language use: short prompts or full parameter objects are supported.
 
+Parameters
+- lib (string, required): Library name to inspect (e.g., 'Samples', 'sashelp').
+- server (string, optional): 'cas' or 'sas'. Default: 'cas'.
+- limit (number, optional): Maximum number of tables to return. Default: 10.
+- start (number, optional): 1-indexed offset for paging. Default: 1.
+- where (string, optional): Optional server-side filter expression (server-dependent).
 
-### Sample Prompts
-- list tables in samples in cas server and limit to 20
-- list tables in sashelp in sas server and limit to 5
+Behavior & response
+- Returns an ordered array of table names by default, e.g. ["WATER_CLUSTER","COSTCHANGE"].
+- Use \`start\` and \`limit\` to page through results. Responses may include a pagination hint.
+- If the server exposes richer metadata the result may include objects with additional fields (owner, rows, create time).
+
+Pagination example
+- First page: { lib: 'Samples', server: 'cas', start: 1, limit: 10 }
+- Next page:  { lib: 'Samples', server: 'cas', start: 11, limit: 10 }
+
+Usage tips
+- Short user prompts like "list sas tables in sashelp" are mapped automatically.
+- If you need full inventory, page through results rather than requesting extremely large limits.
+- To inspect a specific table, use the \`tableInfo\` or \`readTable\` tools after obtaining the table name.
+
+Errors
+- The tool surfaces server errors and returns an empty array when no tables match.
+
+llmDescription 
+${llmDescription}
+
 `;
 
   let spec = {
     name: 'listTables',
     description: description,
+
     schema: {
       'lib': z.string(),
       'server': z.string(), // default server is 'cas'
-      'limit': z.number(),
+      'limit': z.number().default(10),
       'start': z.number() 
     },
     required: ['lib'],
