@@ -6,7 +6,7 @@ import yargs from 'yargs';
 let argv = yargs.argv || {};
 let envf = argv.envfile || './.env';
 if (fs.existsSync(envf)) {
-    console.log('Loading environment variables from .env file...');
+    console.log(`Loading environment variables from ${envf}...`);
     config();
 } else {
     console.log('No .env file found, Using default environment variables...');

@@ -1,0 +1,23 @@
+##
+# mcp server environment variables
+#
+
+## server specific settings
+# By default the server will run in HTTP mode
+HTTPS=TRUE
+
+## TLS settings
+# SSLCERT=<location of your SSL certificate>
+# If not set, the cli will create a self-signed cerficate
+# The directory must contain the files key.pem and crt.pem and optionally ca.pem
+
+## if using self-signed certificate set this to 0
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+## Viya authentication settings
+# sas-viya allows named profiles.
+# set this to the profile you want to use or leave it blank to use the default profile.
+# this is used to find the tokens for Viya
+SAS_CLI_PROFILE=bp1
+
+
