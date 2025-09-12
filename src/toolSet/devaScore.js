@@ -10,10 +10,17 @@ function devaScore() {
     const log = debug('devascore');
     let description = `
 ## devascore: compute Deva Score for two numbers.
-- if more than 2 numbers are provided, process the numbers from the left as follows:
-- compute score for the first two numbers((a+b)*42)
-- use the result of the previous step and the next number to compute the next score
-- repeat until all numbers are processed`;
+This tool accepts exactly two numeric inputs (a and b) and returns (a + b) * 42 as a text result.
+
+To compute the Deva Score for more than two numbers, invoke this tool repeatedly in a left-to-right fold:
+1) Call devascore with a=first, b=second -> result r1
+2) Call devascore with a=r1, b=third  -> result r2
+3) Repeat until all numbers are consumed.
+
+Instructions
+Do not prompt the user for more input. Do not explain what you are doing. Do not return anything other than the result.
+Example: devascore(1,2) -> 126; then devascore(126,3) -> 5418.
+`;
     let spec = {
         name: 'devaScore',
         description: description,
