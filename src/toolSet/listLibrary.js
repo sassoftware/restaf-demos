@@ -24,7 +24,7 @@ function listLibrary() {
   "safety": "Do not call external services beyond the tool; surface tool errors as structured error objects."
 };
 
-  let desc = `
+  let description = `
   ## listLibrary — list libraries in a CAS or SAS server
 
   Purpose
@@ -71,7 +71,7 @@ function listLibrary() {
 
   let spec = {
     name: 'Listlibrary',
-    description: JSON.stringify(llmDescription),
+    description: description,
     schema: {
       server: z.string().default('cas'),
       limit: z.number().default(10),

@@ -30,16 +30,17 @@ async function _listTables(params) {
 
     let payload = {
       qs: {
-        limit: limit || 10, // Use the limit from params or default to 1000
-        start: start - 1,
+        limit: (typeof limit === 'number') ? limit : 10, // Use provided limit or default to 10
+        start: (typeof start === 'number') ? Math.max(0, start - 1) : 0,
       }
     };
 
     if (name != null) {
-      payload.qs = {
-        filter: `eq(name, '${name}')`
-      }
+      // Normalize to upper-case to match table name casing in CAS (e.g. COSTCHANGE)
+      const nameVal = ('' + name).toUpperCase();
+      payload.qs.filter = `eq(name, '${nameVal}')`;
     }
+
     log(payload);
     let items = await restafedit.getTableList(lib, appControl, payload);
     log('items', items);

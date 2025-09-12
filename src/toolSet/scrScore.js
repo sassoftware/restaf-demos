@@ -15,6 +15,7 @@ function scrScore() {
   let description = `
 ## scrScore
 
+Purpose
 Score a scenario using a model deployed as an SCR container  in Azure or another host).
 
 Inputs

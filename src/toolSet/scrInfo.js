@@ -14,6 +14,7 @@ function scrInfo() {
   let description = `
 ## scrInfo
 
+Purpose
 Return the input/output schema and metadata for an SCR (Score Code Runtime) model.
 
 Inputs

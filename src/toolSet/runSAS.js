@@ -26,7 +26,7 @@ Behavior & usage notes
 
 Examples
 - run sas "data a; x=1; run;"
-- run sas "ods html style=barrettsblue; proc print data=sashelp.class; run; ods html close;"
+- run sas " proc print data=sashelp.class; run;"
 `;
   let spec = {
     name: 'runSAS',

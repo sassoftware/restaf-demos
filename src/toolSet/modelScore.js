@@ -12,6 +12,7 @@ function modelScore() {
   let description = `
 ## modelScore
 
+Purpose
 Score user-supplied scenario data using a model published to MAS (Model Aggregation Service) on SAS Viya.
 
 Inputs

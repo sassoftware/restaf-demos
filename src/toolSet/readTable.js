@@ -11,6 +11,7 @@ function readTable() {
      let describe = `
 ## readTable
 
+Purpose
 Read rows from a table in a specified library (caslib or libref) on a CAS or SAS server.
 
 Required parameters

@@ -5,6 +5,7 @@
   - [Start the mcp server](#startserver)
   - [Enable client for mcp server](#enable)
   - [Enable mcp/redis - optional](#redis)
+  - [Supported Tools](#tools)
 
 
 ---
@@ -155,7 +156,7 @@ how do I use <some tool name>
 
 ---
 
-## Tools
+## Tools(<a name="tools"></a>)
 
 ---
 

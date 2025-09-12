@@ -5,8 +5,24 @@
 
 import { z } from 'zod';
 import _listModels from '../toolhelpers/_listModels.js';
+import { de } from 'zod/v4/locales';
 
 function findModel() {
+  let llmDescription = {
+    "purpose": "Map natural-language requests to findModel parameters and return a compact, machine-readable response.",
+    "param_mapping": {
+      "name": "required - model name or substring to search for"
+    },
+    "response_schema": "{ models: Array<object|string> }",
+    "behavior": "Return only a JSON object matching response_schema. Use defaults when params missing. If ambiguous, ask one short clarifying question. If no results, return { models: [] }.",
+    "examples": [
+      { "input": "find model myModel", "mapped_params": { "name": "myModel" } },
+      { "input": "find model cancer", "mapped_params": { "name": "cancer" } }
+    ],
+    "clarification_rules": "If name missing: 'Which model name would you like to find?'.",
+    "safety": "Do not call external services beyond the tool; surface tool errors as structured error objects."
+  };
+
   let description = `
 ## findModel
 

@@ -12,7 +12,8 @@ function modelInfo() {
   let description = `
 ## modelInfo
 
-Returns metadata for a model published to the MAS (Model Aggregation Service) in SAS Viya.
+Purpose
+Return metadata for a model published to the MAS (Model Aggregation Service) in SAS Viya.
 
 Inputs
 - model (string): The name of the model as published to MAS.

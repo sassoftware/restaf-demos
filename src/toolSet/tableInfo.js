@@ -11,6 +11,7 @@ function tableInfo(Table) {
      let describe = `
 ## tableInfo
 
+Purpose
 Return metadata about a table in a specified library (caslib or libref). Use \`readTable\` to fetch actual row data.
 
 Required parameters
@@ -27,7 +28,6 @@ Usage notes
 - Use this tool to inspect schema and column types before scoring or reading data.
 - Combine with \`readTable\` for sample rows and \`listTables\` to discover available tables.
 
-Benavior
 
 Example
 - tableInfo for table \`cars\` in lib \`Public\`

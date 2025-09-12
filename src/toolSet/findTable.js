@@ -9,6 +9,23 @@ import _listTables from '../toolhelpers/_listTables.js';
 const log = debug('tools');
 
 function findTable() {
+  let llmDescription = {
+    "purpose": "Map natural-language requests to findTable parameters and return a compact, machine-readable response.",
+    "param_mapping": {
+      "lib": "required - library name (e.g., 'Public' or 'sashelp')",
+      "name": "required - table name or substring to search for",
+      "server": "optional - 'cas' or 'sas' (default 'cas')"
+    },
+    "response_schema": "{ tables: string[] }",
+    "behavior": "Return only a JSON object matching response_schema. Use defaults when params missing. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }.",
+    "examples": [
+      { "input": "find table iris in Public library in cas", "mapped_params": { "lib": "Public", "name": "iris", "server": "cas" } },
+      { "input": "find table cars in sashelp in sas server", "mapped_params": { "lib": "sashelp", "name": "cars", "server": "sas" } }
+    ],
+    "clarification_rules": "If lib missing: 'Which library do you want to search in?'. If server ambiguous: 'Do you mean CAS or SAS?'.",
+    "safety": "Do not call external services beyond the tool; surface tool errors as structured error objects."
+  };
+
   let description = `
 ## findTable
 

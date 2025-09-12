@@ -18,7 +18,7 @@ function findLibrary() {
     { "input": "find library sasuser in sas", "mapped_params": { "name": "sasuser", "server": "sas" } }
   ]
 };
-  let desc = `
+  let description = `
   ## findLibrary — locate one or more libraries on CAS or SAS
 
   Purpose
@@ -56,7 +56,7 @@ function findLibrary() {
 
   let spec = {
     name: 'findlibrary',
-    description: JSON.stringify(llmDescription) ,
+    description: description,
     schema: {
       name: z.string(),
       server: z.string()
