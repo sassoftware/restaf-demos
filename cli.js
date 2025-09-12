@@ -2,15 +2,17 @@
 import core from './src/core.js';
 import { config } from 'dotenv';
 import fs from 'fs';
-import yargs from 'yargs';
-let argv = yargs.argv || {};
-let envf = argv.envfile || './.env';
+
+
+let envf = process.argv[2] || './.env/'
+console.log(`Using environment file: ${envf}`);
 if (fs.existsSync(envf)) {
     console.log(`Loading environment variables from ${envf}...`);
-    config();
+    config({path: envf});
 } else {
     console.log('No .env file found, Using default environment variables...');
 }
+    
 
 core()
 .then (() => {
