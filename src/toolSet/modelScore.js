@@ -10,43 +10,40 @@ const log = debug('tools');
 
 function modelScore() {
   let description = `
-  ## modelScore - This tool scores user supplied scenario data with a model published to MAS server in SAS Viya. 
- 
-   
-  ### Output
-  The tool will return the scoring results merged with the fields used by the model for scoring
+## modelScore
 
-  ### Required Parameters
+Score user-supplied scenario data using a model published to MAS (Model Aggregation Service) on SAS Viya.
 
-  - model - the name assigned to the model in MAS server.
-    - The model name is the name assigned to the model when it was published to MAS server
-  - scenario - The scenario is an object or a string that contains the fields and values to be scored by the model.
-    - The scenario can be a string in the format "x1=1, x2=2" or an object like {x1: 1, x2: 2}.
-    - The scenario can also be an array of objects, where each object contains the fields and values to be scored.
-    - If the scenario is a string, it will be converted to an object before scoring.
+Inputs
+- model (string, required): The name of the model as published to MAS.
+- scenario (string | object | array, required): Data to score. Accepts:
+  - a string of comma-separated key=value pairs (e.g. "x=1, y=2"),
+  - a plain object with field names and values (e.g. {x: 1, y: 2}),
+  - an array of objects for batch scoring (the first element is used when a single scenario object is expected).
+- uflag (boolean, optional): When true, returned model field names will be prefixed with an underscore. Default: false.
 
-  ### Optional Parameters
-  - uflag - uflag is optional. uflag is set to false by default. If true, the names of the model fields have a leading underscore.
- 
+Output
+- Returns scoring results merged with the input fields and any model-produced fields (predictions, probabilities, scores), plus available scoring metadata.
 
-  ### Sample Prompts
-  - modelscore with mycoolmodel for {x1=1,x2=2 }
-  - score model mycoolmodel with x1=1,x2=2 
-  - score mycoolmodel with x1=1,x2=2 
+Parsing & behavior
+- If scenario is a string, the tool parses comma-separated key=value pairs into an object.
+- If scenario is an array, the first element will be used when a single scenario is required; the tool supports batch scoring when the underlying MAS scoring helper accepts arrays.
 
- 
+Usage notes
+- Use this tool after confirming the model name with listModels or modelInfo.
+- Ensure MAS connectivity and credentials are available to the runtime.
+- Validate and cast numeric fields as needed before scoring; the simple string parser does not coerce types beyond leaving values as strings.
 
-  ### Notes
-  In a real solution, each model will have its own tool named in a user friendly manner
-  and the user only has to supply the scenario object.
-  For example, the model "mycoolmodel" could have a tool named "MyCoolModel".
-  `;
+Examples
+- modelScore with model='mycoolmodel' and scenario='{x:1,y:2}'
+- modelScore with model='cancer1' and scenario='age=45, sex=M, tumor=stage2'
+`;
   let spec = {
     name: 'modelScore',
     description: description,
     schema: {
       'model': z.string(),
-      'scenario': z.string(),
+      'scenario': z.any(),
       'uflag': z.boolean()
     },
     required: ['model', 'scenario'],

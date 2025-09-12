@@ -8,14 +8,25 @@ import _listModels from '../toolhelpers/_listModels.js';
 
 function findModel() {
   let description = `
-  ## findModel - This the specified model in he MAS server.
-  
-  ### Parameters
-  - **name**: The name of the model to find.
+## findModel
 
-  ### Sample Prompts
-  - find model myModel
-  `;
+Purpose
+Locate a model published to the MAS server in SAS Viya.
+
+Inputs
+- name (string): The model name to search for. 
+
+Output
+An array of matching models (or an empty array when no match).
+
+Usage notes
+- Use this tool to discover whether the model existsbefore calling \`modelInfo\` or \`modelScore\`.
+
+
+Examples
+- find model myModel
+- find model cancer
+`;
 
   let spec = {
     name: 'findModel',

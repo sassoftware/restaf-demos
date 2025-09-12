@@ -12,13 +12,25 @@ import scrModels from '../db/scrModels.js';
 function scrInfo() {
   const log = debug('scr');
   let description = `
-  ## scrInfo is tool that returns information about a SCR model. 
- It returns the input and output schema for the SCR model.
-  ### Sample queries
+## scrInfo
 
-  - describe scr model "loan"
-  - describe scr model http://....
-  `;
+Return the input/output schema and metadata for an SCR (Score Code Runtime) model.
+
+Inputs
+- name (string): The SCR model identifier. 
+What it returns
+- A JSON object describing the model's interface, typically including:
+  - Input variables (names, types, required/optional)
+  - Output variables (predictions, probabilities, scores)
+  
+
+Usage notes
+- If no local mapping exists and \`name\` looks like a URL, the tool will attempt to fetch the schema from that URL.
+- Ensure network connectivity and credentials for the remote SCR service when needed.
+
+Examples
+- describe scr model "https://scr-host/models/loan"
+`;
   let spec = {
     name: 'scrInfo',
     description: description,

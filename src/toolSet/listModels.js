@@ -8,19 +8,26 @@ import _listModels from '../toolhelpers/_listModels.js';
 
 function listModels(appEnv) {
   let description = `
-  ## listModels - This tool list all the available models in the MAS server.
-  The prompt must of the form  
-    - list models. 
-  It can be optionally followed  by a limit parameter.
-  The limit parameter is the number of models that are returned. The default is 10.
-  
-  ### Parameters
-    - limit = the number of models to return. Default is 10.
-    - start = the index to start from. Default is 1. Use this to paginate through the list of models by specifying the start value as the previous limit + 1.
+## listModels
 
-  ### Sample Prompts
-  - list models and  limit to 20
-  `;
+Return a paginated list of models registered in the MAS on a SAS Viya deployment.
+
+Inputs
+- limit (number, optional): Maximum number of models to return. Default: 10.
+- start (number, optional): 1-based index to start the page from. Default: 1. Use this to paginate through results (nextStart = start + limit).
+
+What it returns
+- An array of models(or an empty array if no models found). 
+
+Usage notes
+- Use this tool to discover available models before calling \`modelInfo\` or \`modelScore\`.
+- For large registries, page through results by incrementing \`start\` with the previous \`limit\`.
+
+
+Examples
+- list models
+- list models with limit 20
+`;
 
   let spec = {
     name: 'listModels',

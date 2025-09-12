@@ -9,23 +9,31 @@ import _tableInfo  from '../toolhelpers/_tableInfo.js';
 function tableInfo(Table) {
   const log = debug('tools');
      let describe = `
-## tableInfo is a tool that returns information about a table.
-Use readTable to read the table and get the data.
+## tableInfo
 
-### Required Parameters
-- table - the name of the table to get information about.
-- lib  - the caslib or libref the table is in. 
+Return metadata about a table in a specified library (caslib or libref). Use \`readTable\` to fetch actual row data.
 
-## Required Parameters
-- table - the name of the table to read
-- lib  - the caslib or libref the table is in.
+Required parameters
+- table (string): The name of the table.
+- lib (string): The caslib or libref containing the table.
 
-## Optional Parameters
-- server - the server to read the table from. The value can be either 'cas' or 'sas'. Default is cas.
+Optional parameters
+- server (string): Target server, either 'cas' or 'sas'. Defaults to 'cas'.
 
-### Example prompts
-- tableInfo  for   cars in lib Public  
+What it returns
+- Column metadata (name, type, label, formats) and table-level statistics when available (row count, file size, creation/modified timestamps).
 
+Usage notes
+- Use this tool to inspect schema and column types before scoring or reading data.
+- Combine with \`readTable\` for sample rows and \`listTables\` to discover available tables.
+
+Benavior
+
+Example
+- tableInfo for table \`cars\` in lib \`Public\`
+- describe table \`air\` in lib \`sashelp\` on the sas server
+- info on table \`mydata\` in lib \`mylib\` on the cas server
+- desc table \`sales\` in lib \`analytics\`
 
 `;
     let  specs = {

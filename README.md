@@ -45,6 +45,42 @@ Issue this command from any shell on your desktop
 
 Make sure that you have a node version >=22
 
+`env file`
+
+The cli will look for a file named .env in the directory where the npx command is issued. If found, it will use the file to set some runtime enviornment variables. 
+
+The environment variables you can set are:
+
+```text
+##
+# mcp server environment variables
+#
+
+## server specific settings
+# By default the server will run in HTTP mode
+HTTPS=FALSE
+
+## TLS settings
+# SSLCERT=<location of your SSL certificate>
+# If not set, the cli will create a self-signed cerficate
+# The directory must contain the files key.pem and crt.pem and optionally ca.pem
+
+## if using self-signed certificate set this to 0
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+## Viya authentication settings
+# sas-viya allows named profiles.
+# set this to the profile you want to use or leave it blank to use the default profile.
+# this is used to find the tokens for Viya
+SAS_CLI_PROFILE=<profilename>
+
+
+
+
+
+
+```
+
 
 ### Step 2: Enable github copilot for the mcp server<a name="enable"> </a>
 

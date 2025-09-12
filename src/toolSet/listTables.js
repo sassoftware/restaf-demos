@@ -10,7 +10,7 @@ import _listTables from '../toolhelpers/_listTables.js';
 
 function listTables() {
   const log = debug('tools');
-  let llmDescription =  `{
+  let llmDescription =  {
   "purpose": "Map natural language requests to listTables parameters and return a compact machine-readable response.",
   "param_mapping": {
     "lib": "required - infer from phrases like 'in <lib>' or ask a short clarifying question if missing",
@@ -26,7 +26,7 @@ function listTables() {
     { "input": "list tables in samples in cas", "mapped_params": { "lib": "Samples", "server": "cas" } },
     { "input": "show me sashelp tables, 5 per page", "mapped_params": { "lib": "sashelp", "server": "sas", "limit": 5 } }
   ]
-}`;
+};
 
   let description = `
 ## listTables — list tables in a library on CAS or SAS
@@ -58,9 +58,6 @@ Usage tips
 
 Errors
 - The tool surfaces server errors and returns an empty array when no tables match.
-
-llmDescription 
-${llmDescription}
 
 `;
 

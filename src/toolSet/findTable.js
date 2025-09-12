@@ -10,31 +10,32 @@ const log = debug('tools');
 
 function findTable() {
   let description = `
-## findLibrary: find a specified table in specified library in the CAS or SAS server.
-If server is not specified default to 'cas'.
-If multiple names are specified, repeat the operation for
-  each of the names
+## findTable
 
+Purpose
+Locate a table contained in a specified library (caslib or libref) on a CAS or SAS server.
 
-  ### Required Parameters
-  - **name**: The name of the table to find
-  - **lib**: The name of the library where the table is located
+Inputs
+- lib (string, required): The library to search in (for example \`Public\`, \`sashelp\`, or a caslib name).
+- name (string, required): Table name or substring to search for. Matching is case-insensitive.
+- server (string, optional): Either 'cas' or 'sas'. Defaults to 'cas' when omitted.
 
-  ### Optional Parameters
-  - **server**: The server to search in, either 'cas' or 'sas'. Default is 'cas'.
-  
+What it returns
+- An array of matching table name (empty array when no matches).
 
-  ## Sample Prompt
-  - find table iris in  Public library in cas server
-  - find table iris in sasuser library in sas server
+Usage notes
+- Use this tool to verify that the table exists before calling \`readTable\` or \`tableInfo\`.
 
- `;
+Examples
+- find table iris in Public library in cas
+- find table cars in sashelp in sas server
+`;
 
   let spec = {
     name: 'findTable',
     description: description,
     schema: {
-      server: z.string(), // default server is 'cas',
+      server: z.string().default('cas'), // default server is 'cas',
       name: z.string(),
       lib: z.string()
     },

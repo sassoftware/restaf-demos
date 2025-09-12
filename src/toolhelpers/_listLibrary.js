@@ -43,7 +43,7 @@ async function _listLibrary(params) {
     // query parameters
     let payload = {
       qs: {
-        limit: limit,
+        limit: (limit != null) ? limit : 10,
         start: start - 1
       }
     };

@@ -13,34 +13,56 @@ import scrModels from '../db/scrModels.js';
 function scrScore() {
   const log = debug('scr');
   let description = `
-  ## scrScore - This tool is used to score a scenario using a model published as a SCR container to some provider like 
-  Azure.
+## scrScore
 
-  The input to this tool is:
-  - name - the name of the deployed SCR container.
-  - scenario - The scenario is a key-values pairs like x=1, y=2, z=3
-    - if scenario is not specified, the tool will return the variables in the model
-  
-  ### Sample Prompts
-  - scrscore with url  for x1=1,x2=2
+Score a scenario using a model deployed as an SCR container  in Azure or another host).
 
-  ### Notes
-  Use scrInfo to get the input variables for the model.
-  `;
+Inputs
+- name (string, required): SCR model identifier (URL)
+- scenario (string | object | array, optional): Input values to score. Accepts:
+  - a comma-separated key=value string (e.g. "x=1, y=2"),
+  - a JSON object with field names and values (recommended for typed inputs),
+  - an array of objects for batch scoring. If omitted, the tool will return the model's input variable definitions.
+
+What it returns
+- When scoring: the SCR endpoint response (predictions, probabilities, scores) merged with or alongside the supplied inputs.
+- When \`scenario\` is omitted: metadata describing the model's input variables (names, types, required/optional).
+
+Usage notes
+- Run \`scrInfo\` first to inspect the expected input variables and types.
+- Prefer structured objects for numeric/date values to avoid type ambiguity; the simple string parser keeps values as strings.
+- Ensure network connectivity and any required credentials for the target SCR service.
+
+Examples
+- scrScore with name="loan" and scenario="age=45, income=60000"
+- scrScore with name="https://scr-host/models/loan" and scenario={age:45, income:60000}
+`;
   let spec = {
     name: 'scrScore',
     description: description,
     schema: {
       name: z.string(),
-      scenario: z.string()
+      scenario: z.any()
     },
-    required: ['name', 'scenario'],
+    required: ['name'],
     handler: async (params) => {
-      let url= scrModels(params.name);
+      let url = scrModels(params.name);
       if (url === null) {
         return { status: { statusCode: 2, msg: `SCR model ${params.name} not found` }, results: {} };
       }
-      let r = await _scrScore({url: url, scenario: params.scenario});
+
+      // Normalize simple string scenarios like "x=1, y=2" into an object
+      let scenario = params.scenario;
+      if (typeof scenario === 'string' && scenario.includes('=')) {
+        scenario = scenario.split(',').reduce((acc, pair) => {
+          const [k, ...rest] = pair.split('=');
+          if (!k) return acc;
+          acc[k.trim()] = rest.join('=').trim();
+          return acc;
+        }, {});
+      }
+
+      let r = await _scrScore({ url: url, scenario: scenario });
       return r;
     }
   }
