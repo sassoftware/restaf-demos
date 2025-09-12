@@ -42,13 +42,12 @@ Follow these basic steps to see how an mcp server can help you.
 
 Issue this command from any shell on your desktop
 
-> npx @sassoftware/mcp-serverjs@latest
+> npx @sassoftware/mcp-serverjs@latest <envfile>
 
 Make sure that you have a node version >=22
 
-`env file`
-
-The cli will look for a file named .env in the directory where the npx command is issued. If found, it will use the file to set some runtime enviornment variables. 
+`envfile`
+If this is not specified, the server will try to read from .env file. 
 
 The environment variables you can set are:
 
@@ -64,7 +63,8 @@ HTTPS=FALSE
 ## TLS settings
 # SSLCERT=<location of your SSL certificate>
 # If not set, the cli will create a self-signed cerficate
-# The directory must contain the files key.pem and crt.pem and optionally ca.pem
+# The directory must contain the files
+# key.pem, crt.pem and optionally ca.pem
 
 ## if using self-signed certificate set this to 0
 NODE_TLS_REJECT_UNAUTHORIZED=0
