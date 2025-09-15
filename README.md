@@ -1,17 +1,22 @@
 # mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring 
 
 - [Introduction](#intro)
-- [Using the default mcp server](#defserver)
+- [Supported Tools](#tools)
+- [Enable Authentication](#auth)
+- [Setting up the  mcp server](#defserver)
   - [Start the mcp server](#startserver)
-  - [Enable client for mcp server](#enable)
+- [Enable client for mcp server](#enable)
+- [Using third-party mcp servers](#add)
   - [Enable mcp/redis - optional](#redis)
-  - [Supported Tools](#tools)
+  - [Persising Scores](#persist)
+ 
 
 
 ---
----
 
-## Introduction(#intro)
+## Introduction<a name="intro"> </a>
+
+---
 
 MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
@@ -28,17 +33,75 @@ Some examples are:
 The source code is the repository <https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs>.
 It is provided under the Apache-2.0 license.
 
+---
 
+## Tools<a name="tools"></a>
 
 ---
 
-## Using the default mcp server<a name="defserver"></a>
+The tools are designed to address common scenarios. You can clone the repository and modify the toolset.
+
+
+### Simple tool
+
+- devascore - calculates a special score given two numbers. This is useful for testing the mcp server.
+
+### Data related tools
+
+- findLibrary - check if specified library exists
+- listLibrary - list available libraries in cas or sas
+- findTable   - check if specified table  exists in specified library in cas or sas
+- listTables  - list tables in a specified library in cas or sas
+- readTable   - read records from a cas or sas table
+- searchAsset - an experimental tool using SAS/Catalog
+
+### Scoring with Models in MAS
+
+- findModel  - check if specified model exists in MAS server
+- listModels - list models published to MAS
+- modelInfo  - display the input and output variables for a specified model
+- modelScore - score using the seleced model
+
+### Scoring with SCR
+
+- scrInfo  - display the input and output variables for a specified SCR instance
+- scrScore - score using the specified SCR instance
+
+
+### Scoring with SAS code
+- superstat - an example of accessing custom SAS code
+- runSAS - runs the sas code that is supplied by the user
+- runMacro - runs a macro available to the server. User passes additional macro variables as name, value pairs.
+
+---
+
+## Enable authentication(<a name="auth"></a>)
+
+---
+
+This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
+
+You need to do this once every 90 days or whenever the refresh token expires.
+
+`create a default auth Profile`. 
+Issue this command and follow instruction: `sas-viya profile init`
+
+`create token` 
+Issue this command and follow the instructions: `sas-viya auth loginCode`
+
+At this point the tools can make authenticated calls to SAS Viya
+
+---
+
+## Setting up the mcp server<a name="defserver"></a>
 
 ---
 
 Follow these basic steps to see how an mcp server can help you.
 
-### Step 1: Start the mcp server<a name="startserver"></a>
+
+
+###  Start the mcp server<a name="startserver"></a>
 
 Issue this command from any shell on your desktop
 
@@ -76,14 +139,13 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 SAS_CLI_PROFILE=<profilename>
 
 
-
-
-
-
 ```
 
+---
 
-### Step 2: Enable github copilot for the mcp server<a name="enable"> </a>
+## Enable github copilot for the mcp server<a name="enable"> </a>
+
+---
 
 Similar methodologies can be used with other mcp enabled copilots.
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
@@ -97,129 +159,6 @@ Add the following to the list of mcp servers
 ```
 The name can be anything you like.
 
-### Step 3: Enable mcp/redis<a name="redis"> </a>
-
-To enable persistence with redis, a few steps are required.
-
-1. Add mcp/redis settings.json
-
-```json
-"redis": {
-        "command": "docker",
-        "args": [
-          "run",
-          "--rm",
-          "--name",
-          "mcp_redis",
-          "--network",
-          "redisapp_default",
-          "-i",
-          "-e",
-          "REDIS_HOST=redis",
-          "-e",
-          "REDIS_PORT=6379",
-          "-e",
-          "REDIS_SSL=false",
-          "mcp/redis"
-        ]
-      }
-
-
-```
-
-2. Clone the repository [redis-subscriber](ttps://github.com/sassoftware/restaf-demos/tree/redis-subscriber) and cd to that directory and run this command. It will create containers on your docker desktop for redis server and the subscriber application.
-
-```sh
-npm start
-```
-
-
-#### Sidebar: Authentication with your Viya Server
-
-This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token. You need to do this once every 90 days or whenever the refresh token expires.
-
-`create a default auth Profile`. 
-Issue this command and follow instruction: `sas-viya profile init`
-
-`create token` 
-Issue this command and follow the instructions: `sas-viya auth loginCode`
-
-
-### Issuing prompts
-
-Use the copilot prompt area to issue prompts. To learn about each tool
-issue this prompt
-
-```txt
-how do I use <some tool name>
-```
-
----
-
-## Tools(<a name="tools"></a>)
-
----
-
-These are sample tools. Use them as a guide for your own tools or use them as is.
-
-### Simple tool
-
-- devascore - calculates a special score given two numbers. This is useful for testing the mcp server
-
-### Data related tools
-
-- findLibrary - check if specified library exists
-- listLibrary - list available libraries in cas or sas
-- findTable   - check if specified table  exists in specified library in cas or sas
-- listTables  - list tables in a specified library in cas or sas
-- readTable   - read records from a cas or sas table
-- searchAsset - an experimental tool using SAS/Catalog
-
-### Scoring with Models in MAS
-
-- findModel  - check if specified model exists in MAS server
-- listModels - list models published to MAS
-- modelInfo  - display the input and output variables for a specified model
-- modelScore - score using the seleced model
-
-### Scoring with SCR
-
-- scrInfo  - display the input and output variables for a specified SCR instance
-- scrScore - score using the specified SCR instance
-
-
-### Scoring with SAS code
-- superstat - an example of accessing custom SAS code
-- runSAS - runs the sas code that is supplied by the user
-- runMacro - runs a macro available to the server. User passes additional macro variables as name, value pairs.
-
----
-## Persisting the scores
----
-
-The default app is setup to publish the results to Viya using mcp/redis. The description below is for the demo application.
-
-
-
-### Step 2: Start the redis database and subscriber
-
-See the folder redis. 
-
-Run this command to start redis database and subscriber. Change the CAS_LIB and CAS_TABLE to your master table.
-
-```sh
-npm run redissub
-```
-
-
-### Step 3: Create the master table
-
-Run this command to use the default master table. This code will vary based on your application.
-
-```sh
-npm run setup
-
-```
 
 ---
 ## Adding new tools
@@ -232,18 +171,30 @@ npm run setup
 - Restart the mcp server
 
 ---
+## Persisting the scores<a name="persist"> </a>
+---
+
+You can use many mcp servers to persist the scoring data. 
+See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores.
+
+
+---
 
 ## Notes
 
 ---
 
-This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. In a production system the designer has to make decisions on what needs to be cached and the implications of such caching.
+This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. One advantages is that the session does not timeout.
 
-The implication of this design choice is felt most when the tool needs to create a compute session - the requests will take longer than when the compute session is cached.
+In a production system the designer has to make decisions on what needs to be cached and the implications of such caching.
+
+The implication of this design choice is felt most when the tool needs is creating compute session - the requests will take longer than when the compute session is cached.
 
 ### Useful links
 
 - [Documentation on modelcontextprotocol(mcp)](https://modelcontextprotocol.io/introduction)
 
 - [mcp sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
+
+- [mkcert](https://www.npmjs.com/package/mkcert)
 
