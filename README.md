@@ -93,13 +93,14 @@ The tools are designed to address common scenarios. You can clone the repository
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
 
-You need to do this once every 90 days or whenever the refresh token expires.
 
 `create a default auth Profile`. 
 Issue this command and follow instruction: `sas-viya profile init`
 
 `create token` 
 Issue this command and follow the instructions: `sas-viya auth loginCode`
+
+You need to do this once every 90 days or whenever the refresh token expires.
 
 At this point the tools can make authenticated calls to SAS Viya
 
@@ -113,7 +114,7 @@ Follow these basic steps to see how an mcp server can help you.
 
 Issue this command from any shell on your desktop
 
-> npx @sassoftware/mcp-serverjs@latest <envfile>
+> npx @sassoftware/mcp-serverjs@latest envfile
 
 Make sure that you have a node version >=22
 
