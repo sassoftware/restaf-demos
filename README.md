@@ -8,6 +8,7 @@
 - [Enable client for mcp server](#enable)
 - [Persising Scores](#persist)
 - [Notes](#notes)
+- [Useful Links](#links)
 
 
 ---
@@ -189,11 +190,17 @@ In a production system the designer has to make decisions on what needs to be ca
 
 The implication of this design choice is felt most when the tool needs is creating compute session - the requests will take longer than when the compute session is cached.
 
-### Useful links
+---
+
+### Useful links<a name="links"> </a>
+
+---
 
 - [Documentation on modelcontextprotocol(mcp)](https://modelcontextprotocol.io/introduction)
 
 - [mcp sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
+
+- [restaf](https://sassoftware.github.io/restaf/)
 
 - [mkcert](https://www.npmjs.com/package/mkcert)
 

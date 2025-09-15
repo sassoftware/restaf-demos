@@ -16,7 +16,7 @@
     "deploy": "bash ./deploy.sh",
     "bump": "npm version prerelease",
     "pub": "npm publish --tag latest --access public",
-    "setup": "cd prepDemo && node setupMaster.js"
+    "setupDemo": "cd prepDemo && node setupMaster.js"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",
   "keywords": [
