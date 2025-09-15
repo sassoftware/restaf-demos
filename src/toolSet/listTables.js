@@ -20,6 +20,7 @@ function listTables() {
     "where": "optional filter string"
   },
   "response_schema": "{ tables: string[], nextStart?: number }",
+  "displayed_response": "A JSON object with a 'tables' array of table names (strings). If more results likely exist, include 'nextStart' for pagination.",
   "behavior": "Return only JSON that matches response_schema. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }. Include nextStart = start + limit when more results likely exist.",
   "clarification_rules": "If lib missing: 'Which library do you want to list tables from?'. If server ambiguous: 'Do you mean CAS or SAS?'. If user says 'next', interpret as start = previousStart + previousLimit.",
   "examples": [
@@ -55,6 +56,9 @@ Usage tips
 - Short user prompts like "list sas tables in sashelp" are mapped automatically.
 - If you need full inventory, page through results rather than requesting extremely large limits.
 - To inspect a specific table, use the \`tableInfo\` or \`readTable\` tools after obtaining the table name.
+
+Displayed_response
+list the first 10 tables  
 
 Errors
 - The tool surfaces server errors and returns an empty array when no tables match.
