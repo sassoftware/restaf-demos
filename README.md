@@ -2,14 +2,12 @@
 
 - [Introduction](#intro)
 - [Supported Tools](#tools)
+- [Modify/Add Tools](#add)
 - [Enable Authentication](#auth)
 - [Setting up the  mcp server](#defserver)
-  - [Start the mcp server](#startserver)
 - [Enable client for mcp server](#enable)
-- [Using third-party mcp servers](#add)
-  - [Enable mcp/redis - optional](#redis)
-  - [Persising Scores](#persist)
- 
+- [Persising Scores](#persist)
+- [Notes](#notes)
 
 
 ---
@@ -75,7 +73,20 @@ The tools are designed to address common scenarios. You can clone the repository
 
 ---
 
-## Enable authentication(<a name="auth"></a>)
+## Adding/Modifying tools<a name="add"></a>
+
+---
+
+- Add a file to the toolSet folder
+- Use one of the files in this folder as a guide
+- Use toolhelpers folder for the function code(recommended)
+- Add the new file to the index.js file in toolSet folder
+- Restart the mcp server
+
+
+---
+
+## Enable authentication<a name="auth"></a>
 
 ---
 
@@ -98,10 +109,6 @@ At this point the tools can make authenticated calls to SAS Viya
 ---
 
 Follow these basic steps to see how an mcp server can help you.
-
-
-
-###  Start the mcp server<a name="startserver"></a>
 
 Issue this command from any shell on your desktop
 
@@ -160,22 +167,14 @@ Add the following to the list of mcp servers
 The name can be anything you like.
 
 
----
-## Adding new tools
----
 
-- Add a file to the toolSet folder
-    - Use one of the files in this folder as a guide
-    - Use toolhelpers folder for the function code(recommended)
-- Add the new file to the index.js file in toolSet folder
-- Restart the mcp server
 
 ---
 ## Persisting the scores<a name="persist"> </a>
 ---
 
 You can use many mcp servers to persist the scoring data. 
-See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores.
+See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores in a CAS table.
 
 
 ---
