@@ -29,8 +29,8 @@ async function _listModels(params) {
     let { microanalyticScore } = await store.addServices('microanalyticScore');
     let payload = {
       qs: {
-        limit: limit || 10,
-        start: start || 1 // note: bug in microanalyticScore service, start is not zero based
+        limit: Math.max(limit,1),
+        start:  Math.max(start-1, 0)
       }
     }
     if (name != null) {
@@ -38,6 +38,7 @@ async function _listModels(params) {
         filter: `eq(name, '${name}')`
       } 
     }
+    console.log('payload', JSON.stringify(payload, null, 2));
     let result = await store.apiCall(microanalyticScore.links('modules'), payload);
     let list = result.itemsList().toJS();
     log('result', JSON.stringify(list, null, 2));
