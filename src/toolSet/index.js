@@ -21,6 +21,8 @@ import findTable from './findTable.js';
 import findModel from './findModel.js';
 import runSAS from './runSAS.js';
 import runMacro from './runMacro.js';
+import listJobs from './listJobs.js';
+import findJob from './findJob.js';
 
 
 let list = [
@@ -35,6 +37,8 @@ let list = [
     scrScore(),
     runSAS(),
     runMacro(),
+    findJob(),
+    listJobs(),
 
     listLibrary(),
     findLibrary(),

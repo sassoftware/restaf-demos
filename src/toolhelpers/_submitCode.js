@@ -9,7 +9,7 @@ import getLogonPayload from './getLogonPayload.js';
 
 
 async function _submitCode(src, params) {
-
+  let { output, limit, args } = params;
   try {
     // setup
     let store = restaf.initStore({
@@ -22,14 +22,12 @@ async function _submitCode(src, params) {
     let logonPayload = await getLogonPayload();
 
     // get compute sessio, run sas code and retrieve result
-  
 
     let computeSession = await restaflib.computeSetup(store, null, logonPayload);
-    let computeSummary = await restaflib.computeRun(store, computeSession, src, params);
+    let computeSummary = await restaflib.computeRun(store, computeSession, src, args);
 
     let jobStatus = computeSummary.SASJobStatus;
     let structuredOutput = {};
-    console.log(`_submitCode: jobStatus: ${jobStatus}`);
     if (jobStatus === 'failed' || jobStatus === 'error' || jobStatus === 'running') {
       let msg = `Job  ended with status of ${jobStatus}. Please check the log for errors.`;
       let log = await computeResults(store, computeSummary, 'log');
@@ -42,8 +40,26 @@ async function _submitCode(src, params) {
       let listing = await restaflib.computeResults(store, computeSummary, "listing");
       let tables = await restaflib.computeResults(store, computeSummary, 'tables');
       let cc = jobStatus === 'warning' ? 1 : 0;
-      let status = { status: { statusCode: cc, msg: `Job completed with status ${jobStatus}`} };
-      structuredOutput = { status, ods, log: log2html(log), listing: log2html(listing), tables: tables };
+      let status = { status: { statusCode: cc, msg: `Job completed with status ${jobStatus}` } };
+
+      let rows = [];
+      let notes = ' '
+      if (output != null && output.trim().length > 0 && output.trim().toLowerCase() !== 'none') {
+        if (tables.includes(output.toUpperCase()) === false) {
+          let msg = `The requested output table ${output} was not found in the response. 
+                     Please check the tables element for available tables.`;
+          notes = { status: { statusCode: 1, msg: msg } };
+        } else {
+          let tpayload = {
+            qs: {
+              limit: (limit != null) ? limit : 100,
+              start: 0
+            }
+          }
+          rows = await restaflib.computeFetchData(store, computeSummary, output, null, tpayload);
+        }
+      }
+      structuredOutput = { status, ods, log: log2html(log), listing: log2html(listing), tables: tables, output: output, rows: rows, notes: notes };
     }
     // add output tables next
 
@@ -61,8 +77,8 @@ async function _submitCode(src, params) {
   catch (error) {
     // Oops! Something went wrong
     console.error(`Error in _submitCode: ${JSON.stringify(error)}`);
-    let e = {error: error};
-    return { content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e }; 
+    let e = { error: error };
+    return { content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e };
   }
   function log2html(log) {
     let logText = '';
