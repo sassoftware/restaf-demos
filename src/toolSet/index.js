@@ -19,7 +19,7 @@ import devaScore from './devaScore.js';
 import superstat from './superstat.js';
 import findTable from './findTable.js';
 import findModel from './findModel.js';
-import runSAS from './runSAS.js';
+import program from './program.js';
 import runMacro from './runMacro.js';
 import listJobs from './listJobs.js';
 import findJob from './findJob.js';
@@ -35,7 +35,7 @@ let list = [
 
     scrInfo(),
     scrScore(),
-    runSAS(),
+    program(),
     runMacro(),
     findJob(),
     listJobs(),
