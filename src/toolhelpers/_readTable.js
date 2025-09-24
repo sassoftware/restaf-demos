@@ -21,7 +21,7 @@ async function _readTable(params) {
     itable.libref = lib;
   }
   let config = {
-    source: server,
+    source: (server === 'sas') ? 'compute' : server,
     table: itable,
 
     initialFetch: {
@@ -58,14 +58,14 @@ async function _readTable(params) {
 
 
     await deleteSession(appControl);
-    await appControl.store.logoff();
+   // await appControl.store.logoff();
     let t = (limit === 1) ? JSON.stringify(outdata[0]) : JSON.stringify(outdata);
     return { content: [{ type: 'text', text: t }], structuredContent: outdata };
 
   } catch (err) {
     log(JSON.stringify(err));
     await deleteSession(appControl);
-    await appControl.store.logoff();
+    //await appControl.store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }

@@ -43,7 +43,7 @@ async function _submitCode(src, params) {
       let status = { status: { statusCode: cc, msg: `Job completed with status ${jobStatus}` } };
 
       let rows = [];
-      let notes = ' '
+      let notes = ' ';
       if (output != null && output.trim().length > 0 && output.trim().toLowerCase() !== 'none') {
         if (tables.includes(output.toUpperCase()) === false) {
           let msg = `The requested output table ${output} was not found in the response. 
