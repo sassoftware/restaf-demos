@@ -6,24 +6,22 @@ import { z } from 'zod';
 import _listJobs from '../toolhelpers/_listJobs.js';
 function findJob() {
   let llmDescription= {
-  "purpose": "Map natural language requests to findJob parameters and return structured results.",
+  "purpose": "Map natural language requests to find a job in SAS Viya and return structured results.",
   "param_mapping": {
     "name": "required - single name. If missing, ask 'Which job name would you like to find?'.",
-    "server": "infer 'cas' or 'sas' from prompt; default 'cas'"
+
   },
   "response_schema": "{ jobs: Array<string|object> }",
-  "behavior": ["Return only JSON matching response_schema when invoked by an LLM. If no matches, return { jobs: [] }. Surface server errors directly.",
-    { "input": "find job xyz", "mapped_params": { "name": "Public" } }
-  ]
+  "behavior": "Return only JSON matching response_schema when invoked by an LLM. If no matches, return { jobs: [] }"
 };
   let description = `
-  ## findJob — locate one or more jobs on CAS or SAS
+  ## findJob — locate one or more jobs on Viya Server
 
   Purpose
-  - Locate a job on a specified server (CAS or SAS). 
+  - Locate a job on Viya Server
 
   What it returns
-  - An object with a single property, jobs, which is an array of matching job names or metadata objects (when available). If no matches are found, the array is empty.
+  - An object with a single property, job, which is an array of matching job names or metadata objects (when available). If no matches are found, the array is empty.
 
   Key features
   - Accepts a single job name
@@ -40,12 +38,6 @@ function findJob() {
   Usage examples
   - "find job xyz" 
  
-
-  Response format
-  - The tool returns an object with a single property, \`libraries\`, which is an array of matching library names or metadata objects. If no matches are found, the array is empty.
-
-  Clarifying questions
-  - If the input is ambiguous (e.g., no name provided), the tool should prompt: 'Which library name would you like to find?'.
   `;
 
 
@@ -53,8 +45,7 @@ function findJob() {
     name: 'findJob',
     description: description,
     schema: {
-      name: z.string(),
-      server: z.string()
+      name: z.string()
     },
     required: ['name'],
     handler: async (params) => {

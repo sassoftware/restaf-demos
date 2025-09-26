@@ -21,8 +21,10 @@ import findTable from './findTable.js';
 import findModel from './findModel.js';
 import program from './program.js';
 import runMacro from './runMacro.js';
+import job from './job.js';
 import listJobs from './listJobs.js';
 import findJob from './findJob.js';
+import chataqb from './chataqb.js';
 
 
 let list = [
@@ -39,6 +41,7 @@ let list = [
     runMacro(),
     findJob(),
     listJobs(),
+    job(),
 
     listLibrary(),
     findLibrary(),
@@ -49,7 +52,9 @@ let list = [
     superstat(),
     devaScore(),
 
-    searchAssets()
+    searchAssets(),
+
+    chataqb()
  
 ];
 
