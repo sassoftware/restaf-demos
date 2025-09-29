@@ -15,7 +15,7 @@
     "debug": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk cli.js",
     "deploy": "bash ./deploy.sh",
     "bump": "npm version prerelease",
-    "pub": "npm publish --tag latest --access public",
+    "pub": "npm publish --tag alpha --access public",
     "setupDemo": "cd prepDemo && node setupMaster.js"
   },
   "repository": "https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs",

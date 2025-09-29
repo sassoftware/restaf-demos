@@ -8,14 +8,14 @@ import { z } from 'zod';
 import _jobSubmit from '../toolhelpers/_jobSubmit.js';
 
 
-function job() {
+function jobdef() {
   let description = `
-## Job
+## Job Definition
 
-Execute a job on a SAS Viya server
+Define a job Definition to be executed on a SAS Viya server
 
 Required Parameters
-- name(string, required): The name of the job 
+- name(string, required): The name of the job Definition 
 
 Optional Parameters
 - scenario(string | object ,optional): Input values to program/ Accepts:
@@ -33,14 +33,14 @@ If output includes the JSON key, display it in a tabular format if possible.
 Examples
 - job xyz scenario param1=10,param2=val2 
   - This should result in {name: 'xyz', scenario: {param1:10, param2:'val2'}}
-- job myjob scenario a=10,b=20 
-  - This should result in {name: 'myjob', scenario: {a:10, b:20}}
-- job myjob a=10,b=0,c=30
-  - This should result in {name: 'myjob', scenario: {a:10, b:0, c:30}}
+- job mydef scenario a=10,b=20 
+  - This should result in {name: 'mydef', scenario: {a:10, b:20}}
+- job mydef a=10,b=0,c=30
+  - This should result in {name: 'mydef', scenario: {a:10, b:0, c:30}}
 `;
 
   let spec = {
-    name: 'jobs',
+    name: 'jobdef',
     description: description,
     schema: {
       name: z.string(),
@@ -49,7 +49,7 @@ Examples
     required: ['name'],
     handler: async (params) => {
       let scenario = params.scenario;
-      params.type = 'job';
+      params.type = 'jobdef';
       let scenarioObj ={};
        let count = 0;
        debugger;
@@ -81,4 +81,4 @@ Examples
   return spec;
 }
 
-export default job;
+export default jobdef;

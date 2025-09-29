@@ -27,7 +27,7 @@ async function _jobSubmit(params) {
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);
-    let output = {log: r.log, listing: r.listing};
+    let output = {log: r.log, listing: r.listing, JSON: r.JSON};
     return {
       content: [{type: 'text', text: JSON.stringify(r) }],
       structuredContent: r

@@ -2,8 +2,8 @@
 # placeholder - needs the following changes
 # mount authentication info
 # mount tls information
-docker rm -f sasmcpserverjs
-docker rmi sasmcpserverjs
-docker build -f ./Dockerfile -t sasmcpserverjs .
-docker run  --env-file .env --name sasmcpserverjs -p 8080:8080 sasmcpserverjs
+docker rm -f mcp-serverjs
+docker rmi mcp-serverjs
+docker build -f ./Dockerfile -t mcp-serverjs .
+docker run  --env-file .env --name mcp-serverjs -p 8080:8080 mcp-serverjs
 
