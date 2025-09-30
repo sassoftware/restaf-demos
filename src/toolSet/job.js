@@ -15,9 +15,10 @@ function job() {
 Execute a job on a SAS Viya server
 
 Required Parameters
-- name(string, required): The name of the job 
+- name(string, required): The name of the job or jobdef. If it is jobdef, the type must also be supplied with a value of 'def'
 
 Optional Parameters
+- type(string, optional):  if name refers to a jobdef, then then value of type must be set to 'def'. 
 - scenario(string | object ,optional): Input values to program/ Accepts:
   - a comma-separated key=value string (e.g. "x=1, y=2"),
   - a JSON object with field names and values (recommended for typed inputs),
@@ -32,11 +33,13 @@ If output includes the JSON key, display it in a tabular format if possible.
 
 Examples
 - job xyz scenario param1=10,param2=val2 
-  - This should result in {name: 'xyz', scenario: {param1:10, param2:'val2'}}
+  - This should result in {name: 'xyz', type="job" scenario: {param1:10, param2:'val2'}}
 - job myjob scenario a=10,b=20 
-  - This should result in {name: 'myjob', scenario: {a:10, b:20}}
+  - This should result in {name: 'myjob', type="job", scenario: {a:10, b:20}}
 - job myjob a=10,b=0,c=30
-  - This should result in {name: 'myjob', scenario: {a:10, b:0, c:30}}
+  - This should result in {name: 'myjob', type="job", scenario: {a:10, b:0, c:30}}
+- job name scenario {"a":10,"b":20} type='def'
+  - This should result in {name: 'name', type="def", scenario: {a:10, b:20}}
 `;
 
   let spec = {
@@ -44,12 +47,12 @@ Examples
     description: description,
     schema: {
       name: z.string(),
+      type: z.string().default('job'),
       scenario: z.any().default('')
     },
     required: ['name'],
     handler: async (params) => {
       let scenario = params.scenario;
-      params.type = 'job';
       let scenarioObj ={};
        let count = 0;
        debugger;
@@ -74,6 +77,9 @@ Examples
           }
         }
       params.scenario= scenarioObj;
+      if (!params.type) {
+        params.type = 'job';
+      }
       let r = await _jobSubmit(params);
       return r;
     }

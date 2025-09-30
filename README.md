@@ -68,9 +68,11 @@ The tools are designed to address common scenarios. You can clone the repository
 
 
 ### Scoring with SAS code
-- superstat - an example of accessing custom SAS code
-- runSAS - runs the sas code that is supplied by the user
-- runMacro - runs a macro available to the server. User passes additional macro variables as name, value pairs.
+- superstat - an example of accessing custom SAS code - mainly for testing
+- program - runs the sas code that is supplied by the user
+- macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
+- job - run either a job or jobdefintion. 
+  - One could publish a SAS Studio flow as a job or jobDefinition and use this tool to execute it
 
 ---
 
