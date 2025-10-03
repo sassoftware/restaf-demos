@@ -28,14 +28,12 @@ async function getToken() {
     let host = js[profile]['sas-endpoint'];
 
     let token = await refreshToken(refresh_token, host);
-    console.log('[Note] Retrieved new access token',token);
     return { host, token };
   } catch (e) {
     throw '[Error] Failed to read credentials/config file: ' + e;
   }
   async function refreshToken(token, host) {
     const url = `${host}/SASLogon/oauth/token`;
-    console.error('[Note] Refreshing token for host: ' + host);
     let opts = getOpts();
 
     const agent = new Agent({

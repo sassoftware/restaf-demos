@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.5",
-    "@sassoftware/restaf": "^5.5.1-5",
-    "@sassoftware/restafedit": "^3.11.1-6",
-    "@sassoftware/restaflib": "^5.5.1-5",
+    "@sassoftware/restaf": "^5.5.1-6",
+    "@sassoftware/restafedit": "^3.11.1-7",
+    "@sassoftware/restaflib": "^5.5.1-6",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",

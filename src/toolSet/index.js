@@ -23,6 +23,7 @@ import program from './program.js';
 import runMacro from './runMacro.js';
 import job from './job.js';
 import listJobs from './listJobs.js';
+import jobDef from './jobDef.js';   
 import findJob from './findJob.js';
 import chataqb from './chataqb.js';
 
@@ -42,6 +43,7 @@ let list = [
     findJob(),
     listJobs(),
     job(),
+    jobDef(),
 
     listLibrary(),
     findLibrary(),

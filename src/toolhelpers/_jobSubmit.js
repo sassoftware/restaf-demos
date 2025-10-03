@@ -27,10 +27,17 @@ async function _jobSubmit(params) {
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);
-    let output = {log: r.log, listing: r.listing, JSON: r.JSON};
+
+    let response = {
+      tables: r.tables,
+      listing: r.listing,
+      log: r.log
+    };
+    
+    
     return {
-      content: [{type: 'text', text: JSON.stringify(r) }],
-      structuredContent: r
+      content: [{ type: 'text', text: JSON.stringify(response) }],
+      structuredContent: response
     };
   }
   catch (error) {
@@ -39,18 +46,6 @@ async function _jobSubmit(params) {
     let e = { error: error };
     return { content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e };
   }
-  function log2html(log) {
-    let logText = '';
-    // eslint-disable-next-line array-callback-return
-    log.map((data) => {
-      let line = data.line.replace(/(\r\n|\n|\r)/gm, "");
-      if (line.length === 0) {
-        logText = logText + '\n';
-      } else { }
-      logText = logText + line + '\n';
-    });
-    return logText;
-  };
 }
 
-export default _jobSubmit;
+  export default _jobSubmit;
