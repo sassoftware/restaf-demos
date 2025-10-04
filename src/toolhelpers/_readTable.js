@@ -66,7 +66,8 @@ async function _readTable(params) {
     log(JSON.stringify(err));
     await deleteSession(appControl);
     //await appControl.store.logoff();
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
+    return { content: [{ type: 'text', text: JSON.stringify(err) }],
+     };
   }
 }
 export default _readTable;
