@@ -7,11 +7,11 @@ import { randomUUID } from "node:crypto"
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
+// import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
 import toolSet from './toolSet/index.js';
 
 
-async function createMcpServer(mode, appEnv) {
+async function createMcpServer(appEnv) {
   //const log = debug('mcpserver');
   // Create an MCP server
 
@@ -42,18 +42,27 @@ async function createMcpServer(mode, appEnv) {
     )
   })
   appEnv.mcpServer = mcpServer;
-  let transport;
-  transport = new StreamableHTTPServerTransport({
+  debugger;
+  let transport = (appEnv.mcpType === 'http') 
+  ? new StreamableHTTPServerTransport({
     sessionIdGenerator: ()=> randomUUID(),
     enableJsonResponse: true,
     onsessioninitialized: (sessionId) => {
       appEnv.transports[sessionId] = transport;
 
     }
-  });
+  })
+  : new StdioServerTransport(/*{
+    sessionIdGenerator: ()=> randomUUID(),
+    enableJsonResponse: true,
+    onsessioninitialized: (sessionId) => {
+      appEnv.transports[sessionId] = transport;
 
+    }
+  }*/);
 
-  console.error('[Note] Transport mode:', mode);
+  console.error('[Note] Created MCP Server', transport);
+  console.error('[Note] Transport mode:====================================', appEnv.mcpType);
   await mcpServer.connect(transport);
   return transport;
   

@@ -3,20 +3,19 @@ import core from './src/core.js';
 import { config } from 'dotenv';
 import fs from 'fs';
 
-
 let envf = process.argv[2] || './.env/'
-console.log(`Using environment file: ${envf}`);
+console.error(`Using environment file: ${envf}`);
 if (fs.existsSync(envf)) {
-    console.log(`Loading environment variables from ${envf}...`);
-    config({path: envf});
+    console.error(`Loading environment variables from ${envf}...`);
+    config({path: envf,quiet: true});
 } else {
-    console.log('No .env file found, Using default environment variables...');
+    console.error('No .env file found, Using default environment variables...');
 }
     
 
 core()
 .then (() => {
-    console.log('MCP Server initialized successfully.');
+    console.error('MCP Server initialized successfully.');
 })
 .catch((error) => {
     console.error('Error initializing MCP Server:', error);

@@ -30,7 +30,8 @@ Example: devascore(1,2) -> 126; then devascore(126,3) -> 5418.
         },
         handler: async ({ a, b }) => {
             log('devascore', a, b);
-            return { content: [{ type: 'text', text: String((a + b) * 42) }] }
+            return { content: [{ type: 'text', 
+                text: String((a + b) * 42) }] }
         }
     }
     return spec;
