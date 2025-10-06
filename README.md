@@ -4,7 +4,6 @@
 - [Supported Tools](#tools)
 - [Modify/Add Tools](#add)
 - [Enable Authentication](#auth)
-- [Setting up the  mcp server](#defserver)
 - [Enable client for mcp server](#enable)
 - [Persising Scores](#persist)
 - [Notes](#notes)
@@ -71,8 +70,8 @@ The tools are designed to address common scenarios. You can clone the repository
 - superstat - an example of accessing custom SAS code - mainly for testing
 - program - runs the sas code that is supplied by the user
 - macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
-- job - run either a job or jobdefintion. 
-  - One could publish a SAS Studio flow as a job or jobDefinition and use this tool to execute it
+- job - run a job 
+- jobdef - use a job definition to run sas code 
 
 ---
 
@@ -106,19 +105,48 @@ You need to do this once every 90 days or whenever the refresh token expires.
 
 At this point the tools can make authenticated calls to SAS Viya
 
----
-
-## Setting up the mcp server<a name="defserver"></a>
 
 ---
 
-Follow these basic steps to see how an mcp server can help you.
+## Enable github copilot for the mcp server<a name="enable"> </a>
 
-Issue this command from any shell on your desktop
+---
 
-> npx @sassoftware/mcp-serverjs@latest envfile
+Similar methodologies can be used with other mcp enabled copilots(ex: Claude Desktopm OpenAI desktop, etc...)
+Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
+Add the following to the list of mcp servers
 
-Make sure that you have a node version >=22
+
+### stdio
+This is ideal for running mcp servers locally.  
+```json
+ "sasmcp": {
+    "type": "stdio",
+    "command": "npx",
+    "args": [
+      "@sassoftware/mcp-serverjs@beta"
+    ],
+    "env": {
+      "SAS_CLI_PROFILE": "the name of the SAS CLI profile",
+      "SAS_CLI_CONFIG": "full path to sas_cli_config folder",
+      "SSLCERT": "full path to folder with SSL certificates"
+    }
+  }
+```
+
+### http 
+This is an alternate to using stdio. In my experience this is not supported 
+universally.
+
+```json
+ "sasmcp": {
+    "type": "http",
+    "url": "http://localhost:8080/mcp"
+ }
+```
+Then create a .env file that looks like this
+
+```env
 
 `envfile`
 If this is not specified, the server will try to read from .env file. 
@@ -129,6 +157,9 @@ The environment variables you can set are:
 ##
 # mcp server environment variables
 #
+
+# Tells the mcp server to use http and not stdio
+MCPTYPE=http
 
 ## server specific settings
 # By default the server will run in HTTP mode
@@ -151,27 +182,6 @@ SAS_CLI_PROFILE=<profilename>
 
 
 ```
-
----
-
-## Enable github copilot for the mcp server<a name="enable"> </a>
-
----
-
-Similar methodologies can be used with other mcp enabled copilots.
-Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
-Add the following to the list of mcp servers
-
-```js
- "viya-scoring-mcp-server": {
-    "type": "http",
-    "url": "http://localhost:8080/mcp"
- }
-```
-The name can be anything you like.
-
-
-
 
 ---
 ## Persisting the scores<a name="persist"> </a>
