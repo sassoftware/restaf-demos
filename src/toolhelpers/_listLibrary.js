@@ -21,7 +21,7 @@ async function _listLibrary(params) {
       casProxy: true,
       options: { ns: null, proxyServer: null, httpOptions: getStoreOpts() }
     }
-    console.error('[Note] Calling restafedit.setup with logonPayload', logonPayload);
+   // console.error('[Note] Calling restafedit.setup with logonPayload', logonPayload);
     let appControl = await restafedit.setup(
       logonPayload,
       config

@@ -13,7 +13,7 @@ function getOpts() {
         if (fs.existsSync(`${tlsdir}/ca.pem`) === true) {
             options.ca = fs.readFileSync(`${tlsdir}/ca.pem`, { encoding: 'utf8' });
         }
-        console.error("[Note] TLS files found, returning options", options);
+      //  console.error("[Note] TLS files found, returning options", options);
         return options;
     } else {
         console.error("[Note] No TLS files found, returning null");

@@ -31,7 +31,7 @@ async function getToken() {
     let host = js[profile]['sas-endpoint'];
 
     let token = await refreshToken(refresh_token, host);
-    console.error('[Note] Refreshed token', token.substring(0, 10) + '...');
+   // console.error('[Note] Refreshed token', token.substring(0, 10) + '...');
     return { host, token };
   } catch (e) {
     console.error(e);
