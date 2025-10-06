@@ -5,35 +5,23 @@
 import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
 import getStoreOpts from './getStoreOpts.js';
-import debug from 'debug';
-
-const log = debug('listlibrary');
 
 async function _listLibrary(params) {
   let { server, limit, start, name } = params;
-
+  console.error('listLibrary called with params', params);
   let logonPayload = await getLogonPayload();
   let config = {
     source: (server === 'sas') ? 'compute' : server,
     table: null
   };
 
-  log(config);
-  /*
-  logonPayload,
-  appControl,
-  sessionID,
-  uBuiltins,
-  user,
-  userData,
-  storeConfig
-  */
   try {
     // setup request control
     let storeConfig= {
       casProxy: true,
       options: { ns: null, proxyServer: null, httpOptions: getStoreOpts() }
     }
+    console.error('[Note] Calling restafedit.setup with logonPayload', logonPayload);
     let appControl = await restafedit.setup(
       logonPayload,
       config
@@ -53,10 +41,9 @@ async function _listLibrary(params) {
         filter: `eq(name, '${name}')`
       }
     }
-
-    log(payload);
+    console.error('[Note] Calling getLibraryList with payload', payload);
     let items = await restafedit.getLibraryList(appControl, payload);
-    log('items', items);
+  
     return { content: [{ type: 'text', text: JSON.stringify(items) }],
       structuredContent: items
     };

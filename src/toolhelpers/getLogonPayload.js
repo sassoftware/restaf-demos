@@ -23,17 +23,19 @@ async function getLogonPayload() {
   // need more configuration and code changes(mounting .sas folder) to make this work in docker
 
   try {
+    console.error('[Note] calling getToken()');
     let {host, token} = await getToken();
+    console.error('[Note] got token from getToken() for host ', host);
     let logonPayload = {
       host: host,
       authType: 'server',
       token: token,
       tokenType: 'Bearer'
     };
-    console.error(`[Note] Using Viya host: `, host);
+    console.error(`[Note]...... Using Viya host: `, host);
     return logonPayload;
   } catch (e) {
-    console.error('[Error] Error getting token: ', e);
+    console.error('[Error].... Error getting token: ', e);
     process.exit(1);
   }
 

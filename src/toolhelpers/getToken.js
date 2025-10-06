@@ -13,12 +13,15 @@ async function getToken() {
   if (process.env.SAS_CLI_CONFIG) {
     homedir = process.env.SAS_CLI_CONFIG;
   }
-
+  console.error('[Note] Using config dir: ' + homedir);
   let sep = (os.platform() === 'win32') ? '\\' : '/';
   let credentials = homedir + sep + '.sas' + sep + 'credentials.json';
+  console.error('[Note] Using credentials file: ' +  credentials);
   let url = homedir + sep + '.sas' + sep + 'config.json';
+  console.error('[Note] Using config file: ' +  url);
   try {
     let j = fs.readFileSync(credentials, 'utf8');
+    console.error('[Note] Read credentials file');
     let js = JSON.parse(j);
     let profile = (process.env.SAS_CLI_PROFILE) ? process.env.SAS_CLI_PROFILE : 'Default';
     console.error('[Note] Using profile: ' + profile);
@@ -28,8 +31,10 @@ async function getToken() {
     let host = js[profile]['sas-endpoint'];
 
     let token = await refreshToken(refresh_token, host);
+    console.error('[Note] Refreshed token', token.substring(0, 10) + '...');
     return { host, token };
   } catch (e) {
+    console.error(e);
     throw '[Error] Failed to read credentials/config file: ' + e;
   }
   async function refreshToken(token, host) {

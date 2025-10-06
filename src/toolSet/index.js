@@ -26,7 +26,7 @@ import listJobs from './listJobs.js';
 import jobDef from './jobDef.js';   
 import findJob from './findJob.js';
 import chataqb from './chataqb.js';
-import propvalue from './propvalue.js';
+import deval from './deval.js';
 
 let list = [
     listModels(),
@@ -57,7 +57,7 @@ let list = [
     searchAssets(),
 
     chataqb(),
-    propvalue()
+    deval()
  
 ];
 

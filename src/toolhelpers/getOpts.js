@@ -5,6 +5,7 @@
 import fs from 'fs';
 function getOpts() {
     let tlsdir = process.env.SSLCERT;
+    console.error("[Note] Using TLS dir: " + tlsdir);
     let options = {};
     if (tlsdir != null && fs.existsSync(`${tlsdir}/key.pem`) === true) {
         options.key = fs.readFileSync(`${tlsdir}/key.pem`, { encoding: 'utf8' });
@@ -12,6 +13,7 @@ function getOpts() {
         if (fs.existsSync(`${tlsdir}/ca.pem`) === true) {
             options.ca = fs.readFileSync(`${tlsdir}/ca.pem`, { encoding: 'utf8' });
         }
+        console.error("[Note] TLS files found, returning options", options);
         return options;
     } else {
         console.error("[Note] No TLS files found, returning null");

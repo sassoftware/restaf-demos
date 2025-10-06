@@ -30,7 +30,7 @@ async function createMcpServer(appEnv) {
 
   toolSet.forEach(tool => {
     // (`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
-   
+   console.error(`[Note] Registering tool in createMcpServer  : ${tool.name}`);
     mcpServer.tool(
       tool.name,
       tool.description,
@@ -38,6 +38,7 @@ async function createMcpServer(appEnv) {
       tool.handler
     )
   })
+  console.error(`[Note] Registered ${toolSet.length});`);
   appEnv.mcpServer = mcpServer;
   debugger;
   let transport = (appEnv.mcpType === 'http') 
@@ -58,8 +59,9 @@ async function createMcpServer(appEnv) {
     }
   }*/);
 
-  console.error('[Note] Created MCP Server', transport);
+ 
   console.error('[Note] Transport mode:====================================', appEnv.mcpType);
+  console.error('[Note] env: ', JSON.stringify(process, null, 4));
   await mcpServer.connect(transport);
   return transport;
   
