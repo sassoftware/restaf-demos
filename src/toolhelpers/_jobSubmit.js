@@ -22,7 +22,7 @@ async function _jobSubmit(params) {
     let logonPayload = await getLogonPayload();
     let msg = await store.logon(logonPayload);
     type = type.toLowerCase();
-    console.log(name, type, scenario);
+    console.error(name, type, scenario);
     debugger;
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)

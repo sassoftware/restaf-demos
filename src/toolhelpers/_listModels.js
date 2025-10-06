@@ -38,7 +38,7 @@ async function _listModels(params) {
         filter: `eq(name, '${name}')`
       } 
     }
-    console.log('payload', JSON.stringify(payload, null, 2));
+    console.error('payload', JSON.stringify(payload, null, 2));
     let result = await store.apiCall(microanalyticScore.links('modules'), payload);
     let list = result.itemsList().toJS();
     log('result', JSON.stringify(list, null, 2));

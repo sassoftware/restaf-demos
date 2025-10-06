@@ -17,7 +17,7 @@ import selfsigned from 'selfsigned';
 
 async function corehttp(appEnv) {
 	// setup for change to persistence session
-	const log = debug('main');
+	
 	
 	const app = express();
 	app.use(express.json());
@@ -30,7 +30,7 @@ async function corehttp(appEnv) {
 
 	// setup routes
 	app.get('/health', (req, res) => {
-		log('Received request for health endpoint');
+		console.error('Received request for health endpoint');
 
 		res.json({
 			name: '@sassoftware/mcp-server',
@@ -74,7 +74,7 @@ async function corehttp(appEnv) {
 				console.error('Creating new transport for session');
 				debugger;
 				transport = await createMcpServer(appEnv);
-				console.log(transport);
+				console.error(transport);
 			}
 
 		} catch (error) {

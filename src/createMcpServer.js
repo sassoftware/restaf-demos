@@ -12,8 +12,6 @@ import toolSet from './toolSet/index.js';
 
 
 async function createMcpServer(appEnv) {
-  //const log = debug('mcpserver');
-  // Create an MCP server
 
   const mcpServer = new McpServer({
     name: 'Viya-scoring-mcp-server',
@@ -29,8 +27,7 @@ async function createMcpServer(appEnv) {
   // TBD: Register resources and prompts
 
 
- 
- // log(`Creating MCP server in ${mode} mode`);
+
   toolSet.forEach(tool => {
     // (`Registering tool in createMcpServer  : ${JSON.stringify(tool)}`);
    

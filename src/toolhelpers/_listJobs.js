@@ -8,8 +8,6 @@ import restaf from '@sassoftware/restaf';
 import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
-const log = debug('listjobs');
-
 async function _listJobs(params) {
   let { limit, start, name } = params;
 
@@ -22,7 +20,7 @@ async function _listJobs(params) {
   });
   let logonPayload = await getLogonPayload();
   let msg = await store.logon(logonPayload);
-  console.log('logon', msg);
+  console.error('logon', msg);
   
   let {jobExecution } = await store.addServices( 'jobExecution');
   let payload = {
@@ -37,7 +35,7 @@ async function _listJobs(params) {
         filter: `eq(name, '${name}')`
       }
     }
-  console.log('payload', JSON.stringify(payload, null, 2));
+  console.error('payload', JSON.stringify(payload, null, 2));
   let jobList = await store.apiCall(jobExecution.links('jobs'), payload);
   let items = jobList.itemsList();
   return { content: [{ type: 'text', text: JSON.stringify(items) }],

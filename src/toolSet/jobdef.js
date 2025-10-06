@@ -101,7 +101,7 @@ function jobDef() {
         if (scenario.trim() === '') {
           scenarioObj = {};
         } else {
-          console.log('Incoming scenario', scenario);
+          console.error('Incoming scenario', scenario);
           scenarioObj = scenario.split(',').reduce((acc, pair) => {
             let [key, value] = pair.split('=');
             acc[key.trim()] = value;

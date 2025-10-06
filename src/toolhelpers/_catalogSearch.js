@@ -18,8 +18,6 @@ import getStoreOpts from '../toolhelpers/getStoreOpts.js';
 
 async function _catalogSearch(params, rel) {
   let { searchstring, start, limit } = params;
-  const log = debug('catalogsearch');
-  log(params);
   let splitsearchstring = searchstring.trimStart().split(' ');
   let assetType = ' ';
   if (!splitsearchstring[0].includes(':')) {
@@ -67,12 +65,12 @@ async function _catalogSearch(params, rel) {
     if (rel == null) {
       rel = 'search';
     }
-    log('---', searchstring);
+   
     let { catalog } = await store.addServices('catalog');
     let payload = {
       qs: { q: searchstring, limit: limit, start: start },
     };
-    log('payload', payload);
+  
 
     let r = await store.apiCall(catalog.links(rel), payload);
  
