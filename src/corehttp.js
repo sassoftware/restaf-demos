@@ -17,8 +17,6 @@ import selfsigned from 'selfsigned';
 
 async function corehttp(appEnv) {
 	// setup for change to persistence session
-	
-	
 	const app = express();
 	app.use(express.json());
 	app.use(cors({
@@ -97,12 +95,12 @@ async function corehttp(appEnv) {
 	app.post('/mcp', handleRequest);
 
 	// Start the server
-	const PORT = process.env.PORT || 8080;
+	const PORT = appEnv.PORT; 
 
 	// get user specified TLS options 
 	console.error('HTTPS=', appEnv.HTTPS);
-	if (process.env.SSLCERT != null && appEnv.HTTPS === true) {
-		let tlsdir = process.env.SSLCERT;
+	if (appEnv.SSLCERT != null && appEnv.HTTPS === true) {
+		let tlsdir = appEnv.SSLCERT;
 		let options = {};
 		if (tlsdir != null && fs.existsSync(`${tlsdir}/key.pem`) === true) {
 			options.key = fs.readFileSync(`${tlsdir}/key.pem`, { encoding: 'utf8' });
@@ -165,9 +163,9 @@ async function corehttp(appEnv) {
 			clientCertificate: true,
 			extensions: {},
 		};
-		let tlscreate = (process.env.TLS_CREATE == null)
+		let tlscreate = (appEnv.TLS_CREATE == null)
 			? 'TLS_CREATE=C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost,ALT:na.sas.com'
-			: process.env.TLS_CREATE;
+			: appEnv.TLS_CREATE;
 		let subjt = tlscreate.replaceAll('"', '').trim();
 		let subj = subjt.split(',');
 
@@ -181,7 +179,7 @@ async function corehttp(appEnv) {
 		let attr = [
 			{
 				name: 'commonName',
-				value: d.CN /*process.env.APPHOST*/,
+				value: d.CN  
 			},
 			{
 				name: 'countryName',

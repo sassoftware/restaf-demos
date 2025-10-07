@@ -31,6 +31,8 @@ Behavior & usage notes
 - For invoking pre-defined SAS macros, prefer the \`runMacro\` helper which converts simple parameter formats into \`%let\` statements and invokes the macro cleanly.
 - Be cautious when executing arbitrary code — validate or sanitize inputs in untrusted environments.
 
+Response
+- If output is specified and the specified table exists in the response, display the data as a markdown table. 
 Examples
 - program "data a; x=1; run;"  - this is the simplest usage  -- {src= "data a; x=1; run;", folder=" ", output=" ", limit=100}
 - program "data work.a; x=1; run;" output=a limit=50  -- {src= "data work.a; x=1; run;", folder=" ", output="a", limit=50}
