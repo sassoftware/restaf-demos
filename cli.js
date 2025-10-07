@@ -14,14 +14,15 @@ if (mcpType === 'http') {
 debugger;
 
 // read .env file if exists
-let envf = './env';
-if (fs.existsSync(envf)) {
-    console.error(`Loading environment variables from ${envf}...`);
-    dotenvExpand.expand(config({ path: envf, silent: true }));
-} else {
-    console.error('[Note]: No .env file found, Using default environment variables...');
+if (process.env.ENVFILE !== 'NONE') {
+    let envf = './env';
+    if (fs.existsSync(envf)) {
+        console.error(`Loading environment variables from ${envf}...`);
+        dotenvExpand.expand(config({ path: envf, silent: true }));
+    } else {
+        console.error('[Note]: No .env file found, Using default environment variables...');
+    }
 }
-
 const appEnv = {
     mcpType: mcpType,
     HTTPS: (process.env.HTTPS != null && process.env.HTTPS.toUpperCase() === 'TRUE') ? true : false,

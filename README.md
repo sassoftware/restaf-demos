@@ -5,14 +5,15 @@
 - [Modify/Add Tools](#add)
 - [Enable Authentication](#auth)
 - [Enable client for mcp server](#enable)
+  - [stdio](#stdio)
+  - [http](#http)
 - [Persising Scores](#persist)
 - [Notes](#notes)
 - [Useful Links](#links)
 
-
 ---
 
-## Introduction<a name="intro"> </a>
+## Introduction <a name="intro"> </a>
 
 ---
 
@@ -33,7 +34,7 @@ It is provided under the Apache-2.0 license.
 
 ---
 
-## Tools<a name="tools"></a>
+## Tools <a name="tools"></a>
 
 ---
 
@@ -75,7 +76,7 @@ The tools are designed to address common scenarios. You can clone the repository
 
 ---
 
-## Adding/Modifying tools<a name="add"></a>
+## Modify/Add Tools <a name="add"></a>
 
 ---
 
@@ -88,9 +89,13 @@ The tools are designed to address common scenarios. You can clone the repository
 
 ---
 
-## Enable authentication<a name="auth"></a>
+## Enable Authentication <a name="auth"></a>
+
+The server supports multiple ways to authenticate.
 
 ---
+
+### Using token created with sas-cli
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
 
@@ -108,7 +113,17 @@ At this point the tools can make authenticated calls to SAS Viya
 
 ---
 
-## Enable github copilot for the mcp server<a name="enable"> </a>
+### Passing token
+In some cases you might have a token. Set the value in the .env file or in the mcp configuration.
+
+### Password
+
+Ths requires additional setup.
+
+- Create a clientid and clientpassword for Oauth password flow.
+- Set these in the .env file or the mcp configuration file.
+
+## Enable client for mcp server <a name="enable"> </a>
 
 ---
 
@@ -117,26 +132,43 @@ Go to the vscode settings and search for mcp. Then select Model Server Context P
 Add the following to the list of mcp servers
 
 
-### stdio
+### stdio <a name="stdio"></a>
 This is ideal for running mcp servers locally.  
 ```json
- "sasmcp": {
+  "sasmcpio": {
     "type": "stdio",
     "command": "npx",
     "args": [
-      "@sassoftware/mcp-serverjs@beta"
+      "@sassoftware/mcp-serverjs@alpha",
     ],
     "env": {
-      "SAS_CLI_PROFILE": "the name of the SAS CLI profile",
-      "SAS_CLI_CONFIG": "full path to sas_cli_config folder",
-      "SSLCERT": "full path to folder with SSL certificates"
+      "MCPTYPE": "stdio",
+      "AUTHFLOW": "sascli",
+      "SAS_CLI_PROFILE": "cli profile name or default",
+      "SAS_CLI_CONFIG":"where sas-cli stores authentication information",
+      "SSLCERT": "where you have stored the tls information(see below)",
+      "VIYA_SERVER": "viya server if AUTHFLOW=password|token",
+      "PASSWORD": "password if AUTHFLOW is password",
+      "USERNAME": "username if AUTHFLOW is password",
+      "CLIENTIDPW": "client password if AUTHFLOW is password",
+      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
+      "TOKEN": "token if AUTHFLOW is token",
+      "ENVFILE": "NONE"
     }
   }
 ```
 
-### http 
-This is an alternate to using stdio. In my experience this is not supported 
-universally.
+```text
+ The SSLCERT should be a folder that has the following files:
+
+ - key.pem
+ - crt.pem
+ - ca.pem
+
+ ```
+
+### http <a name="http"></a>
+This is an alternate to using stdio. This requires a .env file
 
 ```json
  "sasmcp": {
@@ -148,18 +180,14 @@ Then create a .env file that looks like this
 
 ```env
 
-`envfile`
-If this is not specified, the server will try to read from .env file. 
+This is for the 'http' case. 
 
 The environment variables you can set are:
 
-```text
+```env
 ##
 # mcp server environment variables
 #
-
-# Tells the mcp server to use http and not stdio
-MCPTYPE=http
 
 ## server specific settings
 # By default the server will run in HTTP mode
@@ -167,24 +195,44 @@ HTTPS=FALSE
 
 ## TLS settings
 # SSLCERT=<location of your SSL certificate>
-# If not set, the cli will create a self-signed cerficate
-# The directory must contain the files
-# key.pem, crt.pem and optionally ca.pem
+# The directory must contain the files key.pem and crt.pem and optionally ca.pem
+# This is used by the mcp server and in calls to SAS Via
 
-## if using self-signed certificate set this to 0
+## If using self-signed certificate set this to 0
 NODE_TLS_REJECT_UNAUTHORIZED=0
 
 ## Viya authentication settings
-# sas-viya allows named profiles.
-# set this to the profile you want to use or leave it blank to use the default profile.
-# this is used to find the tokens for Viya
-SAS_CLI_PROFILE=<profilename>
+
+## Valid values for AUTHFLOW are: sascli, password, token
+AUTHFLOW=sascli
+
+## sas-viya allows named profiles.
+## set this to the profile you want to use or leave it blank to use the default profile.
+## this is used to find the tokens for Viya
+
+SAS_CLI_PROFILE=i58
+SAS_CLI_CONFIG=c:\Users\kumar
+
+## Needed for the AUTHFLOW=password|token
+VIYA_SERVER=<your Viya Server URL>
+
+## Password authentication settings
+PASSWORD=yourpassword
+USERNAME=yourusername
+CLIENTIDPW=your password clientid
+CLIENTSECRETPW=your password clientsecret
+
+
+## TOKEN authentication settings
+# Useful for cases where you want to use a token directly
+
+TOKEN=yourtoken
 
 
 ```
 
 ---
-## Persisting the scores<a name="persist"> </a>
+## Persisting scores <a name="persist"> </a>
 ---
 
 You can use many mcp servers to persist the scoring data. 
@@ -193,7 +241,7 @@ See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-sub
 
 ---
 
-## Notes
+## Notes <a name="notes"></a>
 
 ---
 
@@ -205,7 +253,7 @@ The implication of this design choice is felt most when the tool needs is creati
 
 ---
 
-### Useful links<a name="links"> </a>
+## Useful links <a name="links"> </a>
 
 ---
 
