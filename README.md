@@ -170,6 +170,9 @@ This is ideal for running mcp servers locally.
 ### http <a name="http"></a>
 This is an alternate to using stdio. This requires a .env file
 
+### Start the mcp server
+
+The mcp configuration is show below
 ```json
  "sasmcp": {
     "type": "http",
@@ -229,6 +232,13 @@ CLIENTSECRETPW=your password clientsecret
 TOKEN=yourtoken
 
 
+```
+
+### Start the mcp server
+The final step is to start the mcp server
+
+```sh
+npx @sassoftware/mcp-serverjs@latest
 ```
 
 ---
