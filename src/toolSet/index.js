@@ -7,14 +7,17 @@ import listTables from './listTables.js';
 import modelScore from './modelScore.js';
 import modelInfo from './modelInfo.js'; 
 
-import listLibrary from './listLibrary.js'; 
+
+//import listLibraryAlias from './listLibraryAlias.js';
+import toolManifest from './toolManifest.js';
 import findLibrary from './findLibrary.js';
 import readTable from './readTable.js';
 import tableInfo from './tableInfo.js';
+import listLibraries from './listLibraries.js';
 
 import scrInfo from './scrInfo.js';
 import scrScore from './scrScore.js';
-import searchAssets from './searchAssets.js';
+
 import devaScore from './devaScore.js';
 import superstat from './superstat.js';
 import findTable from './findTable.js';
@@ -45,7 +48,8 @@ let list = [
     job(),
     jobDef(),
 
-    listLibrary(),
+  listLibraries(),
+    toolManifest(),
     findLibrary(),
     findTable(),
     readTable(),
@@ -54,7 +58,7 @@ let list = [
     superstat(),
     devaScore(),
 
-    searchAssets(),
+  //searchAssets(),
 
     chataqb(),
     deval()

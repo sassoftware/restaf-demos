@@ -6,39 +6,72 @@
 import { z } from 'zod';
 import _listModels from '../toolhelpers/_listModels.js';
 
-function listModels(appEnv) {
+function listModels() {
   let description = `
-## listModels
+  ## listModels — enumerate models published to MAS (Model Publish / Scoring service)
 
-Return a paginated list of models registered in the MAS on a SAS Viya deployment.
+  LLM Invocation Guidance (When to use)
+  Use THIS tool when the user wants a collection of models, e.g.:
+  - "list models"
+  - "show models"
+  - "list available models"
+  - "browse models"
+  - "list 25 models" / "list models limit 25"
+  - "next models" (after a previous page)
 
-Inputs
-- limit (number, optional): Maximum number of models to return. Default: 10.
-- start (number, optional): 1-based index to start the page from. Default: 1. Use this to paginate through results (nextStart = start + limit).
+  Do NOT use this tool for:
+  - Checking a single model's existence (use findModel)
+  - Getting model metadata / variables (use modelInfo)
+  - Scoring a model (use modelScore)
+  - Looking up jobs, libraries, tables, or SCR endpoints (route to respective tools)
 
-What it returns
-- An array of models(or an empty array if no models found). 
+  Purpose
+  Provide a paginated view of MAS-registered models so the caller can then drill into one via modelInfo or score it.
 
-Usage notes
-- Use this tool to discover available models before calling \`modelInfo\` or \`modelScore\`.
-- For large registries, page through results by incrementing \`start\` with the previous \`limit\`.
+  Parameters
+  - limit (number, default 10): Number of models to return for this page.
+  - start (number, default 1): 1-based offset. For paging: start = start + limit.
 
+  Response Contract
+  - Returns an array of model entries (names or metadata objects). Empty array if no models.
+  - If returned length === limit, caller may request the next page.
 
-Examples
-- list models
-- list models with limit 20
-`;
+  Pagination Examples
+  - First page: { start:1, limit:10 }
+  - Next page: { start:11, limit:10 }
+
+  Disambiguation & Clarification
+  - Input only "list" → ask: "List models? (Say 'list models' to proceed)" unless prior context strongly indicates models.
+  - "find model X" → use findModel instead.
+  - "score model X" → use modelScore.
+  - "describe model X" → use modelInfo.
+
+  Negative Examples (should NOT call listModels)
+  - "find model churn" (findModel)
+  - "model info customerRisk" (modelInfo)
+  - "score model sales_pred" (modelScore)
+  - "list jobs" (listJobs)
+
+  Usage Tips
+  - Combine with findModel for narrowing down after a broad list.
+  - Increase limit judiciously; very large pages can impact latency.
+
+  Examples (→ mapped params)
+  - "list models" → { start:1, limit:10 }
+  - "list 25 models" → { start:1, limit:25 }
+  - "next models" (after prior {start:1,limit:10}) → { start:11, limit:10 }
+  `;
 
   let spec = {
     name: 'listModels',
     description: description,
     schema: {
-      'limit': z.number().default(10),
-      'start': z.number() 
+  'limit': z.number().default(10),
+  'start': z.number().default(1) 
     },
     handler: async (params) => { 
-      // Check if the params.scenario is a string and parse it
-      let r = await _listModels(params);
+      // Call underlying helper
+      let r  = await _listModels(params);
       return r;
     }
   }

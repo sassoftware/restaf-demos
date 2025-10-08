@@ -19,9 +19,9 @@ function listTables() {
     "start": "1-indexed offset, default 1",
     "where": "optional filter string"
   },
-  "response_schema": "{ tables: string[], nextStart?: number }",
-  "displayed_response": "A JSON object with a 'tables' array of table names (strings). If more results likely exist, include 'nextStart' for pagination.",
-  "behavior": "Return only JSON that matches response_schema. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }. Include nextStart = start + limit when more results likely exist.",
+  "response_schema": "{ tables: string[], start?: number }",
+  "displayed_response": "A JSON object with a 'tables' array of table names (strings). If more results likely exist, include 'start' for pagination.",
+  "behavior": "Return only JSON that matches response_schema. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }. Include start = start + limit when more results likely exist.",
   "clarification_rules": "If lib missing: 'Which library do you want to list tables from?'. If server ambiguous: 'Do you mean CAS or SAS?'. If user says 'next', interpret as start = previousStart + previousLimit.",
   "examples": [
     { "input": "list tables in samples in cas", "mapped_params": { "lib": "Samples", "server": "cas" } },
@@ -30,40 +30,62 @@ function listTables() {
 };
 
   let description = `
-## listTables — list tables in a library on CAS or SAS
+  ## listTables — enumerate tables within a specific CAS or SAS library
 
-Purpose
-- Return the tables contained in a specified library (lib) on either a CAS or SAS server.
-- Designed for natural-language use: short prompts or full parameter objects are supported.
+  LLM Invocation Guidance (When to use)
+  Use THIS tool when the user explicitly wants the tables inside ONE library:
+  - "list tables in Samples"
+  - "show tables in sashelp"
+  - "list cas tables in Public"
+  - "list 25 tables in Samples"
+  - "next tables" (after a prior listTables call)
 
-Parameters
-- lib (string, required): Library name to inspect (e.g., 'Samples', 'sashelp').
-- server (string, optional): 'cas' or 'sas'. Default: 'cas'.
-- limit (number, optional): Maximum number of tables to return. Default: 10.
-- start (number, optional): 1-indexed offset for paging. Default: 1.
-- where (string, optional): Optional server-side filter expression (server-dependent).
+  Do NOT use this tool for:
+  - Listing libraries (use listLibraries)
+  - Finding whether a library exists (use findLibrary)
+  - Describing a single table's columns or metadata (use tableInfo)
+  - Reading table data rows (use readTable)
+  - Listing jobs/models (other specialized tools)
 
-Behavior & response
-- Returns an ordered array of table names by default, e.g. ["WATER_CLUSTER","COSTCHANGE"].
-- Use \`start\` and \`limit\` to page through results. Responses may include a pagination hint.
-- If the server exposes richer metadata the result may include objects with additional fields (owner, rows, create time).
+  Purpose
+  Return the names (and possibly lightweight metadata) of tables contained in a specified library (CAS caslib or SAS libref).
 
-Pagination example
-- First page: { lib: 'Samples', server: 'cas', start: 1, limit: 10 }
-- Next page:  { lib: 'Samples', server: 'cas', start: 11, limit: 10 }
+  Parameters
+  - lib (string, required): Library to inspect (e.g. "Samples", "sashelp").
+  - server (cas|sas, default 'cas'): Target environment; default when unspecified is CAS.
+  - limit (number, default 10): Page size.
+  - start (number, default 1): 1-based offset for pagination.
+  - where (string, optional): Filter expression (if supported by backend) or ignored safely.
 
-Usage tips
-- Short user prompts like "list sas tables in sashelp" are mapped automatically.
-- If you need full inventory, page through results rather than requesting extremely large limits.
-- To inspect a specific table, use the \`tableInfo\` or \`readTable\` tools after obtaining the table name.
+  Response Contract
+  - JSON: { tables: string[] [, start:number]? }
+  - tables array is empty when no matches.
+  - Include start = start + limit when length === limit (possible more pages).
 
-Displayed_response
-list the first 10 tables  
+  Pagination Examples
+  - First page: { lib:'Samples', start:1, limit:10 }
+  - Next page:  { lib:'Samples', start:11, limit:10 }
 
-Errors
-- The tool surfaces server errors and returns an empty array when no tables match.
+  Disambiguation & Clarification
+  - Missing library name → ask: "Which library do you want to list tables from?"
+  - Input only "list tables" → ask for the library unless prior context supplies one.
+  - If user mentions multiple libs ("tables in Public and Samples") → request a single library.
 
-`;
+  Negative Examples (should NOT call listTables)
+  - "list libs" (listLibraries)
+  - "find lib Public" (findLibrary)
+  - "describe table cars" (tableInfo)
+  - "read table cars from sashelp" (readTable)
+
+  Usage Tips
+  - After listing, call tableInfo to inspect structure or readTable for sample data.
+  - Keep limit moderate; page for very large libraries.
+
+  Examples (→ mapped params)
+  - "list tables in samples" → { lib:"samples", start:1, limit:10 }
+  - "show 25 tables in sashelp" → { lib:"sashelp", limit:25, start:1 }
+  - "next tables" (after previous {start:1,limit:10}) → { start:11, limit:10, lib:<previousLib> }
+  `;
 
   let spec = {
     name: 'listTables',
@@ -71,13 +93,12 @@ Errors
 
     schema: {
       'lib': z.string(),
-      'server': z.string(), // default server is 'cas'
+      'server': z.string().default('cas'),
       'limit': z.number().default(10),
-      'start': z.number() 
+      'start': z.number().default(1)
     },
     required: ['lib'],
     handler: async (params) => { 
-      // Check if the params.scenario is a string and parse it
       let r = await _listTables(params);
       return r;
     }

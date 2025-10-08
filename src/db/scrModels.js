@@ -8,7 +8,7 @@ function scrModels(name) {
     // In a real application the list of scr models would be fetched from a database or configuration file.
     // For this example, we will use a hardcoded list of models.
     let scrModels = {
-       "loan": "http://mcphl.hggmg3bshufda0et.eastus.azurecontainer.io:8080/mcp"
+       "loan": "http://mcphllllll.hggmg3bshufda0et.eastus8080/mcp"
     };
 
     if (name.indexOf('http') === 0) {

@@ -53,7 +53,11 @@ Examples
       folder: z.string().default(''),
       limit: z.number().default(100)
     },
-    required: ['program'],
+  // NOTE: Previously 'required' incorrectly listed 'program' which does not
+  // exist in the schema. This prevented execution in some orchestrators that
+  // enforce required parameter presence, causing only descriptions to appear.
+  // Corrected to 'src'.
+  required: ['src'],
     handler: async (params) => {
       let {src, folder, scenario} = params;
       // figure out src

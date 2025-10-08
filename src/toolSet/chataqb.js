@@ -47,22 +47,22 @@ function chataqb() {
     WHERE prcdr_cd IN ('D1020', 'D1021', 'D1022')
     GROUP BY prcdr_cd;
     Example 4:
-    Input: Total paid amount by procedure code for procedure codes D1020, D1021, D1022 for paid date between 01 jan 2023 to 31 dec 2024
+    Input: Total paid amount by procedure code for procedure codes D1020, D1021, D1022 for paid date between 01 jan 2023 to 31 dec 2025
     Output:
     SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount
     FROM clm_dental
     WHERE prcdr_cd IN ('D1020', 'D1021', 'D1022') AND pd_dt BETWEEN '01jan2023'd AND
-    '31dec2024'd
+    '31dec2025'd
     GROUP BY prcdr_cd;
     Example 5:
-    Input: total paid amount by diagnosis codes for diagnosis codes Z1011, Z1122, Z2345 for paid date on or after 01 jan 2024
+    Input: total paid amount by diagnosis codes for diagnosis codes Z1011, Z1122, Z2345 for paid date on or after 01 jan 2025
     Output: SELECT diag_cd, SUM(pd_amt) AS total_paid_amount
     FROM clm_dental
-    WHERE diag_cd IN ('Z1011', 'Z1122', 'Z2345') AND pd_dt >= '01jan2024'd
+    WHERE diag_cd IN ('Z1011', 'Z1122', 'Z2345') AND pd_dt >= '01jan2025'd
     GROUP BY diag_cd;
 	Example 6:	
-	Input:Total paid amount by Service date and procedure code  for Service date on or after 01jan2024
-	Output:SELECT service_date, prcdr_cd, SUM(pd_amt) AS total_paid_amount FROM clm_dental WHERE service_date >= '01jan2024'd GROUP BY service_date, prcdr_cd
+	Input:Total paid amount by Service date and procedure code  for Service date on or after 01jan2025
+	Output:SELECT service_date, prcdr_cd, SUM(pd_amt) AS total_paid_amount FROM clm_dental WHERE service_date >= '01jan2025'd GROUP BY service_date, prcdr_cd
     Example 7:
     Input: Average prcdr_cd by mdcd_id for origin has value USA
     Output: Error: Calculating the average of a non-numeric column like 'prcdr_cd' doesn't make sense.

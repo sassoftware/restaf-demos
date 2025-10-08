@@ -1,18 +1,8 @@
 {
-    "chat.mcp.discovery.enabled": true,
-    "mcp": {
-        "inputs": [],
-        "servers": {
-            "mcp-server-time": {
-                "command": "python",
-                "args": [
-                    "-m",
-                    "mcp_server_time",
-                    "--local-timezone=America/Los_Angeles"
-                ],
-                "env": {}
-            }
-        }
-    },
-    "editor.fontSize": 16
+  "editor.fontSize": 7,
+  "scm.inputFontSize": 7,
+  "terminal.integrated.fontSize": 7,
+  "chat.editor.fontSize": 7,
+  "chat.fontSize": 7,
+  "markdown.preview.fontSize": 7
 }

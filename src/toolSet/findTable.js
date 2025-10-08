@@ -6,7 +6,6 @@
 import { z } from 'zod';
 import debug from 'debug';
 import _listTables from '../toolhelpers/_listTables.js';
-const log = debug('tools');
 
 function findTable() {
   let llmDescription = {
