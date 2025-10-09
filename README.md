@@ -1,4 +1,4 @@
-# mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring 
+# mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring
 
 - [Introduction](#intro)
 - [Supported Tools](#tools)
@@ -19,7 +19,7 @@
 
 MCP servers is one of the popular additions to the agentic-ai world. This repository shows that SAS developers can take advantage of this technology to deliver their solutions via a "chat".
 
-The  mcp server  described here is designed for scoring with SAS Viya. In this document "scoring" is used to describe executing any code that takes some input and returns results. 
+The  mcp server  described here is designed for scoring with SAS Viya. In this document "scoring" is used to describe executing any code that takes some input and returns results.
 
 Some examples are:
 
@@ -34,12 +34,11 @@ It is provided under the Apache-2.0 license.
 
 ---
 
-## Tools <a name="tools"></a>
+## tools <a name="tools"></a>
 
 ---
 
 The tools are designed to address common scenarios. You can clone the repository and modify the toolset.
-
 
 ### Simple tool
 
@@ -47,12 +46,11 @@ The tools are designed to address common scenarios. You can clone the repository
 
 ### Data related tools
 
-- findLibrary - check if specified library exists
-- listLibrary - list available libraries in cas or sas
-- findTable   - check if specified table  exists in specified library in cas or sas
+- findLibrary   - check if specified library exists
+- listLibraries - list available libraries in cas or sas
+- findTable     - check if specified table  exists in specified library in cas or sas
 - listTables  - list tables in a specified library in cas or sas
 - readTable   - read records from a cas or sas table
-- searchAsset - an experimental tool using SAS/Catalog
 
 ### Scoring with Models in MAS
 
@@ -66,17 +64,17 @@ The tools are designed to address common scenarios. You can clone the repository
 - scrInfo  - display the input and output variables for a specified SCR instance
 - scrScore - score using the specified SCR instance
 
-
 ### Scoring with SAS code
+
 - superstat - an example of accessing custom SAS code - mainly for testing
 - program - runs the sas code that is supplied by the user
 - macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
 - job - run a job 
-- jobdef - use a job definition to run sas code 
+- jobdef - use a job definition to run sas code
 
 ---
 
-## Modify/Add Tools <a name="add"></a>
+## modify or add tools <a name="add"></a>
 
 ---
 
@@ -85,7 +83,6 @@ The tools are designed to address common scenarios. You can clone the repository
 - Use toolhelpers folder for the function code(recommended)
 - Add the new file to the index.js file in toolSet folder
 - Restart the mcp server
-
 
 ---
 
@@ -99,11 +96,10 @@ The server supports multiple ways to authenticate.
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
 
-
-`create a default auth Profile`. 
+`create a default auth Profile`.
 Issue this command and follow instruction: `sas-viya profile init`
 
-`create token` 
+`create token`
 Issue this command and follow the instructions: `sas-viya auth loginCode`
 
 You need to do this once every 90 days or whenever the refresh token expires.
@@ -134,6 +130,7 @@ Add the following to the list of mcp servers
 
 ### stdio <a name="stdio"></a>
 This is ideal for running mcp servers locally.  
+
 ```json
   "sasmcpio": {
     "type": "stdio",
@@ -168,18 +165,21 @@ This is ideal for running mcp servers locally.
  ```
 
 ### http <a name="http"></a>
+
 This is an alternate to using stdio. This requires a .env file
 
 ### Start the mcp server
 
 The mcp configuration is show below
+
 ```json
  "sasmcp": {
     "type": "http",
     "url": "http://localhost:8080/mcp"
  }
 ```
-Then create a .env file that looks like this
+
+Then create a .env file that looks like this(with place holders replaced with actual values).
 
 ```env
 
@@ -213,7 +213,9 @@ AUTHFLOW=sascli
 ## set this to the profile you want to use or leave it blank to use the default profile.
 ## this is used to find the tokens for Viya
 
+# replace i58 with your profile name
 SAS_CLI_PROFILE=i58
+# replace with the location where sas-cli stores authentication information
 SAS_CLI_CONFIG=c:\Users\kumar
 
 ## Needed for the AUTHFLOW=password|token
@@ -235,6 +237,7 @@ TOKEN=yourtoken
 ```
 
 ### Start the mcp server
+
 The final step is to start the mcp server
 
 ```sh
@@ -242,12 +245,13 @@ npx @sassoftware/mcp-serverjs@latest
 ```
 
 ---
+
 ## Persisting scores <a name="persist"> </a>
+
 ---
 
 You can use many mcp servers to persist the scoring data. 
 See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores in a CAS table.
-
 
 ---
 
@@ -274,4 +278,3 @@ The implication of this design choice is felt most when the tool needs is creati
 - [restaf](https://sassoftware.github.io/restaf/)
 
 - [mkcert](https://www.npmjs.com/package/mkcert)
-
