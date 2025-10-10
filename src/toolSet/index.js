@@ -57,9 +57,6 @@ let list = [
 
     superstat(),
     devaScore(),
-
-  //searchAssets(),
-
     chataqb(),
     deval()
  

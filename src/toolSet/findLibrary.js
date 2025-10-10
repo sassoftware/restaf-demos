@@ -5,19 +5,7 @@
 import { z } from 'zod';
 import _listLibrary from '../toolhelpers/_listLibrary.js';
 function findLibrary() {
-  let llmDescription= {
-  "purpose": "Map natural language requests to findLibrary parameters and return structured results.",
-  "param_mapping": {
-    "name": "required - single name. If missing, ask 'Which library name would you like to find?'.",
-    "server": "infer 'cas' or 'sas' from prompt; default 'cas'"
-  },
-  "response_schema": "{ libraries: Array<string|object> }",
-  "behavior": ["Return only JSON matching response_schema when invoked by an LLM. If no matches, return { libraries: [] }. Surface server errors directly.",
-    { "input": "find library Public in cas server", "mapped_params": { "name": "Public", "server": "cas" } },
-    { "input": "find lib Public", "mapped_params": { "name": "Public", "server": "cas" } },
-    { "input": "find library sasuser in sas", "mapped_params": { "name": "sasuser", "server": "sas" } }
-  ]
-};
+  
   let description = `
   ## findLibrary — locate a specific CAS or SAS library
 

@@ -10,4 +10,3 @@ else
     node cli.js
 fi
 
-

@@ -278,3 +278,37 @@ The implication of this design choice is felt most when the tool needs is creati
 - [restaf](https://sassoftware.github.io/restaf/)
 
 - [mkcert](https://www.npmjs.com/package/mkcert)
+
+## Other useful tips
+
+### Vscode with Github Copilot
+
+  In my limited experience, the copilot works better if VScode starts the mcp server. To achieve this I set the following in session.json:
+
+MCP: AutoStart to onlyNew.
+
+Warning: This is just my observation. Your mileage may vary.
+
+### mkcert
+
+To create a self-signed certificate for localhost
+
+```sh
+mkcert -install
+```
+
+The install also stores local root Certificate Authority (CA) on the system
+For windows the location is AppData/Local\mkcert
+
+Now go to the location where you want to store the certificates
+Then create the certificates
+
+```sh
+mkcert --key key.pem --cert crt.pem localhost 127:0.0.1 ::1
+```
+
+One last step for windows nodejs users. Add this to the environment variable NODE_EXTRA_CA_CERTS
+
+```text
+NODE_EXTRA_CA_CERTS=c:\Users\<your_username>\AppData\Local\mkcert\rootCA.pem
+```
