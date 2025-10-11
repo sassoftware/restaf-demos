@@ -74,7 +74,8 @@ function procSQL() {
                     table: table,
                     sql_code: sql,
                 },
-                name: 'run_sql_query'
+                name: 'run_sql_query',
+                type: 'job'
             };
             return await _jobSubmit(iparams);
         }

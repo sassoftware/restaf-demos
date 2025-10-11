@@ -34,8 +34,7 @@ function chataqb() {
     User prompt:
     chataqdb table=clm_dental query=Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020
     
-    Step 2: Convert the query to a SQL Select statement and concatenate it to the user's query string as follows:
-        query +  ' ==> ' + the generated SQL statement
+    Step 2: Convert the query to a SQL Select statement 
     
     sql = "
     SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount, COUNT(DISTINCT mdcd_id) AS unique_patients, COUNT(DISTINCT icn) AS unique_claims
@@ -46,7 +45,11 @@ function chataqb() {
     
     Step 3: Pass these to the handler
     { table: "clm_dental",
-      query: "Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020 ==> SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount, COUNT(DISTINCT mdcd_id) AS unique_patients, COUNT(DISTINCT icn) AS unique_claims"
+      query: "Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020",
+      sql: "SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount, COUNT(DISTINCT mdcd_id) AS unique_patients, COUNT(DISTINCT icn) AS unique_claims
+           FROM clm_dental
+           WHERE diag_cd IN ('Z1100', 'Z10119', 'Z1020')
+           GROUP BY prcdr_cd"
     }
     
     Step 4: Handler returns the results of the query to the user. The output has a json representation of the table.
@@ -58,7 +61,8 @@ function chataqb() {
     The parameters passed to the handler are:
     {
         table: "clm_dental",
-        query: "How many students are in each year and show me in percentage ==> "SELECT year,
+        query: "How many students are in each year and show me in percentage"
+        sql: "SELECT year,
                 COUNT(DISTINCT student_id) AS number_of_students,
                 COUNT(*) / (SELECT COUNT(DISTINCT student_id) FROM clm_dental) AS Percent FORMAT=percent8.2
                 FROM clm_dental
@@ -76,14 +80,16 @@ function chataqb() {
         },
         required: ['query', 'table'],
         handler: async (params) => {
-            let {table,query} = params;
+            let {table,query, sql} = params;
             debugger;
             let iparams = {
                 scenario: {
                     table_name: table,
                     question: query,
+                    sql: sql
                 },
-                name: 'chataqb'
+                name: 'chataqb',
+                type: 'job'
             };
             let r =  await _jobSubmit(iparams);
             return r;
