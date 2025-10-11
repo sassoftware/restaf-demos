@@ -29,8 +29,15 @@ import listJobs from './listJobs.js';
 import jobDef from './jobDef.js';   
 import findJob from './findJob.js';
 import chataqb from './chataqb.js';
+import procSQL from './procSQL.js';
 import deval from './deval.js';
 
+let lab = [
+  chataqb(),
+  deval(),
+  procSQL(),
+
+];
 let list = [
     listModels(),
     listTables(),
@@ -48,8 +55,8 @@ let list = [
     job(),
     jobDef(),
 
-  listLibraries(),
-    toolManifest(),
+    listLibraries(),
+
     findLibrary(),
     findTable(),
     readTable(),
@@ -57,10 +64,13 @@ let list = [
 
     superstat(),
     devaScore(),
-    chataqb(),
-    deval()
+  
  
 ];
+
+if (process.env.LAB === 'TRUE') {
+  list = list.concat(lab);
+}
 
 
 export default list;

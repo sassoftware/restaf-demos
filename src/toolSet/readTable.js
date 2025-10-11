@@ -33,8 +33,9 @@ Usage notes
 - Use \`findTable\` or \`listTables\` to if the table exists before calling \`readTable\`.
 
 Examples
-- read table \`cars\` in lib \`Public\` on the cas server
-- read table \`air\` in lib \`sashelp\` on the sas server with where \`age > 30\` and limit 50
+- read table \`cars\` in lib \`Public\` on the cas server -> { "table": "cars", "lib": "Public", "server": "cas", limit: 10, start: 1 }
+- read table \`employees\` in lib \`mylib\` on the sas server with where \`age > 30\` and limit 50 -> { "table": "employees", "lib": "mylib", "server": "sas", "where": "age > 30", "limit": 50 }
+- read table \`air\` in lib \`sashelp\` on the sas server limit 50 -> { "table": "air", "lib": "sashelp", "server": "sas", "limit": 50, start: 1 }
 `;
     let  specs = {
       name: 'readTable',
@@ -44,7 +45,7 @@ Examples
         lib: z.string(),
         start: z.number(),
         limit: z.number().default(10),
-        server: z.string(),
+        server: z.string().default('cas'),
         where: z.string().default(''),
         format: z.boolean().default(true)
 

@@ -23,7 +23,9 @@ async function getToken() {
     let j = fs.readFileSync(credentials, 'utf8');
     console.error('[Note] Read credentials file');
     let js = JSON.parse(j);
-    let profile = (process.env.SAS_CLI_PROFILE) ? process.env.SAS_CLI_PROFILE : 'Default';
+    let profile = (process.env.SAS_CLI_PROFILE == null || process.env.SAS_CLI_PROFILE.toLowerCase() === 'default')
+           ? 'Default' : process.env.SAS_CLI_PROFILE;
+
     console.error('[Note] Using profile: ' + profile);
     let refresh_token = js[profile]['refresh-token'];
     j = fs.readFileSync(url, 'utf8');
