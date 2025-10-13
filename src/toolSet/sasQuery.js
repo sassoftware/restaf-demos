@@ -14,7 +14,7 @@ function sasQuery() {
 
     The handler will return the data that was queried from the table.
 
-    User can optionally specify a SAS job to run the query on the SAS Server. If not specified, the default job 'run_sas_query' will be used.
+    User can optionally specify a SAS job to run the query on the SAS Server. If not specified, the default job 'run_sql_query' will be used.
 
     The desired flow:
     Instructions to LLM: Show the progress of how you are thinking about converting the natural language query to SQL.
@@ -78,6 +78,10 @@ function sasQuery() {
                 FROM clm_dental
                 GROUP BY year"
     }
+
+    ## Desired Output Display Format
+    If the query is successful and returns rows, display the rows as a markdown table.
+
 `;
 
 
@@ -88,7 +92,7 @@ function sasQuery() {
             query: z.string(),
             table: z.string(),
             sql: z.string().optional(),
-            job: z.string().default('run_sas_query')
+            job: z.string().default('run_sql_query')
         },
         required: ['query', 'table'],
         handler: async (params) => {
@@ -101,15 +105,16 @@ function sasQuery() {
                     prompt: query,
                     sql: sqlinput
                 },
-                name: (job == null) ? 'run_sas_query' : job,
+                name: (job == null) ? 'run_sql_query' : job,
                 type: 'job'
             };
             let r = await _jobSubmit(iparams);
-            //return r;
-            
+            return r;
+            /*
             let structuredContent = {tables: r.tables};
             return { content:[ { type: 'text', text: JSON.stringify(structuredContent) }],
                 structuredContent: structuredContent };
+                */
 
             
         }
