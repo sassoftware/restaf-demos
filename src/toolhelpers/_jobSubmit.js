@@ -27,7 +27,7 @@ async function _jobSubmit(params) {
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);
-
+    console.error('jobSubmit', r);  
     let response = {
       tables: r.tables,
       listing: r.listing,
@@ -43,8 +43,11 @@ async function _jobSubmit(params) {
   catch (error) {
     // Oops! Something went wrong
     console.error(`Error in _jobSubmit: ${JSON.stringify(error)}`);
-    let e = { error: error };
-    return { content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e };
+    let result = {
+      tables: { Error: [{ Message: "Job failed. Please contact your SAS administrator." }] }
+    };
+
+    return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result };
   }
 }
 

@@ -68,7 +68,7 @@ let list = [
  
 ];
 
-if (process.env.LAB === 'TRUE') {
+if (process.env.LAB.toLocaleLowerCase() === 'true') {
   list = list.concat(lab);
 }
 
