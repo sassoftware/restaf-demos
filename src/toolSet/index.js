@@ -9,7 +9,7 @@ import modelInfo from './modelInfo.js';
 
 
 //import listLibraryAlias from './listLibraryAlias.js';
-import toolManifest from './toolManifest.js';
+//import toolManifest from './toolManifest.js';
 import findLibrary from './findLibrary.js';
 import readTable from './readTable.js';
 import tableInfo from './tableInfo.js';
@@ -28,14 +28,13 @@ import job from './job.js';
 import listJobs from './listJobs.js';
 import jobDef from './jobDef.js';   
 import findJob from './findJob.js';
-import chataqb from './chataqb.js';
-import procSQL from './procSQL.js';
+//import chataqb from './chataqb.js';
+import sasQuery from './sasQuery.js';
 import deval from './deval.js';
 
 let lab = [
-  chataqb(),
   deval(),
-  procSQL(),
+  sasQuery()
 
 ];
 let list = [
@@ -61,7 +60,7 @@ let list = [
     findTable(),
     readTable(),
     tableInfo(),
-
+  
     superstat(),
     devaScore(),
   
