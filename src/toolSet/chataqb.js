@@ -97,7 +97,7 @@ function chataqb() {
                 type: 'job'
             };
             let r =  await _jobSubmit(iparams);
-            console.error('chataqb', r.tables);
+           // console.error('chataqb', r.tables);
             return {
                 content: [{ type: 'text', text: JSON.stringify(r.tables) }],
                 structuredContent: r.tables

@@ -109,17 +109,21 @@ function sasQuery() {
                 type: 'job'
             };
             let r = await _jobSubmit(iparams);
+            return r;
+    
             // try to return the first table found
-            console.error('sasquery', Object.keys(r));
+           // console.error('sasquery', Object.keys(r));
+           /*
             if (r.structuredContent.tables != null) {
                 let outputName = Object.keys(r.structuredContent.tables)[0];
-                console.error('sasquery', outputName);
+                // console.error('sasquery', outputName);
                 let structuredContent = r.structuredContent.tables[outputName];
                 return { content:[ { type: 'text', text: JSON.stringify(structuredContent) }],
                     structuredContent: structuredContent };
             }  else {
                 return r;
             }
+                */
 
         }
     };

@@ -69,7 +69,7 @@ Examples
         }
       }
       const src = `${setup} %${params.macro};`;
-      console.error('code to submit', src);
+     // console.error('code to submit', src);
       let r = await _submitCode(src, {})
       return r;
     }

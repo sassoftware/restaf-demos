@@ -87,7 +87,7 @@ Examples
         output: params.output,
         limit: params.limit
       }
-      console.error('iparms', iparms);
+     // console.error('iparms', iparms);
       let r = await _submitCode(isrc, iparms);
       return r;
     }
