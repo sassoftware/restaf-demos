@@ -101,16 +101,17 @@ function sasQuery() {
                     prompt: query,
                     sql: sqlinput
                 },
-                name: 'run_sql_query',
-                type: (job || 'run_sas_query')
+                name: (job == null) ? 'run_sas_query' : job,
+                type: 'job'
             };
-            let r =await _jobSubmit(iparams);
-            return r;
-            /*
-            let structuredContent = r.tables;
+            let r = await _jobSubmit(iparams);
+            //return r;
+            
+            let structuredContent = {tables: r.tables};
             return { content:[ { type: 'text', text: JSON.stringify(structuredContent) }],
                 structuredContent: structuredContent };
-            */
+
+            
         }
     };
     return spec;

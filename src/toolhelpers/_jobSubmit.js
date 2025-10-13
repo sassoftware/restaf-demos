@@ -46,7 +46,7 @@ async function _jobSubmit(params) {
     let result = {
       tables: { Error: [{ Message: "Job failed. Please contact your SAS administrator." }] }
     };
-
+    console.error('jobSubmit', result);
     return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result };
   }
 }
