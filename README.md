@@ -69,8 +69,44 @@ The tools are designed to address common scenarios. You can clone the repository
 - superstat - an example of accessing custom SAS code - mainly for testing
 - program - runs the sas code that is supplied by the user
 - macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
-- job - run a job 
+- job - run a job
 - jobdef - use a job definition to run sas code
+
+### SQL related tools
+
+- sasQuery - converts user natural language query to SQL and runs a job. This is useful to subset a dataset using proc sql. By default it looks for a job named sas-sql-query on the server. You can pass a job name as part of the query to use a different job name.
+  The tool depends on the LLM to generate the SQL Select statement. Use with caution, since the LLM might generate incorrect SQL statements.
+
+Sidebar: Thanks to my fellow SAS'er  Veera Babu Penumarti for the use-case and the default job.
+
+Below is the default code for sas-sql-query
+
+```sas
+data _null_;
+    length sql_final $5000.;
+        sql_final="%superq(sql)";
+        call symput("sql_final",sql_final);       
+    run;
+
+filename joutput filesrvc parenturi="&SYS_JES_JOB_URI" name="query_results.json";
+
+%macro run_sql_code;    
+
+    proc sql;
+     create table work.query_results as
+     &sql_final.;
+    quit;
+
+    proc print data=work.query_results;run;
+    
+    proc json out= joutput nosastags;
+    export query_results;
+    run;
+%mend;
+
+%run_sql_code;
+
+```
 
 ---
 
