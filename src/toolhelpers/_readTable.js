@@ -14,6 +14,11 @@ async function _readTable(params) {
   let logonPayload = await getLogonPayload();
   log('logonPayload', logonPayload);
 
+  if (table.includes('.')) {
+    let parts = table.split('.');
+    lib = parts[0];
+    table = parts[1];
+  }
   let itable = { name: table };
   if (server === 'cas') {
     itable.caslib = lib;
@@ -26,7 +31,7 @@ async function _readTable(params) {
 
     initialFetch: {
       qs: {
-        start: start - 1, // Adjust for 0-based index
+        start: (start == null) ? 0 : start - 1, // Adjust for 0-based index
         limit: limit,
         format: format || false,
         where: where || ''
