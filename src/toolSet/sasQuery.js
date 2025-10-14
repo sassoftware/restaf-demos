@@ -10,7 +10,9 @@ function sasQuery() {
     let description = `
     You are an expert at translating natural language queries into SAS PROC SQL SELECT statements.
     You will then convert the user's query to a valid SAS PROC SQL SELECT statement and pass this string 
-    as the query
+    as the query. 
+
+    Instructions to LLM: The user MUST specify a non-blank query and a table.
 
     The handler will return the data that was queried from the table.
 
@@ -97,7 +99,7 @@ function sasQuery() {
         required: ['query', 'table'],
         handler: async (params) => {
             let {table,query, sql, job} = params;
-            let sqlinput = sql.replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');    
+            let sqlinput = (sql == null) ? ' ' : sql.replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
             debugger;
             let iparams = {
                 scenario: {
@@ -108,6 +110,9 @@ function sasQuery() {
                 name: (job == null) ? 'run_sql_query' : job,
                 type: 'job'
             };
+            if (sql == null || sql.trim().length === 0) {
+                return { content: [{ type: 'text', text: 'Error: The SQL statement generated is blank. Please provide a valid natural language query that can be converted to SQL.' }] };
+            }
             let r = await _jobSubmit(iparams);
             return r;
     

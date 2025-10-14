@@ -8,22 +8,22 @@ import deleteSession from './deleteSession.js';
 
 
 async function _tableInfo(params, mode) {
-  let { table, lib, server,} = params;
+  let { table, lib, server, } = params;
   let logonPayload = await getLogonPayload();
- 
+
   if (table.includes('.')) {
     let parts = table.split('.');
     lib = parts[0];
     table = parts[1];
   }
-  let itable = {name: table};
+  let itable = { name: table };
   if (server === 'cas') {
     itable.caslib = lib;
   } else {
     itable.libref = lib;
   }
   let config = {
-    source: server,
+    source: (server === 'sas') ? 'compute' : server,
     table: itable,
 
     initialFetch: {
@@ -31,39 +31,42 @@ async function _tableInfo(params, mode) {
         start: 0, // Adjust for 0-based index
         limit: 1,
         format: true,
-        where:''
+        where: ''
       }
     }
   };
 
-  
+
   let appControl = {};
   try {
     appControl = await restafedit.setup(
       logonPayload,
-      config, 
+      config,
       null,/* create a sessiion */
       {},
       'user',
       {}
     );
+
+    //let tableSummary = await restafedit.getTableSummary(appControl);
   
-     //let tableSummary = await restafedit.getTableSummary(appControl);
-     await restafedit.scrollTable('first', appControl);
-     let outdata = appControl.state.data.map((d) => {
+    await restafedit.scrollTable('first', appControl);
+
+    let outdata = appControl.state.data.map((d) => {
       delete d._rowIndex;
       delete d._modified;
       delete d._index_;
       return d;
     });
     let columns = appControl.state.columns;
-    let structuredContent = {columns: columns, sampleData: outdata};
+    let structuredContent = { columns: columns, sampleData: outdata };
+ 
     await deleteSession(appControl);
     await appControl.store.logoff();
-    return { content: [{ type: 'text', text: JSON.stringify(structuredContent) }] , structuredContent: structuredContent };
-   
-  } catch (err) {
-    log(JSON.stringify(err)); 
+  
+    return { content: [{ type: 'text', text: JSON.stringify(structuredContent) }], structuredContent: structuredContent };
+
+  } catch (err) {;
     await deleteSession(appControl);
     await appControl.store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };

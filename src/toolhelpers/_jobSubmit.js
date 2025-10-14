@@ -22,12 +22,11 @@ async function _jobSubmit(params) {
     let logonPayload = await getLogonPayload();
     let msg = await store.logon(logonPayload);
     type = type.toLowerCase();
-    console.error(name, type, scenario);
+  //  console.error(name, type, scenario);
     debugger;
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
-      : await restaflib.jobRun(store, name, scenario);
-    console.error('jobSubmit', r);  
+      : await restaflib.jobRun(store, name, scenario);  
     let response = {
       tables: r.tables,
       listing: r.listing,
@@ -46,7 +45,6 @@ async function _jobSubmit(params) {
     let result = {
       tables: { Error: [{ Message: "Job failed. Please contact your SAS administrator." }] }
     };
-    console.error('jobSubmit', result);
     return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result };
   }
 }
