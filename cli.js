@@ -15,7 +15,7 @@ debugger;
 
 // read .env file if exists
 if (process.env.ENVFILE !== 'NONE') {
-    let envf = './env';
+    let envf = './.env';
     if (fs.existsSync(envf)) {
         console.error(`Loading environment variables from ${envf}...`);
         dotenvExpand.expand(config({ path: envf, silent: true }));
