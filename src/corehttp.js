@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import express from 'express';
-import { randomUUID } from "node:crypto";
+
 import createMcpServer from './createMcpServer.js';
 import https from 'https';
 import cors from 'cors';

@@ -1,0 +1,11 @@
+[
+  {
+     "name": "student",
+     "template": "sasQueryTemplate",
+     "table": "Public.enrollment",
+     "selectColumns": null,
+     "columns": null,
+     "job": null,
+     "server": "cas"
+   }
+]

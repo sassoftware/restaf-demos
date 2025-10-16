@@ -8,13 +8,13 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 // import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
-import toolSet from './toolSet/index.js';
+import makeTools from './toolSet/makeTools.js';
 
 
 async function createMcpServer(appEnv) {
 
   const mcpServer = new McpServer({
-    name: 'Viya-scoring-mcp-server',
+    name: 'sasmcp',
     version: '0.3.0'
   }, { capabilities: {
       tools: {
@@ -26,8 +26,10 @@ async function createMcpServer(appEnv) {
   // Register the addition tool
   // TBD: Register resources and prompts
 
-
-
+debugger;
+console.log(makeTools);
+  let toolSet = await makeTools(appEnv);
+  debugger;
   toolSet.forEach((tool,i) => {
    console.error(`\n[Note] Registering tool ${i+1} : ${tool.name}`);
     mcpServer.tool(

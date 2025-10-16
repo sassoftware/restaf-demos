@@ -23,6 +23,17 @@ if (process.env.ENVFILE !== 'NONE') {
         console.error('[Note]: No .env file found, Using default environment variables...');
     }
 }
+let subclassJson = {};
+if (process.env.SUBCLASS != null) {
+    console.error(`Using subclass: ${process.env.SUBCLASS}`);
+    let subclass = process.env.SUBCLASS;
+    if (fs.existsSync(subclass)) {
+        console.error(`Loading subclass information from ${subclass}...`);
+        let s = fs.readFileSync(subclass, 'utf8');
+        subclassJson = JSON.parse(s);
+        console.error(`Loaded subclass: ${JSON.stringify(subclassJson,null,2)}`);
+    } 
+}
 const appEnv = {
     mcpType: mcpType,
     HTTPS: (process.env.HTTPS != null && process.env.HTTPS.toUpperCase() === 'TRUE') ? true : false,
@@ -38,6 +49,11 @@ const appEnv = {
     CLIENTSECRET: process.env.CLIENTSECRETPW || null,
     TOKEN: process.env.TOKEN || null,
     TLS_CREATE: process.env.TLS_CREATE || null,
+    SUBCLASS: process.env.SUBCLASS || null,
+    subclassJson: subclassJson,
+    // toolsets
+    toolsets: (process.env.TOOLSETS != null) ? process.env.TOOLSETS.split(',') : ['default'],
+    // user defined tools
     //runtime variables
     tls: null,
     transports: {},
