@@ -18,7 +18,7 @@ import scrInfo from './scrInfo.js';
 import scrScore from './scrScore.js';
 
 import devaScore from './devaScore.js';
-import superstat from './superstat.js';
+// import superstat from './superstat.js';
 import findTable from './findTable.js';
 import findModel from './findModel.js';
 import program from './program.js';
@@ -29,7 +29,7 @@ import jobDef from './jobDef.js';
 import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
-import deval from './deval.js';
+// import deval from './deval.js';
 import _tableColumns from '../toolhelpers/_tableColumns.js';
 let customf= {sasQueryTemplate, sasQueryTemplate2};
 
@@ -68,9 +68,9 @@ async function makeTools(_appContext) {
     readTable(),
     tableInfo(),
 
-    superstat(),
+  //  superstat(),
     devaScore(),
-    deval(),
+   // deval(),
     sasQuery()
 
   ];

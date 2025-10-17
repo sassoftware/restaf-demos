@@ -1,20 +1,25 @@
 #!/usr/bin/env node
+/*
+ * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// Main entry point for MCP server
+
 import core from './src/core.js';
 import { config } from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import fs from 'fs';
-
-debugger;
 
 let mcpType = process.env.MCPTYPE || 'http';
 
 if (mcpType === 'http') {
     process.env.MCPTYPE = mcpType; // ensure env variable is set
 }
-debugger;
+
 
 // read .env file if exists
-if (process.env.ENVFILE !== 'NONE') {
+if (process.env.ENVFILE !== null && process.env.ENVFILE !== 'NONE') {
     let envf = './.env';
     if (fs.existsSync(envf)) {
         console.error(`Loading environment variables from ${envf}...`);
@@ -23,6 +28,7 @@ if (process.env.ENVFILE !== 'NONE') {
         console.error('[Note]: No .env file found, Using default environment variables...');
     }
 }
+//  subclasses for sasQuery tool (special use case)
 let subclassJson = [];
 if (process.env.SUBCLASS != null) {
     console.error(`Using subclass: ${process.env.SUBCLASS}`);

@@ -1,19 +1,35 @@
 # mcp-serverjs - A ModelContextProtocolServer(mcp) for Scoring
 
-- [Introduction](#intro)
-- [Supported Tools](#tools)
-- [Modify/Add Tools](#add)
-- [Enable Authentication](#auth)
-- [Enable client for mcp server](#enable)
-  - [stdio](#stdio)
-  - [http](#http)
-- [Persising Scores](#persist)
+- [Target Audience](#target-audience)
+- [Introduction](#introduction)
+- [Supported Tools](#supported-tools)
+- [Modify/Add Tools](#modify-or-add-tools)
+- [Enable Authentication](#enable-authentication)
+- [Enable client for mcp server](#enable-client-for-mcp-server)
+  - [stdio transport](#stdio-transport)
+  - [http transport](#http-transport)
+- [Persisting Scores](#persisting-scores)
 - [Notes](#notes)
-- [Useful Links](#links)
+- [Useful Links](#useful-links)
+- [Other useful tips](#other-useful-tips)
 
 ---
 
-## Introduction <a name="intro"> </a>
+## Target Audience
+
+### SAS Developers
+
+SAS developers who want to leverage agentic AI technologies to deliver their SAS based solutions via a "chat" interface.
+There are no additional skill sets required to use the mcp server
+
+### Application Developers
+
+The source code is available to application developers to add their own tools or build their own mcp server
+The source code available with Apache-2.0 license.
+
+---
+
+## Introduction
 
 ---
 
@@ -24,25 +40,23 @@ The  mcp server  described here is designed for scoring with SAS Viya. In this d
 Some examples are:
 
 - models created with SAS solutions like Model Studio, Intelligent Decisioning etc...
-- user written SAS programs
+- user written SAS program, SAS Studio Flow, job Definitions etc. using SAS Studio or other interfaces
 - functions that call SAS products using REST API to get results
 
   See below for the capabilities in the starter kit and how you can modify it for your own use.
 
-The source code is the repository <https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs>.
+The source code is the repository [restaf-demos](https://github.com/sassoftware/restaf-demos/tree/mcp-serverjs).
 It is provided under the Apache-2.0 license.
 
----
-
-## tools <a name="tools"></a>
+> Note: This server is designed to run locally on the client.  A remote server implementation is coming soon.
 
 ---
 
-The tools are designed to address common scenarios. You can clone the repository and modify the toolset.
+## Supported Tools
 
-### Simple tool
+---
 
-- devascore - calculates a special score given two numbers. This is useful for testing the mcp server.
+The tools are designed to address common usage scenarios faced by SAS users.
 
 ### Data related tools
 
@@ -50,7 +64,7 @@ The tools are designed to address common scenarios. You can clone the repository
 - listLibraries - list available libraries in cas or sas
 - findTable     - check if specified table  exists in specified library in cas or sas
 - listTables  - list tables in a specified library in cas or sas
-- readTable   - read records from a cas or sas table
+- readTable   - read records from a cas or sas table(see sasQuery tool for an alternate)
 
 ### Scoring with Models in MAS
 
@@ -66,20 +80,13 @@ The tools are designed to address common scenarios. You can clone the repository
 
 ### Scoring with SAS code
 
-- superstat - an example of accessing custom SAS code - mainly for testing
+- job - run a SAS Viya job  - useful for scoring with SAS Studio Flows
+- jobdef - use a job definition to run sas code
 - program - runs the sas code that is supplied by the user
 - macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
-- job - run a job
-- jobdef - use a job definition to run sas code
+- sasQuery - converts user natural language query to SQL and runs a specified job. By default it looks for a job named sas-sql-query on the server. You can pass a job name as part of the query to use a different job name. The tool depends on the LLM to generate the SQL Select statement. Use with caution, since the LLM might generate incorrect SQL statements.
 
-### SQL related tools
-
-- sasQuery - converts user natural language query to SQL and runs a job. This is useful to subset a dataset using proc sql. By default it looks for a job named sas-sql-query on the server. You can pass a job name as part of the query to use a different job name.
-  The tool depends on the LLM to generate the SQL Select statement. Use with caution, since the LLM might generate incorrect SQL statements.
-
-Sidebar: Thanks to my fellow SAS'er  Veera Babu Penumarti for the use-case and the default job.
-
-Below is the default code for sas-sql-query
+Below is the default code for sas-sql-query job
 
 ```sas
 data _null_;
@@ -110,7 +117,7 @@ filename joutput filesrvc parenturi="&SYS_JES_JOB_URI" name="query_results.json"
 
 ---
 
-## modify or add tools <a name="add"></a>
+## modify or add tools
 
 ---
 
@@ -122,7 +129,7 @@ filename joutput filesrvc parenturi="&SYS_JES_JOB_URI" name="query_results.json"
 
 ---
 
-## Enable Authentication <a name="auth"></a>
+## Enable Authentication
 
 The server supports multiple ways to authenticate.
 
@@ -142,10 +149,10 @@ You need to do this once every 90 days or whenever the refresh token expires.
 
 At this point the tools can make authenticated calls to SAS Viya
 
-
 ---
 
 ### Passing token
+
 In some cases you might have a token. Set the value in the .env file or in the mcp configuration.
 
 ### Password
@@ -153,18 +160,20 @@ In some cases you might have a token. Set the value in the .env file or in the m
 Ths requires additional setup.
 
 - Create a clientid and clientpassword for Oauth password flow.
-- Set these in the .env file or the mcp configuration file.
-
-## Enable client for mcp server <a name="enable"> </a>
+- Set these in the .env file or the mcp configuration file
 
 ---
 
-Similar methodologies can be used with other mcp enabled copilots(ex: Claude Desktopm OpenAI desktop, etc...)
+## Enable client for mcp server
+
+---
+
+Similar methodologies can be used with other mcp enabled clients(ex: Claude Desktop, OpenAI desktop, etc...)
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
 Add the following to the list of mcp servers
 
+### stdio transport
 
-### stdio <a name="stdio"></a>
 This is ideal for running mcp servers locally.  
 
 ```json
@@ -172,7 +181,7 @@ This is ideal for running mcp servers locally.
     "type": "stdio",
     "command": "npx",
     "args": [
-      "@sassoftware/mcp-serverjs@alpha",
+      "@sassoftware/mcp-serverjs@latest",
     ],
     "env": {
       "MCPTYPE": "stdio",
@@ -200,26 +209,30 @@ This is ideal for running mcp servers locally.
 
  ```
 
-### http <a name="http"></a>
+### http transport
 
-This is an alternate to using stdio. This requires a .env file
+This is an alternate to using stdio. This requires a .env file(see below).
 
-### Start the mcp server
+`Step 1: Configure the mpc client`
 
 The mcp configuration is show below
 
 ```json
  "sasmcp": {
     "type": "http",
-    "url": "http://localhost:8080/mcp"
+    "url": "http://localhost:8080/mcp"``
  }
 ```
 
-Then create a .env file that looks like this(with place holders replaced with actual values).
+`Step 2: Start the mcp server`
+
+```sh
+npx @sassoftware/mcp-serverjs@latest
+```
+
+Make sure that the .env file is in the current working directory(see below for details).
 
 ```env
-
-This is for the 'http' case. 
 
 The environment variables you can set are:
 
@@ -233,7 +246,7 @@ The environment variables you can set are:
 HTTPS=FALSE
 
 ## TLS settings
-# SSLCERT=<location of your SSL certificate>
+SSLCERT=<location of your SSL certificate>
 # The directory must contain the files key.pem and crt.pem and optionally ca.pem
 # This is used by the mcp server and in calls to SAS Via
 
@@ -272,30 +285,22 @@ TOKEN=yourtoken
 
 ```
 
-### Start the mcp server
+---
 
-The final step is to start the mcp server
-
-```sh
-npx @sassoftware/mcp-serverjs@latest
-```
+## Persisting scores
 
 ---
 
-## Persisting scores <a name="persist"> </a>
-
----
-
-You can use many mcp servers to persist the scoring data. 
+You can use many mcp servers to persist the scoring data.
 See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores in a CAS table.
 
 ---
 
-## Notes <a name="notes"></a>
+## Notes
 
 ---
 
-This demo server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. One advantages is that the session does not timeout.
+This server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. One advantages is that the session does not timeout.
 
 In a production system the designer has to make decisions on what needs to be cached and the implications of such caching.
 
@@ -303,7 +308,7 @@ The implication of this design choice is felt most when the tool needs is creati
 
 ---
 
-## Useful links <a name="links"> </a>
+## Useful links
 
 ---
 
@@ -315,7 +320,15 @@ The implication of this design choice is felt most when the tool needs is creati
 
 - [mkcert](https://www.npmjs.com/package/mkcert)
 
+- Also see <https://communities.sas.com> for articles on using mcp with SAS Viya
+
 ## Other useful tips
+
+### Claude Desktop
+
+Use the stdio transport. Check their documentation for details.
+
+  In my limited experience, the copilot works better if Claude Desktop starts the mcp server. To achieve this I set the following in session.json:  
 
 ### Vscode with Github Copilot
 
