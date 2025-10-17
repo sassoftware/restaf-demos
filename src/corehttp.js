@@ -70,7 +70,7 @@ async function corehttp(appEnv) {
 			} else {
 				// create a new transport
 				console.error('Creating new transport for session');
-				debugger;
+				
 				transport = await createMcpServer(appEnv);
 				//console.error(transport);
 			}

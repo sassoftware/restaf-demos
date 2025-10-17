@@ -26,10 +26,8 @@ async function createMcpServer(appEnv) {
   // Register the addition tool
   // TBD: Register resources and prompts
 
-debugger;
-console.log(makeTools);
   let toolSet = await makeTools(appEnv);
-  debugger;
+  
   toolSet.forEach((tool,i) => {
    console.error(`\n[Note] Registering tool ${i+1} : ${tool.name}`);
     mcpServer.tool(
@@ -41,7 +39,7 @@ console.log(makeTools);
   })
   console.error(`[Note] Registered ${toolSet.length});`);
   appEnv.mcpServer = mcpServer;
-  debugger;
+  
   let transport = (appEnv.mcpType === 'http') 
   ? new StreamableHTTPServerTransport({
     sessionIdGenerator: ()=> randomUUID(),

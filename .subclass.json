@@ -1,11 +1,20 @@
 [
   {
-     "name": "student",
+     "name": "queryStudent",
      "template": "sasQueryTemplate",
      "table": "Public.enrollment",
      "selectColumns": null,
      "columns": null,
      "job": null,
      "server": "cas"
+   },
+   {
+      "name": "queryCars",
+      "template": "sasQueryTemplate2",
+      "table": "Public.cars",
+      "selectColumns": "make,model,origin,msrp",
+      "columns": null,
+      "job": "query_cars",
+      "server": "cas"
    }
 ]

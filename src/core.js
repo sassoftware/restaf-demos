@@ -10,7 +10,7 @@ async function core(appEnv) {
 	console.error(`MCP Type: ${appEnv.mcpType}`);
 	if (appEnv.mcpType === 'http') {
 		console.error('[Note]MCP Server starting with HTTP transport');
-		debugger;
+		
 		await corehttp(appEnv);
 	} else {
 		console.error('[Note] MCP Server starting with stdio transport');

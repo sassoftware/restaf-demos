@@ -81,7 +81,7 @@ function chataqb() {
         required: ['query', 'table'],
         handler: async (params) => {
             let {table,query, sql} = params;
-            debugger;
+            
             let sqlinput = (sql || '').replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
             let iparams = {
                 scenario: {

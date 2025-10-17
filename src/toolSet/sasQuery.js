@@ -100,7 +100,7 @@ function sasQuery() {
         handler: async (params) => {
             let {table,query, sql, job} = params;
             let sqlinput = (sql == null) ? ' ' : sql.replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
-            debugger;
+            
             let iparams = {
                 scenario: {
                     table: table,
@@ -116,19 +116,7 @@ function sasQuery() {
             let r = await _jobSubmit(iparams);
             return r;
     
-            // try to return the first table found
-           // console.error('sasquery', Object.keys(r));
-           /*
-            if (r.structuredContent.tables != null) {
-                let outputName = Object.keys(r.structuredContent.tables)[0];
-                // console.error('sasquery', outputName);
-                let structuredContent = r.structuredContent.tables[outputName];
-                return { content:[ { type: 'text', text: JSON.stringify(structuredContent) }],
-                    structuredContent: structuredContent };
-            }  else {
-                return r;
-            }
-                */
+           
 
         }
     };

@@ -4,6 +4,7 @@
  */
 
 import sasQueryTemplate from './sasQueryTemplate.js';
+import sasQueryTemplate2 from './sasQueryTemplate2.js';
 import listModels from './listModels.js';
 import listTables from './listTables.js';
 import modelScore from './modelScore.js';
@@ -30,21 +31,19 @@ import findJob from './findJob.js';
 import sasQuery from './sasQuery.js';
 import deval from './deval.js';
 import _tableColumns from '../toolhelpers/_tableColumns.js';
-import { de } from 'zod/v4/locales';
+let customf= {sasQueryTemplate, sasQueryTemplate2};
 
 async function makeTools(_appContext) {
   // wrap all tools with 
 
-  debugger;
   let customTools = [];
   for (let i = 0; i < _appContext.subclassJson.length; i++) {
     let r = _appContext.subclassJson[i];
     console.error(`\n[Note] Loading custom tool: ${JSON.stringify(r, null, 2)}`);
-    let t = await sasQueryTemplate(r);
-    debugger;
+    let t = await customf[r.template](r);
     customTools.push(t);
   }
-  console.log(`\n[Note] Loaded ${customTools.length} custom tools.`);
+
   let list = [
     listModels(),
     listTables(),

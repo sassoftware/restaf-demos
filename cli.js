@@ -23,7 +23,7 @@ if (process.env.ENVFILE !== 'NONE') {
         console.error('[Note]: No .env file found, Using default environment variables...');
     }
 }
-let subclassJson = {};
+let subclassJson = [];
 if (process.env.SUBCLASS != null) {
     console.error(`Using subclass: ${process.env.SUBCLASS}`);
     let subclass = process.env.SUBCLASS;
@@ -64,6 +64,7 @@ const appEnv = {
     computeSessionId: null,
 
 };
+// start the mcp server
 core(appEnv)
     .then(() => {
         console.error('MCP Server initialized successfully.');
