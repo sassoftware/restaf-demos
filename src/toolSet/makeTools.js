@@ -75,7 +75,7 @@ async function makeTools(_appContext) {
 
   ];
   let listWithCustom = list.concat(customTools);
-  console.log(`\n[Note] Loaded a total of ${listWithCustom.length} tools.`);
+  console.error(`\n[Note] Loaded a total of ${listWithCustom.length} tools.`);
   return listWithCustom;
 }
 export default makeTools;

@@ -50,7 +50,7 @@ try {
   delete columns._rowIndex;
   delete columns._modified;
   delete columns._index_;
-  console.log(columns);
+  console.error(columns);
   await deleteSession(appControl);
   await appControl.store.logoff();
   return JSON.stringify(columns);
