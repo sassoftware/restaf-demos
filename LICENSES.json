@@ -1,0 +1,105 @@
+{
+  "@modelcontextprotocol/sdk": {
+    "version": "1.19.1",
+    "licenses": "MIT",
+    "repository": "https://github.com/modelcontextprotocol/typescript-sdk",
+    "publisher": "Anthropic, PBC",
+    "url": "https://anthropic.com"
+  },
+  "@sassoftware/restaf": {
+    "version": "5.5.1-9",
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/sassoftware/restaf/tree/main/packages/restaf",
+    "publisher": "Deva Kumaraswamy",
+    "email": "deva.kumar@sas.com"
+  },
+  "@sassoftware/restafedit": {
+    "version": "3.11.1-10",
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/sassoftware/restaf/tree/restafedit",
+    "publisher": "devaKumaraswamy"
+  },
+  "@sassoftware/restaflib": {
+    "version": "5.5.1-9",
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/sassoftware/restaf/tree/master/packages/restaflib",
+    "publisher": "Deva Kumar",
+    "email": "deva.kumar@sas.com"
+  },
+  "axios": {
+    "version": "1.12.2",
+    "licenses": "MIT",
+    "repository": "https://github.com/axios/axios",
+    "publisher": "Matt Zabriskie"
+  },
+  "cors": {
+    "version": "2.8.5",
+    "licenses": "MIT",
+    "repository": "https://github.com/expressjs/cors",
+    "publisher": "Troy Goode",
+    "email": "troygoode@gmail.com",
+    "url": "https://github.com/troygoode/"
+  },
+  "cross-env": {
+    "version": "7.0.3",
+    "licenses": "MIT",
+    "repository": "https://github.com/kentcdodds/cross-env",
+    "publisher": "Kent C. Dodds",
+    "email": "me@kentcdodds.com",
+    "url": "https://kentcdodds.com"
+  },
+  "debug": {
+    "version": "4.4.1",
+    "licenses": "MIT",
+    "repository": "https://github.com/debug-js/debug",
+    "publisher": "Josh Junon",
+    "url": "https://github.com/qix-"
+  },
+  "dotenv-expand": {
+    "version": "12.0.3",
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/motdotla/dotenv-expand",
+    "publisher": "motdotla"
+  },
+  "dotenv": {
+    "version": "17.2.0",
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/motdotla/dotenv"
+  },
+  "express-list-endpoints": {
+    "version": "7.1.1",
+    "licenses": "MIT",
+    "repository": "https://github.com/AlbertoFdzM/express-list-endpoints"
+  },
+  "express": {
+    "version": "5.1.0",
+    "licenses": "MIT",
+    "repository": "https://github.com/expressjs/express",
+    "publisher": "TJ Holowaychuk",
+    "email": "tj@vision-media.ca"
+  },
+  "mcp-framework": {
+    "version": "0.2.15",
+    "licenses": "MIT*",
+    "publisher": "Alex Andru",
+    "email": "alex@andru.codes"
+  },
+  "selfsigned": {
+    "version": "2.4.1",
+    "licenses": "MIT",
+    "repository": "https://github.com/jfromaniello/selfsigned",
+    "publisher": "José F. Romaniello",
+    "email": "jfromaniello@gmail.com",
+    "url": "http://joseoncode.com"
+  },
+  "undici": {
+    "version": "7.13.0",
+    "licenses": "MIT",
+    "repository": "https://github.com/nodejs/undici"
+  },
+  "uuid": {
+    "version": "11.1.0",
+    "licenses": "MIT",
+    "repository": "https://github.com/uuidjs/uuid"
+  }
+}

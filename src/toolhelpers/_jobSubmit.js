@@ -8,7 +8,7 @@ import getLogonPayload from './getLogonPayload.js';
 
 
 
-async function _jobSubmit(params) {
+async function _jobSubmit(params,sasQuery) {
   let { name, type, scenario, limit, output } = params;
   // setup
   try {
@@ -26,12 +26,10 @@ async function _jobSubmit(params) {
     
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
-      : await restaflib.jobRun(store, name, scenario);  
-    let response = {
-      tables: r.tables,
-      listing: r.listing,
-      log: r.log
-    };
+      : await restaflib.jobRun(store, name, scenario);
+
+      let response = (sasQuery === true) ? {tables: r.tables} :
+      { tables: r.tables, listing: r.listing, log: r.log} ;
     
     
     return {
@@ -43,7 +41,7 @@ async function _jobSubmit(params) {
     // Oops! Something went wrong
     console.error(`Error in _jobSubmit: ${JSON.stringify(error)}`);
     let result = {
-      tables: { Error: [{ Message: "Job failed. Please contact your SAS administrator." }] }
+      tables: { Error: [{ Message: "Job failed. Please contact the owner of the job " + name }] }
     };
     return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result };
   }
