@@ -1,8 +1,5 @@
 {
   "editor.fontSize": 7,
   "scm.inputFontSize": 7,
-  "terminal.integrated.fontSize": 7,
-  "chat.editor.fontSize": 7,
-  "chat.fontSize": 7,
   "markdown.preview.fontSize": 7
 }
