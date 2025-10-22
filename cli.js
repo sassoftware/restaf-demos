@@ -11,6 +11,7 @@ import { config } from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import fs from 'fs';
 
+
 let mcpType = process.env.MCPTYPE || 'http';
 
 if (mcpType === 'http') {

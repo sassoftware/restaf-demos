@@ -12,7 +12,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 //import { Request, Response, NextFunction } from 'express';
-import debug from 'debug';
+
 import fs from 'fs';
 import selfsigned from 'selfsigned';
 
@@ -36,8 +36,9 @@ async function corehttp(appEnv) {
 	function requireBearer(req,res, next) {
   const hdr = req.header('Authorization') || '';
   const token = hdr.startsWith('Bearer ') ? hdr.slice(7) : undefined;
+	console.error('BearerToken', token);
   if (!token || token !== process.env.MCP_TOKEN) {
-		console.log('Unauthorized scenario'); 
+		console.error('Authorization under development'); 
   }
   next();
 }
@@ -109,7 +110,9 @@ async function corehttp(appEnv) {
 
 	}
   app.options('/mcp', (_, res) => res.sendStatus(204));
-	app.post('/mcp', handleRequest);
+	app.post('/mcp',requireBearer, handleRequest);
+	app.get('/mcp',requireBearer, handleRequest);
+	
 
 	// Start the server
 	const PORT = appEnv.PORT; 
