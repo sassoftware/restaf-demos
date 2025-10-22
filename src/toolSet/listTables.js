@@ -5,10 +5,10 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-import _listTables from '../toolhelpers/_listTables.js';
+//import _listTables from '../toolhelpers/_listTables.js';
 
 
-function listTables() {
+function listTables(_appContext) {
   const log = debug('tools');
   let llmDescription =  {
   "purpose": "Map natural language requests to listTables parameters and return a compact machine-readable response.",
@@ -86,7 +86,7 @@ function listTables() {
   - "show 25 tables in sashelp" → { lib:"sashelp", limit:25, start:1 }
   - "next tables" (after previous {start:1,limit:10}) → { start:11, limit:10, lib:<previousLib> }
   `;
-
+  let _listTables = _appContext.toolsHelper._listTables;  
   let spec = {
     name: 'listTables',
     description: description,

@@ -4,12 +4,9 @@
  */
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
-import getLogonPayload from './getLogonPayload.js';
 
-
-
-async function _jobSubmit(params,sasQuery) {
-  let { name, type, scenario, limit, output } = params;
+async function _jobSubmit(_appContext,params) {
+  let { name, type, scenario,  query } = params;
   // setup
   try {
     let store = restaf.initStore({
@@ -19,17 +16,15 @@ async function _jobSubmit(params,sasQuery) {
         httpOptions: null
       }
     });
-    let logonPayload = await getLogonPayload();
+    let logonPayload = await _appContext.toolsHelper.getLogonPayload();
     let msg = await store.logon(logonPayload);
     type = type.toLowerCase();
-  //  console.error(name, type, scenario);
-    
+  
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);
 
-      let response = (sasQuery === true) ? {tables: r.tables} :
-      { tables: r.tables, listing: r.listing, log: r.log} ;
+    let response = (query === true) ? {tabled: r.tables} : { tables: r.tables, listing: r.listing, log: r.log} ;
     
     
     return {

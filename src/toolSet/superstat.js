@@ -5,7 +5,7 @@
 import _submitCode from '../toolhelpers/_submitCode.js';
 import { z } from 'zod';
 
-function superstat() {
+function superstat(_appContext) {
   let desc = `
   ## superstat:  compute superstat for two numbers using SAS programming 
 
@@ -50,8 +50,8 @@ function superstat() {
           ods html close; 
           run;
           `;
-
-      let r = await _submitCode(src, params);
+      params.src = src;
+      let r = await _submitCode(params);
       return r;
     }
 

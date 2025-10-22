@@ -51,12 +51,10 @@ try {
   delete columns._modified;
   delete columns._index_;
   console.error(columns);
-  await deleteSession(appControl);
-  await appControl.store.logoff();
+ // await deleteSession(appControl);
   return JSON.stringify(columns);
 } catch (e) {
-  await deleteSession(appControl);
-  await appControl.store.logoff();
+//  await deleteSession(appControl);
   return outdata = null;
 };
 }

@@ -4,9 +4,9 @@
  */
 import restaflib from '@sassoftware/restaflib';
 import getLogonPayload from './getLogonPayload.js';
-async function _submitCasl(params) {
+async function _submitCasl(_appContext, params) {
   const { caslRun } = restaflib;
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
    let store = restaf.initStore({
       casProxy: true,
       options: {
@@ -25,11 +25,11 @@ async function _submitCasl(params) {
     try {
       let r = await caslRun(store, session, src, (args == null) ? {} : args, true);
       await store.apiCall( session.links( 'delete' ) );
-      store.logoff()
+    
       return {content: [{ type: 'text', text: JSON.stringify(r.items()) }], structuredContent: r.items() };
     } catch (err) {
       console.error(err);
-      store.logoff();
+     
       return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 
     }
   }

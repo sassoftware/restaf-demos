@@ -8,10 +8,10 @@ import deleteSession from './deleteSession.js';
 import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
-async function _readTable(params) {
+async function _readTable(_appContext,params) {
   const log = debug('readtable');
   let { table, lib, start, limit, server, format, where } = params;
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   log('logonPayload', logonPayload);
 
   if (table.includes('.')) {
@@ -62,15 +62,15 @@ async function _readTable(params) {
     });
 
 
-    await deleteSession(appControl);
-   // await appControl.store.logoff();
+    //await deleteSession(appControl);
+
     let t = (limit === 1) ? JSON.stringify(outdata[0]) : JSON.stringify(outdata);
     return { content: [{ type: 'text', text: t }], structuredContent: outdata };
 
   } catch (err) {
     log(JSON.stringify(err));
-    await deleteSession(appControl);
-    //await appControl.store.logoff();
+    //await deleteSession(appControl);
+
     return { content: [{ type: 'text', text: JSON.stringify(err) }],
      };
   }

@@ -108,12 +108,14 @@ function sasQuery() {
                     sql: sqlinput
                 },
                 name: (job == null) ? 'run_sql_query' : job,
-                type: 'job'
+                type: 'job',
+                query: true
             };
             if (sql == null || sql.trim().length === 0) {
                 return { content: [{ type: 'text', text: 'Error: The SQL statement generated is blank. Please provide a valid natural language query that can be converted to SQL.' }] };
             }
-            let r = await _jobSubmit(iparams,true);
+            let r = await _jobSubmit(iparams);
+          
             return r;
     
            

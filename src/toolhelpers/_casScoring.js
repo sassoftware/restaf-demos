@@ -6,9 +6,9 @@ import restaflib from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
 import getStoreOpts from './getStoreOpts.js';
-async function _casScoring(params) {
+async function _casScoring(_appContext,params) {
   let { caslScore } = restaflib;
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let store = restaf.initStore({
        casProxy: true,
        options: {
@@ -26,13 +26,14 @@ async function _casScoring(params) {
     let output = await caslScore(store, session, params); 
     let status = { statusCode: 0, msg: null };
     let results = output.casResults;
-    return {content: [{ type: 'text', text: JSON.stringify(results) }], structuredContent: results};
     await store.apiCall( session.links( 'delete' ) );
-    store.logoff();
+    return {content: [{ type: 'text', text: JSON.stringify(results) }], structuredContent: results};
+   
+   
   } catch (err) {
     console.error(err);
     await store.apiCall( session.links( 'delete' ) );
-    store.logoff();
+
     return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 
   }
 }

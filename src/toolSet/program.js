@@ -4,10 +4,10 @@
  */
 
 import { z } from 'zod';
-import _submitCode from '../toolhelpers/_submitCode.js';
+//import _submitCode from '../toolhelpers/_submitCode.js';
 
 
-function program() {
+function program(_ap) {
   let description = `
 ## Program
 
@@ -43,6 +43,7 @@ Examples
   - this should be the same as the previous example and is just a different syntax. The result should be
     {program: "sample", folder: "/Public/models", scenario: {name: "John", age: 45}, output: "a", limit: 50}
 `;
+  let _submitCode = _ap.toolsHelper._submitCode;
   let spec = {
     name: 'program',
     description: description,
@@ -85,10 +86,11 @@ Examples
       let iparms = {
         args: scenario,
         output: params.output,
-        limit: params.limit
+        limit: params.limit,
+        src: isrc
       }
      // console.error('iparms', iparms);
-      let r = await _submitCode(isrc, iparms);
+      let r = await _submitCode(iparms);
       return r;
     }
   }

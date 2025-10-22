@@ -8,7 +8,7 @@ import getLogonPayload from './getLogonPayload.js';
 
 import debug from 'debug';
 
-async function _masScoring(params) {
+async function _masScoring(_appContext, params) {
  const log = debug('masscoring');
  // setup
   let { masSetup, masDescribe, masRun } = restaflib;
@@ -19,7 +19,7 @@ async function _masScoring(params) {
         httpOptions: null
       }
   });
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let inputs = {};
   let masControl;
   let {model, scenario, uflag, stream} = params;
@@ -52,7 +52,7 @@ async function _masScoring(params) {
     let result = await masRun(store, masControl, model, iscenario);
 
     // add a unique key for the result
-		await store.logoff();
+		
     let r = {...result, ...iscenario};
     log(r);
     let t = '';
@@ -66,7 +66,6 @@ async function _masScoring(params) {
   
   } catch (err) {
     log(err);
-    await store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify({ status: { statusCode: 2, msg: err }, results: {} }) }] };
   }
 }

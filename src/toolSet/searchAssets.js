@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
-import _catalogSearch from '../toolhelpers/_catalogSearch.js';
+//import _catalogSearch from '../toolhelpers/_catalogSearch.js';
 import debug from 'debug';
 
 
-function searchAssets() {
+function searchAssets(_app) {
   const log = debug('tools');
 
   let description = `
@@ -28,7 +28,7 @@ function searchAssets() {
   3. AND/OR are treated as logical operators when between terms.
   4. Sets in the form key:{value1,value2} are supported as filters.
 `;
-
+  let _catalogSearch = _app.toolsHelper._catalogSearch;
   let specs = {
     name: 'searchAssets',
     description: description,

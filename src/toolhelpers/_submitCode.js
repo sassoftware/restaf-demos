@@ -8,8 +8,8 @@ import getLogonPayload from './getLogonPayload.js';
 
 
 
-async function _submitCode(src, params) {
-  let { output, limit, args } = params;
+async function _submitCode(_appContext, params) {
+  let { output, limit, args, src } = params;
   try {
     // setup
     let store = restaf.initStore({
@@ -19,7 +19,7 @@ async function _submitCode(src, params) {
         httpOptions: null
       }
     });
-    let logonPayload = await getLogonPayload();
+    let logonPayload = await _appContext.toolsHelper.getLogonPayload();
 
     // get compute sessio, run sas code and retrieve result
 
@@ -65,8 +65,7 @@ async function _submitCode(src, params) {
 
     // cleanup
     await store.apiCall(computeSession.links('delete'));
-    await store.logoff();
-
+   
     // return results in the format the LLM expects
 
     return {

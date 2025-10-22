@@ -8,32 +8,29 @@ import os from 'os';
 import { Agent, fetch } from 'undici';
 import getOpts from './getOpts.js';
 
-async function getToken() {
+async function getToken(_appContext) {
   let homedir = os.homedir();
-  if (process.env.SAS_CLI_CONFIG) {
-    homedir = process.env.SAS_CLI_CONFIG;
+  if (_appContext.SAS_CLI_CONFIG) {
+    homedir = _appContext.SAS_CLI_CONFIG;
   }
-  console.error('[Note] Using config dir: ' + homedir);
+
   let sep = (os.platform() === 'win32') ? '\\' : '/';
   let credentials = homedir + sep + '.sas' + sep + 'credentials.json';
-  console.error('[Note] Using credentials file: ' +  credentials);
   let url = homedir + sep + '.sas' + sep + 'config.json';
-  console.error('[Note] Using config file: ' +  url);
+ 
   try {
     let j = fs.readFileSync(credentials, 'utf8');
-    console.error('[Note] Read credentials file');
+   
     let js = JSON.parse(j);
-    let profile = (process.env.SAS_CLI_PROFILE == null || process.env.SAS_CLI_PROFILE.toLowerCase() === 'default')
-           ? 'Default' : process.env.SAS_CLI_PROFILE;
+    let profile = (_appContext.SAS_CLI_PROFILE == null || _appContext.SAS_CLI_PROFILE.toLowerCase() === 'default')
+           ? 'Default' : _appContext.SAS_CLI_PROFILE;
 
-    console.error('[Note] Using profile: ' + profile);
     let refresh_token = js[profile]['refresh-token'];
     j = fs.readFileSync(url, 'utf8');
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
 
     let token = await refreshToken(refresh_token, host);
-   // console.error('[Note] Refreshed token', token.substring(0, 10) + '...');
     return { host, token };
   } catch (e) {
     console.error(e);

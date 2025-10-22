@@ -5,10 +5,10 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-import _masDescribe from '../toolhelpers/_masDescribe.js';
+//import _masDescribe from '../toolhelpers/_masDescribe.js';
 const log = debug('tools');
 
-function modelInfo() {
+function modelInfo(_appContext) {
   let description = `
 ## modelInfo
 
@@ -30,6 +30,7 @@ Example prompts
 - info on cancer1
 - describe model mycoolmodel
 `;
+let _masDescribe = _appContext.toolsHelper._masDescribe;
   let spec = {
     name: 'modelInfo',
     description: description,

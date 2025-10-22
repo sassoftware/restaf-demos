@@ -5,10 +5,10 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-import _masScoring from '../toolhelpers/_masScoring.js';
+// import _masScoring from '../toolhelpers/_masScoring.js';
 const log = debug('tools');
 
-function modelScore() {
+function modelScore(_app) {
   let description = `
 ## modelScore
 
@@ -39,6 +39,8 @@ Examples
 - modelScore with model='mycoolmodel' and scenario='{x:1,y:2}'
 - modelScore with model='cancer1' and scenario='age=45, sex=M, tumor=stage2'
 `;
+
+  let _masScoring = _app.toolsHelper._masScoring;
   let spec = {
     name: 'modelScore',
     description: description,

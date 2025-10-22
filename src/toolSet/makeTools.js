@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import wrapToolsHelpers from '../toolhelpers/wrapToolHelpers.js';
 import sasQueryTemplate from './sasQueryTemplate.js';
 import sasQueryTemplate2 from './sasQueryTemplate2.js';
 import listModels from './listModels.js';
@@ -30,48 +31,50 @@ import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
 // import deval from './deval.js';
-import _tableColumns from '../toolhelpers/_tableColumns.js';
+//import _tableColumns from '../toolhelpers/_tableColumns.js';
 let customf= {sasQueryTemplate, sasQueryTemplate2};
 
 async function makeTools(_appContext) {
   // wrap all tools with 
 
+  _appContext.toolsHelper = wrapToolsHelpers(_appContext);
   let customTools = [];
-  for (let i = 0; i < _appContext.subclassJson.length; i++) {
-    let r = _appContext.subclassJson[i];
-    console.error(`\n[Note] Loading custom tool: ${JSON.stringify(r, null, 2)}`);
-    let t = await customf[r.template](r);
-    customTools.push(t);
+  if (_appContext.subclassJson != null) {
+  
+    for (let i = 0; i < _appContext.subclassJson.length; i++) {
+      let r = _appContext.subclassJson[i];
+      let t = await customf[r.template](r);
+      customTools.push(t);
+    }
   }
-
+  console.error(`\n[Note] Loaded ${customTools.length} custom tools.`);
+  
   let list = [
-    listModels(),
-    listTables(),
+    listModels(_appContext),
+    listTables(_appContext),
 
-    findModel(),
-    modelInfo(),
-    modelScore(),
+    findModel(_appContext),
+    modelInfo(_appContext),
+    modelScore(_appContext),
 
-    scrInfo(),
-    scrScore(),
-    program(),
-    runMacro(),
-    findJob(),
-    listJobs(),
-    job(),
-    jobDef(),
+    scrInfo(_appContext),
+    scrScore(_appContext),
+    program(_appContext),
+    runMacro(_appContext),
+    findJob(_appContext),
+    listJobs(_appContext),
+    job(_appContext),
+    jobDef(_appContext),
 
-    listLibraries(),
+    listLibraries(_appContext),
 
-    findLibrary(),
-    findTable(),
-    readTable(),
-    tableInfo(),
-
-  //  superstat(),
-    devaScore(),
-   // deval(),
-    sasQuery()
+    findLibrary(_appContext),
+    findTable(_appContext),
+    readTable(_appContext),
+    tableInfo(_appContext),
+    devaScore(_appContext),
+   
+    sasQuery(_appContext)
 
   ];
   let listWithCustom = list.concat(customTools);

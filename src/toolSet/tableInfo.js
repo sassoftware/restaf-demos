@@ -6,8 +6,8 @@ import { z } from 'zod';
 import debug from 'debug';
 
 import _tableInfo  from '../toolhelpers/_tableInfo.js';
-function tableInfo(Table) {
-  const log = debug('tools');
+function tableInfo(_app) {
+
      let describe = `
 ## tableInfo
 
@@ -36,6 +36,7 @@ Example
 - desc table \`sales\` in lib \`analytics\`
 
 `;
+    let _tableInfo = _app.toolsHelper._tableInfo;
     let  specs = {
       name: 'tableInfo',
       description: describe,
@@ -46,7 +47,8 @@ Example
       },
       required: ['table', 'lib'],
       handler: async (params) => {
-        let r = await _tableInfo(params, 'describe');
+        params.describe = true;
+        let r = await _tableInfo(params);
         return r;
       }
     }

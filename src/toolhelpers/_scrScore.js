@@ -7,7 +7,7 @@ import axios from 'axios';
 import debug from 'debug';
 
 
-async function _scrScore(params) {
+async function _scrScore(_appContext,params) {
   let { url, scenario} = params;
   const log = debug('scr');
 

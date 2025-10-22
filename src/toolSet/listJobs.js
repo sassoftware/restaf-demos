@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
-import _listJobs from '../toolhelpers/_listJobs.js';
-function listJobs() {
+//import _listJobs from '../toolhelpers/_listJobs.js';
+function listJobs(_appContext) {
   // LLM guidance object retained for potential future consumption; not exported directly.
   let llmDescription = {
     purpose: "Map natural language requests to listJobs parameters and return a machine-readable response.",
@@ -87,7 +87,7 @@ function listJobs() {
   - "next jobs" (after prior {start:1,limit:10}) → { start:11, limit:10 }
   `;
 
-
+  let _listJobs = _appContext.toolsHelper._listJobs;
   let spec = {
     name: 'listJobs',
     description: description,

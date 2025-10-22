@@ -4,7 +4,7 @@
  */
 
 import {z} from 'zod';
-function deval() {
+function deval(_appContext) {
     let description = `
 ## deval: returns the value of the specified variable from the environment
 This tool returns special  information as a text result.

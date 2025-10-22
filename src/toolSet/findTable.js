@@ -4,10 +4,10 @@
  */
 
 import { z } from 'zod';
-import debug from 'debug';
-import _listTables from '../toolhelpers/_listTables.js';
+//import debug from 'debug';
+//import _listTables from '../toolhelpers/_listTables.js';
 
-function findTable() {
+function findTable(_appContext) {
   let llmDescription = {
     "purpose": "Map natural-language requests to findTable parameters and return a compact, machine-readable response.",
     "param_mapping": {
@@ -46,7 +46,7 @@ Examples
 - find table iris in Public library in cas
 - find table cars in sashelp in sas server
 `;
-
+  let _listTables = _appContext.toolsHelper._listTables;
   let spec = {
     name: 'findTable',
     description: description,

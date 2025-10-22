@@ -10,7 +10,6 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 // import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
 import makeTools from './toolSet/makeTools.js';
 
-
 async function createMcpServer(appEnv) {
 
   const mcpServer = new McpServer({
@@ -49,14 +48,7 @@ async function createMcpServer(appEnv) {
 
     }
   })
-  : new StdioServerTransport(/*{
-    sessionIdGenerator: ()=> randomUUID(),
-    enableJsonResponse: true,
-    onsessioninitialized: (sessionId) => {
-      appEnv.transports[sessionId] = transport;
-
-    }
-  }*/);
+  : new StdioServerTransport();
 
  
   console.error('[Note] Transport mode:====================================', appEnv.mcpType);

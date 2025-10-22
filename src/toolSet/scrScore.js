@@ -4,14 +4,12 @@
  */
 
 import { z } from 'zod';
-import debug from 'debug';
 import _scrScore from '../toolhelpers/_scrScore.js';
 import scrModels from '../db/scrModels.js';
 
 
 
 function scrScore() {
-  const log = debug('scr');
   let description = `
 ## scrScore
 

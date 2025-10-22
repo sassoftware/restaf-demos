@@ -8,6 +8,10 @@ import express from 'express';
 import createMcpServer from './createMcpServer.js';
 import https from 'https';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import bodyParser from 'body-parser';
+//import { Request, Response, NextFunction } from 'express';
 import debug from 'debug';
 import fs from 'fs';
 import selfsigned from 'selfsigned';
@@ -21,10 +25,23 @@ async function corehttp(appEnv) {
 	app.use(express.json());
 	app.use(cors({
 		origin: "*",
+		credentials: false,
 		exposedHeaders: ['mcp-session-id'],
 		allowedHeaders: ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language", "mcp-session-id"],
 
 	}));
+	app.use(helmet());
+	app.use(bodyParser.json({ limit: process.env.JSON_LIMIT ?? '2mb' }));
+
+	function requireBearer(req,res, next) {
+  const hdr = req.header('Authorization') || '';
+  const token = hdr.startsWith('Bearer ') ? hdr.slice(7) : undefined;
+  if (!token || token !== process.env.MCP_TOKEN) {
+		console.log('Unauthorized scenario'); 
+  }
+  next();
+}
+
 
 	// setup routes
 	app.get('/health', (req, res) => {
@@ -65,14 +82,14 @@ async function corehttp(appEnv) {
 			let sessionId = req.headers['mcp-session-id'];
 			console.error('MCP session id:', sessionId);
 			if (sessionId && appEnv.transports[sessionId]) {
-				console
 				transport = appEnv.transports[sessionId];
+				console.error('Using existing transport for session ', sessionId);
 			} else {
 				// create a new transport
 				console.error('Creating new transport for session');
 				
 				transport = await createMcpServer(appEnv);
-				//console.error(transport);
+				
 			}
 
 		} catch (error) {
@@ -91,7 +108,7 @@ async function corehttp(appEnv) {
 		await transport.handleRequest(req, res, req.body);
 
 	}
-
+  app.options('/mcp', (_, res) => res.sendStatus(204));
 	app.post('/mcp', handleRequest);
 
 	// Start the server

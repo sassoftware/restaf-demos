@@ -7,7 +7,7 @@ import axios from 'axios';
 import debug from 'debug';
 
 
-async function _scrInfo(params) {
+async function _scrInfo(_appContext,params) {
   const log = debug('scr');
 
   let {url} = params;

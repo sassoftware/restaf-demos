@@ -10,7 +10,7 @@ import debug from 'debug';
 import getStoreOpts from './getStoreOpts.js';
 
 
-async function _listModels(params) {
+async function _listModels(_appContext,params) {
   let { limit, start , name} = params;
   const log = debug('modelList');
   // setup
@@ -22,7 +22,7 @@ async function _listModels(params) {
         httpOptions: getStoreOpts()
       }
   });
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
 
   try {
     await store.logon(logonPayload);
@@ -42,13 +42,11 @@ async function _listModels(params) {
     let result = await store.apiCall(microanalyticScore.links('modules'), payload);
     let list = result.itemsList().toJS();
     log('result', JSON.stringify(list, null, 2));
-    await store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(list) }],
       structuredContent: list
     };
   } catch (err) {
     log(JSON.stringify(err, null, 2));
-    await store.logoff();
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }

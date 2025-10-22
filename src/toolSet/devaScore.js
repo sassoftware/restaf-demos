@@ -6,7 +6,7 @@ import {z} from 'zod';
 import debug from 'debug';
 
 
-function devaScore() {
+function devaScore(_appContext) {
     const log = debug('devascore');
     let description = `
 ## devascore: compute Deva Score for two numbers.

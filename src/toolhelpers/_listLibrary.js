@@ -6,10 +6,11 @@ import getLogonPayload from './getLogonPayload.js';
 import restafedit from '@sassoftware/restafedit';
 import getStoreOpts from './getStoreOpts.js';
 
-async function _listLibrary(params) {
+async function _listLibrary(_appContext, params) {
+  
+  
   let { server, limit, start, name } = params;
-  console.error('listLibrary called with params', params);
-  let logonPayload = await getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let config = {
     source: (server === 'sas') ? 'compute' : server,
     table: null
@@ -49,7 +50,6 @@ async function _listLibrary(params) {
     };
   } catch (err) {
     console.error(JSON.stringify(err));
-    //  await deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }

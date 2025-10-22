@@ -4,9 +4,9 @@
  */
 
 import { z } from 'zod';
-import _listModels from '../toolhelpers/_listModels.js';
+//import _listModels from '../toolhelpers/_listModels.js';
 
-function listModels() {
+function listModels(_appCon) {
   let description = `
   ## listModels — enumerate models published to MAS (Model Publish / Scoring service)
 
@@ -62,6 +62,7 @@ function listModels() {
   - "next models" (after prior {start:1,limit:10}) → { start:11, limit:10 }
   `;
 
+  let _listModels = _appCon.toolsHelper._listModels;
   let spec = {
     name: 'listModels',
     description: description,
@@ -75,6 +76,7 @@ function listModels() {
       return r;
     }
   }
+  
   return spec;
 }
 

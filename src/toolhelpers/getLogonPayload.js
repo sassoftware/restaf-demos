@@ -5,43 +5,49 @@
 
 import getToken from './getToken.js';
 
-async function getLogonPayload() {
+async function getLogonPayload(_appContext) {
 
-  if (process.env.AUTHFLOW === 'password') {
+  if (_appContext.PASSWORDAUTHFLOW === 'password') {
     let logonPayload = {
-        host: process.env.VIYA_SERVER,
+        host: _appContext.VIYA_SERVER,
         authType: 'password',
-        user: process.env.USERNAME,
-        password: process.env.PASSWORD,
-        clientID: process.env.CLIENTIDPW,
-        clientSecret: process.env.CLIENTSECRETPW
+        user: _appContext.USERNAME,
+        password: _appContext.PASSWORD,
+        clientID: _appContext.CLIENTIDPW,
+        clientSecret: _appContext.CLIENTSECRETPW
       };
       
     return logonPayload;
   }
 
-  if (process.env.AUTHFLOW === 'token') {
+  if (_appContext.logonPayload != null) {
+    console.error('[Note] Using cached logonPayload');
+     return _appContext.logonPayload; 
+  }
+  
+  if (_appContext.AUTHFLOW === 'token') {
     let logonPayload = {
-        host: process.env.VIYA_SERVER,
+        host: _appContext.VIYA_SERVER,
         authType: 'token',
-        token: process.env.TOKEN,
+        token: _appContext.TOKEN,
         tokenType: 'Bearer'
       };
+    _appContext.logonPayload = logonPayload;
     return logonPayload;
     }
   // need more configuration and code changes(mounting .sas folder) to make this work in docker
   //AUTHFLOW=sascli
+  
   try {
-    console.error('[Note] calling getToken()');
-    let {host, token} = await getToken();
-    console.error('[Note] got token from getToken() for host ', host);
+    let {host, token} = await getToken(_appContext);
+    console.error('[Note] got refresh token from getToken() for host ', host);
     let logonPayload = {
       host: host,
       authType: 'server',
       token: token,
       tokenType: 'Bearer'
     };
-    console.error(`[Note]...... Using Viya host: `, host);
+    _appContext.logonPayload = logonPayload;
     return logonPayload;
   } catch (e) {
     console.error('[Error].... Error getting token: ', e);
