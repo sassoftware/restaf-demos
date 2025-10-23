@@ -1,0 +1,40 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcpserverjs
+  labels:
+    app: mcpserverjs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcpserverjs
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mcpserverjs
+    spec:
+      containers:
+        - name: mcpserverjs
+          image: viyafseditcr.azurecr.io/mcp-serverjs:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+          resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mcpserverjs
+  name: mcpserverjs
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: mcpserverjs

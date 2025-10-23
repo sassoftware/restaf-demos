@@ -56,6 +56,7 @@ const appEnv = {
     CLIENTIDPW: process.env.CLIENTIDPW || null,
     CLIENTSECRET: process.env.CLIENTSECRETPW || null,
     TOKEN: process.env.TOKEN || null,
+    TOKENFILE: process.env.TOKENFILE || null,
     TLS_CREATE: process.env.TLS_CREATE || null,
     SUBCLASS: process.env.SUBCLASS || null,
     subclassJson: subclassJson,
@@ -73,6 +74,17 @@ const appEnv = {
     logonPayload: null,
     bearerToken: null
 };
+
+if (appEnv.TOKENFILE != null) {
+    try {
+        console.error(`Loading token from file: ${appEnv.TOKENFILE}...`);
+        let t = fs.readFileSync(appEnv.TOKENFILE, 'utf8');
+        appEnv.TOKEN = t;
+    } catch (err) {
+        console.error(`Error reading token file: ${err}`);
+    }
+}
+    
 
 console.error('MCP Server Environment: ', JSON.stringify(appEnv, null, 2));
 // start the mcp server

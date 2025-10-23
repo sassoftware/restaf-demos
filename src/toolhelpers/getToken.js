@@ -31,6 +31,9 @@ async function getToken(_appContext) {
     let host = js[profile]['sas-endpoint'];
 
     let token = await refreshToken(refresh_token, host);
+    let p = homedir + sep + '.sas' + sep + 'bearerToken'
+    console.error(p);
+    fs.writeFileSync(p, token, 'utf8');
     return { host, token };
   } catch (e) {
     console.error(e);
