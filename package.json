@@ -14,6 +14,7 @@
     "test": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 npx @modelcontextprotocol/inspector",
     "debug": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  node --inspect-brk cli.js",
     "deploy": "bash ./deploy.sh",
+    "push2acr": "cd push2acr && bash ./push2acr.sh",
     "bump": "npm version prerelease",
     "pub": "npm publish --tag alpha --access public",
     "setupDemo": "cd prepDemo && node setupMaster.js"

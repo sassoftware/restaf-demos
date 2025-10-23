@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: mcpserverjs
-          image: viyafseditcr.azurecr.io/mcp-serverjs:latest
+          image: viyafseditcr.azurecr.io/mcp-serverjs:alpha
           imagePullPolicy: "Always"
           ports:
             - containerPort: 8080
