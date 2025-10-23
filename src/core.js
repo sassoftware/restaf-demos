@@ -7,7 +7,6 @@ import corehttp from './corehttp.js';
 import createMcpServer from './createMcpServer.js';
 
 async function core(appEnv) {
-	console.error(`MCP Type: ${appEnv.mcpType}`);
 	if (appEnv.mcpType === 'http') {
 		console.error('[Note]MCP Server starting with HTTP transport');
 		

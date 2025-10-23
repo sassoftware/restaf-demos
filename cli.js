@@ -13,6 +13,7 @@ import fs from 'fs';
 
 
 let mcpType = process.env.MCPTYPE || 'http';
+console.error(`Starting mcp-server with transport type: ${mcpType}`);
 
 if (mcpType === 'http') {
     process.env.MCPTYPE = mcpType; // ensure env variable is set
@@ -69,9 +70,13 @@ const appEnv = {
     casServer: null,
     casSessionId: null,
     computeSessionId: null,
-
+    logonPayload: null,
+    bearerToken: null
 };
+
+console.error('MCP Server Environment: ', JSON.stringify(appEnv, null, 2));
 // start the mcp server
+console.error('Initializing core mcp server...');
 core(appEnv)
     .then(() => {
         console.error('MCP Server initialized successfully.');
