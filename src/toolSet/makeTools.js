@@ -30,7 +30,7 @@ import jobDef from './jobDef.js';
 import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
-// import deval from './deval.js';
+import deval from './deval.js';
 //import _tableColumns from '../toolhelpers/_tableColumns.js';
 let customf= {sasQueryTemplate, sasQueryTemplate2};
 
@@ -50,6 +50,7 @@ async function makeTools(_appContext) {
   console.error(`\n[Note] Loaded ${customTools.length} custom tools.`);
   
   let list = [
+    deval(_appContext),
     listModels(_appContext),
     listTables(_appContext),
 

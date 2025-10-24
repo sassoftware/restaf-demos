@@ -11,7 +11,7 @@ async function core(appEnv) {
 	if (appEnv.mcpType === 'http') {
 		console.error('[Note]MCP Server starting with HTTP transport');
 		
-		await corehttproot(appEnv);
+		await corehttp(appEnv);
 	} else {
 		console.error('[Note] MCP Server starting with stdio transport');
 		await createMcpServer(appEnv);

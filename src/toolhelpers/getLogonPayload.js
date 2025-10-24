@@ -7,6 +7,26 @@ import getToken from './getToken.js';
 
 async function getLogonPayload(_appContext) {
 
+    if (_appContext.AUTHFLOW === 'bearer') {
+      console.error('[Note] ****************** Using cached bearer token logonPayload');
+      let logonPayload = {
+          host: _appContext.VIYA_SERVER,
+          authType: 'server',
+          token: _appContext.bearerToken,
+          tokenType: 'Bearer'
+        };
+        console.log(logonPayload)
+      return logonPayload;
+  }
+  if (_appContext.AUTHFLOW === 'none') {
+    console.error('[Note] No authentication flow selected. Proceeding without authentication.');
+    let logonPayload = {
+        host: _appContext.VIYA_SERVER,
+        authType: 'none'
+      };
+    return logonPayload;
+  } 
+
   if (_appContext.PASSWORDAUTHFLOW === 'password') {
     let logonPayload = {
         host: _appContext.VIYA_SERVER,
@@ -25,18 +45,8 @@ async function getLogonPayload(_appContext) {
      return _appContext.logonPayload; 
   }
   
-  if (_appContext.bearerToken != null) {
-    console.error('[Note] Using cached bearer token logonPayload');
-    let logonPayload = {
-        host: _appContext.VIYA_SERVER,
-        authType: 'server',
-        token: _appContext.bearerToken,
-        tokenType: 'Bearer'
-      };
-    _appContext.logonPayload = logonPayload;
-    return logonPayload;
-  }
-  
+
+
   if (_appContext.AUTHFLOW === 'token') {
     console.log('[Note] Using TOKEN auth flow');
     let logonPayload = {

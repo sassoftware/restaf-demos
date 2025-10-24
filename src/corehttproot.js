@@ -145,7 +145,7 @@ async function corehttproot(appEnv) {
 		console.error('[Note] Press Ctrl+C to stop the server');
 
 
-		let appServer = app.listen(PORT, () => {
+		let appServer = app.listen(PORT,'0.0.0.0', () => {
 		});
 		process.on('SIGTERM', () => {
 			console.error('Server closed');

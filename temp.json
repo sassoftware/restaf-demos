@@ -1,0 +1,17 @@
+"sasmcp": {
+			"type": "http",
+			"url": "https://devamcpapp-epcyhphbgtabdfcb.centralus-01.azurewebsites.net/mcp",
+			"headers:": {
+				"Authorization": "Bearer eyJqa3UiOiJodHRwczovL2xvY2FsaG9zdC9TQVNMb2dvbi90b2tlbl9rZXlzIiwia2lkIjoibGVnYWN5LXRva2VuLWtleSIsInR5cCI6IkpXVCIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1YjlhNjY3Zi01NjQxLTRlYzUtOWFlMC0xNmFiMDk4MDVhMjgiLCJ1c2VyX25hbWUiOiJkZXZhLmt1bWFyQHNhcy5jb20iLCJvcmlnaW4iOiJleHRlcm5hbF9vYXV0aCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvU0FTTG9nb24vb2F1dGgvdG9rZW4iLCJhdXRob3JpdGllcyI6WyJWU0NvZGVHZW5BSSIsIkRhdGFRdWFsaXR5LkRhdGFRdWFsaXR5TW9uaXRvcmluZ0FkbWluaXN0cmF0b3JzIiwiRGF0YUJ1aWxkZXJzIiwiU2NoZWR1bGVTZXJ2aWNlQWNjb3VudFVzZXJzIiwiQXBwbGljYXRpb25BZG1pbmlzdHJhdG9ycyIsIkJhdGNoU2VydmljZUFjY291bnRVc2VycyIsIkxhdW5jaGVyU3VwZXJVc2VycyIsIkVzcmlVc2VycyIsIkRhdGFBZ2VudEFkbWluaXN0cmF0b3JzIiwiRGF0YUFnZW50UG93ZXJVc2VycyIsIlNDSU0iLCJTQVNTY29yZVVzZXJzIiwiU0FTQWRtaW5pc3RyYXRvcnMiLCJHbG9zc2FyeS5HbG9zc2FyeUFkbWluaXN0cmF0b3Jz"
+		}	
+
+
+{
+	"inputs": [],
+	"servers": {
+		"sasmcp": {
+			"type": "http",
+			"url": "https://devamcpapp-epcyhphbgtabdfcb.centralus-01.azurewebsites.net/mcp"
+		}
+	}	
+}

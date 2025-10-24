@@ -22,7 +22,7 @@ import selfsigned from 'selfsigned';
 async function corehttp(appEnv) {
 	// setup for change to persistence session
 	const app = express();
-	app.use(express.json());
+	app.use(express.json({ limit: '50mb' }));
 	app.use(cors({
 		origin: "*",
 		credentials: false,
@@ -34,12 +34,15 @@ async function corehttp(appEnv) {
 	app.use(bodyParser.json({ limit: process.env.JSON_LIMIT ?? '2mb' }));
 
 	function requireBearer(req,res, next) {
-  const hdr = req.header('Authorization') || '';
-  const token = hdr.startsWith('Bearer ') ? hdr.slice(7) : undefined;
-	console.error('BearerToken', token);
-  if (!token || token !== process.env.MCP_TOKEN) {
-		console.error('Authorization under development'); 
-  }
+		const hdr = req.header('X-MCP-TOKEN');
+		if (hdr != null) {
+		  appEnv.bearerToken = 'Bearer ' + hdr;
+			appEnv.AUTHFLOW = 'bearer';
+  	}
+		if (req.header('X-VIYA-SERVER') != null) {
+			appEnv.VIYA_SERVER = req.header('X-VIYA-SERVER');
+		};
+
   next();
 }
 
@@ -157,7 +160,9 @@ async function corehttp(appEnv) {
 		console.error('[Note] Press Ctrl+C to stop the server');
 
 
-		let appServer = app.listen(PORT, () => {
+		let appServer = app.listen(PORT, '0.0.0.0', () => {
+			console.error(`[Note] Express server successfully bound to 0.0.0.0:${PORT}`);
+			console.error(`[Note] Server address: ${appServer.address()?.address}:${appServer.address()?.port}`);
 		});
 		process.on('SIGTERM', () => {
 			console.error('Server closed');
