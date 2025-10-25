@@ -15,7 +15,6 @@ function getStoreOpts(_appContext) {
     casProxy: true,
     httpOptions: { ...opts, rejectUnauthorized: true }
   }
-  console.error('STORE OPTS', storeOpts);
   return storeOpts;
 }
 export default getStoreOpts;

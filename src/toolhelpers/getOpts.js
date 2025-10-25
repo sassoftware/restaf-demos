@@ -30,7 +30,6 @@ function getOpts(_appContext) {
         options[key] = fs.readFileSync(name, { encoding: 'utf8' });
     }
     console.error('TLS FILES', Object.keys(options));
-    console.error('TLS OPTIONS', options);
     _appContext.tlsOpts = options;
     return options;
    

@@ -7,16 +7,15 @@ import getToken from "./getToken.js";
 
 async function getLogonPayload(_appContext) {
 
-  // always use the latest bearer token 
+  // always use the latest bearer token -
   if (_appContext.AUTHFLOW === "bearer") {
-    console.error("[Note] ****************** Using cached bearer token logonPayload");
+    console.error("[Note] Using cached bearer token logonPayload");
     let logonPayload = {
       host: _appContext.VIYA_SERVER,
       authType: "server",
       token: _appContext.bearerToken,
       tokenType: "Bearer",
     };
-    console.error(logonPayload);
     return logonPayload;
   }
 

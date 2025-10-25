@@ -7,12 +7,10 @@ import express from "express";
 import createMcpServer from "./createMcpServer.js";
 import https from "https";
 import cors from "cors";
-import rateLimit from "express-rate-limit";
+//import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 //import { Request, Response, NextFunction } from 'express';
-
-import fs from "fs";
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
 
@@ -46,10 +44,10 @@ async function corehttp(appEnv) {
     }
     const hdr = req.header("Authorization");
 		if (hdr != null){
-			appEnv.TOKEN = hdr.slice(7);
-			appEnv.AUTHFLOW = "token";
+			appEnv.bearerToken = hdr.slice(7);
+			appEnv.AUTHFLOW = "bearer";
 		}
-    console.error(`Using user supplied auentication token: ${appEnv.TOKEN}`);
+    console.error(`[Note] Using user supplied Authorization`);
     next();
   }
 
@@ -208,8 +206,6 @@ async function corehttp(appEnv) {
     ];
 
     let pems = selfsigned.generate(attr);
-    console.error("Generated self-signed TLS certificate");
-    console.error(pems);
     // selfsigned generates a new keypair
     let tls = {
       cert: pems.cert,
