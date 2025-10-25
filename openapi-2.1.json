@@ -1,0 +1,415 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SAS Viya MCP Server API",
+    "description": "Model Context Protocol (MCP) Server for SAS Viya integration providing access to CAS libraries, models, and compute services",
+    "version": "1.0.0",
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "contact": {
+      "name": "SAS Institute Inc.",
+      "url": "https://www.sas.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local HTTP server"
+    },
+    {
+      "url": "https://localhost:8080",
+      "description": "Local HTTPS server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Get server information",
+        "description": "Returns basic information about the MCP server including available endpoints",
+        "operationId": "getServerInfo",
+        "responses": {
+          "200": {
+            "description": "Server information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server Info"]
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "description": "Returns the health status and basic information about the MCP server",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Health check response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Health"]
+      }
+    },
+    "/mcp": {
+      "options": {
+        "summary": "CORS preflight request",
+        "description": "Handles CORS preflight requests for the MCP endpoint",
+        "operationId": "mcpOptions",
+        "responses": {
+          "204": {
+            "description": "CORS preflight response"
+          }
+        },
+        "tags": ["MCP"]
+      },
+      "get": {
+        "summary": "MCP Protocol Handler (GET)",
+        "description": "Handles MCP (Model Context Protocol) requests via GET method for tool discovery and capabilities",
+        "operationId": "mcpGet",
+        "parameters": [
+          {
+            "name": "mcp-session-id",
+            "in": "header",
+            "description": "MCP session identifier for maintaining state across requests",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-MCP-TOKEN",
+            "in": "header",
+            "description": "Authentication token for SAS Viya access",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-VIYA-SERVER",
+            "in": "header",
+            "description": "SAS Viya server URL override",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MCP response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonRpcError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["MCP"]
+      },
+      "post": {
+        "summary": "MCP Protocol Handler (POST)",
+        "description": "Handles MCP (Model Context Protocol) requests via POST method for tool execution and data operations",
+        "operationId": "mcpPost",
+        "parameters": [
+          {
+            "name": "mcp-session-id",
+            "in": "header",
+            "description": "MCP session identifier for maintaining state across requests",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-MCP-TOKEN",
+            "in": "header",
+            "description": "Authentication token for SAS Viya access",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-VIYA-SERVER",
+            "in": "header",
+            "description": "SAS Viya server URL override",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "MCP request payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/McpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MCP response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonRpcError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["MCP"]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ServerInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "SAS Viya Sample MCP Server"
+          },
+          "version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "description": {
+            "type": "string",
+            "example": "SAS Viya Sample MCP Server"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "mcp": {
+                "type": "string",
+                "example": "/mcp"
+              },
+              "health": {
+                "type": "string",
+                "example": "/health"
+              }
+            }
+          },
+          "usage": {
+            "type": "string",
+            "example": "Use with MCP Inspector or compatible MCP clients"
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "@sassoftware/mcp-server"
+          },
+          "version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "description": {
+            "type": "string",
+            "example": "SAS Viya Sample MCP Server"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "mcp": {
+                "type": "string",
+                "example": "/mcp"
+              },
+              "health": {
+                "type": "string",
+                "example": "/health"
+              }
+            }
+          },
+          "usage": {
+            "type": "string",
+            "example": "Use with MCP Inspector or compatible MCP clients like vscode or your own MCP client"
+          }
+        }
+      },
+      "McpRequest": {
+        "type": "object",
+        "description": "JSON-RPC 2.0 request for MCP operations",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"]
+          },
+          "method": {
+            "type": "string",
+            "description": "MCP method name",
+            "examples": [
+              "tools/list",
+              "tools/call",
+              "initialize",
+              "listLibraries",
+              "listTables",
+              "readTable",
+              "program",
+              "job",
+              "modelScore"
+            ]
+          },
+          "params": {
+            "type": "object",
+            "description": "Method-specific parameters"
+          },
+          "id": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": ["jsonrpc", "method"]
+      },
+      "McpResponse": {
+        "type": "object",
+        "description": "JSON-RPC 2.0 response for MCP operations",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"]
+          },
+          "result": {
+            "type": "object",
+            "description": "Method result data"
+          },
+          "error": {
+            "$ref": "#/components/schemas/JsonRpcErrorObject"
+          },
+          "id": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": ["jsonrpc"]
+      },
+      "JsonRpcError": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"]
+          },
+          "error": {
+            "$ref": "#/components/schemas/JsonRpcErrorObject"
+          },
+          "id": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": ["jsonrpc", "error"]
+      },
+      "JsonRpcErrorObject": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Error code",
+            "example": -32603
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "data": {
+            "description": "Additional error data"
+          }
+        },
+        "required": ["code", "message"]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "JWT token for SAS Viya authentication"
+      },
+      "McpToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-MCP-TOKEN",
+        "description": "MCP-specific authentication token"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    },
+    {
+      "McpToken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Server Info",
+      "description": "Server information and metadata endpoints"
+    },
+    {
+      "name": "Health",
+      "description": "Health check and monitoring endpoints"
+    },
+    {
+      "name": "MCP",
+      "description": "Model Context Protocol endpoints for SAS Viya integration"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ async function _casScoring(_appContext,params) {
        casProxy: true,
        options: {
          proxyServer: null,
-         httpOptions: getStoreOpts()
+         httpOptions: getStoreOpts(_appContext)
        }
    });
   

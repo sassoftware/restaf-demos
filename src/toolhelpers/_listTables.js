@@ -25,7 +25,7 @@ async function _listTables(_appContext, params) {
       null,/* create a session */
       {},
       'user',
-      getStoreOpts()
+      getStoreOpts(_appContext)
     );
 
     let payload = {

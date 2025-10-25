@@ -15,7 +15,7 @@ async function _listJobs(_appContext, params) {
     casProxy: true,
     options: {
       proxyServer: null,
-      httpOptions: getStoreOpts()
+      httpOptions: getStoreOpts(_appContext)
     }
   });
   let logonPayload = await _appContext.getLogonPayload();

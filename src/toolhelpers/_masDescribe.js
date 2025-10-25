@@ -14,7 +14,7 @@ async function _masDescribe(_appContext,params) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: getStoreOpts()
+        httpOptions: getStoreOpts(_appContext)
       }
   });
   let logonPayload = await _appContext.toolsHelper.getLogonPayload();

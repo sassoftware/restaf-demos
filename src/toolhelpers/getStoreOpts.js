@@ -4,13 +4,18 @@
  */
 import getOpts from './getOpts.js';
 
-function getStoreOpts() {
-  let opts = getOpts();
+function getStoreOpts(_appContext) {
+  debugger
+  let opts = getOpts(_appContext);
+  if (opts == null) {
+    opts = {};
+  }
+  debugger;
   let storeOpts = {
     casProxy: true,
     httpOptions: { ...opts, rejectUnauthorized: true }
   }
-
+  console.error('STORE OPTS', storeOpts);
   return storeOpts;
 }
 export default getStoreOpts;

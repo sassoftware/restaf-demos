@@ -30,7 +30,7 @@ async function getToken(_appContext) {
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
 
-    let token = await refreshToken(refresh_token, host);
+    let token = await refreshToken(_appContext,refresh_token, host);
     //let p = homedir + sep + '.sas' + sep + 'bearerToken'
     //console.error(p);
    // fs.writeFileSync(p, token, 'utf8');
@@ -39,14 +39,14 @@ async function getToken(_appContext) {
     console.error(e);
     throw '[Error] Failed to read credentials/config file: ' + e;
   }
-  async function refreshToken(token, host) {
+  async function refreshToken(_appContext,token, host) {
     const url = `${host}/SASLogon/oauth/token`;
-    let opts = getOpts();
+    let opts = getOpts(_appContext);
 
     const agent = new Agent({
-      connect: getOpts()
+      connect: opts
     });
-    
+    debugger;
     const body = new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: token,
@@ -71,7 +71,7 @@ async function getToken(_appContext) {
       }
 
       const data = await response.json();
-
+      debugger;
       return data.access_token;
     } catch (err) {
       console.error('[Error] Failed to refresh token: ', err);

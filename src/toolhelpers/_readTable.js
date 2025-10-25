@@ -49,7 +49,7 @@ async function _readTable(_appContext,params) {
       null,/* create a sessiion */
       {},
       'user',
-      getStoreOpts()
+      getStoreOpts(_appContext)
     );
     log('appControl', appControl);
     await restafedit.scrollTable('first', appControl);

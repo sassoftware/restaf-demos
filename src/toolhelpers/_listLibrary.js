@@ -2,7 +2,7 @@
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import getLogonPayload from './getLogonPayload.js';
+
 import restafedit from '@sassoftware/restafedit';
 import getStoreOpts from './getStoreOpts.js';
 
@@ -10,6 +10,7 @@ async function _listLibrary(_appContext, params) {
   
   
   let { server, limit, start, name } = params;
+  debugger;
   let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let config = {
     source: (server === 'sas') ? 'compute' : server,
@@ -20,15 +21,16 @@ async function _listLibrary(_appContext, params) {
     // setup request control
     let storeConfig= {
       casProxy: true,
-      options: { ns: null, proxyServer: null, httpOptions: getStoreOpts() }
+      options: { ns: null, proxyServer: null, httpOptions: getStoreOpts(_appContext) }
     }
+    debugger;
    // console.error('[Note] Calling restafedit.setup with logonPayload', logonPayload);
     let appControl = await restafedit.setup(
       logonPayload,
       config
       ,null,{},'user',{}, {}, storeConfig
     );
-
+    debugger;
     // query parameters
     let payload = {
       qs: {

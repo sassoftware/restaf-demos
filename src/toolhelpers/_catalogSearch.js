@@ -56,7 +56,7 @@ async function _catalogSearch(_appContext, params, rel) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: getStoreOpts()
+        httpOptions: getStoreOpts(_appContext)
       }
   });
     let logonPayload = await _appContext.toolsHelper.getLogonPayload();
