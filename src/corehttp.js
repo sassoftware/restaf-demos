@@ -39,15 +39,23 @@ async function corehttp(appEnv) {
   app.use(bodyParser.json({ limit: process.env.JSON_LIMIT ?? "50mb" }));
 
   function requireBearer(req, res, next) {
+    debugger;
     if (req.header("X-VIYA-SERVER") != null) {
-      appEnv.VIYA_SERVER = req.header("X-VIYA-SERVER");
+      console.error("[Note] Using user supplied VIYA server");
+      appEnv.VIYA_SERVER = req.header("X-VIYA-SERVER");  
     }
     const hdr = req.header("Authorization");
 		if (hdr != null){
 			appEnv.bearerToken = hdr.slice(7);
 			appEnv.AUTHFLOW = "bearer";
 		}
-    console.error(`[Note] Using user supplied Authorization`);
+    const hdr2 = req.header("X-REFRESH-TOKEN");
+    if (hdr2 != null) {
+      appEnv.refreshToken = hdr2;
+      appEnv.AUTHFLOW = 'refresh'; 
+    }
+    console.error("AppEnv in requireBearer:", appEnv);
+    
     next();
   }
 

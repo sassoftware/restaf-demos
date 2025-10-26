@@ -1,0 +1,1 @@
+kubectl -n viya get secret sas-viya-ca-certificate-secret -o go-template='{{(index .data "ca.crt")}}' | base64 -d > .tls/ca.pem

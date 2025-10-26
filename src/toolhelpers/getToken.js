@@ -5,9 +5,6 @@
 import fs from 'fs';
 import os from 'os';
 
-import { Agent, fetch } from 'undici';
-import getOpts from './getOpts.js';
-
 async function getToken(_appContext) {
   let homedir = os.homedir();
   if (_appContext.SAS_CLI_CONFIG) {
@@ -30,54 +27,12 @@ async function getToken(_appContext) {
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
 
-    let token = await refreshToken(_appContext,refresh_token, host);
-    //let p = homedir + sep + '.sas' + sep + 'bearerToken'
-    //console.error(p);
-   // fs.writeFileSync(p, token, 'utf8');
+    let token = await _appContext.toolsHelper.refreshToken({token: refresh_token, host: host});
     return { host, token };
   } catch (e) {
     console.error(e);
     throw '[Error] Failed to read credentials/config file: ' + e;
   }
-  async function refreshToken(_appContext,token, host) {
-    const url = `${host}/SASLogon/oauth/token`;
-    let opts = getOpts(_appContext);
-
-    const agent = new Agent({
-      connect: opts
-    });
-    debugger;
-    const body = new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: token,
-      client_id: 'sas.cli'
-    });
-    
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          dispatcher: agent
-        },
-        body: body.toString()
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error('[Error] Failed to refresh token: ', error);
-        throw new Error(error);
-      }
-
-      const data = await response.json();
-      debugger;
-      return data.access_token;
-    } catch (err) {
-      console.error('[Error] Failed to refresh token: ', err);
-      throw err;
-    }
-  }
-
+ 
 }
 export default getToken;

@@ -26,6 +26,7 @@ import getLogonPayload from './getLogonPayload.js';
 import getOpts from './getOpts.js';
 import getStoreOpts from './getStoreOpts.js'; 
 import getToken from './getToken.js';
+import refreshToken from './refreshToken.js';
 
 function wrapToolsHelpers (_appContext) {
 
@@ -58,7 +59,8 @@ let flist = {
     getLogonPayload,
     getOpts,
     getStoreOpts,
-    getToken
+    getToken,
+    refreshToken
 };
 let wrappedFlist = {};
 for (let key of Object.keys(flist)) {

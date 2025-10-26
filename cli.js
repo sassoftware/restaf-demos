@@ -11,7 +11,8 @@ import { config } from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import fs from "fs";
 
-if (process.env.ENVFILE === "NONE") { //use this when using remote mcp server and no .env file is desired
+if (process.env.ENVFILE === "NONE") {
+  //use this when using remote mcp server and no .env file is desired
   console.error("[Note]: Skipping .env file as ENVFILE is set to NONE...");
 } else {
   let envf = "./.env";
@@ -46,6 +47,7 @@ if (process.env.SUBCLASS != null) {
   }
 }
 console.log(process.env.HTTPS);
+console.log(process.env.SSLCERT);
 const appEnv = {
   mcpType: mcpType,
   HTTPS:
@@ -55,6 +57,7 @@ const appEnv = {
   SAS_CLI_PROFILE: process.env.SAS_CLI_PROFILE || "default",
   SAS_CLI_CONFIG: process.env.SAS_CLI_CONFIG || process.env.HOME, // default to user home directory
   SSLCERT: process.env.SSLCERT || null,
+  VIYASSL: process.env.VIYASSL || null,
   AUTHFLOW: process.env.AUTHFLOW || "sascli",
   VIYA_SERVER: process.env.VIYA_SERVER,
   PORT: process.env.PORT || 8080,
@@ -83,18 +86,22 @@ const appEnv = {
   computeSessionId: null,
   logonPayload: null,
   bearerToken: null,
+  tlsOpts: null,
+  viyaOpts: null,
 };
 
 if (appEnv.TOKENFILE != null) {
   try {
     console.error(`Loading token from file: ${appEnv.TOKENFILE}...`);
-    let t = fs.readFileSync(appEnv.TOKENFILE, { encoding: 'utf8' });
+    let t = fs.readFileSync(appEnv.TOKENFILE, { encoding: "utf8" });
     appEnv.TOKEN = t;
-    appEnv.AUTHFLOW = 'token';
+    appEnv.AUTHFLOW = "token";
   } catch (err) {
     console.error(`Error reading token file: ${err}`);
   }
 }
+
+
 
 console.error("MCP Server Environment: ", JSON.stringify(appEnv, null, 2));
 // start the mcp server

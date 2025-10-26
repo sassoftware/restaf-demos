@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import corehttp from './corehttp.js';
-import	corehttproot from './corehttproot.js';
+//import	corehttproot from './corehttproot.js';
 import createMcpServer from './createMcpServer.js';
 
 async function core(appEnv) {

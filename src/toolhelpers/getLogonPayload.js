@@ -7,9 +7,15 @@ import getToken from "./getToken.js";
 
 async function getLogonPayload(_appContext) {
 
-  // always use the latest bearer token -
+  // Use cached logonPayload if available
+  if (_appContext.logonPayload != null) {
+    console.error("[Note] Using cached logonPayload information");
+    return _appContext.logonPayload;
+  }
+
+  // Use user supplied bearer token 
   if (_appContext.AUTHFLOW === "bearer") {
-    console.error("[Note] Using cached bearer token logonPayload");
+    console.error("[Note] Using user suplied bearer token ");
     let logonPayload = {
       host: _appContext.VIYA_SERVER,
       authType: "server",
@@ -19,12 +25,31 @@ async function getLogonPayload(_appContext) {
     return logonPayload;
   }
 
-  // USe cached logonPayload if available
-  if (_appContext.logonPayload != null) {
-    console.error("[Note] Using cached logonPayload");
-    return _appContext.logonPayload;
+  // Use user supplied refresh token-
+  if (_appContext.AUTHFLOW === "refresh") {
+    console.error("[Note] Using user supplied refresh token"); 
+    let token = await _appContext.toolsHelper.refreshToken({token: _appContext.refreshToken, host: _appContext.VIYA_SERVER});
+    let logonPayload = {
+      host: _appContext.VIYA_SERVER,
+      authType: "server",
+      token: token,
+      tokenType: "Bearer",
+    };
+    return logonPayload;
   }
-
+  
+  if (_appContext.AUTHFLOW === "token") {
+    console.error("[Note] Using token supplied by user");
+    let logonPayload = {
+      host: _appContext.VIYA_SERVER,
+      authType: "server",
+      token: _appContext.TOKEN,
+      tokenType: "Bearer",
+    };
+    _appContext.logonPayload = logonPayload;
+    return logonPayload;
+  }
+ 
   if (_appContext.AUTHFLOW === "none") {
     console.error(
       "[Note] No authentication flow selected. Proceeding without authentication."
@@ -49,24 +74,8 @@ async function getLogonPayload(_appContext) {
     return logonPayload;
   }
 
-  if (_appContext.AUTHFLOW === "token") {
-    console.error("[Note] Using TOKEN auth flow");
-    let logonPayload = {
-      host: _appContext.VIYA_SERVER,
-      authType: "server",
-      token: _appContext.TOKEN,
-      tokenType: "Bearer",
-    };
-    _appContext.logonPayload = logonPayload;
-    return logonPayload;
-  }
-
-  
-  // need more configuration and code changes(mounting .sas folder) to make this work in docker
-  //AUTHFLOW=sascli
-
   try {
-    let { host, token } = await getToken(_appContext);
+    let { host, token } = await getToken(_appContext)
     console.error("[Note] got refresh token from getToken() for host ", host);
     let logonPayload = {
       host: host,
