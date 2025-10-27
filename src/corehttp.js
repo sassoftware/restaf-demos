@@ -161,12 +161,16 @@ async function corehttp(appEnv) {
 	}
 	process.on("SIGTERM", () => {
 		console.error("Server closed");
-		appServer.close(() => {});
+		if (appServer != null) {
+      appServer.close(() => {});
+    }
 		process.exit(0);
 	});
 	process.on("SIGINT", () => {
 		console.error("Server closed");
-		appServer.close(() => {});
+		if (appServer != null) {
+      appServer.close(() => {});
+    }
 		process.exit(0);
 	});
 

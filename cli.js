@@ -48,7 +48,7 @@ if (process.env.SUBCLASS != null) {
 }
 console.log(process.env.HTTPS);
 console.log(process.env.SSLCERT);
-const appEnv = {
+const appEnv= {
   mcpType: mcpType,
   HTTPS:
     process.env.HTTPS != null && process.env.HTTPS.toUpperCase() === "TRUE"
@@ -80,6 +80,7 @@ const appEnv = {
   tls: null,
   transports: {},
   mcpServer: null,
+  viyaSessions: {},
   store: null,
   casServer: null,
   casSessionId: null,
@@ -89,6 +90,8 @@ const appEnv = {
   tlsOpts: null,
   viyaOpts: null,
 };
+
+
 
 if (appEnv.TOKENFILE != null) {
   try {
@@ -100,7 +103,6 @@ if (appEnv.TOKENFILE != null) {
     console.error(`Error reading token file: ${err}`);
   }
 }
-
 
 
 console.error("MCP Server Environment: ", JSON.stringify(appEnv, null, 2));
