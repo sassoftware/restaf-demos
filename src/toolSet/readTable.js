@@ -6,7 +6,7 @@ import { z } from 'zod';
 import debug from 'debug';
 
 import _readTable from  '../toolhelpers/_readTable.js';
-function readTable(_app) {
+function readTable(_appContext) {
    
      let describe = `
 ## readTable
@@ -37,7 +37,7 @@ Examples
 - read table \`employees\` in lib \`mylib\` on the sas server with where \`age > 30\` and limit 50 -> { "table": "employees", "lib": "mylib", "server": "sas", "where": "age > 30", "limit": 50 }
 - read table \`air\` in lib \`sashelp\` on the sas server limit 50 -> { "table": "air", "lib": "sashelp", "server": "sas", "limit": 50, start: 1 }
 `;
-    let _readTable = _app.toolsHelper._readTable;
+    let _readTable = _appContext.toolsHelper._readTable;
     let  specs = {
       name: 'readTable',
       description: describe,

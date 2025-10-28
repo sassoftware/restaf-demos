@@ -13,6 +13,7 @@ import bodyParser from "body-parser";
 //import { Request, Response, NextFunction } from 'express';
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
+import fs from "fs";
 
 // setup express server
 
@@ -90,6 +91,12 @@ async function corehttp(appEnv) {
       usage: "Use with MCP Inspector or compatible MCP clients",
     });
   });
+
+  app.get("/apiMeta", (req, res) => {
+    let spec = fs.readFileSync('./openApi.json','utf8');
+    let specJson = JSON.parse(spec);
+    res.json(specJson);
+  })
 
   // mcp endpoint - the key entrypoint for the MCP server
   const handleRequest = async (req, res) => {

@@ -5,7 +5,7 @@
 import {z} from 'zod';
 import _jobSubmit from '../toolhelpers/_jobSubmit.js';
 
-function sasQuery() {
+function sasQuery(_appContext) {
  
     let description = `
     You are an expert at translating natural language queries into SAS PROC SQL SELECT statements.
@@ -86,7 +86,7 @@ function sasQuery() {
 
 `;
 
-
+    let _jobSubmit = _appContext.toolsHelper._jobSubmit;
     let spec = {
         name: 'sasQuery',
         description: description,

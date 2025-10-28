@@ -18,7 +18,7 @@ async function _listJobs(_appContext, params) {
       httpOptions: getStoreOpts(_appContext)
     }
   });
-  let logonPayload = await _appContext.getLogonPayload();
+  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let msg = await store.logon(logonPayload);
   console.error('logon', msg);
   

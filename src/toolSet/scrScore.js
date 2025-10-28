@@ -9,7 +9,7 @@ import scrModels from '../db/scrModels.js';
 
 
 
-function scrScore() {
+function scrScore(_appContext) {
   let description = `
 ## scrScore
 
@@ -36,6 +36,7 @@ Examples
 - scrScore with name="loan" and scenario="age=45, income=60000"
 - scrScore with name="https://scr-host/models/loan" and scenario={age:45, income:60000}
 `;
+let _scrScore = _appContext.toolsHelper._scrScore;
   let spec = {
     name: 'scrScore',
     description: description,

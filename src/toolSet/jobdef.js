@@ -48,7 +48,7 @@ function jobDef(_appContext) {
   };
 
   let description = [
-  '## jobdef',
+  '## jobDef',
   '',
   'Execute a jobdefinition on a SAS Viya server',
   '',
@@ -79,7 +79,7 @@ function jobDef(_appContext) {
 ].join('\n');
   let _jobSubmit = _appContext.toolsHelper._jobSubmit;
   let spec = {
-    name: 'jobdef',
+    name: 'jobDef',
     description: description,
     schema: {
       name: z.string(),

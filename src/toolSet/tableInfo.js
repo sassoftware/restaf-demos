@@ -6,7 +6,7 @@ import { z } from 'zod';
 import debug from 'debug';
 
 import _tableInfo  from '../toolhelpers/_tableInfo.js';
-function tableInfo(_app) {
+function tableInfo(_appContext) {
 
      let describe = `
 ## tableInfo
@@ -36,7 +36,7 @@ Example
 - desc table \`sales\` in lib \`analytics\`
 
 `;
-    let _tableInfo = _app.toolsHelper._tableInfo;
+    let _tableInfo = _appContext.toolsHelper._tableInfo;
     let  specs = {
       name: 'tableInfo',
       description: describe,

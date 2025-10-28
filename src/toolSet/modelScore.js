@@ -8,7 +8,7 @@ import debug from 'debug';
 // import _masScoring from '../toolhelpers/_masScoring.js';
 const log = debug('tools');
 
-function modelScore(_app) {
+function modelScore(_appContext) {
   let description = `
 ## modelScore
 
@@ -40,7 +40,7 @@ Examples
 - modelScore with model='cancer1' and scenario='age=45, sex=M, tumor=stage2'
 `;
 
-  let _masScoring = _app.toolsHelper._masScoring;
+  let _masScoring = _appContext.toolsHelper._masScoring;
   let spec = {
     name: 'modelScore',
     description: description,
