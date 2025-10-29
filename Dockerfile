@@ -6,6 +6,8 @@ COPY package*.json ./
 COPY src ./src
 COPY tls ./tls
 COPY cli.js ./cli.js
+COPY openApi.json ./openApi.json
+COPY openApi.yaml ./openApi.yaml
 COPY .npmrc ./npmrc
 COPY LICENSE ./LICENSE
 COPY README.md ./README.md

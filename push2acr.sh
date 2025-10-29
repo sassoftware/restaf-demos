@@ -1,11 +1,10 @@
 
 # docker rm -f mcp-serverjs
-docke  rmi mcp-serverjs
-# docker rm viyafseditcr.azurecr.io/mcp-serverjs:0.0.2
-docker rmi viyafseditcr.azurecr.io/mcp-serverjs:0.0.2
+docker  rmi mcp-serverjs
+# docker rm viyafseditcr.azurecr.io/mcp-serverjs:$1
+docker rmi viyafseditcr.azurecr.io/mcp-serverjs:$1
 docker rmi appbuilder
 az acr login --name viyafseditcr
 docker build --no-cache -t mcp-serverjs .
-docker tag mcp-serverjs:latest viyafseditcr.azurecr.io/mcp-serverjs:0.0.2
-docker push viyafseditcr.azurecr.io/mcp-serverjs:0.0.2
-
+docker tag mcp-serverjs:latest viyafseditcr.azurecr.io/mcp-serverjs:$1
+docker push viyafseditcr.azurecr.io/mcp-serverjs:$1
