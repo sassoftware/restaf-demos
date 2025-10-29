@@ -7,7 +7,7 @@ import { z } from 'zod';
 //import _submitCode from '../toolhelpers/_submitCode.js';
 
 
-function program(_ap) {
+function program(_appContext) {
   let description = `
 ## Program
 
@@ -43,7 +43,7 @@ Examples
   - this should be the same as the previous example and is just a different syntax. The result should be
     {program: "sample", folder: "/Public/models", scenario: {name: "John", age: 45}, output: "a", limit: 50}
 `;
-  let _submitCode = _ap.toolsHelper._submitCode;
+  let _submitCode = _appContext.toolsHelper._submitCode;
   let spec = {
     name: 'program',
     description: description,

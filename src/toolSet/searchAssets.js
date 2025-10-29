@@ -7,7 +7,7 @@ import { z } from 'zod';
 import debug from 'debug';
 
 
-function searchAssets(_app) {
+function searchAssets(_appContext) {
   const log = debug('tools');
 
   let description = `
@@ -28,7 +28,7 @@ function searchAssets(_app) {
   3. AND/OR are treated as logical operators when between terms.
   4. Sets in the form key:{value1,value2} are supported as filters.
 `;
-  let _catalogSearch = _app.toolsHelper._catalogSearch;
+  let _catalogSearch = _appContext.toolsHelper._catalogSearch;
   let specs = {
     name: 'searchAssets',
     description: description,
