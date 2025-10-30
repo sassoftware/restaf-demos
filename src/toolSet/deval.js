@@ -4,6 +4,7 @@
  */
 
 import {z} from 'zod';
+import sessionCache from '../sessionCache.js';
 function deval(_appContext) {
     let description = `
 ## deval: returns the value of the specified variable from the environment
@@ -18,6 +19,7 @@ This tool returns special  information as a text result.
 
         handler: async (params) => {
             const varName = params.name;
+            console.error(`[Note] deval:`, sessionCache);returning value of environment variable ${varName}`);
             return { content: [{ type: 'text', text: process.env[varName]}] }
         }
     }

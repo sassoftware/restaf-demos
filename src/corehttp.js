@@ -14,7 +14,7 @@ import bodyParser from "body-parser";
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
 import fs from "fs";
-
+import sessionCache from  "./sessionCache.js";
 
 // setup express server
 
@@ -158,6 +158,7 @@ async function corehttp(cache) {
     }
     console.error("Handling MCP request");
     debugger;
+    sessionCache.set(_appContext.sessionId, _appContext); // update session cache
     await _appContext.transport.handleRequest(req, res, req.body);
   };
   app.options("/mcp", (_, res) => res.sendStatus(204));
