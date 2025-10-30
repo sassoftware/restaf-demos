@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { fi } from 'zod/v4/locales';
 import _casScoring from './_casScoring.js';
 import _catalogSearch from './_catalogSearch.js';
 import _itemsData from './_itemsData.js';
@@ -26,14 +27,19 @@ import getLogonPayload from './getLogonPayload.js';
 import getOpts from './getOpts.js';
 import getStoreOpts from './getStoreOpts.js'; 
 import getToken from './getToken.js';
-import refreshToken from './refreshToken.js';
+//import refreshToken from './refreshToken.js';
 
-function wrapToolsHelpers (_appContext) {
+function wrapToolsHelpers (_appContext, cache) {
 
 const wrapf = (appEnv, builtin) => async (...args) => {
     let r = await builtin(appEnv, ...args); 
     return r;
   };
+  const wrapt = (appEnv, cache, builtin) => async (...args) => {
+    let r = await builtin(appEnv, ...args); 
+    return r;
+  };
+
 
 // Export all imported toolhelpers
 let flist = {
@@ -55,17 +61,23 @@ let flist = {
     _submitMacro,
     _tableColumns,
     _tableInfo,
-    deleteSession,
-    getLogonPayload,
-    getOpts,
-    getStoreOpts,
-    getToken,
-    refreshToken
+    deleteSession
 };
+let utils = {
+  getLogonPayload,
+  getOpts,
+  getStoreOpts,
+  getToken
+}
 let wrappedFlist = {};
 for (let key of Object.keys(flist)) {
     wrappedFlist[key] = wrapf(_appContext, flist[key]);
 }
-return wrappedFlist;
+let wrappedUtils = {};
+for (let key of Object.keys(utils)) {
+    wrappedUtils[key] = wrapt(_appContext, cache, utils[key]);
+} 
+let finalList= {...flist, ...wrappedUtils};
+return finalList;
 }
 export default wrapToolsHelpers;

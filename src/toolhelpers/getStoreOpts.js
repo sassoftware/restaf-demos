@@ -4,9 +4,9 @@
  */
 import getOptsViya from './getOptsViya.js';
 
-function getStoreOpts(_appContext) {
+function getStoreOpts(_appContext, cache) {
   debugger;
-  let opts = getOptsViya(_appContext);
+  let opts = getOptsViya(_appContext, cache);
 
   debugger;
   let storeOpts = {

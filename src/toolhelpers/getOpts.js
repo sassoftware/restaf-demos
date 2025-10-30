@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import fs from 'fs';
-function getOpts(_appContext) {
+function getOpts(_appContext, cache) {
     debugger;
      if (_appContext.tlsOpts != null) {
         return _appContext.tlsOpts;
@@ -31,6 +31,7 @@ function getOpts(_appContext) {
     }
     console.error('TLS FILES', Object.keys(options));
     _appContext.tlsOpts = options;
+    cache.set(_appContext.sessionId, _appContext);
     return options;
    
 }

@@ -4,7 +4,7 @@
  */
 import fs from 'fs';
 import os from 'os';
-
+import refreshToken from './refreshToken.js';
 async function getToken(_appContext) {
   let homedir = os.homedir();
   if (_appContext.SAS_CLI_CONFIG) {
@@ -27,7 +27,7 @@ async function getToken(_appContext) {
     js = JSON.parse(j);
     let host = js[profile]['sas-endpoint'];
 
-    let token = await _appContext.toolsHelper.refreshToken({token: refresh_token, host: host});
+    let token = await refreshToken(_appContext,{token: refresh_token, host: host});
     return { host, token };
   } catch (e) {
     console.error(e);

@@ -10,6 +10,13 @@ import core from "./src/core.js";
 import { config } from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import fs from "fs";
+import NodeCache from "node-cache";
+
+// session cache
+// For more robust caching consider products like Redis
+// and storage provided by cloud providers
+
+let cache = new NodeCache({ stdTTL: 6*60, checkperiod: 2*60});
 
 if (process.env.ENVFILE === "NONE") {
   //use this when using remote mcp server and no .env file is desired
@@ -26,15 +33,18 @@ if (process.env.ENVFILE === "NONE") {
   }
 }
 
-// need to tell core what transport to use
+// need to tell core what transport to use(http or stdio)
 let mcpType = process.env.MCPTYPE || "http";
 console.error(`Starting mcp-server with transport type: ${mcpType}`);
 
+//TBD: This might not be necessary. Verify and remove if so.
 if (mcpType === "http") {
   process.env.MCPTYPE = mcpType; // ensure env variable is set
 }
 
 //  subclasses for sasQuery tool (special use case)
+// to be replaced by the planned adding external tool definition capability
+
 let subclassJson = [];
 if (process.env.SUBCLASS != null) {
   console.error(`Using subclass: ${process.env.SUBCLASS}`);
@@ -46,9 +56,9 @@ if (process.env.SUBCLASS != null) {
     console.error(`Loaded subclass: ${JSON.stringify(subclassJson, null, 2)}`);
   }
 }
-console.log(process.env.HTTPS);
-console.log(process.env.SSLCERT);
-const appEnv= {
+console.error(process.env.HTTPS);
+console.error(process.env.SSLCERT);
+const appEnvBase= {
   mcpType: mcpType,
   HTTPS:
     process.env.HTTPS != null && process.env.HTTPS.toUpperCase() === "TRUE"
@@ -93,22 +103,24 @@ const appEnv= {
 
 
 
-if (appEnv.TOKENFILE != null) {
+if (appEnvBase.TOKENFILE != null) {
   try {
-    console.error(`Loading token from file: ${appEnv.TOKENFILE}...`);
-    let t = fs.readFileSync(appEnv.TOKENFILE, { encoding: "utf8" });
-    appEnv.TOKEN = t;
-    appEnv.AUTHFLOW = "token";
+    console.error(`Loading token from file: ${appEnvBase.TOKENFILE}...`);
+    let t = fs.readFileSync(appEnvBase.TOKENFILE, { encoding: "utf8" });
+    appEnvBase.TOKEN = t;
+    appEnvBase.AUTHFLOW = "token";
   } catch (err) {
     console.error(`Error reading token file: ${err}`);
   }
 }
 
 
-console.error("MCP Server Environment: ", JSON.stringify(appEnv, null, 2));
+console.error("MCP Server Environment: ", JSON.stringify(appEnvBase, null, 2));
+// store appEnvBase in cache for access by corehttp.js
+cache.set("appEnvBase", appEnvBase);
 // start the mcp server
 console.error("Initializing core mcp server...");
-core(appEnv)
+core(cache, mcpType)
   .then(() => {
     console.error("MCP Server initialized successfully.");
   })

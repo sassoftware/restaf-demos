@@ -4,8 +4,15 @@
  */
 
 import getToken from "./getToken.js";
+import refreshToken from "./refreshToken.js";
 
-async function getLogonPayload(_appContext) {
+async function getLogonPayload(_appContext, cache) {
+  _appContext.logonPayload = await igetLogonPayload(_appContext);
+  cache.set(_appContext.sessionId, _appContext);
+  return _appContext.logonPayload;  
+}
+
+async function igetLogonPayload(_appContext, _cache) {
 
   // Use cached logonPayload if available
   if (_appContext.logonPayload != null) {
@@ -28,13 +35,14 @@ async function getLogonPayload(_appContext) {
   // Use user supplied refresh token-
   if (_appContext.AUTHFLOW === "refresh") {
     console.error("[Note] Using user supplied refresh token"); 
-    let token = await _appContext.toolsHelper.refreshToken({token: _appContext.refreshToken, host: _appContext.VIYA_SERVER});
+    let token = await refreshToken(_appContext,{token: _appContext.refreshToken, host: _appContext.VIYA_SERVER});
     let logonPayload = {
       host: _appContext.VIYA_SERVER,
       authType: "server",
       token: token,
       tokenType: "Bearer",
     };
+
     return logonPayload;
   }
   
@@ -46,7 +54,6 @@ async function getLogonPayload(_appContext) {
       token: _appContext.TOKEN,
       tokenType: "Bearer",
     };
-    _appContext.logonPayload = logonPayload;
     return logonPayload;
   }
  
@@ -83,7 +90,6 @@ async function getLogonPayload(_appContext) {
       token: token,
       tokenType: "Bearer",
     };
-    _appContext.logonPayload = logonPayload;
     return logonPayload;
   } catch (e) {
     console.error("[Error].... Error getting token: ", e);

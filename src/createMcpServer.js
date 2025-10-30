@@ -4,27 +4,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { randomUUID } from "node:crypto"
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+
 // import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
 import makeTools from './toolSet/makeTools.js';
 
-async function createMcpServer(appEnv) {
+async function createMcpServer(cache) {
 
-  const mcpServer = new McpServer({
-    name: 'sasmcp',
-    version: '0.3.0'
-  }, { capabilities: {
-      tools: {
-        listChanged: true
-      },
-    }
-  });
+  // Register the addition tools with _appContext
 
-  // Register the addition tool
-  // TBD: Register resources and prompts
+  let appEnv = cache.get('appEnvBase');
+  let mcpServer = cache.get(mcpServer)
+  debugger;
+  if (mcpServer != null) {
+     mcpServer = new McpServer({
+      name: 'sasmcp', 
+      version: '0.3.0'
+    }, { capabilities: {
+        tools: {
+          listChanged: true
+        },
+      }
+    });
+  }
 
+  appEnv.cache = cache; // needed to update the cache from tool handlers
   let toolSet = await makeTools(appEnv);
   
   toolSet.forEach((tool,i) => {
@@ -38,14 +44,15 @@ async function createMcpServer(appEnv) {
   })
   console.error(`[Note] Registered ${toolSet.length});`);
   appEnv.mcpServer = mcpServer;
-  
+  appEnv.cache = cache; // needed to update the cache from tool handlers
+  console.error('\n[Note] Creating transport for MCP Server', appEnv.mcpType);
+  debugger;
   let transport = (appEnv.mcpType === 'http') 
   ? new StreamableHTTPServerTransport({
     sessionIdGenerator: ()=> randomUUID(),
     enableJsonResponse: true,
     onsessioninitialized: (sessionId) => {
-      appEnv.transports[sessionId] = transport;
-
+      appEnv.sessionId = sessionId;
     }
   })
   : new StdioServerTransport();
@@ -53,8 +60,12 @@ async function createMcpServer(appEnv) {
  
   console.error('[Note] Transport mode:====================================', appEnv.mcpType);
 
+  // save tranport object and cache appEnv
+  appEnv.transport = transport;
+  debugger;
+  cache.set(appEnv.sessionId, appEnv); // store base appEnv for new sessions
   await mcpServer.connect(transport);
-  return transport;
+  return appEnv;
   
 }
 export default createMcpServer;
