@@ -80,6 +80,7 @@ const appEnvBase= {
   CLIENTIDPW: process.env.CLIENTIDPW || null,
   CLIENTSECRET: process.env.CLIENTSECRETPW || null,
   TOKEN: process.env.TOKEN || null,
+  REFRESHTOKEN: process.env.REFRESHTOKEN || null,
   TOKENFILE: process.env.TOKENFILE || null,
   TLS_CREATE: process.env.TLS_CREATE || null,
   SUBCLASS: process.env.SUBCLASS || null,
@@ -101,6 +102,7 @@ const appEnvBase= {
   computeSessionId: null,
   logonPayload: null,
   bearerToken: null,
+  refreshToken: null,
   tlsOpts: null,
   viyaOpts: null,
 };
@@ -116,14 +118,19 @@ if (appEnvBase.TOKENFILE != null) {
   }
 }
 
+if (appEnvBase.AUTHTYPE === 'refresh') {
+  appEnvBase.refreshToken = appEnvBase.REFRESHTOKEN
+};
+
 console.error("MCP Server Environment: ", JSON.stringify(appEnvBase, null, 2));
 // store appEnvBase in sessionCache for access by corehttp.js
 
 let _appContext = {
-  current: {}
+  current: (mcpType === 'http') ? {} : appEnvBase
 };
 
-let mcpServer = createMcpServer(_appContext, sessionCache);
+let mcpServer = await createMcpServer(_appContext, sessionCache);
+console.error("MCP Server created", mcpServer );
 sessionCache.set("appEnvBase", appEnvBase);
 let appEnvTemplate = Object.assign({}, appEnvBase);
 sessionCache.set("appEnvTemplate", appEnvTemplate);
