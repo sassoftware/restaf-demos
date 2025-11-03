@@ -8,8 +8,10 @@ import getStoreOpts from './getStoreOpts.js';
 
 async function _listLibrary(_appContext, params) {
   
-  
+  console.error('--- _listLibrary invoked with params:', params);
+  console.error('--- _listLibrary _appContext.mcpSessionId:', _appContext.mcpSessionId);
   let { server, limit, start, name } = params;
+  console.error('------------------------------------------------', _appContext.mcpSessionId);
   debugger;
   let logonPayload = await _appContext.toolsHelper.getLogonPayload();
   let config = {

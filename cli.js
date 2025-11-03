@@ -6,17 +6,21 @@
 
 // Main entry point for MCP server
 
-import core from "./src/core.js";
+
+import coreSSE from "./src/coreSSE.js"; 
+import corehttp from "./src/corehttp.js";
+import createMcpServer from "./src/createMcpServer.js";
 import { config } from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import fs from "fs";
+
 import NodeCache from "node-cache";
 
-// session cache
+// session sessionCache
 // For more robust caching consider products like Redis
 // and storage provided by cloud providers
 
-let cache = new NodeCache({ stdTTL: 6*60, checkperiod: 2*60});
+let sessionCache = new NodeCache({ stdTTL: 0, checkperiod: 2*60, useClones: false });
 
 if (process.env.ENVFILE === "NONE") {
   //use this when using remote mcp server and no .env file is desired
@@ -101,8 +105,6 @@ const appEnvBase= {
   viyaOpts: null,
 };
 
-
-
 if (appEnvBase.TOKENFILE != null) {
   try {
     console.error(`Loading token from file: ${appEnvBase.TOKENFILE}...`);
@@ -114,16 +116,21 @@ if (appEnvBase.TOKENFILE != null) {
   }
 }
 
-
 console.error("MCP Server Environment: ", JSON.stringify(appEnvBase, null, 2));
-// store appEnvBase in cache for access by corehttp.js
-cache.set("appEnvBase", appEnvBase);
+// store appEnvBase in sessionCache for access by corehttp.js
+
+let mcpServer = createMcpServer(appEnvBase, sessionCache);
+sessionCache.set("appEnvBase", appEnvBase);
+sessionCache.set("appEnvTemplate", structuredClone(appEnvBase));
+sessionCache.set('currentSessionId', null);
+let transports = {};
+sessionCache.set('transports', transports );
+
 // start the mcp server
-console.error("Initializing core mcp server...");
-core(cache, mcpType)
-  .then(() => {
-    console.error("MCP Server initialized successfully.");
-  })
-  .catch((error) => {
-    console.error("Error initializing MCP Server:", error);
-  });
+console.error("Initializing core mcp server..");
+if (mcpType === 'http') {
+  await corehttp(sessionCache, appEnvBase);
+} else {
+  await coreSSE(mcpServer); 
+}
+

@@ -31,14 +31,15 @@ import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
 import deval from './deval.js';
-//import _tableColumns from '../toolhelpers/_tableColumns.js';
-let customf= {sasQueryTemplate, sasQueryTemplate2};
 
-async function makeTools(_appContext) {
+//let customf= {sasQueryTemplate, sasQueryTemplate2};
+
+function makeTools(_appContext) {
   // wrap all tools with 
 
   _appContext.toolsHelper = wrapToolsHelpers(_appContext);
   let customTools = [];
+  /*
   if (_appContext.subclassJson != null) {
   
     for (let i = 0; i < _appContext.subclassJson.length; i++) {
@@ -48,6 +49,8 @@ async function makeTools(_appContext) {
     }
   }
   console.error(`\n[Note] Loaded ${customTools.length} custom tools.`);
+  */
+  
   
   let list = [
     deval(_appContext),

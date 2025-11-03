@@ -80,6 +80,7 @@ function listLibraries(_appContext) {
     handler: async (params) => {
       // normalize server just in case caller sends 'CAS'/'SAS'
       params.server = (params.server || 'cas').toLowerCase();
+      console.error('Invoking _listLibrary with params:', params);
       
       let r = await _listLibrary(params);
       return r;

@@ -27,6 +27,7 @@ import getLogonPayload from './getLogonPayload.js';
 import getOpts from './getOpts.js';
 import getStoreOpts from './getStoreOpts.js'; 
 import getToken from './getToken.js';
+import _deval from './_deval.js';
 //import refreshToken from './refreshToken.js';
 
 function wrapToolsHelpers (_appContext, cache) {
@@ -61,7 +62,8 @@ let flist = {
     _submitMacro,
     _tableColumns,
     _tableInfo,
-    deleteSession
+    deleteSession,
+    _deval   
 };
 let utils = {
   getLogonPayload,
