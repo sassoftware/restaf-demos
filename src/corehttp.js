@@ -9,14 +9,13 @@ import cors from "cors";
 //import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import bodyParser from "body-parser";
-
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
 import fs from "fs";
 import createHttpTransport from "./createHttpTransport.js";
-;
-
-
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { randomUUID } from "node:crypto";
+import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 // setup express server
 
 async function corehttp(cache, currentAppEnvContext) {
@@ -85,7 +84,7 @@ async function corehttp(cache, currentAppEnvContext) {
   // handle processing of information in header.
   function requireBearer(req, res, next) {
     debugger;
-  
+
     // Ensure appEnv is always a valid objec
 
     let headerCache = {};
@@ -107,74 +106,133 @@ async function corehttp(cache, currentAppEnvContext) {
     next();
   }
 
+  //handle get and delete requests
+  async function handleGetDelete(req, res) {
+    let sessionId = req.headers["mcp-session-id"];
+    if (!sessionId || cache.get("transports")[sessionId] == null) {
+      res.status(400).send("Invalid or missing session ID");
+      return;
+    }
+    let transport = cache.get("transports")[sessionId];
+    await transport.handleRequest(req, res);
+  }
+
+  // handle mcp post requests
   const handleRequest = async (req, res) => {
+    debugger;
     let _appContext;
+    let transports = cache.get("transports");
     let transport;
     try {
       debugger;
-      console.error("handleRequest:", cache.keys());
       let sessionId = req.headers["mcp-session-id"];
       console.error("MCP session id:", sessionId);
+
+      // protecting against invalid session ids
+
       if (sessionId != null) {
-        if (cache.has(sessionId) == null || cache.get('transports')[sessionId] == null
-      || cache.get(sessionId) == null) {
-          console.error('[ERROR] Invalid session id in handleRequest:', sessionId);
+        if (
+          cache.has(sessionId) == null ||
+          cache.get("transports")[sessionId] == null ||
+          cache.get(sessionId) == null
+        ) {
+          console.error(
+            "[ERROR] Invalid session id. ",
+            sessionId
+          );
           console.error(`[ERROR] Ignoring the session id`);
-          sessionId = null;
+          res.status(400).json({
+            jsonrpc: "2.0",
+            error: {
+              code: -32000,
+              message: `Bad Request: session ID ${sessionId} not found`,
+            },
+            id: null,
+          });
+          return;
         }
-    }
+      }
+
       console.log("handleRequest: MCP session id:", sessionId);
-      if (sessionId != null) { /* existing transport */
-        let transports = cache.get('transports');
-        transport = transports[sessionId];
+      if (sessionId != null) {
+        /* existing transport */
+        let transport = transports[sessionId];
         _appContext = cache.get(sessionId);
-        currentAppEnvContext = _appContext; // update current app context
-        console.error("Using existing transport for session ", sessionId);
-        cache.set("current", _appContext); // update session cache
-        console.error("transport is", transport != null);
-        console.error("Handling MCP request...", transport.handleRequest);
+        currentAppEnvContext.current = _appContext; // update current app context
         await transport.handleRequest(req, res, req.body);
 
-      } else { /* new transport */
+        /* New transport */
+      } else {
+        /* new transport */
         // create a new transport id
-        console.error("Creating new transport for session");
         debugger;
+        console.error("Creating new transport for session");
+
+        // create transport
+        transport = new StreamableHTTPServerTransport({
+          sessionIdGenerator: () => randomUUID(),
+          onsessioninitialized: (sessionId) => {
+            // Store the transport by session ID
+            transports[sessionId] = transport;
+          },
+        });
+
+        // on transport close, clean up cache
+        transport.onclose = () => {
+          console.error(
+            "[Note] Closing transport and cleaning up session data",
+            transport.sessionId
+          );
+          debugger;
+          if (transport.sessionId) {
+            cache.delete(transport.sessionId);
+            let transports = cache.get("transports");
+            // delete appenv for this sessoion
+            cache.delete(transport.sessionId);
+            //remove from transports list
+            delete transports[transport.sessionId];
+
+            cache.set("transports", transports);
+            console.error(
+              `Transport closed and cleaned up for session: ${transport.sessionId}`
+            );
+          }
+        };
+
+        // connect tansport to the mcp server
+        let mcpServer = cache.get("mcpServer");
+        await mcpServer.connect(transport);
+
         // clone the template app context and update with header info
-        let _appContext = structuredClone(cache.get("appEnvTemplate"));
+        let _appContext = Object.assign({}, cache.get("appEnvTemplate"));
         _appContext = Object.assign(_appContext, headerCache);
 
-        let mcpServer = cache.get("mcpServer");
+        // set the app context for this session
+        // used in the toolhelpers
+        currentAppEnvContext.current = _appContext; // update current app context
 
-        console.error("mcpserver is", mcpServer != null);
-        debugger;
-        transport = await createHttpTransport(mcpServer,  _appContext);
-          
-        if (transport == null) {
-          throw new Error("Failed to create MCP transport");
-        }
+        /*********************************** */
         await transport.handleRequest(req, res, req.body);
+        /*********************************** */
         debugger;
         let newSessionId = transport.sessionId;
-        if (newSessionId == null) {
-          throw new Error("Failed to get MCP session id from transport");
-        }
-        console.error("New MCP session id from transport:", newSessionId);
-        cache.set("currentSessionId", newSessionId);
+
+        //Save the context for this session id
         _appContext.mcpSessionId = newSessionId;
-        // save transport in cache
-        let tranportsList = cache.get('transports');
-        tranportsList[newSessionId] = transport;
-        cache.set('transports', tranportsList);
-        console.error("setting new state for session:", newSessionId);
-        debugger;
-        // save app context in cache 
         cache.set(newSessionId, _appContext);
+        cache.set("transports", transports);
+
+        // save transport in cache
+        /*
+        let tranportsList = cache.get("transports");
+        tranportsList[newSessionId] = transport;
+        cache.set("transports", tranportsList);
+        */
+
         debugger;
         // trying to decide which is better
-        currentAppEnvContext = _appContext; // update current app context
-        cache.set("current", _appContext); // update session cache
-  
 
+        // update session cache
       }
     } catch (error) {
       console.error("Error handling MCP request:", error);
@@ -190,13 +248,14 @@ async function corehttp(cache, currentAppEnvContext) {
       }
       return;
     }
-  
+
     debugger;
-    
   };
+
   app.options("/mcp", (_, res) => res.sendStatus(204));
   app.post("/mcp", requireBearer, handleRequest);
   app.get("/mcp", requireBearer, handleRequest);
+  app.get("/mcp", requireBearer, handleGetDelete);
 
   // Start the server
   let appEnvBase = cache.get("appEnvBase");

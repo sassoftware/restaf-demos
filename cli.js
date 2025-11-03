@@ -119,17 +119,23 @@ if (appEnvBase.TOKENFILE != null) {
 console.error("MCP Server Environment: ", JSON.stringify(appEnvBase, null, 2));
 // store appEnvBase in sessionCache for access by corehttp.js
 
-let mcpServer = createMcpServer(appEnvBase, sessionCache);
+let _appContext = {
+  current: {}
+};
+
+let mcpServer = createMcpServer(_appContext, sessionCache);
 sessionCache.set("appEnvBase", appEnvBase);
-sessionCache.set("appEnvTemplate", structuredClone(appEnvBase));
+let appEnvTemplate = Object.assign({}, appEnvBase);
+sessionCache.set("appEnvTemplate", appEnvTemplate);
 sessionCache.set('currentSessionId', null);
 let transports = {};
 sessionCache.set('transports', transports );
 
 // start the mcp server
+
 console.error("Initializing core mcp server..");
 if (mcpType === 'http') {
-  await corehttp(sessionCache, appEnvBase);
+  await corehttp(sessionCache, _appContext);
 } else {
   await coreSSE(mcpServer); 
 }

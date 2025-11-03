@@ -18,6 +18,7 @@ This tool returns special  information as a text result.
         },
        
         handler: async (params) => {
+            console.error("[Note] Executing deval tool with params: ", JSON.stringify(params)); 
             return await _deval(params);
         }
     }

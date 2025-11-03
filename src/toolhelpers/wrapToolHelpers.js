@@ -79,7 +79,7 @@ let wrappedUtils = {};
 for (let key of Object.keys(utils)) {
     wrappedUtils[key] = wrapt(_appContext, cache, utils[key]);
 } 
-let finalList= {...flist, ...wrappedUtils};
+let finalList= {...wrappedFlist, ...wrappedUtils};
 return finalList;
 }
 export default wrapToolsHelpers;

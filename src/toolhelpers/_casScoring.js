@@ -4,7 +4,6 @@
  */
 import restaflib from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
-;
 import getStoreOpts from './getStoreOpts.js';
 async function _casScoring(_appContext,params) {
   let { caslScore } = restaflib;
