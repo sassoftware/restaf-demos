@@ -31,12 +31,13 @@ import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
 import deval from './deval.js';
-
-//let customf= {sasQueryTemplate, sasQueryTemplate2};
+import gidb from './gidb.js';
 
 function makeTools(_appContext) {
   // wrap all tools with 
-  let customTools = [];
+
+   let customTools = [];
+ 
 
   // get the tool definitions and handler 
   let list = [
@@ -65,7 +66,8 @@ function makeTools(_appContext) {
     tableInfo(_appContext),
     devaScore(_appContext),
    
-    sasQuery(_appContext)
+    sasQuery(_appContext),
+    gidb(_appContext),
 
   ];
   let listWithCustom = list.concat(customTools);
