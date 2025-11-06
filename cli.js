@@ -36,7 +36,7 @@ if (process.env.ENVFILE === "NONE") {
   //use this when using remote mcp server and no .env file is desired
   console.error("[Note]: Skipping .env file as ENVFILE is set to NONE...");
 } else {
-  let envf = __dirname + '/.env';
+  let envf = process.env.ENVFILE;
   console.error(envf);
   if (fs.existsSync(envf)) {
     console.error(`Loading environment variables from ${envf}...`);
