@@ -117,7 +117,7 @@ const appEnvBase= {
 };
 
 // setup TLS options for viya calls
-appEnvBase.viyaSSL =  __dirname + '/' + appEnvBase.VIYASSL;
+appEnvBase.viyaSSL = appEnvBase.VIYASSL;
 console.error('Viya SSL dir set to: ' + appEnvBase.viyaSSL);
 let opts = await getOptsViya(appEnvBase);
 console.error('[Note] VIYA TLS Options:', opts); 
