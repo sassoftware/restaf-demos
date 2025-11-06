@@ -22,7 +22,21 @@ function gidb(_appContext) {
     Users can specify other filters, group by, order by, etc. in the natural language query.
  
     The desired flow:
-    Instructions to LLM: Show the progress of how you are thinking about converting the natural language query to SQL.
+    Instructions to LLM:
+    1.  Show the progress of how you are thinking about converting the natural language query to SQL.
+    2. If user specfies a where clause that includes the column 'company' , use the following rules to convert to SQL:
+       - Examples:
+        - where company = 'IBM'  =>  WHERE company like 'IBM%'
+        - where company is 'IBM'  =>  WHERE company LIKE 'IBM%'
+        - where company = 'IBM%'   =>  WHERE company LIKE 'IBM%'
+        - where company like '%IBM%'  =>  WHERE company LIKE '%IBM%'
+        - where company contains 'IBM'  =>  WHERE company LIKE '%IBM%'
+        - where company begins with 'IBM'  =>  WHERE company LIKE 'IBM%'
+    3. Always order the results by site unless the user specifies a different order.
+    
+    LLM output format instructions:
+    -  Always create of a total for the rate within a  site group as total_rate_by_site.
+     
     Step 1:  User provides the following prompt:
     gidb <natural language query>
     
