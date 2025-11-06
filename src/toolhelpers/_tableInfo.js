@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import restafedit from '@sassoftware/restafedit';
+import  getLogonPayload from './getLogonPayload.js';
 import deleteSession from './deleteSession.js';
 
-async function _tableInfo(_appContext, params) {
-  let { table, lib, server } = params;
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+async function _tableInfo(params) {
+  let { table, lib, server, _appContext } = params;
+  let logonPayload = await getLogonPayload(_appContext);
 
   if (table.includes('.')) {
     let parts = table.split('.');
@@ -59,7 +60,6 @@ async function _tableInfo(_appContext, params) {
     let columns = appControl.state.columns;
     let structuredContent = { columns: columns, sampleData: outdata };
  
-   // await deleteSession(appControl);
   
     return { content: [{ type: 'text', text: JSON.stringify(structuredContent) }], structuredContent: structuredContent };
 

@@ -6,9 +6,8 @@
 import getToken from "./getToken.js";
 import refreshToken from "./refreshToken.js";
 
-async function getLogonPayload(_appContext, cache) {
+async function getLogonPayload(_appContext) {
   _appContext.logonPayload = await igetLogonPayload(_appContext);
-  cache.set(_appContext.sessionId, _appContext);
   return _appContext.logonPayload;  
 }
 

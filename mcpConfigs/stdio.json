@@ -1,0 +1,22 @@
+  "sasmcpio": {
+    "type": "stdio",
+    "command": "npx",
+    "args": [
+      "@sassoftware/mcp-serverjs@latest",
+    ],
+    "env": {
+      "MCPTYPE": "stdio",
+      "AUTHFLOW": "sascli",
+      "SAS_CLI_PROFILE": "i5s"
+      "SAS_CLI_CONFIG":"c://Users//kumar",
+      "SSLCERT": "C:\\Users\\kumar\\AppData\\Local\\.tls,
+      "VIYASSL: "./tls"
+      "VIYA_SERVER": "https://viya-i58trak558.engage.sas.com",
+      "PASSWORD": "password if AUTHFLOW is password",
+      "USERNAME": "username if AUTHFLOW is password",
+      "CLIENTIDPW": "client password if AUTHFLOW is password",
+      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
+      "TOKEN": "token if AUTHFLOW is token",
+      "ENVFILE": "NONE"
+    }
+  }

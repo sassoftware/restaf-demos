@@ -30,7 +30,6 @@ function superstat(_appContext) {
     - compute superstat for 3,5
     
     `;
-
   let spec = {
     name: 'superstat',
     description: desc,

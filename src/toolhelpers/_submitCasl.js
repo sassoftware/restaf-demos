@@ -4,9 +4,9 @@
  */
 import restaflib from '@sassoftware/restaflib';
 import getLogonPayload from './getLogonPayload.js';
-async function _submitCasl(_appContext, params) {
+async function _submitCasl(params) {
   const { caslRun } = restaflib;
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
    let store = restaf.initStore({
       casProxy: true,
       options: {

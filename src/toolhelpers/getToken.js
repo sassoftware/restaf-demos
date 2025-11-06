@@ -10,7 +10,7 @@ async function getToken(_appContext) {
   if (_appContext.SAS_CLI_CONFIG) {
     homedir = _appContext.SAS_CLI_CONFIG;
   }
-
+  debugger;
   let sep = (os.platform() === 'win32') ? '\\' : '/';
   let credentials = homedir + sep + '.sas' + sep + 'credentials.json';
   let url = homedir + sep + '.sas' + sep + 'config.json';

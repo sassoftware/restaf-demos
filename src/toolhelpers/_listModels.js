@@ -5,13 +5,12 @@
 
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
-import getOpts from './getOpts.js';
 import debug from 'debug';
 import getStoreOpts from './getStoreOpts.js';
 
 
-async function _listModels(_appContext,params) {
-  let { limit, start , name} = params;
+async function _listModels(params) {
+  let { limit, start , name, _appContext} = params;
   const log = debug('modelList');
   // setup
 
@@ -19,10 +18,10 @@ async function _listModels(_appContext,params) {
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: getStoreOpts(_appContext)
+         options: { ns: null, proxyServer: null, httpOptions: getStoreOpts(_appContext) }
       }
   });
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
 
   try {
     await store.logon(logonPayload);

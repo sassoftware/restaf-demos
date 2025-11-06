@@ -14,7 +14,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import makeTools from "./toolSet/makeTools.js";
 
-async function createMcpServer(appEnv, cache) {
+async function createMcpServer(cache, _appContext) {
   debugger;
   let mcpServer = new McpServer(
     {
@@ -29,11 +29,32 @@ async function createMcpServer(appEnv, cache) {
       },
     }
   );
-  let toolSet = makeTools(appEnv);
+  let toolSet = makeTools(_appContext);
 
+  //wrapping tool handler to pass _appContext
+  //can be ignored or used as needed.
+
+  const wrapf = (cache, builtin) => async (args) => {
+    debugger;
+    let currentId = cache.get('currentId');
+    let _appContext = cache.get(currentId);
+    let params;
+    if (args == null) {
+      params = {_appContext};
+    } else {
+      params = Object.assign({}, args, {_appContext});
+    }
+  
+    debugger;
+    console.error(params);
+    let r = await builtin(params); 
+    return r;
+  }
+    
   toolSet.forEach((tool, i) => {
     console.error(`\n[Note] Registering tool ${i + 1} : ${tool.name}`);
-    mcpServer.tool(tool.name, tool.description, tool.schema, tool.handler);
+    let toolHandler = wrapf(cache, tool.handler);
+    mcpServer.tool(tool.name, tool.description, tool.schema, toolHandler);
   });
   cache.set("mcpServer", mcpServer);
   return mcpServer;

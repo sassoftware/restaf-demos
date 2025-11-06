@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-//import _listModels from '../toolhelpers/_listModels.js';
+import _listModels from '../toolhelpers/_listModels.js';
 
 
 function findModel(_appContext) {
@@ -76,7 +76,7 @@ function findModel(_appContext) {
   - Chain usage: findModel → modelInfo → modelScore.
   - For batch existence checks iterate over a list and call findModel per entry.
   `;
-  let _listModels = _appContext.toolsHelper._listModels;
+
   let spec = {
     name: 'findModel',
     description: description,

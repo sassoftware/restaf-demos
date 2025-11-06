@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import fs from 'fs';
-function getOptsViya(_appContext, cache) {
+function getOptsViya(_appContext) {
     debugger;
      if (_appContext.viyaOpts != null) {
         return _appContext.viyaOpts;
@@ -31,7 +31,6 @@ function getOptsViya(_appContext, cache) {
     }
     console.error('VIYASSL FILES', Object.keys(options));
     _appContext.viyaOpts = options;
-    cache.set(_appContext.sessionId, _appContext);
     return options;
    
 }

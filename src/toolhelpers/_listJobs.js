@@ -6,10 +6,9 @@ import getLogonPayload from './getLogonPayload.js';
 
 import restaf from '@sassoftware/restaf';
 import getStoreOpts from './getStoreOpts.js';
-import debug from 'debug';
 
-async function _listJobs(_appContext, params) {
-  let { limit, start, name } = params;
+async function _listJobs(params) {
+  let { limit, start, name,_appContext } = params;
 
   let store = restaf.initStore({
     casProxy: true,
@@ -18,7 +17,7 @@ async function _listJobs(_appContext, params) {
       httpOptions: getStoreOpts(_appContext)
     }
   });
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
   let msg = await store.logon(logonPayload);
   console.error('logon', msg);
   

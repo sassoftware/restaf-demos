@@ -4,26 +4,28 @@
  */
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
+import getLogonPayload from './getLogonPayload.js';
+import getStoreOpts from './getStoreOpts.js';
 
-async function _jobSubmit(_appContext,params) {
-  let { name, type, scenario,  query } = params;
+async function _jobSubmit(params) {
+  let { name, type, scenario,  query, _appContext } = params;
   // setup
   try {
     let store = restaf.initStore({
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: null
+        httpOptions: getStoreOpts(_appContext)
       }
     });
-    let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+    let logonPayload = await getLogonPayload(_appContext);
     let msg = await store.logon(logonPayload);
     type = type.toLowerCase();
-  
+     debugger;
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);
-
+    
     let response = (query === true) ? {tabled: r.tables} : { tables: r.tables, listing: r.listing, log: r.log} ;
     
     

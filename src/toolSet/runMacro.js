@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-// import _submitCode from '../toolhelpers/_submitCode.js';
+import _submitCode from '../toolhelpers/_submitCode.js';
 
 
 function runMacro(_appContext) {
@@ -35,7 +35,7 @@ Examples
 - run macro \`abc\` with scenario \`x=1, y=2\`
 - run macro \`summarize\` with raw SAS code \`%let x=1; %let y=2;\` (the helper will pass it through unchanged)
 `;
-let _submitCode = _appContext.toolsHelper._submitCode;
+
   let spec = {
     name: 'runMacro',
     description: description,
@@ -70,8 +70,8 @@ let _submitCode = _appContext.toolsHelper._submitCode;
         }
       }
       const src = `${setup} %${params.macro};`;
-      let iparams = {src: src, args: {}};
-      let r = await _submitCode(iparams);
+      params.src = src;
+      let r = await _submitCode(params);
       return r;
     }
   }

@@ -4,12 +4,13 @@
  */
 
 import {z} from 'zod';
+import _deval from '../toolhelpers/_deval.js';
 function deval(_appContext) {
     let description = `
 ## deval: returns the value of the specified variable from the environment
 This tool returns special  information as a text result.
 `;
-    let _deval = _appContext.toolsHelper._deval;
+  
     let spec = {
         name: 'deval',
         description: description,

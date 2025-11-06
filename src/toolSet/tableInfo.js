@@ -36,7 +36,7 @@ Example
 - desc table \`sales\` in lib \`analytics\`
 
 `;
-    let _tableInfo = _appContext.toolsHelper._tableInfo;
+   
     let  specs = {
       name: 'tableInfo',
       description: describe,

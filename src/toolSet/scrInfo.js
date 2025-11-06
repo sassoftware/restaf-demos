@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-//import _scrInfo from '../toolhelpers/_scrInfo.js';
+import _scrInfo from '../toolhelpers/_scrInfo.js';
 import scrModels from '../db/scrModels.js';
 
 
@@ -32,7 +32,7 @@ Usage notes
 Examples
 - describe scr model "https://scr-host/models/loan"
 `;
-  let _scrInfo = _appContext.toolsHelper._scrInfo;
+
   let spec = {
     name: 'scrInfo',
     description: description,

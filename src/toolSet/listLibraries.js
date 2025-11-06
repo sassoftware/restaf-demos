@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
-//import _listLibrary from '../toolhelpers/_listLibrary.js';
+import _listLibrary from '../toolhelpers/_listLibrary.js';
 function listLibraries(_appContext) {
  
   let description = `
@@ -65,7 +65,7 @@ function listLibraries(_appContext) {
   // NOTE: Standardized tool name to 'listLibrary'. Earlier legacy name 'Listlibrary'
   // has been removed from the manifest; keep only this canonical name moving forward.
   
-  let _listLibrary = _appContext.toolsHelper._listLibrary;
+ 
   let spec = {
     name: 'listLibraries',
     description: description,

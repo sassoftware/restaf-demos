@@ -36,22 +36,9 @@ import deval from './deval.js';
 
 function makeTools(_appContext) {
   // wrap all tools with 
-
-  _appContext.toolsHelper = wrapToolsHelpers(_appContext);
   let customTools = [];
-  /*
-  if (_appContext.subclassJson != null) {
-  
-    for (let i = 0; i < _appContext.subclassJson.length; i++) {
-      let r = _appContext.subclassJson[i];
-      let t = await customf[r.template](r);
-      customTools.push(t);
-    }
-  }
-  console.error(`\n[Note] Loaded ${customTools.length} custom tools.`);
-  */
-  
-  
+
+  // get the tool definitions and handler 
   let list = [
     deval(_appContext),
     listModels(_appContext),

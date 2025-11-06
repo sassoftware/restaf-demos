@@ -13,6 +13,7 @@ import createMcpServer from "./src/createMcpServer.js";
 import { config } from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import fs from "fs";
+import { randomUUID } from "node:crypto";
 
 import NodeCache from "node-cache";
 
@@ -60,8 +61,6 @@ if (process.env.SUBCLASS != null) {
     console.error(`Loaded subclass: ${JSON.stringify(subclassJson, null, 2)}`);
   }
 }
-console.error(process.env.HTTPS);
-console.error(process.env.SSLCERT);
 const appEnvBase= {
   mcpType: mcpType,
   HTTPS:
@@ -72,6 +71,7 @@ const appEnvBase= {
   SAS_CLI_CONFIG: process.env.SAS_CLI_CONFIG || process.env.HOME, // default to user home directory
   SSLCERT: process.env.SSLCERT || null,
   VIYASSL: process.env.VIYASSL || null,
+  DEFAULT_CAS_SERVER: process.env.DEFAULT_CAS_SERVER || null,
   AUTHFLOW: process.env.AUTHFLOW || "sascli",
   VIYA_SERVER: process.env.VIYA_SERVER,
   PORT: process.env.PORT || 8080,
@@ -116,21 +116,36 @@ if (appEnvBase.TOKENFILE != null) {
   }
 }
 
-console.error("MCP Server Environment: ", JSON.stringify(appEnvBase, null, 2));
-// store appEnvBase in sessionCache for access by corehttp.js
+if (appEnvBase.REFRESHTOKEN  != null) {
+   appEnvBase.refreshToken = appEnvBase.REFRESHTOKEN ;
+   appEnvBase.AUTHFLOW = 'refresh';
+}
+// setup mcpServer (both http and stdio use this)
 
-let mcpServer = createMcpServer(appEnvBase, sessionCache);
+let mcpServer = await createMcpServer(sessionCache, appEnvBase);
+//do this for stdio scenario
+
+//
 sessionCache.set("appEnvBase", appEnvBase);
-sessionCache.set("appEnvTemplate", structuredClone(appEnvBase));
-sessionCache.set('currentSessionId', null);
+let appEnvTemplate = Object.assign({}, appEnvBase);
+sessionCache.set("appEnvTemplate", appEnvTemplate);
+
 let transports = {};
 sessionCache.set('transports', transports );
+// set this fr
+sessionCache.set('currentId', randomUUID() );
 
-// start the mcp server
-console.error("Initializing core mcp server..");
-if (mcpType === 'http') {
-  await corehttp(sessionCache, appEnvBase);
-} else {
+if (mcpType === 'stdio') {
+  let sessionId = randomUUID();
+  sessionCache.set('currentId', sessionId);
+  sessionCache.set(sessionId, appEnvBase);
+  console.error("[Note] Setting up stdio transport with sessionId:", sessionId);
+  console.error("[Note] Used in setting up tools and some persistence(not all).");
   await coreSSE(mcpServer); 
+
+} else {
+    console.error("Starting HTTP MCP server...");
+    await corehttp(mcpServer,sessionCache, appEnvBase);
 }
+
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
-//import _listJobs from '../toolhelpers/_listJobs.js';
+import _listJobs from '../toolhelpers/_listJobs.js';
 function findJob(_appContext) {
   let llmDescription= {
   "purpose": "Map natural language requests to find a job in SAS Viya and return structured results.",
@@ -72,7 +72,6 @@ function findJob(_appContext) {
   - Combine with job tool if user wants to execute after confirming existence.
   `;
 
-  let _listJobs = _appContext.toolsHelper._listJobs;
   let spec = {
     name: 'findJob',
     description: description,
@@ -81,13 +80,6 @@ function findJob(_appContext) {
     },
     required: ['name'],
     handler: async (params) => {
-      if (!params.name || params.name.trim().length === 0) {
-        return { jobs: [] };
-      }
-      // Defensive: if multiple names separated by space/comma, take first token
-      if (/[\s,]+/.test(params.name.trim())) {
-        params.name = params.name.split(/[\s,]+/).filter(Boolean)[0];
-      }
       let r = await _listJobs(params);
       return r;
     }

@@ -16,8 +16,8 @@ import debug from 'debug';
 import getStoreOpts from '../toolhelpers/getStoreOpts.js';
 
 
-async function _catalogSearch(_appContext, params, rel) {
-  let { searchstring, start, limit } = params;
+async function _catalogSearch(params, rel) {
+  let { searchstring, start, limit , _appContext} = params;
   let splitsearchstring = searchstring.trimStart().split(' ');
   let assetType = ' ';
   if (!splitsearchstring[0].includes(':')) {
@@ -59,7 +59,7 @@ async function _catalogSearch(_appContext, params, rel) {
         httpOptions: getStoreOpts(_appContext)
       }
   });
-    let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+    let logonPayload = await getLogonPayload(_appContext);
     let msg = await store.logon(logonPayload);
 
     if (rel == null) {
