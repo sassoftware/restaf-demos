@@ -36,7 +36,8 @@ async function _listJobs(params) {
     }
   console.error('payload', JSON.stringify(payload, null, 2));
   let jobList = await store.apiCall(jobExecution.links('jobs'), payload);
-  let items = jobList.itemsList();
+  let items = jobList.itemsList().toJS();
+  console.error('items', items);
   return { content: [{ type: 'text', text: JSON.stringify(items) }],
    structuredContent: items
  };
