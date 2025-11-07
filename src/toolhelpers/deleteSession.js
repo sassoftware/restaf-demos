@@ -4,9 +4,9 @@
  */
 import debug from 'debug';
 
-async function deleteSession(appControl) {
+async function deleteSession(_appContext) {
   //const log = debug('deletesession');
-  let {store, session} = appControl;
+  let {store, session} = _appContext;
   if (store != null && session != null) {
     //log('Deleting session');
     // If the session has a delete link, use it to delete the session

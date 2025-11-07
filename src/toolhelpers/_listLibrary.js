@@ -5,13 +5,12 @@
 
 import restafedit from '@sassoftware/restafedit';
 import getStoreOpts from './getStoreOpts.js';
+import getLogonPayload from './getLogonPayload.js';
+async function _listLibrary(params ){
 
-async function _listLibrary(_appContext, params) {
-  
-  
-  let { server, limit, start, name } = params;
+  let { server, limit, start, name, _appContext } = params;
   debugger;
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
   let config = {
     source: (server === 'sas') ? 'compute' : server,
     table: null

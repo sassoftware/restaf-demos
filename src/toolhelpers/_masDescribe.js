@@ -7,17 +7,17 @@ import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
 import getStoreOpts from './getStoreOpts.js';
 
-async function _masDescribe(_appContext,params) {
+async function _masDescribe(_appContext,...params) {
  // setup
   let { masSetup, masDescribe } = restaflib;
   let store = restaf.initStore({
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: getStoreOpts(_appContext)
+        httpOptions: { ns: null, proxyServer: null, httpOptions: getStoreOpts(_appContext) }
       }
   });
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
 
   let {model} = params;
   try {

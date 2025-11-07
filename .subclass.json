@@ -1,20 +1,13 @@
 [
-  {
-     "name": "queryStudent",
-     "template": "sasQueryTemplate",
-     "table": "Public.enrollment",
-     "selectColumns": null,
-     "columns": null,
-     "job": null,
-     "server": "cas"
-   },
+
    {
-      "name": "queryCars",
-      "template": "sasQueryTemplate2",
-      "table": "Public.cars",
-      "selectColumns": "make,model,origin,msrp",
+      "name": "gidb",
+      "template": "sasQueryTemplate",
+      "table": "Public.gidb_current",
+      "selectColumns": "opsys, offering, product,  rate, quantity, quantype, currency",
       "columns": null,
-      "job": "query_cars",
+      "job": "run_sql_query",
       "server": "cas"
    }
+
 ]

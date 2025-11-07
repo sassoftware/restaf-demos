@@ -5,21 +5,21 @@
 import restaf from '@sassoftware/restaf';
 import restaflib from '@sassoftware/restaflib';
 import getLogonPayload from './getLogonPayload.js';
+import getStoreOpts from './getStoreOpts.js';
 
 
-
-async function _submitCode(_appContext, params) {
-  let { output, limit, args, src } = params;
+async function _submitCode(params) {
+  let { output, limit, args, src, _appContext } = params;
   try {
     // setup
     let store = restaf.initStore({
       casProxy: true,
       options: {
         proxyServer: null,
-        httpOptions: null
+        httpOptions:  getStoreOpts(_appContext)
       }
     });
-    let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+    let logonPayload = await getLogonPayload(_appContext);
 
     // get compute sessio, run sas code and retrieve result
 

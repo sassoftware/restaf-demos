@@ -6,9 +6,11 @@ import fs from 'fs';
 function getOptsViya(_appContext) {
     debugger;
      if (_appContext.viyaOpts != null) {
+        console.error('[Note] Using cached viyaOpts', _appContext.viyaOpts);
         return _appContext.viyaOpts;
     }
-    let tlsdir = _appContext.VIYASSL;
+    let tlsdir = _appContext.viyaSSL;
+    console.error('--------------------------------VIYASSL dir: ' + tlsdir);
     if (tlsdir == null || tlsdir === 'NONE') {
         return {};
     }

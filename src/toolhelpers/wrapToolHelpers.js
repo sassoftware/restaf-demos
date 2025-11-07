@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+
 import _casScoring from './_casScoring.js';
 import _catalogSearch from './_catalogSearch.js';
 import _itemsData from './_itemsData.js';
@@ -22,18 +23,10 @@ import _submitMacro from './_submitMacro.js';
 import _tableColumns from './_tableColumns.js';
 import _tableInfo from './_tableInfo.js';
 import deleteSession from './deleteSession.js';
-import getLogonPayload from './getLogonPayload.js';
-import getOpts from './getOpts.js';
-import getStoreOpts from './getStoreOpts.js'; 
-import getToken from './getToken.js';
-import refreshToken from './refreshToken.js';
+import _deval from './_deval.js';
+//import refreshToken from './refreshToken.js';
 
-function wrapToolsHelpers (_appContext) {
-
-const wrapf = (appEnv, builtin) => async (...args) => {
-    let r = await builtin(appEnv, ...args); 
-    return r;
-  };
+function wrapToolsHelpers (_appContext, cache) {
 
 // Export all imported toolhelpers
 let flist = {
@@ -56,16 +49,8 @@ let flist = {
     _tableColumns,
     _tableInfo,
     deleteSession,
-    getLogonPayload,
-    getOpts,
-    getStoreOpts,
-    getToken,
-    refreshToken
+    _deval   
 };
-let wrappedFlist = {};
-for (let key of Object.keys(flist)) {
-    wrappedFlist[key] = wrapf(_appContext, flist[key]);
-}
-return wrappedFlist;
+return flist;
 }
 export default wrapToolsHelpers;

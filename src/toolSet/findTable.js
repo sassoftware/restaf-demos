@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 //import debug from 'debug';
-//import _listTables from '../toolhelpers/_listTables.js';
+import _listTables from '../toolhelpers/_listTables.js';
 
 function findTable(_appContext) {
   let llmDescription = {
@@ -46,7 +46,7 @@ Examples
 - find table iris in Public library in cas
 - find table cars in sashelp in sas server
 `;
-  let _listTables = _appContext.toolsHelper._listTables;
+  
   let spec = {
     name: 'findTable',
     description: description,

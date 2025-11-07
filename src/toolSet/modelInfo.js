@@ -30,7 +30,7 @@ Example prompts
 - info on cancer1
 - describe model mycoolmodel
 `;
-let _masDescribe = _appContext.toolsHelper._masDescribe;
+
   let spec = {
     name: 'modelInfo',
     description: description,

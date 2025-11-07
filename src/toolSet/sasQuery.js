@@ -5,7 +5,7 @@
 import {z} from 'zod';
 import _jobSubmit from '../toolhelpers/_jobSubmit.js';
 
-function sasQuery(_appContext) {
+function sasQuery() {
  
     let description = `
     You are an expert at translating natural language queries into SAS PROC SQL SELECT statements.
@@ -86,7 +86,7 @@ function sasQuery(_appContext) {
 
 `;
 
-    let _jobSubmit = _appContext.toolsHelper._jobSubmit;
+
     let spec = {
         name: 'sasQuery',
         description: description,
@@ -98,7 +98,7 @@ function sasQuery(_appContext) {
         },
         required: ['query', 'table'],
         handler: async (params) => {
-            let {table,query, sql, job} = params;
+            let {table,query, sql, job, _appContext} = params;
             let sqlinput = (sql == null) ? ' ' : sql.replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
             
             let iparams = {
@@ -109,7 +109,8 @@ function sasQuery(_appContext) {
                 },
                 name: (job == null) ? 'run_sql_query' : job,
                 type: 'job',
-                query: true
+                query: true,
+                _appContext: _appContext
             };
             if (sql == null || sql.trim().length === 0) {
                 return { content: [{ type: 'text', text: 'Error: The SQL statement generated is blank. Please provide a valid natural language query that can be converted to SQL.' }] };

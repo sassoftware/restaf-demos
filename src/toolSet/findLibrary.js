@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { z } from 'zod';
-//import _listLibrary from '../toolhelpers/_listLibrary.js';
+import _listLibrary from '../toolhelpers/_listLibrary.js';
 function findLibrary(_appContext) {
   
   let description = `
@@ -67,7 +67,6 @@ function findLibrary(_appContext) {
   - For pagination or discovery, switch to listLibrary.
   `;
 
-  let _listLibrary = _appContext.toolsHelper._listLibrary;
   let spec = {
     name: 'findLibrary',
     description: description,

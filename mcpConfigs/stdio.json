@@ -1,0 +1,20 @@
+{
+  "inputs": [],
+  "servers": {
+    "sasmcp": {
+      "command": "npx",
+      "args": ["@sassoftware/mcp-serverjs@alpha"],
+      "env": {
+        "MCPTYPE": "stdio",
+        "VIYA_SERVER": "https://viya-i58trak558.engage.sas.com",
+        "AUTHFLOW": "sascli",
+        "REFRESHTOKEN": null,
+        "SAS_CLI_PROFILE": "i58",
+        "SAS_CLI_CONFIG": "c:\\Users\\kumar",
+        "SSLCERT": "C:\\Users\\kumar\\AppData\\Local\\.tls",
+        "VIYASSL": "C:\\ai-agents\\mcp-serverjs\\tls",
+        "ENVFILE": "NONE"
+      }
+    }
+  }
+}

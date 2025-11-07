@@ -1,60 +1,63 @@
-
 /*
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { randomUUID } from "node:crypto"
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-// import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
-import makeTools from './toolSet/makeTools.js';
 
-async function createMcpServer(appEnv) {
+/**
+ * Creates and configures an MCP server instance.
+ * @param {Object} cache - The session cache to store the MCP server instance.
+ * @returns {Promise<McpServer>} The configured MCP server instance.  
+ * @example
+ * Notes: Handles both http and stdio transports scenarios
+ * 
+ */
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import makeTools from "./toolSet/makeTools.js";
 
-  const mcpServer = new McpServer({
-    name: 'sasmcp',
-    version: '0.3.0'
-  }, { capabilities: {
-      tools: {
-        listChanged: true
+async function createMcpServer(cache, _appContext) {
+  debugger;
+  let mcpServer = new McpServer(
+    {
+      name: "sasmcp",
+      version: "0.3.0",
+    },
+    {
+      capabilities: {
+        tools: {
+          listChanged: true,
+        },
       },
     }
-  });
+  );
+  let toolSet = makeTools(_appContext);
 
-  // Register the addition tool
-  // TBD: Register resources and prompts
+  //wrapping tool handler to pass _appContext
+  //can be ignored or used as needed.
 
-  let toolSet = await makeTools(appEnv);
-  
-  toolSet.forEach((tool,i) => {
-   console.error(`\n[Note] Registering tool ${i+1} : ${tool.name}`);
-    mcpServer.tool(
-      tool.name,
-      tool.description,
-      tool.schema,
-      tool.handler
-    )
-  })
-  console.error(`[Note] Registered ${toolSet.length});`);
-  appEnv.mcpServer = mcpServer;
-  
-  let transport = (appEnv.mcpType === 'http') 
-  ? new StreamableHTTPServerTransport({
-    sessionIdGenerator: ()=> randomUUID(),
-    enableJsonResponse: true,
-    onsessioninitialized: (sessionId) => {
-      appEnv.transports[sessionId] = transport;
-
+  const wrapf = (cache, builtin) => async (args) => {
+    debugger;
+    let currentId = cache.get('currentId');
+    let _appContext = cache.get(currentId);
+    let params;
+    if (args == null) {
+      params = {_appContext};
+    } else {
+      params = Object.assign({}, args, {_appContext});
     }
-  })
-  : new StdioServerTransport();
-
- 
-  console.error('[Note] Transport mode:====================================', appEnv.mcpType);
-
-  await mcpServer.connect(transport);
-  return transport;
   
+    debugger;
+    console.error(params);
+    let r = await builtin(params); 
+    return r;
+  }
+    
+  toolSet.forEach((tool, i) => {
+    console.error(`\n[Note] Registering tool ${i + 1} : ${tool.name}`);
+    let toolHandler = wrapf(cache, tool.handler);
+    mcpServer.tool(tool.name, tool.description, tool.schema, toolHandler);
+  });
+  cache.set("mcpServer", mcpServer);
+  return mcpServer;
 }
+
 export default createMcpServer;

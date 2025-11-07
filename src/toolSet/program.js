@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-//import _submitCode from '../toolhelpers/_submitCode.js';
+import _submitCode from '../toolhelpers/_submitCode.js';
 
 
 function program(_appContext) {
@@ -43,7 +43,7 @@ Examples
   - this should be the same as the previous example and is just a different syntax. The result should be
     {program: "sample", folder: "/Public/models", scenario: {name: "John", age: 45}, output: "a", limit: 50}
 `;
-  let _submitCode = _appContext.toolsHelper._submitCode;
+
   let spec = {
     name: 'program',
     description: description,
@@ -60,7 +60,7 @@ Examples
   // Corrected to 'src'.
   required: ['src'],
     handler: async (params) => {
-      let {src, folder, scenario} = params;
+      let {src, folder, scenario, _appContext} = params;
       // figure out src
       let isrc = src;
       if (folder != null && folder.trim().length > 0) {
@@ -87,7 +87,8 @@ Examples
         args: scenario,
         output: params.output,
         limit: params.limit,
-        src: isrc
+        src: isrc,
+        _appContext: _appContext
       }
      // console.error('iparms', iparms);
       let r = await _submitCode(iparms);

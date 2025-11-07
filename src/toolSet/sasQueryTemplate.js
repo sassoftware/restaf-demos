@@ -15,22 +15,19 @@ async function sasQueryTemplate(uparams) {
     let selectColumns2 = (selectColumns == null) ? '_All_' : selectColumns.replace(',', ' ');
     let uJob = (uparams.job == null) ? 'run_sql_query' : uparams.job;
     
-    let allColumns = await _tableColumns(uTable, uparams.server);
+    // let allColumns = await _tableColumns(uTable, uparams.server);
     
     let selcols = (selectColumns == null) ? ' ' :  'and the columns ${selectColumns}';
     let instruction1 = 'The valid columns in the table ${uTable} are: ${allColumns}. ';
 
     let description = `
-    You are an expert at translating natural language filter into SAS PROC SQL SELECT statement for the table ${uTable} ${selcols}.
+    You are an expert at translating natural language filter into SAS PROC SQL SELECT statement for the table ${uTable}.
     You will then convert the user's query to a valid SAS PROC SQL SELECT statement  and pass this string 
     as the query. 
 
     Instructions to LLM: 
-
-    ${instruction1}
-    1. The valid columns in the table ${uTable} are: ${allColumns}. 
-    If the user specifies non-calculated columns not in this list, inform the user of the error, list the valid columns, and do not make a guess.
-
+     
+    If the user does not select any columns assume they want to select these columns ${selectColumns}.
     The handler will return the data that was queried from the table.
 
     User can optionally specify a SAS job to run the query on the SAS Server. If not specified, the default job 'run_sql_query' will be used.
@@ -120,7 +117,7 @@ async function sasQueryTemplate(uparams) {
         handler: async (params) => {
             
           
-            let { table, query, sql } = params;
+            let { table, query, sql, _appContext} = params;
             let sqlinput = (sql == null) ? ' ' : sql.replaceAll(';', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
             
             let iparams = { 
@@ -131,7 +128,8 @@ async function sasQueryTemplate(uparams) {
                     selectcolumns: `${selectColumns2}`
                 },
                 name: `${uJob}`,
-                type: 'job'
+                type: 'job',
+                _appContext: _appContext
             };
         
             if (sql == null || sql.trim().length === 0) {

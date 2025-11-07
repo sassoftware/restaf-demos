@@ -4,22 +4,29 @@
  */
 import express from "express";
 
-import createMcpServer from "./createMcpServer.js";
 import https from "https";
 import cors from "cors";
 //import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import bodyParser from "body-parser";
-//import { Request, Response, NextFunction } from 'express';
+
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
 import fs from "fs";
+import createHttpTransport from "./createHttpTransport.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { randomUUID } from "node:crypto";
+import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import Stream from "node:stream";
 
 // setup express server
 
-async function corehttp(appEnv) {
+async function corehttp(mcpServer, cache, currentAppEnvContext) {
   // setup for change to persistence session
+  let headerCache = {};
+
   const app = express();
+
   app.use(express.json({ limit: "50mb" }));
   app.use(
     cors({
@@ -36,29 +43,8 @@ async function corehttp(appEnv) {
       ],
     })
   );
-  app.use(helmet());
+  // app.use(helmet());
   app.use(bodyParser.json({ limit: process.env.JSON_LIMIT ?? "50mb" }));
-
-  function requireBearer(req, res, next) {
-    debugger;
-    if (req.header("X-VIYA-SERVER") != null) {
-      console.error("[Note] Using user supplied VIYA server");
-      appEnv.VIYA_SERVER = req.header("X-VIYA-SERVER");  
-    }
-    const hdr = req.header("Authorization");
-		if (hdr != null){
-			appEnv.bearerToken = hdr.slice(7);
-			appEnv.AUTHFLOW = "bearer";
-		}
-    const hdr2 = req.header("X-REFRESH-TOKEN");
-    if (hdr2 != null) {
-      appEnv.refreshToken = hdr2;
-      appEnv.AUTHFLOW = 'refresh'; 
-    }
-    console.error("AppEnv in requireBearer:", appEnv);
-    
-    next();
-  }
 
   // setup routes
   app.get("/health", (req, res) => {
@@ -93,27 +79,95 @@ async function corehttp(appEnv) {
   });
 
   app.get("/apiMeta", (req, res) => {
-    let spec = fs.readFileSync('./openApi.json','utf8');
+    let spec = fs.readFileSync("./openApi.json", "utf8");
     let specJson = JSON.parse(spec);
     res.json(specJson);
-  })
+  });
 
-  // mcp endpoint - the key entrypoint for the MCP server
+  // handle processing of information in header.
+  function requireBearer(req, res, next) {
+    debugger;
+
+    // Ensure appEnv is always a valid objec
+
+    let headerCache = {};
+    if (req.header("X-VIYA-SERVER") != null) {
+      console.error("[Note] Using user supplied VIYA server");
+      headerCache.VIYA_SERVER = req.header("X-VIYA-SERVER");
+    }
+    const hdr = req.header("Authorization");
+    if (hdr != null) {
+      headerCache.bearerToken = hdr.slice(7);
+      headerCache.AUTHFLOW = "bearer";
+    }
+    const hdr2 = req.header("X-REFRESH-TOKEN");
+    if (hdr2 != null) {
+      headerCache.refreshToken = hdr2;
+      headerCache.AUTHFLOW = "refresh";
+    }
+   
+    next();
+  }
+
   const handleRequest = async (req, res) => {
     let transport;
+    let transports = cache.get("transports");
     try {
+      debugger;
       let sessionId = req.headers["mcp-session-id"];
-      console.error("MCP session id:", sessionId);
-      if (sessionId && appEnv.transports[sessionId]) {
-        transport = appEnv.transports[sessionId];
-        console.error("Using existing transport for session ", sessionId);
-      } else {
-        // create a new transport
-        console.error("Creating new transport for session");
 
-        transport = await createMcpServer(appEnv);
+      // we have session id, get existing transport
+
+      if (sessionId != null) {
+        /* existing transport */
+        transport = transports[sessionId];
+        if (transport == null) {
+          throw new Error(`No transport found for session ID: ${sessionId}`);
+        }
+        cache.set("currentId", sessionId); // post current session id for use in tools
+        let _appContext = cache.get(sessionId);
+
+        //if first prompt on a sessiondid, create app context
+        if (_appContext == null) {
+          debugger;
+          let appEnvTemplate = cache.get("appEnvTemplate");
+          _appContext = Object.assign({}, appEnvTemplate, headerCache);
+          cache.set(sessionId, _appContext);
+        }
+        await transport.handleRequest(req, res, req.body);
       }
-    } catch (error) {
+
+        // initialize request
+      else if (!sessionId && isInitializeRequest(req.body)) {
+          // create transport
+          console.error(StreamableHTTPServerTransport);
+          debugger;
+          transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            enableJsonResponse: true,
+            onsessioninitialized: (sessionId) => {
+              // Store the transport by session ID
+              transports[sessionId] = transport;
+            },
+          });
+          // Clean up transport when closed
+          transport.onclose = () => {
+            if (transport.sessionId) {
+              delete transports[transport.sessionId];
+            }
+          };
+          console.error("Connecting mcpServer to transport", transport);
+          await mcpServer.connect(transport);
+
+          // Save transport data and app context for use in tools
+
+          await transport.handleRequest(req, res, req.body);
+          cache.set("transports", transports);
+          debugger;
+        }
+      }
+    catch (error) {
+      console.error("Error handling MCP request:", error);
       if (!res.headersSent) {
         res.status(500).json({
           jsonrpc: "2.0",
@@ -124,63 +178,89 @@ async function corehttp(appEnv) {
           id: null,
         });
       }
+      return;
     }
-    await transport.handleRequest(req, res, req.body);
   };
+  const handleGetDelete = async (req, res) => {
+    console.error(req.method, "/mcp called");
+    const sessionId = req.headers["mcp-session-id"];
+    console.error("Handling GET/DELETE for session ID:", sessionId);
+    let transports = cache.get("transports");
+    let transport = transports[sessionId];
+    if (!sessionId || transport == null) {
+      res.status(400).send(`Invalid or missing session ID ${sessionId}`);
+      return;
+    }
+    await transport.handleRequest(req, res);
+  }
+
   app.options("/mcp", (_, res) => res.sendStatus(204));
   app.post("/mcp", requireBearer, handleRequest);
-  app.get("/mcp", requireBearer, handleRequest);
+  app.get("/mcp", handleGetDelete);
+  app.delete("/mcp", handleGetDelete);
 
   // Start the server
-  const PORT = appEnv.PORT;
+  let appEnvBase = cache.get("appEnvBase");
+  debugger;
+  const PORT = appEnvBase.PORT;
 
   // get user specified TLS options
   let appServer;
- 
-	// get TLS options
-  if (appEnv.HTTPS === true) {
-    appEnv.tls = getOpts(appEnv);
-		if (appEnv.tls == null) {
-			appEnv.tls = await getTls();
-			appEnv.tls.requestCert = false;
-			appEnv.tls.rejectUnauthorized = false;
-		}	
-		
-		console.error(`[Note] MCP Server listening on port ${PORT}`);
-    console.error( "[Note] Visit https://localhost:8080/health for health check" );
-    console.error( "[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server" );
+
+  // get TLS options
+  if (appEnvBase.HTTPS === true) {
+    appEnvBase.tls = getOpts(appEnvBase);
+    if (appEnvBase.tls == null) {
+      appEnvBase.tls = await getTls();
+      appEnvBase.tls.requestCert = false;
+      appEnvBase.tls.rejectUnauthorized = false;
+    }
+    cache.set("appEnvBase", appEnvBase);
+
+    console.error(`[Note] MCP Server listening on port ${PORT}`);
+    console.error(
+      "[Note] Visit https://localhost:8080/health for health check"
+    );
+    console.error(
+      "[Note] Configure your mcp host to use https://localhost:8080/mcp to interact with the MCP server"
+    );
     console.error("[Note] Press Ctrl+C to stop the server");
 
-    appServer = https.createServer(appEnv.tls, app);
-    appServer.listen(PORT,'0.0.0.0', () => {});
-  }
-	else {
+    appServer = https.createServer(appEnvBase.tls, app);
+    appServer.listen(PORT, "0.0.0.0", () => {});
+  } else {
     console.error(`[Note] MCP Server listening on port ${PORT}`);
     console.error("[Note] Visit http://localhost:8080/health for health check");
-    console.error("[Note] Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server");
+    console.error(
+      "[Note] Configure your mcp host to use http://localhost:8080/mcp to interact with the MCP server"
+    );
     console.error("[Note] Press Ctrl+C to stop the server");
 
     let appServer = app.listen(PORT, "0.0.0.0", () => {
-      console.error( `[Note] Express server successfully bound to 0.0.0.0:${PORT}`);
       console.error(
-        `[Note] Server address: ${appServer.address()?.address}:${appServer.address()?.port}`);
+        `[Note] Express server successfully bound to 0.0.0.0:${PORT}`
+      );
+      console.error(
+        `[Note] Server address: ${appServer.address()?.address}:${
+          appServer.address()?.port
+        }`
+      );
     });
-	}
-	process.on("SIGTERM", () => {
-		console.error("Server closed");
-		if (appServer != null) {
+  }
+  process.on("SIGTERM", () => {
+    console.error("Server closed");
+    if (appServer != null) {
       appServer.close(() => {});
     }
-		process.exit(0);
-	});
-	process.on("SIGINT", () => {
-		console.error("Server closed");
-		if (appServer != null) {
+    process.exit(0);
+  });
+  process.on("SIGINT", () => {
+    console.error("Server closed");
+    if (appServer != null) {
       appServer.close(() => {});
     }
-		process.exit(0);
-	});
-
+    process.exit(0);
+  });
 
   async function getTls() {
     let tlscreate =

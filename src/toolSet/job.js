@@ -4,9 +4,7 @@
  */
 
 import { z } from 'zod';
-
-//import _jobSubmit from '../toolhelpers/_jobSubmit.js';
-
+import _jobSubmit from '../toolhelpers/_jobSubmit.js';
 
 function job(_appContext) {
   // JSON object for LLM/tooling
@@ -77,7 +75,7 @@ function job(_appContext) {
   "  - This should result in {name: 'myjob',  scenario: {a: 10, b: 20}}",
   ''
 ].join('\n');
-  let _jobSubmit = _appContext.toolsHelper._jobSubmit;
+
   let spec = {
     name: 'job',
     description: description,

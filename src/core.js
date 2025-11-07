@@ -4,17 +4,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import corehttp from './corehttp.js';
-//import	corehttproot from './corehttproot.js';
-import createMcpServer from './createMcpServer.js';
 
-async function core(appEnv) {
-	if (appEnv.mcpType === 'http') {
+async function core(cache,mcpType,appEnvBase) {
+	if (mcpType === 'http') {
 		console.error('[Note]MCP Server starting with HTTP transport');
-		
-		await corehttp(appEnv);
+		await corehttp(cache, appEnvBase);
 	} else {
 		console.error('[Note] MCP Server starting with stdio transport');
-		await createMcpServer(appEnv);
+		let mcpServer = cache.get("mcpServer");
+		await createMcpTransport(mcpServer,mcpType,appEnvBase);
 	}
 }
 

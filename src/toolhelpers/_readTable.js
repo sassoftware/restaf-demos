@@ -8,10 +8,10 @@ import deleteSession from './deleteSession.js';
 import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
-async function _readTable(_appContext,params) {
+async function _readTable(params) {
   const log = debug('readtable');
-  let { table, lib, start, limit, server, format, where } = params;
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let { table, lib, start, limit, server, format, where, _appContext } = params;
+  let logonPayload = await getLogonPayload(_appContext);
   log('logonPayload', logonPayload);
 
   if (table.includes('.')) {
@@ -27,6 +27,7 @@ async function _readTable(_appContext,params) {
   }
   let config = {
     source: (server === 'sas') ? 'compute' : server,
+    casServer: _appContext.DEFAULT_CAS_SERVER,
     table: itable,
 
     initialFetch: {

@@ -1,0 +1,3 @@
+For OAuth authentication with remote MCP servers, Claude's OAuth callback URL is https://claude.ai/api/mcp/auth_callback.
+When you configure your MCP server at https://myserver.com/mcp, Claude will handle the OAuth flow using your server's authorization and token endpoints. You'll need to configure your OAuth server to accept https://claude.ai/api/mcp/auth_callback as the redirect URI.
+Note that this callback URL may change to https://claude.com/api/mcp/auth_callback in the future, so it's recommended to allowlist both URLs to ensure continued compatibility

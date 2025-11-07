@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 import debug from 'debug';
-// import _masScoring from '../toolhelpers/_masScoring.js';
+import _masScoring from '../toolhelpers/_masScoring.js';
 const log = debug('tools');
 
 function modelScore(_appContext) {
@@ -40,7 +40,7 @@ Examples
 - modelScore with model='cancer1' and scenario='age=45, sex=M, tumor=stage2'
 `;
 
-  let _masScoring = _appContext.toolsHelper._masScoring;
+ 
   let spec = {
     name: 'modelScore',
     description: description,

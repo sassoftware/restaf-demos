@@ -4,11 +4,11 @@
  */
 import restaflib from '@sassoftware/restaflib';
 import restaf from '@sassoftware/restaf';
-;
+import getLogonPayload from './getLogonPayload.js';
 import getStoreOpts from './getStoreOpts.js';
-async function _casScoring(_appContext,params) {
-  let { caslScore } = restaflib;
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+async function _casScoring(params) {
+  let { caslScore , _appContext} = restaflib;
+  let logonPayload = await getLogonPayload(_appContext);
   let store = restaf.initStore({
        casProxy: true,
        options: {

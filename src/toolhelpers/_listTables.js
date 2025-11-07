@@ -8,11 +8,11 @@ import debug from 'debug';
 import getStoreOpts from './getStoreOpts.js';
 
 
-async function _listTables(_appContext, params) {
-  let { server, lib, limit, start, name} = params;
+async function _listTables(params) {
+  let { server, lib, limit, start, name, _appContext} = params;
   const log = debug('listtables');
 
-  let logonPayload = await _appContext.toolsHelper.getLogonPayload();
+  let logonPayload = await getLogonPayload(_appContext);
   let config = {
     source: (server === 'sas') ? 'compute' : server,
     table: null
