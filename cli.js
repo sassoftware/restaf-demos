@@ -90,6 +90,7 @@ const appEnvBase= {
   CLIENTIDPW: process.env.CLIENTIDPW || null,
   CLIENTSECRET: process.env.CLIENTSECRETPW || null,
   TOKEN: process.env.TOKEN || null,
+  REFRESH_TOKEN: process.env.REFRESH_TOKEN || null,
   TOKENFILE: process.env.TOKENFILE || null,
   TLS_CREATE: process.env.TLS_CREATE || null,
   SUBCLASS: process.env.SUBCLASS || null,
@@ -102,6 +103,7 @@ const appEnvBase= {
   // user defined tools
   //runtime variables
   tls: null,
+  refreshToken: null,
   transports: {},
   mcpServer: null,
   viyaSessions: {},
@@ -119,8 +121,9 @@ const appEnvBase= {
 // setup TLS options for viya calls
 appEnvBase.viyaSSL = appEnvBase.VIYASSL;
 console.error('Viya SSL dir set to: ' + appEnvBase.viyaSSL);
-let opts = await getOptsViya(appEnvBase);
-console.error('[Note] VIYA TLS Options:', opts); 
+appEnvBase.viyaOpts = await getOptsViya(appEnvBase);
+
+console.error('[Note] VIYA TLS Options:', appEnvBase.viyaOpts); 
 
 if (appEnvBase.TOKENFILE != null) {
   try {
@@ -140,8 +143,8 @@ if (appEnvBase.TOKENFILE != null) {
   }
 }
 
-if (appEnvBase.REFRESHTOKEN  != null) {
-   appEnvBase.refreshToken = appEnvBase.REFRESHTOKEN ;
+if (appEnvBase.REFRESH_TOKEN  != null) {
+   appEnvBase.refreshToken = appEnvBase.REFRESH_TOKEN ;
    appEnvBase.AUTHFLOW = 'refresh';
    let t = await refreshToken(appEnvBase,{token: appEnvBase.refreshToken, host: appEnvBase.VIYA_SERVER});
     appEnvBase.logonPayload = {

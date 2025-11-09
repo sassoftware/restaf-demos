@@ -2,6 +2,14 @@
  * Copyright © 2025, SAS Institute Inc., Cary, NC, USA.  All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+/**
+ * Helper function to get TLS options(for the app server) from specified directory
+ * signed certificates 
+ * for testing you can use mkcert
+ * if this function return a null, coreehttp will create unsigned certs
+ * use viyaopts for calls to viya
+ * @param {Object} _appContext - Application context containing SSLCERT property
+ */
 import fs from 'fs';
 function getOpts(_appContext) {
     debugger;
