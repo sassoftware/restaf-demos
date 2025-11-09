@@ -135,7 +135,7 @@ The server supports multiple ways to authenticate.
 
 ---
 
-### Using token created with sas-cli
+### Using token created with sas-viya
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
 
