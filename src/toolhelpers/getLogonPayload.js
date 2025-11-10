@@ -14,7 +14,8 @@ async function getLogonPayload(_appContext) {
 async function igetLogonPayload(_appContext, _cache) {
 
   // Use cached logonPayload if available
-  if (_appContext.logonPayload != null) {
+  // This will cause timeouts if the token expires
+  if (_appContext.logonPayload != null && _appContext.keepLogon === true) {
     console.error("[Note] Using cached logonPayload information");
     return _appContext.logonPayload;
   }
@@ -80,6 +81,7 @@ async function igetLogonPayload(_appContext, _cache) {
     return logonPayload;
   }
 
+  // sascli auth flow - create from credentials file
   try {
     let { host, token } = await getToken(_appContext)
     console.error("[Note] got refresh token from getToken() for host ", host);

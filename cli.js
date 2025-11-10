@@ -30,13 +30,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // For more robust caching consider products like Redis
 // and storage provided by cloud providers
 
+debugger;
 let sessionCache = new NodeCache({ stdTTL: 0, checkperiod: 2*60, useClones: false });
-
+//
+// Load environment variables from .env file if present
 if (process.env.ENVFILE === "NONE") {
   //use this when using remote mcp server and no .env file is desired
   console.error("[Note]: Skipping .env file as ENVFILE is set to NONE...");
 } else {
-  let envf = process.env.ENVFILE;
+  let envf = __dirname + '/.env';
   console.error(envf);
   if (fs.existsSync(envf)) {
     console.error(`Loading environment variables from ${envf}...`);
@@ -71,6 +73,9 @@ if (process.env.SUBCLASS != null) {
     console.error(`Loaded subclass: ${JSON.stringify(subclassJson, null, 2)}`);
   }
 }
+// setup base appEnv 
+// for stdio this is the _appContext
+// for http each session a copy of this as appEnvTemplate is created in corehttp
 const appEnvBase= {
   mcpType: mcpType,
   HTTPS:

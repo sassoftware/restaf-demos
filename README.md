@@ -2,12 +2,13 @@
 
 - [Target Audience](#target-audience)
 - [Introduction](#introduction)
-- [Supported Tools](#supported-tools)
-- [Modify/Add Tools](#modify-or-add-tools)
-- [Enable Authentication](#enable-authentication)
 - [Enable client for mcp server](#enable-client-for-mcp-server)
   - [stdio transport](#stdio-transport)
   - [http transport](#http-transport)
+- [Supported Tools](#supported-tools)
+- [Modify/Add Tools](#modify-or-add-tools)
+- [Enable Authentication](#enable-authentication)
+
 - [Persisting Scores](#persisting-scores)
 - [Notes](#notes)
 - [Useful Links](#useful-links)
@@ -49,6 +50,129 @@ The source code is the repository [restaf-demos](https://github.com/sassoftware/
 It is provided under the Apache-2.0 license.
 
 > Note: This server is designed to run locally on the client.  A remote server implementation is coming soon.
+
+---
+
+## Enable client for mcp server
+
+---
+
+Similar methodologies can be used with other mcp enabled clients(ex: Claude Desktop, OpenAI desktop, etc...)
+Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
+Add the following to the list of mcp servers
+
+### stdio transport
+
+This is ideal for running mcp servers locally.  
+
+```json
+  "sasmcpio": {
+    "type": "stdio",
+    "command": "npx",
+    "args": [
+      "@sassoftware/mcp-serverjs@latest",
+    ],
+    "env": {
+      "MCPTYPE": "stdio",
+      "AUTHFLOW": "sascli",  // sascli|password|token
+      "SAS_CLI_PROFILE": "cli profile name or default",
+      "SAS_CLI_CONFIG":"where sas-cli stores authentication information",
+      "SSLCERT": "where you have stored the tls information(see below)",
+      "VIYA_SERVER": "viya server if AUTHFLOW=password|token|refresh",
+      "PASSWORD": "password if AUTHFLOW is password",
+      "USERNAME": "username if AUTHFLOW is password",
+      "CLIENTIDPW": "client password if AUTHFLOW is password",
+      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
+      "TOKEN": "token if AUTHFLOW is token",
+      "ENVFILE": "NONE"
+    }
+  }
+```
+
+```text
+ The SSLCERT should be a folder that has the following files:
+
+ - key.pem
+ - crt.pem
+ - ca.pem
+
+ ```
+
+### http transport
+
+This is an alternate to using stdio. This requires a .env file(see below).
+
+`Step 1: Configure the mpc client`
+
+The mcp configuration is show below
+
+```json
+ "sasmcp": {
+    "type": "http",
+    "url": "http://localhost:8080/mcp"``
+ }
+```
+
+`Step 2: Start the mcp server`
+
+```sh
+npx @sassoftware/mcp-serverjs@latest
+```
+
+Make sure that the .env file is in the current working directory(see below for details).
+
+```env
+
+The environment variables you can set are:
+
+```env
+##
+# mcp server environment variables
+#
+
+## server specific settings
+# By default the server will run in HTTP mode
+HTTPS=FALSE
+
+## TLS settings
+SSLCERT=<location of your SSL certificate>
+# The directory must contain the files key.pem and crt.pem and optionally ca.pem
+# This is used by the mcp server and in calls to SAS Via
+
+## If using self-signed certificate set this to 0
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+## Viya authentication settings
+
+## Valid values for AUTHFLOW are: sascli, password, token
+AUTHFLOW=sascli
+
+## sas-viya allows named profiles.
+## set this to the profile you want to use or leave it blank to use the default profile.
+## this is used to find the tokens for Viya
+
+# replace i58 with your profile name
+SAS_CLI_PROFILE=i58
+# replace with the location where sas-cli stores authentication information
+SAS_CLI_CONFIG=c:\Users\kumar
+
+## Needed for the AUTHFLOW=password|token
+VIYA_SERVER=<your Viya Server URL>
+
+## Password authentication settings
+PASSWORD=yourpassword
+USERNAME=yourusername
+CLIENTIDPW=your password clientid
+CLIENTSECRETPW=your password clientsecret
+
+
+## TOKEN authentication settings
+# Useful for cases where you want to use a token directly
+
+TOKEN=yourtoken
+
+
+```
 
 ---
 
@@ -162,128 +286,6 @@ Ths requires additional setup.
 - Create a clientid and clientpassword for Oauth password flow.
 - Set these in the .env file or the mcp configuration file
 
----
-
-## Enable client for mcp server
-
----
-
-Similar methodologies can be used with other mcp enabled clients(ex: Claude Desktop, OpenAI desktop, etc...)
-Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
-Add the following to the list of mcp servers
-
-### stdio transport
-
-This is ideal for running mcp servers locally.  
-
-```json
-  "sasmcpio": {
-    "type": "stdio",
-    "command": "npx",
-    "args": [
-      "@sassoftware/mcp-serverjs@latest",
-    ],
-    "env": {
-      "MCPTYPE": "stdio",
-      "AUTHFLOW": "sascli",
-      "SAS_CLI_PROFILE": "cli profile name or default",
-      "SAS_CLI_CONFIG":"where sas-cli stores authentication information",
-      "SSLCERT": "where you have stored the tls information(see below)",
-      "VIYA_SERVER": "viya server if AUTHFLOW=password|token",
-      "PASSWORD": "password if AUTHFLOW is password",
-      "USERNAME": "username if AUTHFLOW is password",
-      "CLIENTIDPW": "client password if AUTHFLOW is password",
-      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
-      "TOKEN": "token if AUTHFLOW is token",
-      "ENVFILE": "NONE"
-    }
-  }
-```
-
-```text
- The SSLCERT should be a folder that has the following files:
-
- - key.pem
- - crt.pem
- - ca.pem
-
- ```
-
-### http transport
-
-This is an alternate to using stdio. This requires a .env file(see below).
-
-`Step 1: Configure the mpc client`
-
-The mcp configuration is show below
-
-```json
- "sasmcp": {
-    "type": "http",
-    "url": "http://localhost:8080/mcp"``
- }
-```
-
-`Step 2: Start the mcp server`
-
-```sh
-npx @sassoftware/mcp-serverjs@latest
-```
-
-Make sure that the .env file is in the current working directory(see below for details).
-
-```env
-
-The environment variables you can set are:
-
-```env
-##
-# mcp server environment variables
-#
-
-## server specific settings
-# By default the server will run in HTTP mode
-HTTPS=FALSE
-
-## TLS settings
-SSLCERT=<location of your SSL certificate>
-# The directory must contain the files key.pem and crt.pem and optionally ca.pem
-# This is used by the mcp server and in calls to SAS Via
-
-## If using self-signed certificate set this to 0
-NODE_TLS_REJECT_UNAUTHORIZED=0
-
-## Viya authentication settings
-
-## Valid values for AUTHFLOW are: sascli, password, token
-AUTHFLOW=sascli
-
-## sas-viya allows named profiles.
-## set this to the profile you want to use or leave it blank to use the default profile.
-## this is used to find the tokens for Viya
-
-# replace i58 with your profile name
-SAS_CLI_PROFILE=i58
-# replace with the location where sas-cli stores authentication information
-SAS_CLI_CONFIG=c:\Users\kumar
-
-## Needed for the AUTHFLOW=password|token
-VIYA_SERVER=<your Viya Server URL>
-
-## Password authentication settings
-PASSWORD=yourpassword
-USERNAME=yourusername
-CLIENTIDPW=your password clientid
-CLIENTSECRETPW=your password clientsecret
-
-
-## TOKEN authentication settings
-# Useful for cases where you want to use a token directly
-
-TOKEN=yourtoken
-
-
-```
 
 ---
 
@@ -300,11 +302,10 @@ See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-sub
 
 ---
 
-This server is "stateless" - it does not cache any values, including any Viya sessions the tools might have created. One advantages is that the session does not timeout.
+- This server creates a single mcp server for both stdio and http transport protocol.
 
-In a production system the designer has to make decisions on what needs to be cached and the implications of such caching.
-
-The implication of this design choice is felt most when the tool needs is creating compute session - the requests will take longer than when the compute session is cached.
+- If using http transport protocol, it caches information for each session id(user)
+  - However cas and compute sessions are not cached in this release(TBD). The implication of this design choice is felt most when the tool needs is creating compute session - the requests will take longer than when the compute session is cached.
 
 ---
 
@@ -320,7 +321,12 @@ The implication of this design choice is felt most when the tool needs is creati
 
 - [mkcert](https://www.npmjs.com/package/mkcert)
 
-- Also see <https://communities.sas.com> for articles on using mcp with SAS Viya
+- [SAS tokens](https://communities.sas.com/t5/SAS-Communities-Library/SAS-Viya-CLI-Token-Expiry/ta-p/848183)
+
+- Also see <https://communities.sas.com> for articles on using mcp servers with SAS Viya
+
+    
+
 
 ## Other useful tips
 
