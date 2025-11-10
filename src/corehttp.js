@@ -240,11 +240,13 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
       console.error(
         `[Note] Express server successfully bound to 0.0.0.0:${PORT}`
       );
+      
       console.error(
-        `[Note] Server address: ${appServer.address()?.address}:${
-          appServer.address()?.port
+        `[Note] Server address: ${appServer.address().address}:${
+          appServer.address().port
         }`
       );
+      
     });
   }
   process.on("SIGTERM", () => {

@@ -42,7 +42,8 @@ if (process.env.ENVFILE === "NONE") {
   console.error(envf);
   if (fs.existsSync(envf)) {
     console.error(`Loading environment variables from ${envf}...`);
-    dotenvExpand.expand(config({ path: envf, silent: true }));
+    let e = config({ path: envf, silent: true });
+    dotenvExpand.expand(e);
   } else {
     console.error(
       "[Note]: No .env file found, Using default environment variables..."
@@ -193,6 +194,7 @@ if (mcpType === 'stdio') {
 } else {
     console.error("Starting HTTP MCP server...");
     await corehttp(mcpServer,sessionCache, appEnvBase);
+    console.error("----------------MCP HTTP server started on port " + appEnvBase.PORT);
 }
 
 
