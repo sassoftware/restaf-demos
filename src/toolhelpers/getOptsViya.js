@@ -6,7 +6,7 @@ import fs from 'fs';
 function getOptsViya(_appContext) {
     debugger;
      if (_appContext.viyaOpts != null) {
-        console.error('[Note] Using cached viyaOpts', _appContext.viyaOpts);
+        console.error('[Note] Using cached viyaOpts');
         return _appContext.viyaOpts;
     }
     let tlsdir = _appContext.viyaSSL;

@@ -7,7 +7,6 @@
  * signed certificates 
  * for testing you can use mkcert
  * if this function return a null, coreehttp will create unsigned certs
- * use viyaopts for calls to viya
  * @param {Object} _appContext - Application context containing SSLCERT property
  */
 import fs from 'fs';
@@ -34,7 +33,6 @@ function getOpts(_appContext) {
         let fname = listOfFiles[i];
         let name = tlsdir + '/' + listOfFiles[i];
         let key = fname.split('.')[0];
-        console.error('Reading TLS file: ' + name + ' as key: ' + key);
         options[key] = fs.readFileSync(name, { encoding: 'utf8' });
     }
     console.error('TLS FILES', Object.keys(options));

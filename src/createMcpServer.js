@@ -46,7 +46,6 @@ async function createMcpServer(cache, _appContext) {
     }
   
     debugger;
-    console.error(params);
     let r = await builtin(params); 
     return r;
   }

@@ -7,17 +7,17 @@ import express from "express";
 import https from "https";
 import cors from "cors";
 //import rateLimit from "express-rate-limit";
-import helmet from "helmet";
+//import helmet from "helmet";
 import bodyParser from "body-parser";
 
 import selfsigned from "selfsigned";
 import getOpts from "./toolhelpers/getOpts.js";
 import fs from "fs";
-import createHttpTransport from "./createHttpTransport.js";
+
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { randomUUID } from "node:crypto";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
-import Stream from "node:stream";
+
 
 // setup express server
 
@@ -78,6 +78,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     });
   });
 
+  // api metadata endpoint
   app.get("/apiMeta", (req, res) => {
     let spec = fs.readFileSync("./openApi.json", "utf8");
     let specJson = JSON.parse(spec);
@@ -88,18 +89,25 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
   function requireBearer(req, res, next) {
     debugger;
 
-    // Ensure appEnv is always a valid objec
+    // process any new header information
 
+    // Allow different VIYA server per sessionid(user)
     let headerCache = {};
     if (req.header("X-VIYA-SERVER") != null) {
       console.error("[Note] Using user supplied VIYA server");
       headerCache.VIYA_SERVER = req.header("X-VIYA-SERVER");
     }
+
+    // used when doing autorization via mcp client
+    // ideal for production use
     const hdr = req.header("Authorization");
     if (hdr != null) {
       headerCache.bearerToken = hdr.slice(7);
       headerCache.AUTHFLOW = "bearer";
     }
+
+    // faking out api key since Viya does not support 
+    // not ideal for production
     const hdr2 = req.header("X-REFRESH-TOKEN");
     if (hdr2 != null) {
       headerCache.refreshToken = hdr2;
@@ -109,6 +117,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     next();
   }
 
+  // process mcp endpoint requests
   const handleRequest = async (req, res) => {
     let transport;
     let transports = cache.get("transports");
@@ -124,23 +133,28 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
         if (transport == null) {
           throw new Error(`No transport found for session ID: ${sessionId}`);
         }
-        cache.set("currentId", sessionId); // post current session id for use in tools
+
+        // post the curren session - used to pass _appContext to tools
+        cache.set("currentId", sessionId); 
+
+        // get app context for session
         let _appContext = cache.get(sessionId);
 
-        //if first prompt on a sessiondid, create app context
+        //if first prompt on a sessionid, create app context
         if (_appContext == null) {
           debugger;
           let appEnvTemplate = cache.get("appEnvTemplate");
           _appContext = Object.assign({}, appEnvTemplate, headerCache);
           cache.set(sessionId, _appContext);
         }
+        console.error("[Note] Using existing transport for session ID:", sessionId);
+        debugger;
         await transport.handleRequest(req, res, req.body);
       }
 
         // initialize request
       else if (!sessionId && isInitializeRequest(req.body)) {
           // create transport
-          console.error(StreamableHTTPServerTransport);
           debugger;
           transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
@@ -156,12 +170,13 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
               delete transports[transport.sessionId];
             }
           };
-          console.error("Connecting mcpServer to transport", transport);
+          console.error("[Note] Connecting mcpServer to new transport...");
           await mcpServer.connect(transport);
 
           // Save transport data and app context for use in tools
 
           await transport.handleRequest(req, res, req.body);
+          // cache transport
           cache.set("transports", transports);
           debugger;
         }
@@ -188,10 +203,15 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     let transports = cache.get("transports");
     let transport = transports[sessionId];
     if (!sessionId || transport == null) {
-      res.status(400).send(`Invalid or missing session ID ${sessionId}`);
+      res.status(400).send(`[Error] In ${req.method}: Invalid or missing session ID ${sessionId}`);
       return;
     }
     await transport.handleRequest(req, res);
+    if (req.method === "DELETE") {
+      console.error("Deleting transport and cache for session ID:", sessionId);
+      delete transports[sessionId];
+      cache.delete(sessionId);
+    }
   }
 
   app.options("/mcp", (_, res) => res.sendStatus(204));
@@ -209,11 +229,11 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
 
   // get TLS options
   if (appEnvBase.HTTPS === true) {
-    appEnvBase.tls = getOpts(appEnvBase);
-    if (appEnvBase.tls == null) {
-      appEnvBase.tls = await getTls();
-      appEnvBase.tls.requestCert = false;
-      appEnvBase.tls.rejectUnauthorized = false;
+    appEnvBase.tlsOpts = getOpts(appEnvBase);
+    if (appEnvBase.tlsOpts == null) {
+      appEnvBase.tlsOpts = await getTls(appEnvBase);
+      appEnvBase.tlsOpts.requestCert = false;
+      appEnvBase.tlsOpts.rejectUnauthorized = false;
     }
     cache.set("appEnvBase", appEnvBase);
 
@@ -226,7 +246,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     );
     console.error("[Note] Press Ctrl+C to stop the server");
 
-    appServer = https.createServer(appEnvBase.tls, app);
+    appServer = https.createServer(appEnvBase.tlsOpts, app);
     appServer.listen(PORT, "0.0.0.0", () => {});
   } else {
     console.error(`[Note] MCP Server listening on port ${PORT}`);
@@ -236,15 +256,9 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     );
     console.error("[Note] Press Ctrl+C to stop the server");
 
-    let appServer = app.listen(PORT, "0.0.0.0", () => {
+    appServer = app.listen(PORT, "0.0.0.0", () => {
       console.error(
         `[Note] Express server successfully bound to 0.0.0.0:${PORT}`
-      );
-      
-      console.error(
-        `[Note] Server address: ${appServer.address().address}:${
-          appServer.address().port
-        }`
       );
       
     });
@@ -264,7 +278,8 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     process.exit(0);
   });
 
-  async function getTls() {
+  // create unsigned TLS cert
+  async function getTls(appEnv) {
     let tlscreate =
       appEnv.TLS_CREATE == null
         ? "TLS_CREATE=C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost,ALT:na.sas.com"

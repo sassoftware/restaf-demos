@@ -17,7 +17,7 @@ async function _listTables(params) {
     source: (server === 'sas') ? 'compute' : server,
     table: null
   };
-  log(config);
+  
   try {
     let appControl = await restafedit.setup(
       logonPayload,
@@ -41,9 +41,8 @@ async function _listTables(params) {
       payload.qs.filter = `eq(name, '${nameVal}')`;
     }
 
-    log(payload);
     let items = await restafedit.getTableList(lib, appControl, payload);
-    log('items', items);
+
     return {content: [{ type: 'text', text: JSON.stringify(items) }],
       structuredContent: items};
   } catch (err) {
