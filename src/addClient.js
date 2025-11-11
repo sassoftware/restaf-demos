@@ -13,11 +13,11 @@ async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 	if (configFile == null) {
 		let flow = (args.type  != null) ? args.type.trim() : ' ';
 		console.log(flow);
-		/*
+		
 		if (flow === 'code') {
 			flow = 'authorization_code';
 		}
-		*/
+		
 		let flowA = flow.split(',');
 		configFile = {
 			client_id   : clientid,
@@ -26,13 +26,14 @@ async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 			autoapprove : true,
 
 			authorized_grant_types: flowA,
-			// access_token_validity : (ttl == null) ? 86400 : ttl*24*60*60,
+			access_token_validity : (ttl == null) ? 86400 : ttl*24*60*60,
+           // "refresh_token_validity": 86400,
 			'use-session'         : true
 		};
 		if (clientSecret !== null) {
 			configFile.client_secret = clientSecret;
 		}
-		let redirectx = redirect.replaceAll("$VIYA_SERVER",process.env.VIYA_SERVER);
+		let redirectx = (redirect != null) ? redirect.replaceAll("$VIYA_SERVER",process.env.VIYA_SERVER) : null;
 		if (redirectx != null) {
 			let redirectA = redirectx.split(',');
 			configFile.redirect_uri = redirectA;
