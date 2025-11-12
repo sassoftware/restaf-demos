@@ -177,7 +177,6 @@ headers: {
 
 > The X-REFRESH-TOKEN is intended for testing. Think of it as an API KEY for testing.
 
-
 `Step 2: Start the mcp server`
 
 ```sh
