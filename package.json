@@ -1,6 +1,6 @@
 {
   "name": "@sassoftware/mcp-serverjs",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "A mcp server for SAS Viya",
   "author": "Deva Kumar <deva.kumar@sas.com>",
   "license": "Apache-2.0",
