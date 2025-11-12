@@ -1,4 +1,6 @@
-
+#
+# syntax: push2acr.sh <tag>
+#
 docker rmi mcp-serverjs
 az acr login --name viyafseditcr
 docker build --no-cache -t mcp-serverjs .

@@ -15,7 +15,7 @@ async function igetLogonPayload(_appContext, _cache) {
 
   // Use cached logonPayload if available
   // This will cause timeouts if the token expires
-  if (_appContext.logonPayload != null && _appContext.keepLogon === true) {
+  if (_appContext.logonPayload != null && _appContext.tokenRefresh !== true) {
     console.error("[Note] Using cached logonPayload information");
     return _appContext.logonPayload;
   }

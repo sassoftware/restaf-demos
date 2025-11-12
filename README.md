@@ -2,7 +2,8 @@
 
 - [Target Audience](#target-audience)
 - [Introduction](#introduction)
-- [Enable client for mcp server](#enable-client-for-mcp-server)
+- [Configure mcp server](#configure-mcp-server)
+  - [Configuration variables](#configuration-variables)
   - [stdio transport](#stdio-transport)
   - [http transport](#http-transport)
 - [Supported Tools](#supported-tools)
@@ -53,12 +54,69 @@ It is provided under the Apache-2.0 license.
 
 ---
 
-## Enable client for mcp server
+## Configure mcp server
 
 ---
 
 Similar methodologies can be used with other mcp enabled clients(ex: Claude Desktop, OpenAI desktop, etc...)
 Go to the vscode settings and search for mcp. Then select Model Server Context Protocol. Edit its config json
+
+### Configuration variables
+
+Typically these are set either in the .env file or as environment variables(or both)
+
+```env
+
+# port for the mcp server
+PORT=8080
+
+# Indicate what type of transport(stdio|http)
+# http is useful for remote mcp servers
+
+MCPTYPE=http
+
+# If transport of http, optionally specify if the server
+# is using http or https
+
+HTTPS=TRUE
+
+# VIYA_SERVER
+
+VIYA_SERVER= your Viya server url
+
+# Viya Authentication
+# The mcp server support different ways to authenticate
+
+# - sascli - will look for tokens created with sas-viya cli
+# - token - a custom token
+# - password - userid/password 
+# - refresh  - pass a refresh token created by sas-viya
+
+REFRESH_TOKEN=
+TOKENFILE=
+
+SAS_CLI_CONFIG=$HOME directory
+SAS_CLI_PROFILE=i5s
+
+
+# This is for the mcp server app.
+# this is a folder. All files in that folder will be loaded
+# and used in the TLS connection
+# If not set, it will create a self-signed certificate
+SSLCERT=<some folder>
+TLS_CREATE="C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost"
+
+
+# This is certificate for Viya server connection from MCP server
+# Used in restaf (ultimately axios and fetch)
+# this is a folder. All files in that folder will be loaded
+# and used in the TLS connection
+# if not set, no ssl certificates will be used
+VIYASSL=<some folder>
+
+
+```
+
 Add the following to the list of mcp servers
 
 ### stdio transport
@@ -66,7 +124,7 @@ Add the following to the list of mcp servers
 This is ideal for running mcp servers locally.  
 
 ```json
-  "sasmcpio": {
+  "sasmcp: {
     "type": "stdio",
     "command": "npx",
     "args": [
@@ -83,24 +141,14 @@ This is ideal for running mcp servers locally.
       "USERNAME": "username if AUTHFLOW is password",
       "CLIENTIDPW": "client password if AUTHFLOW is password",
       "CLIENTSECRETPW": "client id if AUTHFLOW is password",
-      "TOKEN": "token if AUTHFLOW is token",
-      "ENVFILE": "NONE"
+      "TOKEN": "token if AUTHFLOW is token"
     }
   }
 ```
 
-```text
- The SSLCERT should be a folder that has the following files:
-
- - key.pem
- - crt.pem
- - ca.pem
-
- ```
-
 ### http transport
 
-This is an alternate to using stdio. This requires a .env file(see below).
+This is an alternate to using stdio. This requires a .env or th
 
 `Step 1: Configure the mpc client`
 
@@ -109,9 +157,26 @@ The mcp configuration is show below
 ```json
  "sasmcp": {
     "type": "http",
-    "url": "http://localhost:8080/mcp"``
+    "url": "http(s)//localhost:8080/mcp"``
  }
 ```
+
+USe https if the environment variables HTTPS=TRUE
+
+#### Custom headers
+
+To support remote mcp serversm the following headers are supported
+
+```js
+headers: {
+  Authorization: 'Bearer <token>',
+  X-VIYA-SERVER: '<your Viya url>',
+  X-REFRESH-TOKEN: "<refresh token from sas-viya cli'
+}
+```
+
+> The X-REFRESH-TOKEN is intended for testing. Think of it as an API KEY for testing.
+
 
 `Step 2: Start the mcp server`
 
@@ -171,6 +236,7 @@ CLIENTSECRETPW=your password clientsecret
 
 TOKEN=yourtoken
 
+NEWTOKEN=TRUE
 
 ```
 

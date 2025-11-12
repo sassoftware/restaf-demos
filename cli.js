@@ -108,6 +108,7 @@ const appEnvBase= {
       : ['default'],
   // user defined tools
   //runtime variables
+  tokenRefresh: process.env.TOKENREFRESH ==='FALSE' ? false : true,
   tls: null,
   refreshToken: null,
   transports: {},

@@ -7,7 +7,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { randomUUID } from "node:crypto";
 
 async function createHttpTransport( mcpServer) {
-  debugger;
+  
   let transport = null;
   try {
     transport = new StreamableHTTPServerTransport({

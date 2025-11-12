@@ -87,7 +87,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
 
   // handle processing of information in header.
   function requireBearer(req, res, next) {
-    debugger;
+    
 
     // process any new header information
 
@@ -122,7 +122,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
     let transport;
     let transports = cache.get("transports");
     try {
-      debugger;
+      
       let sessionId = req.headers["mcp-session-id"];
 
       // we have session id, get existing transport
@@ -142,20 +142,20 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
 
         //if first prompt on a sessionid, create app context
         if (_appContext == null) {
-          debugger;
+          
           let appEnvTemplate = cache.get("appEnvTemplate");
           _appContext = Object.assign({}, appEnvTemplate, headerCache);
           cache.set(sessionId, _appContext);
         }
         console.error("[Note] Using existing transport for session ID:", sessionId);
-        debugger;
+        
         await transport.handleRequest(req, res, req.body);
       }
 
         // initialize request
       else if (!sessionId && isInitializeRequest(req.body)) {
           // create transport
-          debugger;
+          
           transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
             enableJsonResponse: true,
@@ -178,7 +178,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
           await transport.handleRequest(req, res, req.body);
           // cache transport
           cache.set("transports", transports);
-          debugger;
+          
         }
       }
     catch (error) {
@@ -221,7 +221,7 @@ async function corehttp(mcpServer, cache, currentAppEnvContext) {
 
   // Start the server
   let appEnvBase = cache.get("appEnvBase");
-  debugger;
+  
   const PORT = appEnvBase.PORT;
 
   // get user specified TLS options

@@ -24,7 +24,7 @@ async function _jobSubmit(params) {
    
     type = (type == null) ? 'job' : type.toLowerCase();
     console.error(`Submitting job. Name: ${name} Type: ${type} Scenario: ${JSON.stringify(scenario)}`);
-     debugger;
+     
     let r = (type === 'definition' || type === 'def')
       ? await restaflib.jesRun(store, name, scenario)
       : await restaflib.jobRun(store, name, scenario);

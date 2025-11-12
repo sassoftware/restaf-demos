@@ -12,7 +12,7 @@
     const agent = new Agent({
       connect: opts
     });
-    debugger;
+    
     const body = new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: token,
@@ -37,7 +37,7 @@
       }
 
       const data = await response.json();
-      debugger;
+      
       return data.access_token;
     } catch (err) {
       console.error('[Error] Failed to refresh token: ', err);

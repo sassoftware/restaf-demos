@@ -5,10 +5,10 @@
 import getOptsViya from './getOptsViya.js';
 
 function getStoreOpts(_appContext) {
-  debugger;
+  
   let opts = getOptsViya(_appContext);
 
-  debugger;
+  
   let storeOpts = {
     casProxy: true,
     httpOptions: { ...opts, rejectUnauthorized: true }

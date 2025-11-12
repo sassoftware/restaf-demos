@@ -15,7 +15,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import makeTools from "./toolSet/makeTools.js";
 
 async function createMcpServer(cache, _appContext) {
-  debugger;
+  
   let mcpServer = new McpServer(
     {
       name: "sasmcp",
@@ -35,7 +35,7 @@ async function createMcpServer(cache, _appContext) {
   //can be ignored or used as needed.
 
   const wrapf = (cache, builtin) => async (args) => {
-    debugger;
+    
     let currentId = cache.get('currentId');
     let _appContext = cache.get(currentId);
     let params;
@@ -45,7 +45,7 @@ async function createMcpServer(cache, _appContext) {
       params = Object.assign({}, args, {_appContext});
     }
   
-    debugger;
+    
     let r = await builtin(params); 
     return r;
   }

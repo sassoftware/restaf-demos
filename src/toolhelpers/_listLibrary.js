@@ -9,7 +9,7 @@ import getLogonPayload from './getLogonPayload.js';
 async function _listLibrary(params ){
 
   let { server, limit, start, name, _appContext } = params;
-  debugger;
+  
   let logonPayload = await getLogonPayload(_appContext);
   let config = {
     source: (server === 'sas') ? 'compute' : server,
@@ -22,14 +22,14 @@ async function _listLibrary(params ){
       casProxy: true,
       options: { ns: null, proxyServer: null, httpOptions: getStoreOpts(_appContext) }
     }
-    debugger;
+    
    // console.error('[Note] Calling restafedit.setup with logonPayload', logonPayload);
     let appControl = await restafedit.setup(
       logonPayload,
       config
       ,null,{},'user',{}, {}, storeConfig
     );
-    debugger;
+    
     // query parameters
     let payload = {
       qs: {
