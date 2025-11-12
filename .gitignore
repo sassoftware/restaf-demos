@@ -1,8 +1,8 @@
 node_modules
-*.ca.crt
-*.tls.crt
-*.tls.key
-*.ca.pem
+**/ca.crt
+**/tls.crt
+**/tls.key
+**/ca.pem
 mcpConfigs
 
 
