@@ -43,7 +43,7 @@ async function _listLibrary(params ){
         filter: `eq(name, '${name}')`
       }
     }
-    console.error('[Note] Calling getLibraryList with payload', payload);
+   
     let items = await restafedit.getLibraryList(appControl, payload);
   
     return { content: [{ type: 'text', text: JSON.stringify(items) }],
