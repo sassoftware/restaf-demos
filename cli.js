@@ -11,14 +11,14 @@ import coreSSE from './src/coreSSE.js';
 import corehttp from './src/corehttp.js';
 import createMcpServer from './src/createMcpServer.js';
 import { config } from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
+// import dotenvExpand from 'dotenv-expand';
 import fs from 'fs';
 import { randomUUID } from 'node:crypto';
 
 import refreshToken from './src/toolhelpers/refreshToken.js'; 
 import getLogonPayload from './src/toolhelpers/getLogonPayload.js';
 import getOptsViya from './src/toolhelpers/getOptsViya.js';
-import path from 'path';
+
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -38,12 +38,13 @@ if (process.env.ENVFILE === 'NONE') {
   //use this when using remote mcp server and no .env file is desired
   console.error('[Note]: Skipping .env file as ENVFILE is set to NONE...');
 } else {
-  let envf = './.env';
+  let envf = __dirname + '\\.env';
   console.error(envf);
   if (fs.existsSync(envf)) {
     console.error(`Loading environment variables from ${envf}...`);
     let e = config({ path: envf, silent: true });
-    dotenvExpand.expand(e);
+    console.error('[Note]: Environment variables loaded from .env file...');
+   // dotenvExpand.expand(e);
   } else {
     console.error(
       '[Note]: No .env file found, Using default environment variables...'
@@ -51,6 +52,7 @@ if (process.env.ENVFILE === 'NONE') {
   }
 }
 
+debugger;
 // need to tell core what transport to use(http or stdio)
 let mcpType = process.env.MCPTYPE || 'http';
 console.error(`Starting mcp-server with transport type: ${mcpType}`);
@@ -180,8 +182,7 @@ let transports = {};
 sessionCache.set('transports', transports );
 
 // set this for stdio transport use
-// dummy sessionId for use in the tools
-
+// dummy sessionId for use in the tools  
 if (mcpType === 'stdio') {
   let sessionId = randomUUID();
   sessionCache.set('currentId', sessionId);

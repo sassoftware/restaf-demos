@@ -6,9 +6,13 @@
   - [Configuration variables](#configuration-variables)
   - [stdio transport](#stdio-transport)
   - [http transport](#http-transport)
-- [Supported Tools](#supported-tools)
-- [Modify/Add Tools](#modify-or-add-tools)
 - [Enable Authentication](#enable-authentication)
+  - [sas-viya cli](#sas-viya-cli)
+  - [Password](#password)
+  - [Custom Token](#custom-token)
+- [Supported Tools](../sasmcp_tools_guide.md)
+- [Modify/Add Tools](#modify-or-add-tools)
+
 
 - [Persisting Scores](#persisting-scores)
 - [Notes](#notes)
@@ -26,7 +30,8 @@ There are no additional skill sets required to use the mcp server
 
 ### Application Developers
 
-The source code is available to application developers to add their own tools or build their own mcp server
+The source code is available to application developers to add their own tools or build their own mcp server 
+
 The source code available with Apache-2.0 license.
 
 ---
@@ -67,36 +72,36 @@ Typically these are set either in the .env file or as environment variables(or b
 
 ```env
 
-# port for the mcp server
-PORT=8080
-
 # Indicate what type of transport(stdio|http)
 # http is useful for remote mcp servers
+# If running locally, recommend stdio
 
 MCPTYPE=http
 
+# Port for http transport(default is 8080)
+# and is running on localhost
+# Set it to your choice of port
+
+PORT=8080
 # If transport of http, optionally specify if the server
 # is using http or https
 
-HTTPS=TRUE
+HTTPS=FALSE
 
 # VIYA_SERVER
 
 VIYA_SERVER= your Viya server url
 
 # Viya Authentication
-# The mcp server support different ways to authenticate
+# The mcp server support different ways to authenticate(see section on Authentication)
 
 # - sascli - will look for tokens created with sas-viya cli
 # - token - a custom token
 # - password - userid/password 
-# - refresh  - pass a refresh token created by sas-viya
 
-REFRESH_TOKEN=
 TOKENFILE=
-
-SAS_CLI_CONFIG=$HOME directory
-SAS_CLI_PROFILE=i5s
+SAS_CLI_CONFIG=your-home-directory
+SAS_CLI_PROFILE=your-sas-cli-profile
 
 
 # This is for the mcp server app.
@@ -117,214 +122,18 @@ VIYASSL=<some folder>
 
 ```
 
-Add the following to the list of mcp servers
-
-### stdio transport
-
-This is ideal for running mcp servers locally.  
-
-```json
-  "sasmcp: {
-    "type": "stdio",
-    "command": "npx",
-    "args": [
-      "@sassoftware/mcp-serverjs@latest",
-    ],
-    "env": {
-      "MCPTYPE": "stdio",
-      "AUTHFLOW": "sascli",  // sascli|password|token
-      "SAS_CLI_PROFILE": "cli profile name or default",
-      "SAS_CLI_CONFIG":"where sas-cli stores authentication information",
-      "SSLCERT": "where you have stored the tls information(see below)",
-      "VIYA_SERVER": "viya server if AUTHFLOW=password|token|refresh",
-      "PASSWORD": "password if AUTHFLOW is password",
-      "USERNAME": "username if AUTHFLOW is password",
-      "CLIENTIDPW": "client password if AUTHFLOW is password",
-      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
-      "TOKEN": "token if AUTHFLOW is token"
-    }
-  }
-```
-
-### http transport
-
-This is an alternate to using stdio. This requires a .env or th
-
-`Step 1: Configure the mpc client`
-
-The mcp configuration is show below
-
-```json
- "sasmcp": {
-    "type": "http",
-    "url": "http(s)//localhost:8080/mcp"``
- }
-```
-
-USe https if the environment variables HTTPS=TRUE
-
-#### Custom headers
-
-To support remote mcp serversm the following headers are supported
-
-```js
-headers: {
-  Authorization: 'Bearer <token>',
-  X-VIYA-SERVER: '<your Viya url>',
-  X-REFRESH-TOKEN: "<refresh token from sas-viya cli'
-}
-```
-
-> The X-REFRESH-TOKEN is intended for testing. Think of it as an API KEY for testing.
-
-`Step 2: Start the mcp server`
-
-```sh
-npx @sassoftware/mcp-serverjs@latest
-```
-
-Make sure that the .env file is in the current working directory(see below for details).
-
-```env
-
-The environment variables you can set are:
-
-```env
-##
-# mcp server environment variables
-#
-
-## server specific settings
-# By default the server will run in HTTP mode
-HTTPS=FALSE
-
-## TLS settings
-SSLCERT=<location of your SSL certificate>
-# The directory must contain the files key.pem and crt.pem and optionally ca.pem
-# This is used by the mcp server and in calls to SAS Via
-
-## If using self-signed certificate set this to 0
-NODE_TLS_REJECT_UNAUTHORIZED=0
-
-## Viya authentication settings
-
-## Valid values for AUTHFLOW are: sascli, password, token
-AUTHFLOW=sascli
-
-## sas-viya allows named profiles.
-## set this to the profile you want to use or leave it blank to use the default profile.
-## this is used to find the tokens for Viya
-
-# replace i58 with your profile name
-SAS_CLI_PROFILE=i58
-# replace with the location where sas-cli stores authentication information
-SAS_CLI_CONFIG=c:\Users\kumar
-
-## Needed for the AUTHFLOW=password|token
-VIYA_SERVER=<your Viya Server URL>
-
-## Password authentication settings
-PASSWORD=yourpassword
-USERNAME=yourusername
-CLIENTIDPW=your password clientid
-CLIENTSECRETPW=your password clientsecret
-
-
-## TOKEN authentication settings
-# Useful for cases where you want to use a token directly
-
-TOKEN=yourtoken
-
-NEWTOKEN=TRUE
-
-```
-
----
-
-## Supported Tools
-
----
-
-The tools are designed to address common usage scenarios faced by SAS users.
-
-### Data related tools
-
-- findLibrary   - check if specified library exists
-- listLibraries - list available libraries in cas or sas
-- findTable     - check if specified table  exists in specified library in cas or sas
-- listTables  - list tables in a specified library in cas or sas
-- readTable   - read records from a cas or sas table(see sasQuery tool for an alternate)
-
-### Scoring with Models in MAS
-
-- findModel  - check if specified model exists in MAS server
-- listModels - list models published to MAS
-- modelInfo  - display the input and output variables for a specified model
-- modelScore - score using the seleced model
-
-### Scoring with SCR
-
-- scrInfo  - display the input and output variables for a specified SCR instance
-- scrScore - score using the specified SCR instance
-
-### Scoring with SAS code
-
-- job - run a SAS Viya job  - useful for scoring with SAS Studio Flows
-- jobdef - use a job definition to run sas code
-- program - runs the sas code that is supplied by the user
-- macro  - runs a macro available to the server. User passes additional macro variables as name, value pairs.
-- sasQuery - converts user natural language query to SQL and runs a specified job. By default it looks for a job named sas-sql-query on the server. You can pass a job name as part of the query to use a different job name. The tool depends on the LLM to generate the SQL Select statement. Use with caution, since the LLM might generate incorrect SQL statements.
-
-Below is the default code for sas-sql-query job
-
-```sas
-data _null_;
-    length sql_final $5000.;
-        sql_final="%superq(sql)";
-        call symput("sql_final",sql_final);       
-    run;
-
-filename joutput filesrvc parenturi="&SYS_JES_JOB_URI" name="query_results.json";
-
-%macro run_sql_code;    
-
-    proc sql;
-     create table work.query_results as
-     &sql_final.;
-    quit;
-
-    proc print data=work.query_results;run;
-    
-    proc json out= joutput nosastags;
-    export query_results;
-    run;
-%mend;
-
-%run_sql_code;
-
-```
-
----
-
-## modify or add tools
-
----
-
-- Add a file to the toolSet folder
-- Use one of the files in this folder as a guide
-- Use toolhelpers folder for the function code(recommended)
-- Add the new file to the index.js file in toolSet folder
-- Restart the mcp server
-
 ---
 
 ## Enable Authentication
 
-The server supports multiple ways to authenticate.
-
 ---
 
-### Using token created with sas-viya
+The server supports multiple ways to authenticate.
+
+
+### sas-viya cli
+
+> To use this set AUTHFLOW=sascli
 
 This mcp server cli works similar to SAS supplied sas-viya cli commands. Use the following command to create the necessary token and refresh token.
 
@@ -338,21 +147,94 @@ You need to do this once every 90 days or whenever the refresh token expires.
 
 At this point the tools can make authenticated calls to SAS Viya
 
----
 
-### Passing token
+### Custom token
 
-In some cases you might have a token. Set the value in the .env file or in the mcp configuration.
+> Set the env TOKENFILE to a file containing the token
+
+There seems to be a pattern of using a long-lived token. If this is your use-case set the TOKENFILE to a file containing this token.
+
 
 ### Password
 
-Ths requires additional setup.
+Ths requires additional setup. 
 
-- Create a clientid and clientpassword for Oauth password flow.
+- Create a clientid and client password for Oauth password flow.
 - Set these in the .env file or the mcp configuration file
 
 
 ---
+
+Add the following to the list of mcp servers
+
+### stdio transport
+
+This is ideal for running mcp servers locally. Most clients will autostart the mcp server for you. 
+
+```json
+  "sasmcp: {
+    "type": "stdio",
+    "command": "npx",
+    "args": [
+      "@sassoftware/mcp-serverjs@latest",
+    ],
+    "env": {
+      "MCPTYPE": "stdio",
+      "AUTHFLOW": "sascli",  // sascli|password|token
+      "SAS_CLI_PROFILE": "cli profile name or Default",
+      "SAS_CLI_CONFIG":"where sas-cli stores authentication information",
+      "SSLCERT": "where you have stored the tls information(see below)",
+      "VIYA_SERVER": "viya server if AUTHFLOW=password|token|refresh",
+      "PASSWORD": "password if AUTHFLOW is password",
+      "USERNAME": "username if AUTHFLOW is password",
+      "CLIENTIDPW": "client password if AUTHFLOW is password",
+      "CLIENTSECRETPW": "client id if AUTHFLOW is password",
+      "TOKENFILE": "folder for custom token"
+    }
+  }
+
+```
+
+### http transport
+
+This is an alternate to using stdio. This requires the .env file. It also requires the mcp server to be running (see step 2)
+
+> Remote mcp servers: This is under development
+
+`Step 1: Configure the mcp client for localhost`
+
+The mcp configuration is show below
+
+```json
+ "sasmcp": {
+    "type": "http",
+    "url": "http(s)//localhost:8080/mcp"``
+ }
+```
+
+Use https if the environment variables HTTPS=TRUE
+
+
+`Step 2: Start the mcp server`
+
+```sh
+npx @sassoftware/mcp-serverjs@latest
+```
+
+Make sure that the .env file is in the current working directory(see below for details)
+
+---
+
+## modify or add tools
+
+---
+
+- Add a file to the toolSet folder
+- Use one of the files in this folder as a guide
+- Use toolhelpers folder for the function code(recommended)
+- Add the new file to the index.js file in toolSet folder
+- Restart the mcp server
+
 
 ## Persisting scores
 
@@ -411,6 +293,7 @@ Warning: This is just my observation. Your mileage may vary.
 
 ### mkcert
 
+
 To create a self-signed certificate for localhost
 
 ```sh
@@ -424,7 +307,7 @@ Now go to the location where you want to store the certificates
 Then create the certificates
 
 ```sh
-mkcert --key key.pem --cert crt.pem localhost 127:0.0.1 ::1
+mkcert -key-file key.pem -cert-file crt.pem localhost 127:0.0.1 ::1
 ```
 
 One last step for windows nodejs users. Add this to the environment variable NODE_EXTRA_CA_CERTS
@@ -432,3 +315,6 @@ One last step for windows nodejs users. Add this to the environment variable NOD
 ```text
 NODE_EXTRA_CA_CERTS=c:\Users\<your_username>\AppData\Local\mkcert\rootCA.pem
 ```
+
+---
+

@@ -22,11 +22,7 @@
         "CLIENTIDPW": "client password if AUTHFLOW is password",
         "CLIENTSECRETPW": "client id if AUTHFLOW is password",
         "TOKEN": "token if AUTHFLOW is token",
-        "ENVFILE": "NONE",
-        "AI_KEY": "fe881114b0ae4a0384efe684b1f3d768",
-        "AI_MODEL": "assistant-demo-01",
-        "AI_ENDPOINT": "https://sas-assistant-us2.openai.azure.com",
-        "AI_PROVIDER": "azure"
+        "ENVFILE": "NONE"
       }
     }
   }
