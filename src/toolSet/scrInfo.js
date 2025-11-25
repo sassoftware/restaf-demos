@@ -4,13 +4,10 @@
  */
 
 import { z } from 'zod';
-import debug from 'debug';
 import _scrInfo from '../toolhelpers/_scrInfo.js';
-import scrModels from '../db/scrModels.js';
-
 
 function scrInfo(_appContext) {
-  const log = debug('scr');
+
   let description = `
 ## scrInfo
 
@@ -31,6 +28,7 @@ Usage notes
 
 Examples
 - describe scr model "https://scr-host/models/loan"
+- info for scr model "https://scr-host/models/loan"
 `;
 
   let spec = {
@@ -41,11 +39,11 @@ Examples
     },
     required: ['name'],
     handler: async (params) => {
-      let url= scrModels(params.name);
+      let {url, _appContext} = params;
       if (url === null) {
-        return { status: { statusCode: 2, msg: `SCR model ${params.name} not found` }, results: {} };
+        return { status: { statusCode: 2, msg: `SCR model ${url} not found` }, results: {} };
       }
-      let r = await _scrInfo({url});
+      let r = await _scrInfo({url, _appContext});
       return r;
     }
   }

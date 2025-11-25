@@ -12,6 +12,8 @@ async function _listLibrary(params ){
   
   let logonPayload = await getLogonPayload(_appContext);
   let config = {
+    casServerName: _appContext.contexts.cas,
+    computeContext: _appContext.contexts.sas,
     source: (server === 'sas') ? 'compute' : server,
     table: null
   };
@@ -51,7 +53,7 @@ async function _listLibrary(params ){
     };
   } catch (err) {
     console.error(JSON.stringify(err));
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
 

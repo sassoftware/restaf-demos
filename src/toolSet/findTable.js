@@ -40,7 +40,20 @@ What it returns
 - An array of matching table name (empty array when no matches).
 
 Usage notes
-- Use this tool to verify that the table exists before calling \`readTable\` or \`tableInfo\`.
+- Use this tool to verify that the table exists.
+
+LLM Invocation Guidance
+Use THIS tool when the user wants to find a table in a specific library:
+- "find table iris in Public library in cas"
+- "find table cars in sashelp in sas server"
+Do NOT use this tool when the user wants:
+- find lib -> use findLibrary
+- find model -> use findModel
+- find job -> use findJob
+- find jobdef -> use findJobdef
+- Columns or schema of a table (use tableInfo)
+- Reading data from a table (use readTable)
+  
 
 Examples
 - find table iris in Public library in cas

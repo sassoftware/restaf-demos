@@ -19,7 +19,7 @@ async function _listJobs(params) {
   });
   let logonPayload = await getLogonPayload(_appContext);
   let msg = await store.logon(logonPayload);
-  console.error('logon', msg);
+  
   
   let {jobExecution } = await store.addServices( 'jobExecution');
   let payload = {
@@ -36,10 +36,21 @@ async function _listJobs(params) {
     }
   console.error('payload', JSON.stringify(payload, null, 2));
   let jobList = await store.apiCall(jobExecution.links('jobs'), payload);
-  let items = jobList.itemsList().toJS();
-  console.error('items', items);
-  return { content: [{ type: 'text', text: JSON.stringify(items) }],
-   structuredContent: items
+  if (jobList.itemsList().size === 0) {
+    return { content: [{ type: 'text', text: 'No jobs found' }]};
+  }
+
+  let names = {};
+  jobList.itemsList().map( ( id, n) => {
+     let jname = jobList.items(id, 'data', 'jobRequest', 'name' );
+     names[jname] = jname;
+  } );
+
+  let nameList = Object.keys( names );
+  console.error('job names', JSON.stringify(nameList, null, 2));
+  
+  return { content: [{ type: 'text', text: JSON.stringify(nameList) }],
+   structuredContent: nameList
  };
 }
 

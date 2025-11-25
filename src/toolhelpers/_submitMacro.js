@@ -18,7 +18,7 @@ async function _submitMacro(params) {
 	catch (error) {
 		// Oops! Something went wrong
 		console.error(`Error in _submitCode: ${JSON.stringify(error)}`);
-		return { content: [{ type: 'text', text: JSON.stringify(error) }] }
+		return { isError: true, content: [{ type: 'text', text: JSON.stringify(error) }] }
 	}
 };
 

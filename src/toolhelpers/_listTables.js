@@ -14,6 +14,8 @@ async function _listTables(params) {
 
   let logonPayload = await getLogonPayload(_appContext);
   let config = {
+    casServerName: _appContext.contexts.cas,
+    computeContext: _appContext.contexts.sas,
     source: (server === 'sas') ? 'compute' : server,
     table: null
   };
@@ -47,7 +49,7 @@ async function _listTables(params) {
       structuredContent: items};
   } catch (err) {
     log(JSON.stringify(err));
-    return {content: [{ type: 'text', text: JSON.stringify(err) }] }
+    return {isError: true, content: [{ type: 'text', text: JSON.stringify(err) }] }
   }
 
 };

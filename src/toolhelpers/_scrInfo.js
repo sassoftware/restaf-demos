@@ -4,13 +4,11 @@
  */
 
 import axios from 'axios';
-import debug from 'debug';
 
 
-async function _scrInfo(_appContext,...params) {
-  const log = debug('scr');
 
-  let {url} = params;
+async function _scrInfo(params) {
+  let {url, _appContext} = params;
   let config = {
     method: 'GET',
     url: url + '/apiMeta/api',
@@ -19,18 +17,18 @@ async function _scrInfo(_appContext,...params) {
     }
   }
   try {
-    log('Config:', config);
+    console.error('[Note] Config:', config);
     let response = await axios(config);
-    log('Response status:', response.status);
+    console.error('[Note] Response status:', response.status);
     let r = {
       input: response.data.components.schemas.SCRInput.properties.data.properties,
       output: response.data.components.schemas.SCROutput.properties.data.properties
     };
-    log('Response data:', JSON.stringify(r, null, 2));
+    console.error('[Note] Response data:', JSON.stringify(r, null, 2));
     return {content: [{ type: 'text', text: JSON.stringify(r)}], structuredContent: r};
   }
   catch (error) {
-    return {content: [{ type: 'text', text: JSON.stringify(error) }]};  
+    return {isError: true,content: [{ type: 'text', text: JSON.stringify(error) }]};  
   }
 }
 export default _scrInfo;

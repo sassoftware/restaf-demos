@@ -27,7 +27,7 @@ function findJob(_appContext) {
 
   Do NOT use this tool when the user asks for:
   - A list or browse of many jobs (use listJobs)
-  - Do not use this tool if the user want to find lib, find table, and similar requests
+  - Do not use this tool if the user want to find lib, find table, find model and similar requests
   - Executing a job (use job)
   - Running a job definition (use jobdef)
   - Submitting arbitrary code (use program)

@@ -31,7 +31,9 @@ import findJob from './findJob.js';
 
 import sasQuery from './sasQuery.js';
 import deval from './deval.js';
-import gidb from './gidb.js';
+import setContext from './setContext.js';
+
+
 
 //let customf= {sasQueryTemplate, sasQueryTemplate2};
 
@@ -43,32 +45,34 @@ function makeTools(_appContext) {
   let list = [
     deval(_appContext),
     listModels(_appContext),
-    listTables(_appContext),
-
+    
     findModel(_appContext),
     modelInfo(_appContext),
     modelScore(_appContext),
 
     scrInfo(_appContext),
     scrScore(_appContext),
+
+    findLibrary(_appContext),
+    listLibraries(_appContext),
+    findTable(_appContext),
+    tableInfo(_appContext),
+    listTables(_appContext),
+    readTable(_appContext),
+    sasQuery(_appContext),
+
     program(_appContext),
     runMacro(_appContext),
+
     findJob(_appContext),
     listJobs(_appContext),
     job(_appContext),
     jobDef(_appContext),
 
-    listLibraries(_appContext),
 
-    findLibrary(_appContext),
-    findTable(_appContext),
-    readTable(_appContext),
-    tableInfo(_appContext),
     devaScore(_appContext),
-   
-    sasQuery(_appContext),
-    gidb(_appContext),
-
+    setContext(_appContext)
+    
   ];
   let listWithCustom = list.concat(customTools);
   console.error(`\n[Note] Loaded a total of ${listWithCustom.length} tools.`);

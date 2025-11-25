@@ -51,9 +51,11 @@ async function createMcpServer(cache, _appContext) {
   }
     
   toolSet.forEach((tool, i) => {
-    console.error(`\n[Note] Registering tool ${i + 1} : ${tool.name}`);
+    let toolName = tool.name;
+    console.error(`\n[Note] Registering tool ${i + 1} : ${toolName}`);
     let toolHandler = wrapf(cache, tool.handler);
-    mcpServer.tool(tool.name, tool.description, tool.schema, toolHandler);
+   
+    mcpServer.tool(toolName, tool.description, tool.schema, toolHandler);
   });
   cache.set("mcpServer", mcpServer);
   return mcpServer;

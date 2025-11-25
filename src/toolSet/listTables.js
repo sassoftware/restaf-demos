@@ -10,24 +10,6 @@ import _listTables from '../toolhelpers/_listTables.js';
 
 function listTables(_appContext) {
   const log = debug('tools');
-  let llmDescription =  {
-  "purpose": "Map natural language requests to listTables parameters and return a compact machine-readable response.",
-  "param_mapping": {
-    "lib": "required - infer from phrases like 'in <lib>' or ask a short clarifying question if missing",
-    "server": "infer 'cas' or 'sas' from prompt keywords; default 'cas'",
-    "limit": "positive integer, default 10",
-    "start": "1-indexed offset, default 1",
-    "where": "optional filter string"
-  },
-  "response_schema": "{ tables: string[], start?: number }",
-  "displayed_response": "A JSON object with a 'tables' array of table names (strings). If more results likely exist, include 'start' for pagination.",
-  "behavior": "Return only JSON that matches response_schema. If ambiguous, ask one short clarifying question. If no results, return { tables: [] }. Include start = start + limit when more results likely exist.",
-  "clarification_rules": "If lib missing: 'Which library do you want to list tables from?'. If server ambiguous: 'Do you mean CAS or SAS?'. If user says 'next', interpret as start = previousStart + previousLimit.",
-  "examples": [
-    { "input": "list tables in samples in cas", "mapped_params": { "lib": "Samples", "server": "cas" } },
-    { "input": "show me sashelp tables, 5 per page", "mapped_params": { "lib": "sashelp", "server": "sas", "limit": 5 } }
-  ]
-};
 
   let description = `
   ## listTables — enumerate tables within a specific CAS or SAS library
@@ -40,8 +22,11 @@ function listTables(_appContext) {
   - "list 25 tables in Samples"
   - "next tables" (after a prior listTables call)
 
-  Do NOT use this tool for:
-  - Listing libraries (use listLibraries)
+  Do NOT use this tool to list the following
+  - lib -> use listLibraries
+  - list models -> use listModels
+  - list jobs -> use listJobs
+  - list jobdefs -> use listJobdefs
   - Finding whether a library exists (use findLibrary)
   - Describing a single table's columns or metadata (use tableInfo)
   - Reading table data rows (use readTable)

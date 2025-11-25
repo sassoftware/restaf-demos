@@ -4,12 +4,11 @@
  */
 
 import axios from 'axios';
-import debug from 'debug';
 
 
-async function _scrScore(_appContext,...params) {
-  let { url, scenario} = params;
-  const log = debug('scr');
+async function _scrScore(params) {
+  let { url, scenario, _appContext } = params;
+ 
 
   let data = scenario.split(',').reduce((acc, pair) => {
     let [key, value] = pair.split('=');
@@ -28,10 +27,10 @@ async function _scrScore(_appContext,...params) {
   };
 
   try {
-    log('Config:', config);
+    console.error('[Note] Config:', config);
     let response = await axios(config);
-    log('Response status:', response.status);
-    log(response.data);
+    console.error('[Note] Response status:', response.status);
+    console.error('[Note] Response data:', response.data);
      let t = ' ';
     let sep = ''
     for (let k in r) {
@@ -40,11 +39,11 @@ async function _scrScore(_appContext,...params) {
     }
     console.error('t', t);
     let r = { ...response.data, ...scenario }; // merge the response with the scenario and add a unique key
-    return { content: [{ type: 'text', text: t }], structuredContent: r };
+    return { content: [{ type: 'text', text: JSON.stringify(r) }], structuredContent: r };
   
   }
   catch (error) {
-    return { content: [{ type: 'text', text: JSON.stringify(error) }] };
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(error) }] };
   }
 }
 export default _scrScore;

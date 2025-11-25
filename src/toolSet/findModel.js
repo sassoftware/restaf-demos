@@ -8,21 +8,6 @@ import _listModels from '../toolhelpers/_listModels.js';
 
 
 function findModel(_appContext) {
-  let llmDescription = {
-    "purpose": "Map natural-language requests to findModel parameters and return a compact, machine-readable response.",
-    "param_mapping": {
-      "name": "required - model name or substring to search for"
-    },
-    "response_schema": "{ models: Array<object|string> }",
-    "behavior": "Return only a JSON object matching response_schema. Use defaults when params missing. If ambiguous, ask one short clarifying question. If no results, return { models: [] }.",
-    "examples": [
-      { "input": "find model myModel", "mapped_params": { "name": "myModel" } },
-      { "input": "find model cancer", "mapped_params": { "name": "cancer" } }
-    ],
-    "clarification_rules": "If name missing: 'Which model name would you like to find?'.",
-    "safety": "Do not call external services beyond the tool; surface tool errors as structured error objects."
-  };
-
   let description = `
   ## findModel — locate a specific model deployed to MAS (Model Publish / Scoring service)
 
@@ -32,11 +17,10 @@ function findModel(_appContext) {
   - "does model churn_tree exist"
   - "is model sales_forecast deployed"
   - "lookup model claimFraud"
-  - "verify model credit_score_v2"
+  - "verify model credit_score_v2 exists"
 
   Do NOT use this tool for:
   - Listing many / browsing models (use listModels)
-  - Do not use this tool if the user want to find lib, find table, find job and similar requests
   - Retrieving detailed input/output variable metadata (use modelInfo)
   - Scoring or running a model (use modelScore)
   - Searching model execution containers or SCR endpoints (use scrInfo / scrScore if appropriate)

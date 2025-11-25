@@ -125,6 +125,10 @@ const appEnvBase= {
   tlsOpts: null,
   viyaSSL: null,
   viyaOpts: null,
+  contexts: {
+    sas: (process.env.COMPUTECONTEXT == null) ? 'SAS Job Execution compute context' : process.env.COMPUTECONTEXT,
+    cas: (process.env.CASSERVER == null) ? 'cas-shared-default' : process.env.CASSERVER
+  }
 };
 
 // setup TLS options for viya calls

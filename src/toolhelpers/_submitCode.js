@@ -23,7 +23,7 @@ async function _submitCode(params) {
 
     // get compute sessio, run sas code and retrieve result
 
-    let computeSession = await restaflib.computeSetup(store, null, logonPayload);
+    let computeSession = await restaflib.computeSetup(store, _appContext.contexts.sas, logonPayload);
     let computeSummary = await restaflib.computeRun(store, computeSession, src, args);
 
     let jobStatus = computeSummary.SASJobStatus;
@@ -77,7 +77,7 @@ async function _submitCode(params) {
     // Oops! Something went wrong
     console.error(`Error in _submitCode: ${JSON.stringify(error)}`);
     let e = { error: error };
-    return { content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e };
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(e) }], structuredContent: e };
   }
   function log2html(log) {
     let logText = '';

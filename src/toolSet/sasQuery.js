@@ -12,11 +12,13 @@ function sasQuery() {
     You will then convert the user's query to a valid SAS PROC SQL SELECT statement and pass this string 
     as the query. 
 
-    Instructions to LLM: The user MUST specify a non-blank query and a table.
-
+    Instructions to LLM: 
+    The user MUST specify a non-blank query and a table.
     The handler will return the data that was queried from the table.
-
-    User can optionally specify a SAS job to run the query on the SAS Server. If not specified, the default job 'run_sql_query' will be used.
+    User can optionally specify a SAS job to run the query on the SAS Server. 
+    If not specified, the default job 'sas_sql_tool' will be used.
+    If the number of rows returned is greater than 10, list only the first 10 rows.
+    Ask user if they want to see more rows.
 
     The desired flow:
     Instructions to LLM: Show the progress of how you are thinking about converting the natural language query to SQL.
@@ -32,7 +34,7 @@ function sasQuery() {
     { table: <table_name>, 
       query: <user's natural language query>,
       sql: <generated SQL query> }
-     
+    The table is of the form libname.tablename.
     If the user specified a job, include that in the parameters:
     { table: <table_name>, 
       query: <user's natural language query>,
@@ -44,22 +46,22 @@ function sasQuery() {
     Step 1: User prompt:
     
     User prompt:
-    sasquery table=clm_dental query=Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020
+    sasquery table=mylib.clm_dental query=Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020
     
     Step 2: Convert the query to a SQL Select statement 
     
     sql = "
     SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount, COUNT(DISTINCT mdcd_id) AS unique_patients, COUNT(DISTINCT icn) AS unique_claims
-    FROM clm_dental
+    FROM mylib.clm_dental
     WHERE diag_cd IN ('Z1100', 'Z10119', 'Z1020')
     GROUP BY prcdr_cd
     "
     
     Step 3: Pass these to the handler
-    { table: "clm_dental",
+    { table: "mylib.clm_dental",
       query: "Total paid amount, unique patients, and unique claims by procedure code for diagnosis code Z1100, Z10119, Z1020",
       sql: "SELECT prcdr_cd, SUM(pd_amt) AS total_paid_amount, COUNT(DISTINCT mdcd_id) AS unique_patients, COUNT(DISTINCT icn) AS unique_claims
-           FROM clm_dental
+           FROM mylib.clm_dental
            WHERE diag_cd IN ('Z1100', 'Z10119', 'Z1020')
            GROUP BY prcdr_cd"
     }
@@ -67,22 +69,20 @@ function sasQuery() {
     Step 4: Handler returns the results of the query to the user. The output has a json representation of the table.
     
     Example 2:
-    Input: sasquery table=clm_dental query=How many students are in each year and show me in percentage
+    Input: sasquery table=mylib.clm_dental query=How many students are in each year and show me in percentage
     
     
     The parameters passed to the handler are:
     {
-        table: "clm_dental",
+        table: "mylib.clm_dental",
         query: "How many students are in each year and show me in percentage"
         sql: "SELECT year,
                 COUNT(DISTINCT student_id) AS number_of_students,
-                COUNT(*) / (SELECT COUNT(DISTINCT student_id) FROM clm_dental) AS Percent FORMAT=percent8.2
-                FROM clm_dental
+                COUNT(*) / (SELECT COUNT(DISTINCT student_id) FROM mylib.clm_dental) AS Percent FORMAT=percent8.2
+                FROM mylib.clm_dental
                 GROUP BY year"
     }
-
-    ## Desired Output Display Format
-    If the query is successful and returns rows, display the rows as a markdown table.
+   
 
 `;
 
@@ -94,7 +94,7 @@ function sasQuery() {
             query: z.string(),
             table: z.string(),
             sql: z.string().optional(),
-            job: z.string().default('run_sql_query')
+            job: z.string().default('sas_sql_tool')
         },
         required: ['query', 'table'],
         handler: async (params) => {
@@ -107,7 +107,7 @@ function sasQuery() {
                     prompt: query,
                     sql: sqlinput
                 },
-                name: (job == null) ? 'run_sql_query' : job,
+                name: (job == null) ? 'sas_sql_tool' : job,
                 type: 'job',
                 query: true,
                 _appContext: _appContext

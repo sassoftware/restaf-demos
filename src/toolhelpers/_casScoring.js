@@ -34,7 +34,7 @@ async function _casScoring(params) {
     console.error(err);
     await store.apiCall( session.links( 'delete' ) );
 
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] }; 
+    return { isError: true,content: [{ type: 'text', text: JSON.stringify(err) }] }; 
   }
 }
 export default _casScoring;

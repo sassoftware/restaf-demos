@@ -9,33 +9,74 @@ import _readTable from  '../toolhelpers/_readTable.js';
 function readTable(_appContext) {
    
      let describe = `
-## readTable
+## readTable — retrieve rows from a table in a CAS or SAS library
+
+LLM Invocation Guidance (When to use)
+Use THIS tool when:
+- User wants to read data from a table: "read table customers"
+- User wants sample rows: "show me 10 rows from sales"
+- User wants filtered data: "read from orders where status = 'shipped'"
+- User wants from specific library: "read table cars in sashelp"
+- User wants from specific server: "read from mylib.employees on sas"
+
+Do NOT use this tool for:
+- Listing tables in a library (use listTables)
+- Getting table structure/metadata (use tableInfo)
+- Running SQL queries (use sasQuery)
+- Executing SAS programs (use program)
+- Running statistical analysis (use appropriate analytics tools)
 
 Purpose
-Read rows from a table in a specified library (caslib or libref) on a CAS or SAS server.
+Read one or more rows from a specified table in a CAS caslib or SAS libref. Supports pagination, filtering with WHERE clauses, and formatted/raw value display. Use this to inspect table data, sample rows, or retrieve filtered subsets.
 
-Required parameters
-- table (string): Table name to read.
-- lib (string): The caslib or libref containing the table.
+Parameters
+- table (string, required): Table name to read.
+- lib (string, required): The caslib or libref containing the table.
+- server (string, default 'cas'): Target server: 'cas' or 'sas'.
+- start (number, default 1): 1-based row index to start reading from.
+- limit (number, default 10): Maximum number of rows to return (1-1000 recommended).
+- where (string, optional): SQL-style WHERE clause to filter rows (e.g., "age > 30 AND status = 'active'").
+- format (boolean, default true): When true, return formatted/labeled values; when false return raw values.
+- row (number, optional): Read a single specific row (sets start to this value and limit to 1).
 
-Optional parameters
-- server (string): Target server, either \`cas\` or \`sas\`. Defaults to \`cas\`.
-- start (number): 1-based row index to start reading from. Defaults to 1.
-- limit (number): Maximum number of rows to return. Defaults to 10.
-- where (string): Optional SQL-style WHERE clause to filter rows. Defaults to empty (no filter).
-- format (boolean): When true, return formatted/labelled values; when false return raw values. Defaults to true.
-- row (number): If provided, read a single row (sets \`start\` to this value and \`limit\` to 1).
+Response Contract
+Returns a JSON object containing:
+- rows: Array of row objects with column names as keys
+- total (optional): Total count of rows in table (if available)
+- filtered_count (optional): Count of rows matching WHERE clause (if WHERE used)
+- columns (optional): Column metadata including names and types
+- Empty array if no rows match the criteria
 
-Output
-- The tool returns an object containing  an array of row objects. Consumers should render results as a markdown table for readability. If the resultset is large, display the first \`limit\` rows (default 10).
+Pagination & Filtering
+- First page default: { start: 1, limit: 10 }
+- To get next page: increment start by limit (e.g., { start: 11, limit: 10 })
+- Use WHERE clause for server-side filtering: { where: "age > 30" }
 
-Usage notes
-- Use \`findTable\` or \`listTables\` to if the table exists before calling \`readTable\`.
+Disambiguation & Clarification
+- Missing library: ask "Which library contains the table you want to read?"
+- Missing table: ask "Which table would you like to read?"
+- Ambiguous lib.table format: parse and use as separate parameters
+- Multiple tables: clarify which one (readTable handles one table at a time)
 
-Examples
-- read table \`cars\` in lib \`Public\` on the cas server -> { "table": "cars", "lib": "Public", "server": "cas", limit: 10, start: 1 }
-- read table \`employees\` in lib \`mylib\` on the sas server with where \`age > 30\` and limit 50 -> { "table": "employees", "lib": "mylib", "server": "sas", "where": "age > 30", "limit": 50 }
-- read table \`air\` in lib \`sashelp\` on the sas server limit 50 -> { "table": "air", "lib": "sashelp", "server": "sas", "limit": 50, start: 1 }
+Examples (→ mapped params)
+- "read table cars in Samples" → { table: "cars", lib: "Samples", start: 1, limit: 10 }
+- "show 25 rows from customers" → { table: "customers", lib: <current_lib>, limit: 25, start: 1 }
+- "read orders where status = 'shipped' limit 50" → { table: "orders", lib: <lib>, where: "status = 'shipped'", limit: 50, start: 1 }
+- "read row 15 from employees in mylib on sas" → { table: "employees", lib: "mylib", server: "sas", row: 15 }
+- "get next 10 rows" (after previous {start:1,limit:10}) → { table: <same>, lib: <same>, start: 11, limit: 10 }
+
+Negative Examples (should NOT call readTable)
+- "list tables in Samples" (use listTables instead)
+- "what columns are in the cars table?" (use tableInfo instead)
+- "execute this SQL query" (use sasQuery instead)
+- "run this SAS code" (use program instead)
+
+Related Tools
+- listTables — to browse available tables in a library
+- tableInfo — to inspect table structure, columns, and metadata
+- findTable — to check if a table exists in a library
+- listLibraries — to browse available libraries
+- sasQuery — to run complex SQL queries across tables
 `;
   
     let  specs = {

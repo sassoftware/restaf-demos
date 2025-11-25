@@ -11,15 +11,20 @@ function findLibrary(_appContext) {
 
   LLM Invocation Guidance
   Use THIS tool when the user asks any of the following (intent = existence / lookup of ONE library):
+  - "find library Public"
   - "find lib Public"
   - "does library SASHELP exist"
   - "is PUBLIC library available in cas"
   - "lookup library sasuser in sas"
   - "show me library metadata for Models"
 
+  Aliases for lib are: library, caslib, libref
+  
   Do NOT use this tool when the user wants:
-  - A list or enumeration of many/all libraries (use listLibrary)
-  - Tables inside a library (use listTables)
+  - find model -> use findModel
+  - find table -> use findTable
+  - find job -> use findJob
+  - find jobdef -> use findJobdef
   - Columns or schema of a table (use tableInfo)
   - Creating/assigning libraries (use program or another admin tool)
 

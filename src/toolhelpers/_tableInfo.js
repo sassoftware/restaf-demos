@@ -22,6 +22,8 @@ async function _tableInfo(params) {
     itable.libref = lib;
   }
   let config = {
+    casServerName: _appContext.contexts.cas,
+    computeContext: _appContext.contexts.sas,
     source: (server === 'sas') ? 'compute' : server,
     table: itable,
 
@@ -60,12 +62,12 @@ async function _tableInfo(params) {
     let columns = appControl.state.columns;
     let structuredContent = { columns: columns, sampleData: outdata };
  
-  
+    deleteSession(appControl);
     return { content: [{ type: 'text', text: JSON.stringify(structuredContent) }], structuredContent: structuredContent };
 
   } catch (err) {;
-   // await deleteSession(appControl);
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
+    await deleteSession(appControl);
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
 export default _tableInfo;

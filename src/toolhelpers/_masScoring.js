@@ -11,6 +11,7 @@ import debug from 'debug';
 async function _masScoring(params) {
  const log = debug('masscoring');
  // setup
+   let {model, scenario, uflag, _appContext} = params;
   let { masSetup, masDescribe, masRun } = restaflib;
   let store = restaf.initStore({
       casProxy: true,
@@ -22,7 +23,7 @@ async function _masScoring(params) {
   let logonPayload = await getLogonPayload(_appContext);
   let inputs = {};
   let masControl;
-  let {model, scenario, uflag, stream} = params;
+
   try {
    
     masControl = await masSetup(store, [model], logonPayload);
@@ -66,7 +67,7 @@ async function _masScoring(params) {
   
   } catch (err) {
     log(err);
-    return { content: [{ type: 'text', text: JSON.stringify({ status: { statusCode: 2, msg: err }, results: {} }) }] };
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify({ status: { statusCode: 2, msg: err } }) }] };
   }
 }
 

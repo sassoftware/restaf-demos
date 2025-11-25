@@ -5,13 +5,11 @@
 
 import restaf from '@sassoftware/restaf';
 import getLogonPayload from './getLogonPayload.js';
-import debug from 'debug';
 import getStoreOpts from './getStoreOpts.js';
 
 
 async function _listModels(params) {
-  let { limit, start , name, _appContext} = params;
-  const log = debug('modelList');
+  let { limit, start , name, _appContext} = params;;
   // setup
 
   let store = restaf.initStore({
@@ -38,14 +36,15 @@ async function _listModels(params) {
       } 
     }
     let result = await store.apiCall(microanalyticScore.links('modules'), payload);
+    if (result.itemsList().size === 0) {
+      return { content: [{ type: 'text', text: `No models exist in MAS server` }]};
+    }
     let list = result.itemsList().toJS();
-    log('result', JSON.stringify(list, null, 2));
     return { content: [{ type: 'text', text: JSON.stringify(list) }],
       structuredContent: list
     };
   } catch (err) {
-    log(JSON.stringify(err, null, 2));
-    return { content: [{ type: 'text', text: JSON.stringify(err) }] };
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(err) }] };
   }
 }
 

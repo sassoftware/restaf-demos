@@ -16,6 +16,7 @@ import debug from 'debug';
 import getStoreOpts from '../toolhelpers/getStoreOpts.js';
 
 
+
 async function _catalogSearch(params, rel) {
   let { searchstring, start, limit , _appContext} = params;
   let splitsearchstring = searchstring.trimStart().split(' ');
@@ -86,6 +87,7 @@ async function _catalogSearch(params, rel) {
   } catch (err) {
     console.error('Error in searchAssets:', JSON.stringify(err, null, 4));
     return {
+      isError: true,
       content:[{
         type: 'text', text: JSON.stringify(err)
       }]

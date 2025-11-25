@@ -9,8 +9,8 @@ import getStoreOpts from './getStoreOpts.js';
 import debug from 'debug';
 
 async function _readTable(params) {
-  const log = debug('readtable');
   let { table, lib, start, limit, server, format, where, _appContext } = params;
+  const log = debug('readtable');
   let logonPayload = await getLogonPayload(_appContext);
   log('logonPayload', logonPayload);
 
@@ -26,6 +26,8 @@ async function _readTable(params) {
     itable.libref = lib;
   }
   let config = {
+    casServerName: _appContext.contexts.cas,
+    computeContext: _appContext.contexts.sas,
     source: (server === 'sas') ? 'compute' : server,
     casServer: _appContext.DEFAULT_CAS_SERVER,
     table: itable,
@@ -72,7 +74,7 @@ async function _readTable(params) {
     log(JSON.stringify(err));
     //await deleteSession(appControl);
 
-    return { content: [{ type: 'text', text: JSON.stringify(err) }],
+    return { isError: true, content: [{ type: 'text', text: JSON.stringify(err) }],
      };
   }
 }

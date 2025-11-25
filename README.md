@@ -11,10 +11,7 @@
   - [Password](#password)
   - [Custom Token](#custom-token)
 - [Supported Tools](../sasmcp_tools_guide.md)
-- [Modify/Add Tools](#modify-or-add-tools)
-
-
-- [Persisting Scores](#persisting-scores)
+- [Modify/Add Tools](../sas_developer_guide.md)
 - [Notes](#notes)
 - [Useful Links](#useful-links)
 - [Other useful tips](#other-useful-tips)
@@ -119,6 +116,14 @@ TLS_CREATE="C:US,ST:NC,L:Cary,O:SAS Institute,OU:STO,CN:localhost"
 # if not set, no ssl certificates will be used
 VIYASSL=<some folder>
 
+# SAS Contexts
+# Defaults are:
+#   COMPUTECONTEXT=SAS Job Execution compute context
+#   CASSERVER=cas-shared-default
+
+COMPUTECONTEXT=
+CASSERVER=
+
 
 ```
 
@@ -221,27 +226,8 @@ Use https if the environment variables HTTPS=TRUE
 npx @sassoftware/mcp-serverjs@latest
 ```
 
-Make sure that the .env file is in the current working directory(see below for details)
+Make sure that the .env file is in the current working directory
 
----
-
-## modify or add tools
-
----
-
-- Add a file to the toolSet folder
-- Use one of the files in this folder as a guide
-- Use toolhelpers folder for the function code(recommended)
-- Add the new file to the index.js file in toolSet folder
-- Restart the mcp server
-
-
-## Persisting scores
-
----
-
-You can use many mcp servers to persist the scoring data.
-See this [repository](https://github.com/sassoftware/restaf-demos/tree/redis-subscriber) for an example of using mcp/redis to persist the scores in a CAS table.
 
 ---
 
