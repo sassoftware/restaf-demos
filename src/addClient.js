@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+//import { config } from "yargs";
+
+//import { config } from "yargs"	;
+
 async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 	
     
@@ -13,12 +17,13 @@ async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 	if (configFile == null) {
 		let flow = (args.type  != null) ? args.type.trim() : ' ';
 		console.log(flow);
-		
-		if (flow === 'code') {
+		let f = flow;
+		if (flow === 'code' || flow === 'pkce') {
 			flow = 'authorization_code';
 		}
 		
 		let flowA = flow.split(',');
+		
 		configFile = {
 			client_id   : clientid,
 			scope       : ['openid',"*"],
@@ -33,6 +38,13 @@ async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 		if (clientSecret !== null) {
 			configFile.client_secret = clientSecret;
 		}
+		if (f === 'pkce') {
+			//configFile.require_pkce = true;
+			configFile.pkceMethod  = "S256";
+			configFile.pkceEnabled = true;
+			delete configFile.client_secret;
+		}
+
 		let redirectx = (redirect != null) ? redirect.replaceAll("$VIYA_SERVER",process.env.VIYA_SERVER) : null;
 		if (redirectx != null) {
 			let redirectA = redirectx.split(',');
@@ -41,7 +53,7 @@ async function addClient (store, clientid, args, defaultConfigFile, ttl) {
 	} 
 
 	
-	
+	console.log(configFile);
 	let payload = {
 		url   : `${store.connection()['host']}/SASLogon/oauth/clients`,
 		method: 'POST',

@@ -17,11 +17,13 @@ import delClient from './src/delClient.js';
 import listClient from './src/listClient.js';
 import detailClient from './src/detailClient.js';
 import runCmds from './src/runCmds.js';
-import yargs from 'yargs';
-let argv = yargs.argv||{}
-let cmdFile = argv.file == null ? null : argv.file;;
-let ttl = argv.ttl == null ? null : argv.ttl;
-let clientConfigFile = argv.cfile == null ? null : argv.cfile; 
+//import yargs from 'yargs';
+let argv = {};
+;
+
+let cmdFile = null;;
+let ttl = null;
+let clientConfigFile = null; 
 let clientConfig = null;
 
 if (clientConfigFile !== null ) {
